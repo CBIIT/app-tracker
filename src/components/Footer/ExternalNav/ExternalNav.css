@@ -1,0 +1,60 @@
+.ExternalNav {
+    width: 100%;
+    background-color: #222;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.ExternalNavContent {
+    max-width: 1440px;
+    max-height: 148px;
+    margin: auto;
+    line-height: 1.42857;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+
+}
+
+.ExternalNavContent a {
+    font-family: "SourceSansPro", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+}
+
+.ExternalNavContent ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    list-style: none;
+    /* margin-left: -1px; */
+}
+
+.ExternalNavContent li:first-child {
+    border-left: none;
+}
+
+.ExternalNavContent li {
+    flex-grow: 0;
+    flex-basis: auto;
+    margin: .25em 0;
+    padding: 0 1em;
+    text-align: center;
+    border-left: 1px solid #ccc;
+    background-color: #222;
+}
+
+.ExternalNavTrademark {
+    font-family: "SourceSansPro", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    color: white;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
