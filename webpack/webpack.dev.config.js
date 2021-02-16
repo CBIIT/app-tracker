@@ -1,14 +1,14 @@
-const webpack = require('webpack')
-const baseCfg = require('./webpack.base')
-var path = require('path')
-const servicenowConfig = require('./servicenow.config')
+const webpack = require("webpack");
+const baseCfg = require("./webpack.base");
+var path = require("path");
+const servicenowConfig = require("./servicenow.config");
 
-process.env.BABEL_ENV = 'development'
-process.env.NODE_ENV = 'development'
+process.env.BABEL_ENV = "development";
+process.env.NODE_ENV = "development";
 
 const cfg = {
   entry: {
-    app: ['react-hot-loader/patch', './src/index.js'],
+    app: ["react-hot-loader/patch", "./src/index.js"],
   },
 
   output: baseCfg.output,
@@ -17,16 +17,17 @@ const cfg = {
     ...baseCfg.resolve,
     alias: {
       ...baseCfg.resolve.alias,
-      'react-dom': '@hot-loader/react-dom',
+      "react-dom": "@hot-loader/react-dom",
     },
   },
 
   devtool: false,
 
-  mode: 'development',
+  mode: "development",
 
   devServer: {
-    contentBase: path.join(__dirname, '/../dist'),
+    contentBase: path.join(__dirname, "/../dist"),
+    historyApiFallback: true,
     compress: false,
     disableHostCheck: true,
     port: 9000,
@@ -72,14 +73,14 @@ const cfg = {
     new webpack.HotModuleReplacementPlugin(),
     baseCfg.plugins.createIndexHtml(),
     new webpack.DefinePlugin({
-      'process.env.REACT_APP_USER': JSON.stringify(
+      "process.env.REACT_APP_USER": JSON.stringify(
         servicenowConfig.REACT_APP_USER
       ),
-      'process.env.REACT_APP_PASSWORD': JSON.stringify(
+      "process.env.REACT_APP_PASSWORD": JSON.stringify(
         servicenowConfig.REACT_APP_PASSWORD
       ),
     }),
   ],
-}
+};
 
-module.exports = cfg
+module.exports = cfg;
