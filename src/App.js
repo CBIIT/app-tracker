@@ -116,7 +116,7 @@ function App() {
     },
   ];
 
-  const someNumber = dataSource.length;
+  const preFlightCount = dataSource.length;
   return (
     <>
       <div style={{ backgroundColor: "#EDF1F4" }}>
@@ -140,7 +140,10 @@ function App() {
         </Button>
         <div className="app-container">
           <Tabs>
-            <Tabs.TabPane tab={someNumber + " Pre-flight Vacancies"} key="1">
+            <Tabs.TabPane
+              tab={preFlightCount + " Pre-flight Vacancies"}
+              key="1"
+            >
               <div style={{ backgroundColor: "white", padding: "10px" }}>
                 <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
                 <Radio.Group
