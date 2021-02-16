@@ -1,0 +1,9 @@
+.Logo {
+    flex-basis: 390px;
+    flex-shrink: 0;
+}
+
+.Logo img {
+    width: 100%;
+    height: 100%;
+}
