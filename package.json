@@ -12,11 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "@blueprintjs/core": "^3.22.3",
+    "antd": "^4.12.3",
     "axios": "^0.21.1",
     "dotenv-webpack": "^1.7.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.2",
     "styled-components": "^4.4.1"
   },

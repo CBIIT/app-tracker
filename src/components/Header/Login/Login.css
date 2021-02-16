@@ -1,0 +1,16 @@
+.Login {
+    height: 30px;
+    width: 125px;
+    color: #015EA2;
+    font-family: "Noto Sans";
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 22px;
+}
+
+.Login Button {
+    border: white;
+    box-shadow: none;
+    color: #fff;
+    border-color: #015ea2!important;
+}

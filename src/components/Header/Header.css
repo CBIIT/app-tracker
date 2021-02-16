@@ -1,0 +1,21 @@
+.Header {
+    height: 64px;
+    background-color: white;
+    box-shadow: 0 2px 6px 0 rgba(0,21,41,0.12);
+}
+
+.HeaderContent {
+    display: flex;
+    background-color: white;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.HeaderContent nav {
+    background-color: white;
+    height: 100%;
+}
+
