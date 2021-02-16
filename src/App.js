@@ -6,6 +6,7 @@ import "antd/dist/antd.css";
 import "./App.css";
 import Layout from "./hoc/Layout/Layout";
 import Home from "./Containers/Home/Home";
+import VacancyDashboard from "./containers/VacancyDashboard/VacancyDashboard";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Layout>
         <Switch>
           <Route path="/" exact component={Home} />
+          <Route path="/vacancy-dashboard" exact component={VacancyDashboard} />
         </Switch>
       </Layout>
     </>
