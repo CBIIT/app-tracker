@@ -1,11 +1,14 @@
-const vacancyDashboard = () => {
+import React from "react";
+import { Table, PageHeader, Button, Tabs, Radio, Space, Divider } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
+const vacancyDashboard = () => (
   <>
     <div style={{ backgroundColor: "#EDF1F4" }}>
-      <PageHeader
-        title="Vacancy Dashboard"
+      {/* <PageHeader
         breadcrumb={{ routes }}
         style={{ marginLeft: "220px", display: "inline-block" }}
-      />
+      /> */}
       <Button
         type="primary"
         style={{
@@ -45,20 +48,8 @@ const vacancyDashboard = () => {
         </Tabs>
       </div>
     </div>
-    <div className="footer">
-      <div>built with love for ServiceNow community</div>
-      <div>
-        <img src={img1} alt="image1" />
-      </div>
-      <div>
-        <img src={img2} alt="image2" />
-      </div>
-      <div>
-        <img src={img3} alt="image3" />
-      </div>
-    </div>
-  </>;
-};
+  </>
+);
 
 const columns = [
   {
@@ -167,3 +158,5 @@ const routes = [
 ];
 
 const preFlightCount = dataSource.length;
+
+export default vacancyDashboard;

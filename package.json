@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/icons": "^4.5.0",
     "@blueprintjs/core": "^3.22.3",
     "antd": "^4.12.3",
     "axios": "^0.21.1",
