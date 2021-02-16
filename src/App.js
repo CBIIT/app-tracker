@@ -145,7 +145,7 @@ function App() {
                 <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
                 <Radio.Group
                   defaultValue="all"
-                  style={{ display: "inline-block", paddingLeft: "10px:" }}
+                  style={{ display: "inline-block", paddingLeft: "10px" }}
                 >
                   <Radio.Button value="all">All</Radio.Button>
                   <Radio.Button value="draft">Draft</Radio.Button>
