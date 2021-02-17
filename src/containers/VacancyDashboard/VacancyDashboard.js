@@ -29,7 +29,7 @@ const vacancyDashboard = () => (
         >
           + Create Vacancy
         </Button>
-        <Tabs>
+        <Tabs size={"large"}>
           <Tabs.TabPane tab={preFlightCount + " Pre-flight Vacancies"} key="1">
             <div style={{ backgroundColor: "white", padding: "10px" }}>
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
