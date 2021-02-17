@@ -5,7 +5,7 @@ import "antd/dist/antd.css";
 
 import "./App.css";
 import Layout from "./hoc/Layout/Layout";
-import Home from "./Containers/Home/Home";
+import Home from "./containers/Home/Home";
 import VacancyDashboard from "./containers/VacancyDashboard/VacancyDashboard";
 
 function App() {

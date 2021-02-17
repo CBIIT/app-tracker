@@ -1,25 +1,25 @@
 .OuterContainer {
-    width: 100%;
-    background-color: #EDF1F4;
-    padding-bottom: 20px;
+  width: 100%;
+  background-color: #edf1f4;
+  padding-bottom: 20px;
 }
 
 .ContentContainer {
-    width: min(95%, 1170px);
-    margin-inline: auto;
+  width: min(95%, 1170px);
+  margin-inline: auto;
 }
 
 .RouteContent {
-    background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .HeaderTitle {
-    background-color: #EDF1F4;
-    max-width: 1440px;
-    max-height: 76px;
-    margin: auto;
-    padding: 20px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  background-color: #edf1f4;
+  max-width: 1440px;
+  max-height: 76px;
+  margin: auto;
+  padding: 20px 20px 20px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
