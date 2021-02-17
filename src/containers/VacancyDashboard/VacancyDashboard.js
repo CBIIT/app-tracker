@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, PageHeader, Button, Tabs, Radio, Space, Divider } from "antd";
+import { Table, Button, Tabs, Radio, Space, Divider } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -45,7 +45,7 @@ const vacancyDashboard = () => (
             <Table
               dataSource={preFlightData}
               columns={preFlightColumns}
-              onChange={onChange}
+              // onChange={onChange}
               style={{ width: "1170px", display: "block" }}
             ></Table>
           </Tabs.TabPane>
@@ -70,7 +70,7 @@ const vacancyDashboard = () => (
             <Table
               dataSource={liveData}
               columns={liveColumns}
-              onChange={onChange}
+              // onChange={onChange}
               style={{ width: "1170px", display: "block" }}
             ></Table>
           </Tabs.TabPane>
@@ -100,7 +100,7 @@ const vacancyDashboard = () => (
             <Table
               dataSource={closedData}
               columns={closedColumns}
-              onChange={onChange}
+              // onChange={onChange}
               style={{ width: "1170px", display: "block" }}
             ></Table>
           </Tabs.TabPane>
@@ -474,20 +474,20 @@ const closedData = [
   },
 ];
 
-function onChange(pagination, filters, sorter, extra) {
-  console.log("params", pagination, filters, sorter, extra);
-}
+// function onChange(pagination, filters, sorter, extra) {
+//   console.log("params", pagination, filters, sorter, extra);
+// }
 
-const routes = [
-  {
-    path: "index",
-    breadcrumbName: "Home",
-  },
-  {
-    path: "first",
-    breadcrumbName: "Vacancy Dashboard",
-  },
-];
+// const routes = [
+//   {
+//     path: "index",
+//     breadcrumbName: "Home",
+//   },
+//   {
+//     path: "first",
+//     breadcrumbName: "Vacancy Dashboard",
+//   },
+// ];
 
 const preFlightCount = preFlightData.length;
 const liveCount = liveData.length;
