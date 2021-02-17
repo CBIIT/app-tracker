@@ -5,8 +5,9 @@ import {
   EditOutlined,
   LinkOutlined,
   FieldTimeOutlined,
-  CloseSquareOutlined,
+  MinusCircleOutlined,
 } from "@ant-design/icons";
+import "./VacancyDashboard.css";
 
 const vacancyDashboard = () => (
   <>
@@ -31,7 +32,7 @@ const vacancyDashboard = () => (
         </Button>
         <Tabs size={"large"}>
           <Tabs.TabPane tab={preFlightCount + " Pre-flight Vacancies"} key="1">
-            <div style={{ backgroundColor: "white", padding: "10px" }}>
+            <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
               <Radio.Group
                 defaultValue="all"
@@ -42,21 +43,22 @@ const vacancyDashboard = () => (
                 <Radio.Button value="final">Finalized</Radio.Button>
               </Radio.Group>
             </div>
-            <Table
-              dataSource={preFlightData}
-              columns={preFlightColumns}
-              // onChange={onChange}
-              style={{ width: "1170px", display: "block" }}
-            ></Table>
+            <div style={{ backgroundColor: "white" }}>
+              <Table
+                dataSource={preFlightData}
+                columns={preFlightColumns}
+                // onChange={onChange}
+                style={{
+                  width: "1170px",
+                  display: "block",
+                  paddingLeft: "20px",
+                  paddingRight: "20px",
+                }}
+              ></Table>
+            </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab={liveCount + " Live Vacancies"} key="2">
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "10px",
-                width: "1170px",
-              }}
-            >
+            <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
               <Radio.Group
                 defaultValue="all"
@@ -67,21 +69,22 @@ const vacancyDashboard = () => (
                 <Radio.Button value="extended">Extended</Radio.Button>
               </Radio.Group>
             </div>
-            <Table
-              dataSource={liveData}
-              columns={liveColumns}
-              // onChange={onChange}
-              style={{ width: "1170px", display: "block" }}
-            ></Table>
+            <div style={{ backgroundColor: "white" }}>
+              <Table
+                dataSource={liveData}
+                columns={liveColumns}
+                // onChange={onChange}
+                style={{
+                  width: "1170px",
+                  display: "block",
+                  paddingLeft: "20px",
+                  paddingRight: "20px",
+                }}
+              ></Table>
+            </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab={closedCount + " Closed Vacancies"} key="3">
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "10px",
-                width: "1170px",
-              }}
-            >
+            <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
               <Radio.Group
                 defaultValue="all"
@@ -97,12 +100,19 @@ const vacancyDashboard = () => (
                 <Radio.Button value="archived">Archived</Radio.Button>
               </Radio.Group>
             </div>
-            <Table
-              dataSource={closedData}
-              columns={closedColumns}
-              // onChange={onChange}
-              style={{ width: "1170px", display: "block" }}
-            ></Table>
+            <div style={{ backgroundColor: "white" }}>
+              <Table
+                dataSource={closedData}
+                columns={closedColumns}
+                // onChange={onChange}
+                style={{
+                  width: "1170px",
+                  display: "block",
+                  paddingLeft: "20px",
+                  paddingRight: "20px",
+                }}
+              ></Table>
+            </div>
           </Tabs.TabPane>
         </Tabs>
       </div>
@@ -251,7 +261,7 @@ const liveColumns = [
         </Button>
         <Divider type="vertical" />
         <Button type="text" style={{ padding: "0px" }}>
-          <CloseSquareOutlined /> close
+          <MinusCircleOutlined /> close
         </Button>
       </Space>
     ),
@@ -310,22 +320,13 @@ const closedColumns = [
     },
     defaultSortOrder: "ascend",
   },
-  {
-    title: "Open Date",
-    dataIndex: "odate",
-    sorter: {
-      compare: (a, b) => {
-        new Date(a.odate) - new Date(b.odate);
-      },
-      multiple: 2,
-    },
-  },
+
   {
     title: "Close Date",
     dataIndex: "cdate",
     sorter: {
       compare: (a, b) => new Date(a.cdate) - new Date(b.cdate),
-      multiple: 3,
+      multiple: 2,
     },
   },
   {
