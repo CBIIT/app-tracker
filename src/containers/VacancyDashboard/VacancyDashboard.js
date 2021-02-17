@@ -110,6 +110,7 @@ const vacancyDashboard = () => (
   </>
 );
 
+// Preflight Columns
 const preFlightColumns = [
   {
     title: "Vacancy Title",
