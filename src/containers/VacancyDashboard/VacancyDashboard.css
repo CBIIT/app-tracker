@@ -7,10 +7,15 @@
   color: rgb(37, 96, 151) !important;
 }
 
+.ant-tabs-tab {
+  margin-right: 0px;
+}
+
 .ant-tabs-tab-btn {
   font-size: 20px !important;
   width: 180px;
   height: 104px;
+  margin-right: 0px;
 }
 
 .ant-tabs-tab:hover {
