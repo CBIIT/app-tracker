@@ -9,28 +9,134 @@ import {
 } from "@ant-design/icons";
 import "./VacancyDashboard.css";
 
-const vacancyDashboard = () => (
-  <>
-    <div style={{ backgroundColor: "#EDF1F4" }}>
-      {/* <PageHeader
+const vacancyDashboard = () => {
+  let container = preflightTable;
+
+  return (
+    <>
+      <div style={{ backgroundColor: "#EDF1F4" }}>
+        {/* <PageHeader
         breadcrumb={{ routes }}
         style={{ marginLeft: "220px", display: "inline-block" }}
       /> */}
-      <div className="app-container" style={{ width: "1170px" }}>
-        <Button
-          type="primary"
-          style={{
-            display: "inline-block",
-            backgroundColor: "#015EA2",
-            marginLeft: "1010px",
-            width: "161px",
-            height: "36px",
-            fontSize: "16px",
-          }}
-        >
-          + Create Vacancy
-        </Button>
-        <Tabs size={"large"}>
+        <div className="app-container" style={{ width: "1170px" }}>
+          <Button
+            type="primary"
+            style={{
+              display: "inline-block",
+              backgroundColor: "#015EA2",
+              marginLeft: "1010px",
+              width: "161px",
+              height: "36px",
+              fontSize: "16px",
+            }}
+          >
+            + Create Vacancy
+          </Button>
+          <div>
+            <Radio.Group
+              defaultValue="preflight"
+              name="tab-filters"
+              onChange={() => {
+                debugger;
+                container = liveTable;
+                debugger;
+                // document
+                //   .querySelector(".table-div")
+                //   .appendChild(renderTable(preflightTable));
+                // renderTable(preflightTable);
+              }}
+            >
+              <Radio.Button
+                type="text"
+                className="tab-button"
+                value="preflight"
+                style={{
+                  width: "180px",
+                  height: "100px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "32px",
+                    fontFamily: "sans-serif",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {preFlightCount}
+                </p>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontFamily: "Arial",
+                    paddingBottom: "20px",
+                  }}
+                >
+                  Pre-flight Vacancies
+                </p>
+              </Radio.Button>
+              <Radio.Button
+                type="text"
+                className="tab-button"
+                value="live"
+                style={{
+                  width: "180px",
+                  height: "100px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "32px",
+                    fontFamily: "sans-serif",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {liveCount}
+                </p>
+                <p style={{ fontSize: "16px", fontFamily: "Arial" }}>
+                  Live Vacancies
+                </p>
+              </Radio.Button>
+              <Radio.Button
+                type="text"
+                className="tab-button"
+                value="closed"
+                style={{
+                  width: "180px",
+                  height: "100px",
+                }}
+                onClick={() => console.log()}
+              >
+                <p
+                  style={{
+                    fontSize: "32px",
+                    fontFamily: "Arial",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {closedCount}
+                </p>
+                <p style={{ fontSize: "16px", fontFamily: "Arial" }}>
+                  Closed Vacancies
+                </p>
+              </Radio.Button>
+            </Radio.Group>
+          </div>
+          <div className="tabs-div">
+            <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
+            <Radio.Group
+              defaultValue="all"
+              style={{ display: "inline-block", paddingLeft: "10px" }}
+            >
+              <Radio.Button value="all">All</Radio.Button>
+              <Radio.Button value="draft">Draft</Radio.Button>
+              <Radio.Button value="final">Finalized</Radio.Button>
+            </Radio.Group>
+          </div>
+
+          <div className="table-div">{container}</div>
+
+          {/* <Tabs size={"large"}>
           <Tabs.TabPane tab={preFlightCount + " Pre-flight Vacancies"} key="1">
             <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
@@ -114,11 +220,16 @@ const vacancyDashboard = () => (
               ></Table>
             </div>
           </Tabs.TabPane>
-        </Tabs>
+        </Tabs> */}
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
+
+const renderTable = (table) => {
+  return table;
+};
 
 // Preflight Columns
 const preFlightColumns = [
@@ -209,6 +320,24 @@ const preFlightData = [
     cdate: "8/14/2021",
   },
 ];
+
+const preflightTable = (
+  <>
+    <div style={{ backgroundColor: "white" }}>
+      <Table
+        dataSource={preFlightData}
+        columns={preFlightColumns}
+        // onChange={onChange}
+        style={{
+          width: "1170px",
+          display: "block",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+        }}
+      ></Table>
+    </div>
+  </>
+);
 
 const liveColumns = [
   {
@@ -305,6 +434,24 @@ const liveData = [
     cdate: "8/20/2021",
   },
 ];
+
+const liveTable = (
+  <>
+    <div style={{ backgroundColor: "white" }}>
+      <Table
+        dataSource={liveData}
+        columns={liveColumns}
+        // onChange={onChange}
+        style={{
+          width: "1170px",
+          display: "block",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+        }}
+      ></Table>
+    </div>
+  </>
+);
 
 const closedColumns = [
   {
