@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Table, Button, Tabs, Radio, Space, Divider } from "antd";
 import {
   DeleteOutlined,
@@ -17,19 +18,22 @@ const vacancyDashboard = () => (
         style={{ marginLeft: "220px", display: "inline-block" }}
       /> */}
       <div className="app-container" style={{ width: "1170px" }}>
-        <Button
-          type="primary"
-          style={{
-            display: "inline-block",
-            backgroundColor: "#015EA2",
-            marginLeft: "1010px",
-            width: "161px",
-            height: "36px",
-            fontSize: "16px",
-          }}
-        >
-          + Create Vacancy
-        </Button>
+        <Link to="/create-vacancy">
+          <Button
+            type="primary"
+            style={{
+              display: "inline-block",
+              backgroundColor: "#015EA2",
+              marginLeft: "1010px",
+              width: "161px",
+              height: "36px",
+              fontSize: "16px",
+            }}
+            link
+          >
+            + Create Vacancy
+          </Button>
+        </Link>
         <Tabs size={"large"}>
           <Tabs.TabPane tab={preFlightCount + " Pre-flight Vacancies"} key="1">
             <div className="tabs-div">

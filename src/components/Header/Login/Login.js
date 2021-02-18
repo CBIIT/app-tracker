@@ -1,18 +1,21 @@
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "antd";
+import { DownOutlined, UserOutlined } from "@ant-design/icons";
 
-import { Button } from 'antd';
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
-
-import './Login.css';
+import "./Login.css";
 
 const login = () => (
-    <div className='Login'>
-        {/* <Dropdown overlay={menu}> */}
-            <Button type='primary' ghost>
-                <UserOutlined /> Login <DownOutlined />
-            </Button>
-        {/* </Dropdown> */}
+  <Link to="/vacancy-dashboard">
+    <div className="Login">
+      {/* <Dropdown overlay={menu}> */}
+
+      <Button type="primary" ghost>
+        <UserOutlined /> Login <DownOutlined />
+      </Button>
+      {/* </Dropdown> */}
     </div>
+  </Link>
 );
 
 export default login;
