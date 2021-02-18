@@ -8,7 +8,7 @@ const navigationItems = () => (
         <nav>
             <ul className='NavigationItems'>
                 <NavigationItem link='/'>Executive Careers</NavigationItem>
-                <NavigationItem link='/'>The NCI Hiring Experience</NavigationItem>
+                <NavigationItem link='/create-vacancy'>The NCI Hiring Experience</NavigationItem>
             </ul>
         </nav>
     </div>

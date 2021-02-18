@@ -1,0 +1,17 @@
+.InputWithCheckboxContainer {
+    display: flex;
+    flex-flow: row;
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+.InputField {
+    flex-grow: 2;
+    flex-shrink: 2;
+}
+
+.Checkbox {
+    flex-grow: 0;
+    flex-shrink: 1;
+    padding: 5px;
+}

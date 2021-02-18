@@ -1,12 +1,10 @@
 .HomeContent {
-    margin-bottom: 20px;
-}
-
-.HomeContent {
-    padding-inline: 24px;
+  margin-bottom: 20px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 .HomeLogo {
-    width: 100%;
-    margin-bottom: 15px;
+  width: 100%;
+  margin-bottom: 15px;
 }

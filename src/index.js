@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import axios from 'axios';
 import App from "./App";
 
@@ -22,9 +22,9 @@ if (process.env.NODE_ENV === 'development') {
 axios.defaults.headers.put['Content-Type'] = 'application/json';
 
 const app = (
-  <BrowserRouter>
+  <HashRouter>
     <App />
-  </BrowserRouter>
+  </HashRouter>
 );
 
 ReactDOM.render(<>{app}</>, document.getElementById("root"));

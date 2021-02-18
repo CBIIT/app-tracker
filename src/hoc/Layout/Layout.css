@@ -6,7 +6,7 @@
 
 .ContentContainer {
     width: min(95%, 1170px);
-    margin-inline: auto;
+    margin: auto;
 }
 
 .RouteContent {
