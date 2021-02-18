@@ -1,19 +1,41 @@
 const webpack = require("webpack");
 const baseCfg = require("./webpack.base");
+const servicenowConfig = require("./servicenow.config");
+const DEFAULTS = { ASSET_SIZE_LIMIT: 10000 };
+const CONFIG = { ...DEFAULTS, ...servicenowConfig };
+
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const ASSET_SIZE_LIMIT = 100000;
 
 process.env.BABEL_ENV = "production";
 process.env.NODE_ENV = "production";
 
 const cfg = {
   entry: baseCfg.entry,
-  output: baseCfg.output,
+  output: {
+    ...baseCfg.output,
+    filename: "[name]-[hash]-js",
+    chunkFilename: CONFIG.JS_API_PATH + "[name]-[chunkhash]-js",
+  },
   resolve: baseCfg.resolve,
-  stats: 'errors-only',
+  stats: "errors-only",
   mode: "production",
+  devtool: "hidden-source-map",
 
   optimization: {
-    ...baseCfg.optimization,
-    minimize: true
+    splitChunks: {
+      automaticNameDelimiter: "-",
+      cacheGroups: {
+        vendors: {
+          chunks: "all",
+          minChunks: 1,
+          maxSize: CONFIG.ASSET_SIZE_LIMIT,
+          name: "vendor",
+          test: /([\\/]node_modules[\\/])|(assets\/)/,
+          priority: -10,
+        },
+      },
+    },
   },
 
   module: {
@@ -23,14 +45,15 @@ const cfg = {
       baseCfg.rules.svg,
       baseCfg.rules.assets,
       baseCfg.rules.img,
-      baseCfg.rules.jsx()
-    ]
+      baseCfg.rules.jsx(),
+    ],
   },
 
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.HashedModuleIdsPlugin(),
-    baseCfg.plugins.createIndexHtml()
-  ]
+    baseCfg.plugins.createIndexHtml(),
+  ],
 };
 
 module.exports = cfg;

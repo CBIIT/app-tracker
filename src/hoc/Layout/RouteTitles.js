@@ -1,3 +1,4 @@
 export const routeTitles = {
-    '/' : 'Executive Careers at NCI'
+    '/' : 'Executive Careers at NCI',
+    '/create-vacancy' : 'Create Vacancy'
 };
