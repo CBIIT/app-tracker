@@ -16,9 +16,45 @@
   background-color: white;
   padding-top: 15px;
   padding-left: 20px;
-  margin-top: -15px;
 }
 
+.tab-button {
+  width: "180px" !important;
+  height: "100px" !important;
+  text-align: center;
+  border: none !important;
+  background-color: rgb(238 241 244);
+}
+
+.ant-radio-button-wrapper.tab-button::before {
+  display: none;
+}
+
+.ant-radio-button-wrapper.ant-radio-button-wrapper-checked.tab-button {
+  border-bottom: 5px solid rgb(37, 96, 151) !important;
+  color: rgb(37, 96, 151) !important;
+  background-color: transparent;
+}
+
+.ant-radio-button-wrapper.ant-radio-button-wrapper-checked.tab-button {
+  border-bottom: 5px solid rgb(37, 96, 151) !important;
+  color: rgb(37, 96, 151) !important;
+  background-color: transparent;
+}
+
+.tab-button:hover:not(.ant-radio-button-wrapper.ant-radio-button-wrapper-checked.tab-button) {
+  border-bottom: 5px solid rgb(37, 96, 151) !important;
+  color: rgb(37, 96, 151) !important;
+}
+
+/* .tab-button:active {
+  border-bottom: 5px solid rgb(37, 96, 151) !important;
+  color: rgb(37, 96, 151) !important;
+} */
+
+.ant-btn-text:active {
+  border-bottom: 5px solid rgb(37, 96, 151) !important;
+}
 /* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
   border-color: rgb(37, 96, 151);
   color: rgb(37, 96, 151)
@@ -41,7 +77,9 @@
   border-radius: 2px 0 0 2px;
 } */
 
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
+/* *******This is for colorizing the radio buttons ******* */
+
+/* .ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
   border-color: rgb(37, 96, 151);
   color: rgb(37, 96, 151);
 }
@@ -49,4 +87,4 @@
 span.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
   border-color: rgb(37, 96, 151) !important;
   color: rgb(37, 96, 151);
-}
+} */
