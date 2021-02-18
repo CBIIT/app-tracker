@@ -1,7 +1,6 @@
 .ant-tabs-tab.ant-tabs-tab-active {
   border-bottom: 5px solid rgb(37, 96, 151) !important;
   color: rgb(37, 96, 151) !important;
-  z-index: 2 !important;
 }
 
 .ant-tabs-tab-btn[aria-selected="true"] {
@@ -10,6 +9,20 @@
 
 .ant-tabs-tab-btn {
   font-size: 20px !important;
+  width: 180px;
+  height: 104px;
+}
+
+.ant-tabs-tab:hover {
+  border-bottom: 5px solid rgb(37, 96, 151) !important;
+  color: rgb(37, 96, 151) !important;
+}
+
+.num-count {
+  font-size: 32px;
+  font-family: "arial";
+  margin-bottom: 0px;
+  margin-top: 20px;
 }
 
 .tabs-div {
@@ -17,6 +30,10 @@
   padding-top: 15px;
   padding-left: 20px;
   margin-top: -15px;
+}
+
+.tab-letters {
+  text-align: center;
 }
 
 /* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
