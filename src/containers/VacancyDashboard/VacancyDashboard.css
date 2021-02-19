@@ -3,6 +3,10 @@
 	color: rgb(37, 96, 151) !important;
 }
 
+.ant-tabs-tab.ant-tabs-tab-active p {
+	color: rgb(37, 96, 151);
+}
+
 .ant-tabs-tab-btn[aria-selected='true'] {
 	color: rgb(37, 96, 151) !important;
 }
@@ -27,7 +31,7 @@
 
 .num-count {
 	font-size: 32px;
-	font-family: 'arial';
+	font-family: 'Montserrat';
 	margin-bottom: 0px;
 	margin-top: 20px;
 }
@@ -41,36 +45,40 @@
 
 .tab-letters {
 	text-align: center;
+	font-family: 'Montserrat' !important;
 }
 
-/* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
-  border-color: rgb(37, 96, 151);
-  color: rgb(37, 96, 151)
-}
-.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  border-color: rgb(37, 96, 151);
-}
-
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-right-color: rgb(37, 96, 151);
-}
-
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-right-color: rgb(37, 96, 151);
-}
-
-.ant-radio-button-wrapper:first-child {
-  border-left: 1px solid #d9d9d9;
-  border-right: 1px solid rgb(37, 96, 151);
-  border-radius: 2px 0 0 2px;
-} */
-
-.ant-radio-button-wrapper-checked:not([class*=' ant-radio-button-wrapper-disabled']).ant-radio-button-wrapper:first-child {
-	border-color: rgb(37, 96, 151);
-	color: rgb(37, 96, 151);
-}
-
-span.ant-radio-button-wrapper-checked:not([class*=' ant-radio-button-wrapper-disabled']).ant-radio-button-wrapper:first-child {
+.ant-radio-button-wrapper.ant-radio-button-wrapper-checked {
 	border-color: rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151);
+}
+
+.ant-radio-button-wrapper:hover {
+	color: rgb(37, 96, 151);
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+	background-color: rgb(37, 96, 151) !important;
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before {
+	background-color: rgb(37, 96, 151) !important;
+}
+
+.ant-pagination-item-active,
+.ant-pagination-item-active > a {
+	border-color: rgb(37, 96, 151) !important;
+	color: rgb(37, 96, 151) !important;
+}
+
+.ant-pagination-item:hover,
+.ant-pagination-item:hover > a {
+	border-color: rgb(37, 96, 151) !important;
+	color: rgb(37, 96, 151) !important;
+}
+
+.ant-pagination-prev[aria-disabled='false']:hover > *,
+.ant-pagination-next[aria-disabled='false']:hover > * {
+	border-color: rgb(37, 96, 151) !important;
+	color: rgb(37, 96, 151) !important;
 }
