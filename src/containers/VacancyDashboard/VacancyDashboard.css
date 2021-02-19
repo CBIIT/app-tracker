@@ -42,6 +42,15 @@
   font-family: "Montserrat" !important;
 }
 
+.ant-radio-button-wrapper.ant-radio-button-wrapper-checked {
+  border-color: rgb(37, 96, 151) !important;
+  color: rgb(37, 96, 151);
+}
+
+.ant-radio-button-wrapper:hover {
+  color: rgb(37, 96, 151);
+}
+
 /* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
   border-color: rgb(37, 96, 151);
   color: rgb(37, 96, 151)
