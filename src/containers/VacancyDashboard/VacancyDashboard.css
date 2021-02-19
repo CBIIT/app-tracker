@@ -25,7 +25,7 @@
 
 .num-count {
   font-size: 32px;
-  font-family: "arial";
+  font-family: "Montserrat";
   margin-bottom: 0px;
   margin-top: 20px;
 }
@@ -39,6 +39,7 @@
 
 .tab-letters {
   text-align: center;
+  font-family: "Montserrat" !important;
 }
 
 /* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
