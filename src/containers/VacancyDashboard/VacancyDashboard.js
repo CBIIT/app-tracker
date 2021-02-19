@@ -35,7 +35,15 @@ const vacancyDashboard = () => (
           </Button>
         </Link>
         <Tabs size={"large"}>
-          <Tabs.TabPane tab={preFlightCount + " Pre-flight Vacancies"} key="1">
+          <Tabs.TabPane
+            tab={
+              <span className="tab-letters">
+                <p className="num-count">{preFlightCount}</p>
+                <p>pre-flight vacancies</p>
+              </span>
+            }
+            key="1"
+          >
             <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
               <Radio.Group
@@ -61,7 +69,15 @@ const vacancyDashboard = () => (
               ></Table>
             </div>
           </Tabs.TabPane>
-          <Tabs.TabPane tab={liveCount + " Live Vacancies"} key="2">
+          <Tabs.TabPane
+            tab={
+              <span className="tab-letters">
+                <p className="num-count">{liveCount}</p>
+                <p>live vacancies</p>
+              </span>
+            }
+            key="2"
+          >
             <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
               <Radio.Group
@@ -87,7 +103,15 @@ const vacancyDashboard = () => (
               ></Table>
             </div>
           </Tabs.TabPane>
-          <Tabs.TabPane tab={closedCount + " Closed Vacancies"} key="3">
+          <Tabs.TabPane
+            tab={
+              <span className="tab-letters">
+                <p className="num-count">{closedCount}</p>
+                <p>closed vacancies</p>
+              </span>
+            }
+            key="3"
+          >
             <div className="tabs-div">
               <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
               <Radio.Group
