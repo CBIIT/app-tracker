@@ -71,12 +71,6 @@
   color: rgb(37, 96, 151) !important;
 }
 
-/* .ant-pagination-item-link:not(.ant-pagination-disabled):hover,
-.ant-pagination-item-link:not(.ant-pagination-disabled):hover > * {
-  border-color: rgb(37, 96, 151) !important;
-  color: rgb(37, 96, 151) !important;
-} */
-
 .ant-pagination-prev[aria-disabled="false"]:hover > *,
 .ant-pagination-next[aria-disabled="false"]:hover > * {
   border-color: rgb(37, 96, 151) !important;
