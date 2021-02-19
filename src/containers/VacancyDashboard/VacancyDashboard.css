@@ -1,44 +1,46 @@
 .ant-tabs-tab.ant-tabs-tab-active {
-  border-bottom: 5px solid rgb(37, 96, 151) !important;
-  color: rgb(37, 96, 151) !important;
+	border-bottom: 5px solid rgb(37, 96, 151) !important;
+	color: rgb(37, 96, 151) !important;
 }
 
-.ant-tabs-tab-btn[aria-selected="true"] {
-  color: rgb(37, 96, 151) !important;
+.ant-tabs-tab-btn[aria-selected='true'] {
+	color: rgb(37, 96, 151) !important;
 }
 
 .ant-tabs-tab {
-  margin-right: 0px;
+	margin-right: 0px;
 }
 
 .ant-tabs-tab-btn {
-  font-size: 20px !important;
-  width: 180px;
-  height: 104px;
-  margin-right: 0px;
+	font-size: 20px !important;
+	width: 180px;
+	height: 104px;
+	margin-right: 0px;
 }
 
 .ant-tabs-tab:hover {
-  border-bottom: 5px solid rgb(37, 96, 151) !important;
-  color: rgb(37, 96, 151) !important;
+	border-bottom: 5px solid rgb(37, 96, 151) !important;
+}
+.ant-tabs-tab:hover p {
+	color: rgb(37, 96, 151) !important;
 }
 
 .num-count {
-  font-size: 32px;
-  font-family: "arial";
-  margin-bottom: 0px;
-  margin-top: 20px;
+	font-size: 32px;
+	font-family: 'arial';
+	margin-bottom: 0px;
+	margin-top: 20px;
 }
 
 .tabs-div {
-  background-color: white;
-  padding-top: 15px;
-  padding-left: 20px;
-  margin-top: -15px;
+	background-color: white;
+	padding-top: 15px;
+	padding-left: 20px;
+	margin-top: -15px;
 }
 
 .tab-letters {
-  text-align: center;
+	text-align: center;
 }
 
 /* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
@@ -63,12 +65,12 @@
   border-radius: 2px 0 0 2px;
 } */
 
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-color: rgb(37, 96, 151);
-  color: rgb(37, 96, 151);
+.ant-radio-button-wrapper-checked:not([class*=' ant-radio-button-wrapper-disabled']).ant-radio-button-wrapper:first-child {
+	border-color: rgb(37, 96, 151);
+	color: rgb(37, 96, 151);
 }
 
-span.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-color: rgb(37, 96, 151) !important;
-  color: rgb(37, 96, 151);
+span.ant-radio-button-wrapper-checked:not([class*=' ant-radio-button-wrapper-disabled']).ant-radio-button-wrapper:first-child {
+	border-color: rgb(37, 96, 151) !important;
+	color: rgb(37, 96, 151);
 }
