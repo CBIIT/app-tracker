@@ -50,3 +50,17 @@
 .ant-radio-button-wrapper:hover {
   color: rgb(37, 96, 151);
 }
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+  background-color: rgb(37, 96, 151) !important;
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before {
+  background-color: rgb(37, 96, 151) !important;
+}
+
+.ant-pagination-item-active,
+.ant-pagination-item-active > a {
+  border-color: rgb(37, 96, 151);
+  color: rgb(37, 96, 151);
+}
