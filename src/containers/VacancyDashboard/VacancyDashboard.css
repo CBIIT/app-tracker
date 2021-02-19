@@ -50,35 +50,3 @@
 .ant-radio-button-wrapper:hover {
   color: rgb(37, 96, 151);
 }
-
-/* .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
-  border-color: rgb(37, 96, 151);
-  color: rgb(37, 96, 151)
-}
-.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  border-color: rgb(37, 96, 151);
-}
-
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-right-color: rgb(37, 96, 151);
-}
-
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-right-color: rgb(37, 96, 151);
-}
-
-.ant-radio-button-wrapper:first-child {
-  border-left: 1px solid #d9d9d9;
-  border-right: 1px solid rgb(37, 96, 151);
-  border-radius: 2px 0 0 2px;
-} */
-
-.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-color: rgb(37, 96, 151);
-  color: rgb(37, 96, 151);
-}
-
-span.ant-radio-button-wrapper-checked:not([class*=" ant-radio-button-wrapper-disabled"]).ant-radio-button-wrapper:first-child {
-  border-color: rgb(37, 96, 151) !important;
-  color: rgb(37, 96, 151);
-}
