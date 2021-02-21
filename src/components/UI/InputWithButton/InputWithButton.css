@@ -1,25 +1,48 @@
-.ButtonContainer {
-    display: flex;
-    width: 80%;
-    flex-direction: row;
-    flex-grow: 1;
-    border: 0.5px solid rgb(207, 207, 207);
-    padding: 0px;
+.InputWithButtonContainer {
+	display: flex;
+	width: 80%;
+	flex-direction: row;
+	flex-grow: 1;
+	padding: 0px 4px;
+	margin: 0px;
+}
+
+.InputWithButtonContainer:hover {
+	border-color: var(--color-primary);
+}
+
+.InputWithButtonContainer:focus-within {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 2px rgba(1, 94, 162, 0.2);
 }
 
 .BorderlessButton {
-    color: rgb(207, 207, 207);
-    border: none;
-    padding: 1px;
-    flex-shrink: 2;
+	color: rgb(207, 207, 207);
+	border: none;
+	padding: 1px;
+	flex-shrink: 2;
 }
 
-.InputWithButton {
-    flex-grow: 2;
-    border: none;
+.Input {
+	display: flex;
+	flex-grow: 1;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	margin: 0;
+	padding: 0;
 }
 
-.InputWithButton:focus,
-.InputWithButton:hover {
-    outline: none;
+.Input input,
+.Input input.focus {
+	border: none;
+	outline: none;
+	box-shadow: none;
+}
+
+.Input:focus,
+.Input:hover {
+	outline: none;
+	border: none;
+	box-shadow: none;
 }

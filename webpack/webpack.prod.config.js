@@ -44,6 +44,7 @@ const cfg = {
 			baseCfg.rules.svg,
 			baseCfg.rules.assets,
 			baseCfg.rules.img,
+			baseCfg.rules.less,
 			baseCfg.rules.jsx(),
 		],
 	},

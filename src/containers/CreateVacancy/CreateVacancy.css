@@ -1,118 +1,118 @@
 .CreateVacancyContainer {
-  display: flex;
-  flex-flow: row;
-  flex-wrap: wrap;
-  padding-top: 20px;
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+	padding-top: 20px;
 }
 
 .StepNavigation {
-  flex: 1 1 135px;
+	flex: 1 1 135px;
 }
 
 .StepContent {
-  flex: 1 2 508px;
-  min-height: 1000px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 40px;
+	flex: 1 2 508px;
+	min-height: 1000px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 40px;
 }
 
 .container-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 4fr;
+	max-width: 1200px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1fr 4fr;
 }
 
 .step-navigation {
-  height: 368px;
-  width: 344px;
+	height: 368px;
+	width: 344px;
 }
 
 .step-content {
-  min-height: 650px;
-  width: 768px;
-  padding: 20px 30px 20px 30px;
+	min-height: 650px;
+	width: 768px;
+	padding: 20px 30px 20px 30px;
 }
 
 .steps-action {
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .wider-button {
-  width: 140px;
+	width: 140px;
 }
 
 .ant-steps-item-process.ant-steps-item-active {
-  background-color: rgba(1, 94, 162, 0.1);
-  border-left: 4px solid #015ea2;
+	background-color: rgba(1, 94, 162, 0.1);
+	border-left: 4px solid var(--color-primary);
 }
 
 .ant-steps-item-process.ant-steps-item-icon {
-  background: #015ea2;
-  border-color: #015ea2;
-  margin-top: 5px;
+	background: var(--color-primary);
+	border-color: var(--color-primary);
+	margin-top: 5px;
 }
 
 .ant-steps-item-container {
-  padding: 5px 10px;
+	padding: 5px 10px;
 }
 
 .ant-steps-vertical .ant-steps-item-icon {
-  margin-top: 5px;
+	margin-top: 5px;
 }
 
 .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-tail::after {
-  background-color: rgba(1, 94, 162, 0.1);
+	background-color: rgba(1, 94, 162, 0.1);
 }
 
 .ant-steps-item-process
-  > .ant-steps-item-container
-  > .ant-steps-item-tail::after {
-  background-color: #015ea2;
+	> .ant-steps-item-container
+	> .ant-steps-item-tail::after {
+	background-color: var(--color-primary);
 }
 
 .ant-steps-item-tail::after {
-  margin-left: 10px;
-  margin-top: 10px;
+	margin-left: 10px;
+	margin-top: 10px;
 }
 
 .ant-steps-item-finish
-  > .ant-steps-item-container
-  > .ant-steps-item-tail::after {
-  background-color: #015ea2;
+	> .ant-steps-item-container
+	> .ant-steps-item-tail::after {
+	background-color: var(--color-primary);
 }
 
 .ant-steps-item-finish .ant-steps-item-icon {
-  background-color: #fff;
-  border-color: #015ea2;
+	background-color: #fff;
+	border-color: var(--color-primary);
 }
 
 .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
-  color: #015ea2;
+	color: var(--color-primary);
 }
 
 .ant-steps-item-process .ant-steps-item-icon {
-  background: #015ea2 !important;
+	background: var(--color-primary) !important;
 }
 
 .ant-steps-item-process .ant-steps-item-icon {
-  background-color: #fff;
-  border-color: #015ea2 !important;
+	background-color: #fff;
+	border-color: var(--color-primary) !important;
 }
 
 .ant-steps-item-finish .ant-steps-item-icon {
-  background-color: #fff;
-  border-color: #015ea2 !important;
+	background-color: #fff;
+	border-color: var(--color-primary) !important;
 }
 
 .ant-steps-item-finish
-  > .ant-steps-item-container
-  > .ant-steps-item-tail::after {
-  background-color: #015ea2 !important;
+	> .ant-steps-item-container
+	> .ant-steps-item-tail::after {
+	background-color: var(--color-primary) !important;
 }
 
 .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
-  color: #015ea2 !important;
+	color: var(--color-primary) !important;
 }

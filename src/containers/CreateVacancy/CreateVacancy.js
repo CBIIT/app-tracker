@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Steps, Button } from 'antd';
+import { useState } from 'react';
+import { useHistory } from 'react-router';
+import { Steps, Button, Form } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
 
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import './CreateVacancy.css';
 
-const { Step } = Steps;
-
 const createVacancy = () => {
+	const { Step } = Steps;
+	const history = useHistory();
+
 	const steps = [
 		{
 			title: 'Basic Vacancy Information',
@@ -40,13 +41,20 @@ const createVacancy = () => {
 	};
 
 	const prev = () => {
-		setCurrentStep(currentStep - 1);
+		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = (current) => {
 		setCurrentStep(current);
+	};
+
+	const formChangeHandler = (formName, info) => {
+		// console.log(formName);
+		console.log(
+			'[CreateVacancy]: formName: ' + formName + ' formInfo: ' + info
+		);
 	};
 
 	return (
@@ -70,7 +78,11 @@ const createVacancy = () => {
 				<div className='StepContent'>
 					<h3>{currentStepObject.title}</h3>
 					<p>{currentStepObject.description}</p>
-					{currentStepObject.content}
+					<Form.Provider
+						onFormChange={(formName, info) => formChangeHandler(formName, info)}
+					>
+						{currentStepObject.content}
+					</Form.Provider>
 					<div className='steps-action'>
 						<Button
 							onClick={prev}

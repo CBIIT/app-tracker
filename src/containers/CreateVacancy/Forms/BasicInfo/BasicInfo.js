@@ -12,7 +12,7 @@ import 'tinymce/skins/ui/oxide/content.min.css';
 import 'tinymce/skins/content/default/content.min.css';
 import { Editor } from '@tinymce/tinymce-react';
 
-import InputWithCheckbox from '../../../../components/UI/InputWithCheckbox/InputWithCheckbox';
+import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 
 import './BasicInfo.css';
 
@@ -23,8 +23,78 @@ const BasicInformation = () => {
 		3: '3',
 	};
 
+	const [formInstance] = Form.useForm();
+
+	const initialValues = {
+		numberOfRecommendations: 3,
+	};
+
+	const validateCloseDate = (openDate) => ({
+		validator(_, value) {
+			if (!value || !openDate || openDate <= value) {
+				return Promise.resolve();
+			}
+			return Promise.reject(
+				'Please pick a close date that is after the open date'
+			);
+		},
+	});
+
+	const validateCloseDate2 = async (openDate) => {
+		if (!value || !openDate || openDate <= value) {
+			return Promise.resolve();
+		}
+		return Promise.reject(
+			'Please pick a close date that is after the open date'
+		);
+	};
+
+	const validateOpenDate = async (_, value) => {
+		if (value && value < new Date().setHours(0, 0, 0, 0)) {
+			throw new Error('Please pick an open date that is not in the past');
+		}
+
+		const closeDate = formInstance.getFieldValue('closeDate');
+
+		if (closeDate && value >= closeDate) {
+			throw new Error('Please pick an open date that is before the close date');
+		}
+	};
+
+	const onFormChangeHandler = (changedFields) => {
+		console.log('[BasicInfo]:' + changedFields);
+	};
+
+	const descriptionChangeHandler = (content) => {
+		formInstance.setFieldsValue({ description: content });
+	};
+
+	const openDateChangeHandler = (date) => {
+		if (date < formInstance.getFieldsValue().closeDate) {
+			formInstance.setFields([
+				{
+					name: 'closeDate',
+					errors: '',
+				},
+			]);
+		}
+	};
+
+	const closeDateChangeHandler = (date) => {
+		if (date > formInstance.getFieldsValue().openDate) {
+			formInstance.setFields([{ name: 'openDate', errors: '' }]);
+		}
+	};
+
 	return (
-		<Form layout='vertical' requiredMark={false}>
+		<Form
+			layout='vertical'
+			requiredMark={false}
+			name='BasicInfo'
+			form={formInstance}
+			initialValues={initialValues}
+			onFieldsChange={onFormChangeHandler}
+		>
 			<Form.Item
 				label='Position Title'
 				name='positionTitle'
@@ -49,8 +119,7 @@ const BasicInformation = () => {
 	                        alignleft aligncenter alignright alignjustify | \
 	                        bullist numlist outdent indent | removeformat | help',
 					}}
-					value=''
-					// onEditorChange={}
+					onEditorChange={descriptionChangeHandler}
 				/>
 			</Form.Item>
 
@@ -58,45 +127,51 @@ const BasicInformation = () => {
 				<Form.Item
 					label='Open Date'
 					name='openDate'
-					rules={[{ required: true, message: 'Please select an open date' }]}
+					rules={[
+						{ required: true, message: 'Please select an open date' },
+						{ validator: validateOpenDate },
+					]}
 				>
-					<DatePicker className='DatePicker' />
+					<DatePicker
+						className='DatePicker'
+						onChange={(date) => openDateChangeHandler(date)}
+					/>
 				</Form.Item>
 
 				<Form.Item
 					label='Close Date'
 					name='closeDate'
-					rules={[{ required: true, message: 'Please select a close date' }]}
+					rules={[
+						{
+							required: true,
+							message: 'Please select a close date',
+						},
+						{
+							validator: ({ getFieldValue }) =>
+								validateCloseDate2(getFieldValue('openDate')),
+						},
+						({ getFieldValue }) => validateCloseDate(getFieldValue('openDate')),
+					]}
 				>
-					<DatePicker className='DatePicker' />
+					<DatePicker
+						className='DatePicker'
+						onChange={(date) => closeDateChangeHandler(date)}
+					/>
 				</Form.Item>
 			</div>
 
-			<Form.Item
-				label='Application Documents'
-				name='applicationDocuments'
-				rules={[{}]}
-			>
-				<InputWithCheckbox />
+			<Form.Item label='Application Documents' name='applicationDocuments'>
+				<RequiredDocsList name='applicationDocuments' />
 			</Form.Item>
 
-			<Form.Item
-				label='Letters of Recommendation'
-				name='numberOfRecommendations'
-				rules={[{}]}
-			>
+			<Form.Item label='Letters of Recommendation'>
 				<p className='SmallText'>
 					How many recommendations does this vacancy require?
 				</p>
 
-				<Slider
-					className='Slider'
-					min={1}
-					max={3}
-					defaultValue={3}
-					dots
-					marks={sliderMarks}
-				/>
+				<Form.Item name='numberOfRecommendations'>
+					<Slider className='Slider' min={1} max={3} dots marks={sliderMarks} />
+				</Form.Item>
 			</Form.Item>
 		</Form>
 	);
