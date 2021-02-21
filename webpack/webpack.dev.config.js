@@ -61,6 +61,7 @@ const cfg = {
 			baseCfg.rules.assets,
 			baseCfg.rules.css,
 			baseCfg.rules.img,
+			baseCfg.rules.less,
 			baseCfg.rules.jsx({ withHot: true }),
 		],
 	},
