@@ -25,6 +25,7 @@ const cfg = {
 
 	devServer: {
 		contentBase: path.join(__dirname, '/../dist'),
+		hot: true,
 		historyApiFallback: true,
 		compress: false,
 		disableHostCheck: true,
