@@ -27,63 +27,53 @@ const BasicInformation = () => {
 
 	const initialValues = {
 		numberOfRecommendations: 3,
+		description: '',
 	};
 
-	const validateCloseDate = (openDate) => ({
-		validator(_, value) {
-			if (!value || !openDate || openDate <= value) {
-				return Promise.resolve();
-			}
-			return Promise.reject(
-				'Please pick a close date that is after the open date'
-			);
-		},
-	});
+	const disabledDate = (currentDate) => {
+		return currentDate <= new Date().setHours(0, 0, 0, 0);
+	};
 
-	const validateCloseDate2 = async (openDate) => {
-		if (!value || !openDate || openDate <= value) {
-			return Promise.resolve();
-		}
-		return Promise.reject(
-			'Please pick a close date that is after the open date'
+	const validateDates = async (formItem) => {
+		const openDate = new Date(formInstance.getFieldValue('openDate')).setHours(
+			0,
+			0,
+			0,
+			0
 		);
-	};
 
-	const validateOpenDate = async (_, value) => {
-		if (value && value < new Date().setHours(0, 0, 0, 0)) {
-			throw new Error('Please pick an open date that is not in the past');
+		const closeDate = new Date(
+			formInstance.getFieldValue('closeDate')
+		).setHours(0, 0, 0, 0);
+
+		if (formItem.field == 'openDate' && closeDate && openDate >= closeDate) {
+			throw new Error(
+				'Please pick an open date that is before the close date.'
+			);
 		}
 
-		const closeDate = formInstance.getFieldValue('closeDate');
-
-		if (closeDate && value >= closeDate) {
-			throw new Error('Please pick an open date that is before the close date');
+		if (formItem.field == 'closeDate' && openDate && closeDate <= openDate) {
+			throw new Error('Please pick a close date that is after the open date.');
 		}
+
+		formInstance.setFields([
+			{
+				name: 'closeDate',
+				errors: '',
+			},
+			{
+				name: 'openDate',
+				errors: '',
+			},
+		]);
 	};
 
-	const onFormChangeHandler = (changedFields) => {
-		console.log('[BasicInfo]:' + changedFields);
+	const onEditorChangeHandler = (content) => {
+		formInstance.setFields([{ name: 'description', value: content }]);
 	};
 
-	const descriptionChangeHandler = (content) => {
-		formInstance.setFieldsValue({ description: content });
-	};
-
-	const openDateChangeHandler = (date) => {
-		if (date < formInstance.getFieldsValue().closeDate) {
-			formInstance.setFields([
-				{
-					name: 'closeDate',
-					errors: '',
-				},
-			]);
-		}
-	};
-
-	const closeDateChangeHandler = (date) => {
-		if (date > formInstance.getFieldsValue().openDate) {
-			formInstance.setFields([{ name: 'openDate', errors: '' }]);
-		}
+	const onFormChangeHandler = () => {
+		// console.log('Form Data: ' + JSON.stringify(formInstance.getFieldsValue()));
 	};
 
 	return (
@@ -119,7 +109,8 @@ const BasicInformation = () => {
 	                        alignleft aligncenter alignright alignjustify | \
 	                        bullist numlist outdent indent | removeformat | help',
 					}}
-					onEditorChange={descriptionChangeHandler}
+					value={formInstance.getFieldsValue.description}
+					onEditorChange={onEditorChangeHandler}
 				/>
 			</Form.Item>
 
@@ -129,13 +120,10 @@ const BasicInformation = () => {
 					name='openDate'
 					rules={[
 						{ required: true, message: 'Please select an open date' },
-						{ validator: validateOpenDate },
+						{ validator: validateDates },
 					]}
 				>
-					<DatePicker
-						className='DatePicker'
-						onChange={(date) => openDateChangeHandler(date)}
-					/>
+					<DatePicker className='DatePicker' disabledDate={disabledDate} />
 				</Form.Item>
 
 				<Form.Item
@@ -146,17 +134,10 @@ const BasicInformation = () => {
 							required: true,
 							message: 'Please select a close date',
 						},
-						{
-							validator: ({ getFieldValue }) =>
-								validateCloseDate2(getFieldValue('openDate')),
-						},
-						({ getFieldValue }) => validateCloseDate(getFieldValue('openDate')),
+						{ validator: validateDates },
 					]}
 				>
-					<DatePicker
-						className='DatePicker'
-						onChange={(date) => closeDateChangeHandler(date)}
-					/>
+					<DatePicker className='DatePicker' disabledDate={disabledDate} />
 				</Form.Item>
 			</div>
 

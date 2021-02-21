@@ -1,6 +1,6 @@
 import React from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Checkbox } from 'antd';
+import { Form, Checkbox } from 'antd';
 
 import './InputWithCheckbox.css';
 import InputWithButton from '../InputWithButton/InputWithButton';
@@ -16,7 +16,9 @@ const inputWithCheckbox = (props) => {
 				buttonIcon={<DeleteOutlined />}
 			/>
 			<div className='Checkbox'>
-				<Checkbox>optional</Checkbox>
+				<Form.Item name={props.checkboxName} noStyle valuePropName='checked'>
+					<Checkbox>optional</Checkbox>
+				</Form.Item>
 			</div>
 		</div>
 	);
