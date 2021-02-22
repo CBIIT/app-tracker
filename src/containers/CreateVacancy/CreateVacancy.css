@@ -5,6 +5,16 @@
 	padding-top: 20px;
 }
 
+.SmallText {
+	height: 22px;
+	font-family: 'Noto Sans';
+	font-size: 14px;
+	letter-spacing: 0;
+	line-height: 22px;
+	padding: 0px;
+	margin: 0px;
+}
+
 .StepNavigation {
 	flex: 0 1 304px;
 }

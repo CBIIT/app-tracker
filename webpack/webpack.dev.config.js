@@ -16,6 +16,7 @@ const cfg = {
 		...baseCfg.resolve,
 		alias: {
 			...baseCfg.resolve.alias,
+			'react-dom': '@hot-loader/react-dom',
 		},
 	},
 

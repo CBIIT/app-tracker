@@ -1,6 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 
 import './App.less';
+import { hot } from 'react-hot-loader';
 import Layout from './hoc/Layout/Layout';
 import Home from './containers/Home/Home';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -20,8 +21,8 @@ function App() {
 	);
 }
 
-if (module.hot) {
-	module.hot.accept();
-}
+// if (module.hot) {
+// 	module.hot.accept();
+// }
 
-export default App;
+export default hot(module)(App);
