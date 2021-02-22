@@ -50,6 +50,8 @@ module.exports = {
 							modifyVars: {
 								'primary-color': '#015ea2',
 								'heading-color': 'rgba(0,0,0,0.65)',
+								'input-color': 'rgba(0, 0, 0, 0.65)',
+								'btn-default-color': 'rgba(0, 0, 0, 0.65)',
 							},
 							javascriptEnabled: true,
 						},

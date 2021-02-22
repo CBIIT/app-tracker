@@ -18,6 +18,22 @@ const BasicInformation = () => {
 	const initialValues = {
 		numberOfRecommendations: 3,
 		description: '',
+		applicationDocuments: [
+			{
+				document: 'Curriculum Vitae (CV)',
+			},
+			{
+				document: 'Cover Letter',
+				isDocumentOptional: true,
+			},
+			{
+				document: 'Vision Statement',
+			},
+			{
+				document: 'Qualification Statement',
+				isDocumentOptional: true,
+			},
+		],
 	};
 
 	const disabledDate = (currentDate) => {
