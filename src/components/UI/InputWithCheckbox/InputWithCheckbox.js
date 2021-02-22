@@ -1,20 +1,27 @@
 import React from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Checkbox } from 'antd';
+import { Form, Checkbox } from 'antd';
 
 import './InputWithCheckbox.css';
 import InputWithButton from '../InputWithButton/InputWithButton';
 
-const inputWithCheckbox = () => {
-    return (
-        <div className='InputWithCheckboxContainer'>
-            <InputWithButton className='InputField' buttonIcon={<DeleteOutlined />} />
-            <div className='Checkbox'>
-                <Checkbox>optional</Checkbox>
-            </div>
-        </div>
-
-    );
-}
+const inputWithCheckbox = (props) => {
+	return (
+		<div className='InputWithCheckboxContainer'>
+			<InputWithButton
+				name={props.name}
+				rules={props.rules}
+				onInnerButtonClick={props.onInnerButtonClick}
+				className='InputField'
+				buttonIcon={<DeleteOutlined />}
+			/>
+			<div className='Checkbox'>
+				<Form.Item name={props.checkboxName} noStyle valuePropName='checked'>
+					<Checkbox>optional</Checkbox>
+				</Form.Item>
+			</div>
+		</div>
+	);
+};
 
 export default inputWithCheckbox;

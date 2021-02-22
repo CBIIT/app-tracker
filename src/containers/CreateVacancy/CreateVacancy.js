@@ -1,35 +1,45 @@
-import React, { useState } from 'react';
-import { Steps, Button } from 'antd';
+import { useState } from 'react';
+import { useHistory } from 'react-router';
+import { Steps, Button, Form } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
 
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import './CreateVacancy.css';
 
-const { Step } = Steps;
-
 const createVacancy = () => {
+	const { Step } = Steps;
+	const history = useHistory();
+
 	const steps = [
 		{
+			step: 1,
 			title: 'Basic Vacancy Information',
 			description: 'Fill in vacancy information',
 			content: <BasicInfo />,
 		},
 		{
+			step: 2,
 			title: 'Mandatory Statements',
 			description: 'Mailing and business address',
+			content: <></>,
 		},
 		{
+			step: 3,
 			title: 'Vacancy Committee',
 			description: 'Add and manage vacancy committee members',
+			content: <></>,
 		},
 		{
+			step: 4,
 			title: 'Email Templates',
 			description: 'Choose the emails to send applicants and manage email body',
+			content: <></>,
 		},
 		{
+			step: 5,
 			title: 'Review and Finalize',
 			description: '',
+			content: <></>,
 		},
 	];
 
@@ -40,13 +50,23 @@ const createVacancy = () => {
 	};
 
 	const prev = () => {
-		setCurrentStep(currentStep - 1);
+		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = (current) => {
 		setCurrentStep(current);
+	};
+
+	const wizardFormChangeHandler = (name, forms) => {
+		const { BasicInfo } = forms;
+		console.log(
+			'[CreateVacancy]: Form name: ' +
+				name +
+				' values: ' +
+				JSON.stringify(BasicInfo.getFieldsValue(), null, 2)
+		);
 	};
 
 	return (
@@ -67,10 +87,25 @@ const createVacancy = () => {
 						))}
 					</Steps>
 				</div>
-				<div className='StepContent'>
-					<h3>{currentStepObject.title}</h3>
-					<p>{currentStepObject.description}</p>
-					{currentStepObject.content}
+				<div className='StepContentContainer'>
+					<div className='StepContent'>
+						<h3>{currentStepObject.title}</h3>
+						<p>{currentStepObject.description}</p>
+						<Form.Provider
+							onFormChange={(name, { forms, changedFields }) => {
+								wizardFormChangeHandler(name, forms, changedFields);
+							}}
+						>
+							{steps.map((item) => (
+								<div
+									key={item.step}
+									className={`${item.step !== currentStep + 1 && 'Hidden'}`}
+								>
+									{item.content}
+								</div>
+							))}
+						</Form.Provider>
+					</div>
 					<div className='steps-action'>
 						<Button
 							onClick={prev}

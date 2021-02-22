@@ -36,6 +36,30 @@ module.exports = {
 			use: ['style-loader', 'css-loader', 'postcss-loader'],
 		},
 
+		less: {
+			test: /\.less$/,
+			use: [
+				'style-loader',
+				'css-loader',
+				'postcss-loader',
+				{
+					loader: 'less-loader', // compiles Less to CSS
+					options: {
+						lessOptions: {
+							// If you are using less-loader@5 please spread the lessOptions to options directly
+							modifyVars: {
+								'primary-color': '#015ea2',
+								'heading-color': 'rgba(0,0,0,0.65)',
+								'input-color': 'rgba(0, 0, 0, 0.65)',
+								'btn-default-color': 'rgba(0, 0, 0, 0.65)',
+							},
+							javascriptEnabled: true,
+						},
+					},
+				},
+			],
+		},
+
 		img: {
 			test: /\.(png|jpg|gif|)$/,
 			loader: 'url-loader',

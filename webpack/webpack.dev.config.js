@@ -25,6 +25,7 @@ const cfg = {
 
 	devServer: {
 		contentBase: path.join(__dirname, '/../dist'),
+		hot: true,
 		historyApiFallback: true,
 		compress: false,
 		disableHostCheck: true,
@@ -61,6 +62,7 @@ const cfg = {
 			baseCfg.rules.assets,
 			baseCfg.rules.css,
 			baseCfg.rules.img,
+			baseCfg.rules.less,
 			baseCfg.rules.jsx({ withHot: true }),
 		],
 	},

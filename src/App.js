@@ -1,7 +1,6 @@
 import { Route, Switch } from 'react-router-dom';
-import 'antd/dist/antd.css';
 
-import './App.css';
+import './App.less';
 import Layout from './hoc/Layout/Layout';
 import Home from './containers/Home/Home';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -19,6 +18,10 @@ function App() {
 			</Layout>
 		</>
 	);
+}
+
+if (module.hot) {
+	module.hot.accept();
 }
 
 export default App;
