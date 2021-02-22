@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 
 import './BasicInfo.css';
+import '../../CreateVacancy.css';
 
 const BasicInformation = () => {
 	const sliderMarks = {

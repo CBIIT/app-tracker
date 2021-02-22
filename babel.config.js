@@ -12,6 +12,7 @@ module.exports = {
 	],
 	env: {
 		development: {
+			plugins: ['react-hot-loader/babel'],
 			sourceMaps: 'inline',
 		},
 		production: {
