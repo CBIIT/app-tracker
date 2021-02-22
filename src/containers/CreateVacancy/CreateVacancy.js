@@ -50,10 +50,13 @@ const createVacancy = () => {
 		setCurrentStep(current);
 	};
 
-	const formChangeHandler = (formName, info) => {
-		// console.log(formName);
+	const wizardFormChangeHandler = (name, forms) => {
+		const { BasicInfo } = forms;
 		console.log(
-			'[CreateVacancy]: formName: ' + formName + ' formInfo: ' + info
+			'[CreateVacancy]: Form name: ' +
+				name +
+				' values: ' +
+				JSON.stringify(BasicInfo.getFieldsValue(), null, 2)
 		);
 	};
 
@@ -79,7 +82,9 @@ const createVacancy = () => {
 					<h3>{currentStepObject.title}</h3>
 					<p>{currentStepObject.description}</p>
 					<Form.Provider
-						onFormChange={(formName, info) => formChangeHandler(formName, info)}
+						onFormChange={(name, { forms }) => {
+							wizardFormChangeHandler(name, forms);
+						}}
 					>
 						{currentStepObject.content}
 					</Form.Provider>
