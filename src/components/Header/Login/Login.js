@@ -7,16 +7,21 @@ import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import './Login.css';
 
 const login = () => (
-	<Link to='/vacancy-dashboard'>
-		<div className='Login'>
-			{/* <Dropdown overlay={menu}> */}
+	<div className='Login'>
+		{/* <Dropdown overlay={menu}> */}
 
-			<Button type='primary' ghost>
-				<UserOutlined /> Login <DownOutlined />
-			</Button>
-			{/* </Dropdown> */}
-		</div>
-	</Link>
+		<Button type='primary' ghost onClick={authenticate}>
+			<UserOutlined /> Login <DownOutlined />
+		</Button>
+		{/* </Dropdown> */}
+	</div>
 );
+
+const authenticate = () => {
+	location.href(
+		'nav_to.do?uri=' +
+			encodeURIComponent(location.href + '&glide_sso_id=' + c.data.defaultIDP)
+	);
+};
 
 export default login;
