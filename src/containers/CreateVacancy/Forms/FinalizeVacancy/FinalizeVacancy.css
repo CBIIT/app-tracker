@@ -1,0 +1,9 @@
+.SectionContent {
+	width: 100%;
+	border: 1px solid #dce1e5;
+	background-color: #f8fafc;
+}
+
+.SectionContent h2 {
+	color: black;
+}
