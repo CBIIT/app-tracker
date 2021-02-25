@@ -21,11 +21,9 @@ const requiredDocsList = (props) => {
 								</Form.Item>
 							</div>
 						))}
-						<Form.Item>
-							<Button type='secondary' onClick={() => add()}>
-								<PlusOutlined /> add more
-							</Button>
-						</Form.Item>
+						<Button type='secondary' onClick={() => add()}>
+							<PlusOutlined /> add more
+						</Button>
 					</div>
 				);
 			}}

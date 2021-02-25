@@ -5,11 +5,16 @@ import { ReloadOutlined } from '@ant-design/icons';
 
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
+import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
+import EmailTemplates from './Forms/EmailTemplates/EmailTemplates';
+import FinalizeVacancy from './Forms/FinalizeVacancy/FinalizeVacancy';
 import './CreateVacancy.css';
 
 const createVacancy = () => {
 	const { Step } = Steps;
 	const history = useHistory();
+
+	const [committeeMembers, setCommitteeMembers] = useState([]);
 
 	const steps = [
 		{
@@ -29,19 +34,24 @@ const createVacancy = () => {
 			step: 3,
 			title: 'Vacancy Committee',
 			description: 'Add and manage vacancy committee members',
-			content: <></>,
+			content: (
+				<VacancyCommittee
+					committeeMembers={committeeMembers}
+					setCommitteeMembers={setCommitteeMembers}
+				/>
+			),
 		},
 		{
 			step: 4,
 			title: 'Email Templates',
 			description: 'Choose the emails to send applicants and manage email body',
-			content: <></>,
+			content: <EmailTemplates />,
 		},
 		{
 			step: 5,
 			title: 'Review and Finalize',
 			description: '',
-			content: <></>,
+			content: <FinalizeVacancy />,
 		},
 	];
 
@@ -62,7 +72,7 @@ const createVacancy = () => {
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {
-		const { BasicInfo, MandatoryStatements } = forms;
+		const { BasicInfo, MandatoryStatements, VacancyCommittee } = forms;
 		if (name === 'BasicInfo')
 			console.log(
 				'[CreateVacancy]: Form name: ' +
@@ -78,6 +88,22 @@ const createVacancy = () => {
 					' values: ' +
 					JSON.stringify(MandatoryStatements.getFieldsValue(), null, 2)
 			);
+
+		if (name === 'VacancyCommittee') {
+			console.log(
+				'[CreateVacancy]: Form name: ' +
+					name +
+					' values via committeeMembers hook: ' +
+					JSON.stringify(committeeMembers, null, 2)
+			);
+
+			console.log(
+				'[CreateVacancy]: Form name: ' +
+					name +
+					' values via forminstance.getFieldsValue hook: ' +
+					JSON.stringify(VacancyCommittee.getFieldsValue(), null, 2)
+			);
+		}
 	};
 
 	return (
