@@ -1,4 +1,5 @@
 import { Form, Select, Input } from 'antd';
+import UserPicker from '../../../../../../components/UI/UserPicker/UserPicker';
 
 const editableCell = ({
 	editing,
@@ -24,8 +25,8 @@ const editableCell = ({
 				);
 			case 'name':
 				return <Input />;
-			// case 'typeAhead':
-			// 	return;
+			case 'typeAhead':
+				return <UserPicker />;
 			default:
 				return <Input />;
 		}
@@ -44,7 +45,7 @@ const editableCell = ({
 					rules={[
 						{
 							required: true,
-							message: `Please enter a ${title}`,
+							message: `Please select a ${title.toLowerCase()}`,
 						},
 					]}
 				>

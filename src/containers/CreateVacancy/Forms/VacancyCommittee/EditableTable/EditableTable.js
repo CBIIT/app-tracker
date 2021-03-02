@@ -29,7 +29,9 @@ const editableTable = (props) => {
 
 	const getInputType = (dataIndex) => {
 		switch (dataIndex) {
-			case 'name':
+			case 'user':
+				return 'typeAhead';
+			case 'displayValue':
 				return 'typeAhead';
 			case 'role':
 				return 'dropdown';
@@ -44,7 +46,7 @@ const editableTable = (props) => {
 
 		const newData = {
 			key: newIndex,
-			name: '',
+			user: null,
 			role: 'Member (voting)',
 		};
 
@@ -100,17 +102,24 @@ const editableTable = (props) => {
 	const columns = [
 		{
 			title: 'Committee Member',
-			dataIndex: 'name',
+			dataIndex: 'user',
 			editable: true,
+			width: '50%',
+			render: (_, record) => {
+				const editable = isEditing(record);
+				return editable ? <></> : <div>{record.user.name.display_value}</div>;
+			},
 		},
 		{
 			title: 'Role',
 			dataIndex: 'role',
 			editable: true,
+			width: '25%',
 		},
 		{
 			title: 'Action',
 			dataIndex: 'operation',
+			width: '25%',
 			render: (_, record) => {
 				const editable = isEditing(record);
 				return editable ? (

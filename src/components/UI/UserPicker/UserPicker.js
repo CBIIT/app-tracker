@@ -1,29 +1,14 @@
-import React from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { components } from 'react-select';
 
-export default class ReferenceField extends React.Component {
-	state = { value: null };
+import './UserPicker.css';
 
-	render = () => (
-		<AsyncPaginate
-			className='reference-field'
-			debounceTimeout={300}
-			value={this.state.value}
-			loadOptions={this.loadOptions}
-			formatOptionLabel={this.formatOptionLabel}
-			getOptionLabel={(option) => option['name'].display_value}
-			getOptionValue={(option) => option.sys_id.display_value}
-			onChange={this.onChange}
-			isClearable={true}
-			filterOption={this.filterOption}
-			components={{ SingleValue }}
-			placeholder='User'
-		/>
-	);
+const referenceField = ({ value = {}, onChange }) => {
+	const [user, setUser] = useState(value);
 
-	filterOption = (option, search) => {
+	const filterOption = (option, search) => {
 		let query = new RegExp(search, 'gi');
 		const fieldVal = option.data['name'].display_value;
 		const secondaryFieldVal = option.data['email'].display_value;
@@ -31,19 +16,29 @@ export default class ReferenceField extends React.Component {
 		if (fieldVal.match(query) || secondaryFieldVal.match(query)) return true;
 	};
 
-	formatOptionLabel = (option) => (
+	const formatOptionLabel = (option) => (
 		<DropdownItem
 			label={option['name'].display_value}
-			secondaryLabel={option['email'].display_value}
+			email={option['email'].display_value}
+			organization={option['organization'].display_value}
 		/>
 	);
 
-	onChange = (value) => {
-		this.setState({ value });
+	const triggerChange = (changedValue) => {
+		onChange?.({
+			...value,
+			...changedValue,
+		});
 	};
 
-	loadOptions = async (searchQuery, prevOptions) => {
-		let url = this.buildUrl(searchQuery, prevOptions.length);
+	const onDropdownChange = (user) => {
+		setUser(user);
+
+		triggerChange(user);
+	};
+
+	const loadOptions = async (searchQuery, prevOptions) => {
+		let url = buildUrl(searchQuery, prevOptions.length);
 		let options = [];
 		let hasMore = false;
 		try {
@@ -60,9 +55,9 @@ export default class ReferenceField extends React.Component {
 		return { options, hasMore };
 	};
 
-	buildUrl = (searchQuery, offset) => {
+	const buildUrl = (searchQuery, offset) => {
 		const url = ['/api/now/table/x_g_nci_app_tracke_user?sysparm_query='];
-		const responseFields = ['sys_id', 'name', 'email'];
+		const responseFields = ['sys_id', 'name', 'email', 'organization'];
 
 		if (searchQuery) {
 			url.push(`nameLIKE${searchQuery}^ORemailLIKE${searchQuery} `);
@@ -77,20 +72,40 @@ export default class ReferenceField extends React.Component {
 
 		return url.join('');
 	};
-}
+
+	return (
+		<AsyncPaginate
+			className='reference-field'
+			debounceTimeout={300}
+			value={user}
+			loadOptions={loadOptions}
+			formatOptionLabel={formatOptionLabel}
+			getOptionLabel={(option) => option['name'].display_value}
+			getOptionValue={(option) => option.sys_id.display_value}
+			onChange={onDropdownChange}
+			filterOption={filterOption}
+			components={{ SingleValue }}
+		/>
+	);
+};
 
 // formatting selected value to only display main field
-const SingleValue = ({ children, ...props }) => (
-	<components.SingleValue {...props}>
-		{children.props.label}
-	</components.SingleValue>
-);
+const SingleValue = ({ children, ...props }) => {
+	return (
+		<components.SingleValue {...props}>
+			{children.props.label}
+		</components.SingleValue>
+	);
+};
 
-class DropdownItem extends React.PureComponent {
-	render = () => (
-		<div className='dropdownItem'>
-			<span>{this.props.label}</span>
-			<span className='secondaryLabel'>{this.props.secondaryLabel}</span>
+const DropdownItem = (props) => {
+	return (
+		<div className='UserPickerDropdown'>
+			<span>{props.label}</span>
+			<span className='DropdownEmail'>{props.email}</span>
+			<span className='secondaryLabel'>{props.organization}</span>
 		</div>
 	);
-}
+};
+
+export default referenceField;
