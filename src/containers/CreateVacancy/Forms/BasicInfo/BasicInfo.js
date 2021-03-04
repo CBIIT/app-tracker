@@ -71,9 +71,10 @@ const BasicInformation = (props) => {
 			name='BasicInfo'
 			form={formInstance}
 			initialValues={initialValues}
-			onValuesChange={(_, allValues) => {
-				props.setBasicInfo(allValues);
-			}}
+			// 	onValuesChange={(_, allValues) => {
+			// 		props.setBasicInfo(allValues);
+			// 	}
+			// }
 		>
 			<Form.Item
 				label='Position Title'

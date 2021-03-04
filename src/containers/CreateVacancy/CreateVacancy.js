@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
-import { Steps, Button, Form, Modal } from 'antd';
+import { Steps, Button, Form } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 
+import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
 import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
@@ -16,17 +17,26 @@ const createVacancy = () => {
 	const history = useHistory();
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(initialValues);
+	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 
-	const printState = () => {
-		console.log('[printState]: allForms ' + JSON.stringify(allForms, null, 2));
+	const showSubmitModal = () => {
+		setSubmitModalVisible(true);
 	};
+
+	const handleSubmitModalCancel = () => {
+		setSubmitModalVisible(false);
+	};
+
+	// const printState = () => {
+	// 	console.log('[printState]: allForms ' + JSON.stringify(allForms, null, 2));
+	// };
 
 	const updateCommitteeMembers = (committeeMembers) => {
 		setAllForms({ ...allForms, vacancyCommittee: committeeMembers });
 	};
 
-	const updateBasicInfo = (newBasicInfo) => {
-		setAllForms({ ...allForms, basicInfo: newBasicInfo });
+	const updateBasicInfo = () => {
+		setAllForms({ ...allForms, basicInfo: basicInfoForm.getFieldsValue() });
 	};
 
 	const [basicInfoForm] = Form.useForm();
@@ -59,7 +69,10 @@ const createVacancy = () => {
 		} catch (error) {
 			errorForms.push('Email Templates');
 		}
+
 		setErrorSections(errorForms);
+
+		if (errorForms.length === 0) showSubmitModal();
 	};
 
 	const steps = [
@@ -125,8 +138,20 @@ const createVacancy = () => {
 
 	const [currentStep, setCurrentStep] = useState(0);
 
+	const updateAllFormsData = (currentStep) => {
+		updateBasicInfo();
+		switch (currentStep) {
+			case 0:
+				updateBasicInfo();
+				break;
+			default:
+				return;
+		}
+	};
+
 	const next = () => {
 		if (currentStep < steps.length - 1) {
+			updateAllFormsData(currentStep);
 			setCurrentStep(currentStep + 1);
 		} else {
 			isFormValid();
@@ -134,12 +159,14 @@ const createVacancy = () => {
 	};
 
 	const prev = () => {
+		updateAllFormsData(currentStep);
 		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = (current) => {
+		updateAllFormsData(current);
 		setCurrentStep(current);
 	};
 
@@ -251,7 +278,11 @@ const createVacancy = () => {
 			{/* <Button type='primary' onClick={printState}>
 				Print State
 			</Button> */}
-			<Modal></Modal>
+			<ConfirmSubmitModal
+				visible={submitModalVisible}
+				onCancel={handleSubmitModalCancel}
+				setVisible={setSubmitModalVisible}
+			/>
 		</>
 	);
 };

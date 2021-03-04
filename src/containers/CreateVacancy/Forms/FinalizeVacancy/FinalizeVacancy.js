@@ -36,21 +36,21 @@ const finalizeVacancy = (props) => {
 					<div className='DateCard'>
 						<h2>Open Date</h2>
 						<p>
-							{
-								new Date(basicInfo.openDate)
-									.toLocaleString('en-us')
-									.split(',')[0]
-							}
+							{basicInfo.openDate
+								? new Date(basicInfo.openDate)
+										.toLocaleString('en-us')
+										.split(',')[0]
+								: null}
 						</p>
 					</div>
 					<div className='DateCard'>
 						<h2>Close Date</h2>
 						<p>
-							{
-								new Date(basicInfo.closeDate)
-									.toLocaleString('en-us')
-									.split(',')[0]
-							}
+							{basicInfo.closeDate
+								? new Date(basicInfo.closeDate)
+										.toLocaleString('en-us')
+										.split(',')[0]
+								: null}
 						</p>
 					</div>
 				</div>
@@ -149,10 +149,6 @@ const finalizeVacancy = (props) => {
 					</ul>
 				</div>
 			</div>
-
-			{/* <pre style={{ width: '100%' }}>
-				{JSON.stringify(props.allForms, null, 2)}
-			</pre> */}
 		</>
 	);
 };

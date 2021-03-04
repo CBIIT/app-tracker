@@ -126,7 +126,8 @@ const editableTable = (props) => {
 			width: '50%',
 			render: (_, record) => {
 				const editable = isEditing(record);
-				return editable ? <></> : <div>{record.user.name.display_value}</div>;
+				// return editable ? <></> : <div>{record.user.name.display_value}</div>;
+				return editable ? <></> : <div>{record.user.name.value}</div>;
 			},
 		},
 		{
