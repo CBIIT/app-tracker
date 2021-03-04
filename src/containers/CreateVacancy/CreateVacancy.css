@@ -140,3 +140,15 @@
 .Hidden {
 	display: none;
 }
+
+.ErrorPanel p {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	color: red;
+}
+
+.ErrorPanel ul {
+	padding-left: 15px;
+	color: red;
+	list-style-position: inside;
+}

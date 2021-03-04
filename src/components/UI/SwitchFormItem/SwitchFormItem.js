@@ -4,7 +4,12 @@ import './SwitchFormItem.css';
 
 const switchFormItem = (props) => (
 	<div className='SwitchFormItemContainer'>
-		<Form.Item name={props.name} valuePropName='checked' noStyle>
+		<Form.Item
+			name={props.name}
+			valuePropName='checked'
+			rules={props.rules}
+			noStyle
+		>
 			<Switch
 				checkedChildren={<CheckOutlined />}
 				unCheckedChildren={<CloseOutlined />}

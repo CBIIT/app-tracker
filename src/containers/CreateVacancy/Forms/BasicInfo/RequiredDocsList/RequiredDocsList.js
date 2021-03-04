@@ -11,11 +11,17 @@ const requiredDocsList = (props) => {
 					<div>
 						{fields.map((field, index) => (
 							<div key={field.key}>
-								<Form.Item name={[index, 'name']} rules={[{ required: true }]}>
+								<Form.Item name={[index, 'name']}>
 									<InputWithCheckbox
+										key={field.key}
 										name={[index, 'document']}
 										checkboxName={[index, 'isDocumentOptional']}
-										rules={[{ required: true }]}
+										rules={[
+											{
+												required: true,
+												message: 'Please enter a document type name',
+											},
+										]}
 										onInnerButtonClick={() => remove(field.name)}
 									/>
 								</Form.Item>

@@ -10,17 +10,22 @@ const referenceField = ({ value = {}, onChange }) => {
 
 	const filterOption = (option, search) => {
 		let query = new RegExp(search, 'gi');
-		const fieldVal = option.data['name'].display_value;
-		const secondaryFieldVal = option.data['email'].display_value;
+		// const fieldVal = option.data['name'].display_value;
+		// const secondaryFieldVal = option.data['email'].display_value;
+		const fieldVal = option.data['name'].value;
+		const secondaryFieldVal = option.data['email'].value;
 
 		if (fieldVal.match(query) || secondaryFieldVal.match(query)) return true;
 	};
 
 	const formatOptionLabel = (option) => (
 		<DropdownItem
-			label={option['name'].display_value}
-			email={option['email'].display_value}
-			organization={option['organization'].display_value}
+			label={option['name'].value}
+			email={option['email'].value}
+			organization={option['organization'].value}
+			// label={option['name'].display_value}
+			// email={option['email'].display_value}
+			// organization={option['organization'].display_value}
 		/>
 	);
 
@@ -44,6 +49,7 @@ const referenceField = ({ value = {}, onChange }) => {
 		try {
 			let res = await axios.get(url);
 			let data = res.data.result;
+			console.log('Data: ' + JSON.stringify(data));
 			if (data.length !== 0) {
 				options = data;
 				hasMore = true;
@@ -56,7 +62,9 @@ const referenceField = ({ value = {}, onChange }) => {
 	};
 
 	const buildUrl = (searchQuery, offset) => {
-		const url = ['/api/now/table/x_g_nci_app_tracke_user?sysparm_query='];
+		console.log('Offset: ' + offset);
+		const url = ['/api/x_g_nci_app_tracke/user/get_user_list?sysparm_query='];
+		// const url = ['/api/now/table/x_g_nci_app_tracke_user?sysparm_query='];
 		const responseFields = ['sys_id', 'name', 'email', 'organization'];
 
 		if (searchQuery) {
@@ -80,8 +88,10 @@ const referenceField = ({ value = {}, onChange }) => {
 			value={user}
 			loadOptions={loadOptions}
 			formatOptionLabel={formatOptionLabel}
-			getOptionLabel={(option) => option['name'].display_value}
-			getOptionValue={(option) => option.sys_id.display_value}
+			// getOptionLabel={(option) => option['name'].display_value}
+			// getOptionValue={(option) => option.sys_id.display_value}
+			getOptionLabel={(option) => option['name'].value}
+			getOptionValue={(option) => option.sys_id.value}
 			onChange={onDropdownChange}
 			filterOption={filterOption}
 			components={{ SingleValue }}

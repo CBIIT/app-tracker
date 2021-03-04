@@ -15,7 +15,7 @@ import EditableCell from './EditableCell/EditableCell';
 const originData = [];
 
 const editableTable = (props) => {
-	const [form] = Form.useForm();
+	const form = props.formInstance;
 	const [data, setData] = useState(originData);
 	const [editingKey, setEditingKey] = useState('');
 	const [addingKey, setAddingKey] = useState('');
@@ -25,6 +25,23 @@ const editableTable = (props) => {
 	const clearKeys = () => {
 		setEditingKey('');
 		setAddingKey('');
+	};
+
+	const validateCommittee = async () => {
+		const numberOfChairMembers = data.filter((member) => {
+			return member.role === 'Chair';
+		});
+
+		if (numberOfChairMembers.length < 1)
+			throw new Error(
+				"Atleast one committee member must be of the role 'Chair'"
+			);
+		else form.setFields([{ name: 'vacancyCommitteeValidator', error: '' }]);
+
+		// console.log(
+		// 	'Number of chairs: ' +
+		// 		JSON.stringify(numberOfChairMembers.length, null, 2)
+		// );
 	};
 
 	const getInputType = (dataIndex) => {
@@ -47,7 +64,7 @@ const editableTable = (props) => {
 		const newData = {
 			key: newIndex,
 			user: null,
-			role: 'Member (voting)',
+			role: newIndex === 0 ? 'Chair' : 'Member (voting)',
 		};
 
 		form.setFieldsValue({
@@ -64,6 +81,7 @@ const editableTable = (props) => {
 		setData(newData);
 		props.setData(newData);
 		clearKeys();
+		form.validateFields(['vacancyCommitteeValidator']);
 	};
 
 	const edit = (record) => {
@@ -80,7 +98,7 @@ const editableTable = (props) => {
 
 	const save = async (key) => {
 		try {
-			const row = await form.validateFields();
+			const row = await form.validateFields(['user', 'role']);
 			const newData = [...data];
 			const index = newData.findIndex((item) => key === item.key);
 
@@ -94,6 +112,7 @@ const editableTable = (props) => {
 			setData(newData);
 			clearKeys();
 			props.setData(newData);
+			form.validateFields(['vacancyCommitteeValidator']);
 		} catch (errInfo) {
 			// console.log('Validate Failed:', errInfo);
 		}
@@ -107,7 +126,8 @@ const editableTable = (props) => {
 			width: '50%',
 			render: (_, record) => {
 				const editable = isEditing(record);
-				return editable ? <></> : <div>{record.user.name.display_value}</div>;
+				// return editable ? <></> : <div>{record.user.name.display_value}</div>;
+				return editable ? <></> : <div>{record.user.name.value}</div>;
 			},
 		},
 		{
@@ -185,7 +205,12 @@ const editableTable = (props) => {
 	});
 
 	return (
-		<Form form={form} component={false} name={props.name}>
+		<Form
+			form={form}
+			component={false}
+			name={props.name}
+			// onValuesChange={() => form.validateFields(['vacancyCommitteeValidator'])}
+		>
 			<Table
 				locale={{
 					emptyText:
@@ -210,6 +235,11 @@ const editableTable = (props) => {
 			>
 				<PlusOutlined /> add member
 			</Button>
+
+			<Form.Item
+				name='vacancyCommitteeValidator'
+				rules={[{ validator: validateCommittee }]}
+			></Form.Item>
 		</Form>
 	);
 };

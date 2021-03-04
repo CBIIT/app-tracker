@@ -3,32 +3,102 @@ import { useHistory } from 'react-router';
 import { Steps, Button, Form } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 
+import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
 import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
 import EmailTemplates from './Forms/EmailTemplates/EmailTemplates';
 import FinalizeVacancy from './Forms/FinalizeVacancy/FinalizeVacancy';
+import { initialValues } from './Forms/FormsInitialValues';
 import './CreateVacancy.css';
 
 const createVacancy = () => {
 	const { Step } = Steps;
 	const history = useHistory();
+	const [errorSections, setErrorSections] = useState([]);
+	const [allForms, setAllForms] = useState(initialValues);
+	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 
-	const [committeeMembers, setCommitteeMembers] = useState([]);
+	const showSubmitModal = () => {
+		setSubmitModalVisible(true);
+	};
+
+	const handleSubmitModalCancel = () => {
+		setSubmitModalVisible(false);
+	};
+
+	// const printState = () => {
+	// 	console.log('[printState]: allForms ' + JSON.stringify(allForms, null, 2));
+	// };
+
+	const updateCommitteeMembers = (committeeMembers) => {
+		setAllForms({ ...allForms, vacancyCommittee: committeeMembers });
+	};
+
+	const updateBasicInfo = () => {
+		setAllForms({ ...allForms, basicInfo: basicInfoForm.getFieldsValue() });
+	};
+
+	const [basicInfoForm] = Form.useForm();
+	const [mandatoryStatementsForm] = Form.useForm();
+	const [vacancyCommitteeForm] = Form.useForm();
+	const [emailTemplatesForm] = Form.useForm();
+
+	const isFormValid = async () => {
+		const errorForms = [];
+		try {
+			await basicInfoForm.validateFields();
+		} catch (error) {
+			errorForms.push('Basic Vacancy Information');
+		}
+
+		try {
+			await mandatoryStatementsForm.validateFields();
+		} catch (error) {
+			errorForms.push('Mandatory Statements');
+		}
+
+		try {
+			await vacancyCommitteeForm.validateFields();
+		} catch (error) {
+			errorForms.push('Vacancy Committee');
+		}
+
+		try {
+			await emailTemplatesForm.validateFields();
+		} catch (error) {
+			errorForms.push('Email Templates');
+		}
+
+		setErrorSections(errorForms);
+
+		if (errorForms.length === 0) showSubmitModal();
+	};
 
 	const steps = [
 		{
 			step: 1,
 			title: 'Basic Vacancy Information',
 			description: 'Fill in vacancy information',
-			content: <BasicInfo />,
+			content: (
+				<BasicInfo
+					initialValues={allForms.basicInfo}
+					setBasicInfo={updateBasicInfo}
+					formInstance={basicInfoForm}
+				/>
+			),
 		},
 		{
 			step: 2,
 			title: 'Mandatory Statements',
 			description:
 				'Select pre-written mandatory statements to add to the posting',
-			content: <MandatoryStatements />,
+			content: (
+				<MandatoryStatements
+					initialValues={allForms.mandatoryStatements}
+					formInstance={mandatoryStatementsForm}
+				/>
+			),
 		},
 		{
 			step: 3,
@@ -36,8 +106,9 @@ const createVacancy = () => {
 			description: 'Add and manage vacancy committee members',
 			content: (
 				<VacancyCommittee
-					committeeMembers={committeeMembers}
-					setCommitteeMembers={setCommitteeMembers}
+					committeeMembers={allForms.committeeMembers}
+					setCommitteeMembers={updateCommitteeMembers}
+					formInstance={vacancyCommitteeForm}
 				/>
 			),
 		},
@@ -45,94 +116,110 @@ const createVacancy = () => {
 			step: 4,
 			title: 'Email Templates',
 			description: 'Choose the emails to send applicants and manage email body',
-			content: <EmailTemplates />,
+			content: (
+				<EmailTemplates
+					initialValues={allForms.emailTemplates}
+					formInstance={emailTemplatesForm}
+				/>
+			),
 		},
 		{
 			step: 5,
 			title: 'Review and Finalize',
 			description: '',
-			content: <FinalizeVacancy />,
+			content: (
+				<FinalizeVacancy
+					allForms={allForms}
+					onEditButtonClick={(number) => stepClickHandler(number)}
+				/>
+			),
 		},
 	];
 
 	const [currentStep, setCurrentStep] = useState(0);
 
+	const updateAllFormsData = (currentStep) => {
+		updateBasicInfo();
+		switch (currentStep) {
+			case 0:
+				updateBasicInfo();
+				break;
+			default:
+				return;
+		}
+	};
+
 	const next = () => {
-		setCurrentStep(currentStep + 1);
+		if (currentStep < steps.length - 1) {
+			updateAllFormsData(currentStep);
+			setCurrentStep(currentStep + 1);
+		} else {
+			isFormValid();
+		}
 	};
 
 	const prev = () => {
+		updateAllFormsData(currentStep);
 		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = (current) => {
+		updateAllFormsData(current);
 		setCurrentStep(current);
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {
-		const { BasicInfo, MandatoryStatements, VacancyCommittee } = forms;
-		if (name === 'BasicInfo')
-			console.log(
-				'[CreateVacancy]: Form name: ' +
-					name +
-					' values: ' +
-					JSON.stringify(BasicInfo.getFieldsValue(), null, 2)
-			);
+		if (name === 'MandatoryStatements') {
+			const { MandatoryStatements } = forms;
+			const newMandatoryStatements = MandatoryStatements.getFieldsValue();
+			setAllForms({
+				...allForms,
+				mandatoryStatements: newMandatoryStatements,
+			});
+		}
 
-		if (name === 'MandatoryStatements')
-			console.log(
-				'[CreateVacancy]: Form name: ' +
-					name +
-					' values: ' +
-					JSON.stringify(MandatoryStatements.getFieldsValue(), null, 2)
-			);
-
-		if (name === 'VacancyCommittee') {
-			console.log(
-				'[CreateVacancy]: Form name: ' +
-					name +
-					' values via committeeMembers hook: ' +
-					JSON.stringify(committeeMembers, null, 2)
-			);
-
-			console.log(
-				'[CreateVacancy]: Form name: ' +
-					name +
-					' values via forminstance.getFieldsValue hook: ' +
-					JSON.stringify(VacancyCommittee.getFieldsValue(), null, 2)
-			);
+		// For some currently unknown reason, EmailTemplates is firing off the onChange handler on render
+		if (name === 'EmailTemplates') {
+			const { EmailTemplates } = forms;
+			if (EmailTemplates) {
+				const newEmailTemplates = EmailTemplates.getFieldsValue();
+				setAllForms({
+					...allForms,
+					emailTemplates: newEmailTemplates.emailTemplates,
+				});
+			}
 		}
 	};
 
 	return (
 		<>
-			<div className='CreateVacancyContainer'>
-				<div className='StepNavigation'>
-					<Steps
-						current={currentStep}
-						direction='vertical'
-						onChange={stepClickHandler}
-					>
-						{steps.map((item) => (
-							<Step
-								key={item.title}
-								title={item.title}
-								description={item.description}
-							/>
-						))}
-					</Steps>
-				</div>
-				<div className='StepContentContainer'>
-					<div className='StepContent'>
-						<h3>{currentStepObject.title}</h3>
-						<p>{currentStepObject.description}</p>
-						<Form.Provider
-							onFormChange={(name, { forms, changedFields }) => {
-								wizardFormChangeHandler(name, forms, changedFields);
-							}}
+			<Form.Provider
+				onFormChange={(name, { forms, changedFields }) => {
+					wizardFormChangeHandler(name, forms, changedFields);
+				}}
+			>
+				<div className='CreateVacancyContainer'>
+					<div className='StepNavigation'>
+						<Steps
+							current={currentStep}
+							direction='vertical'
+							onChange={stepClickHandler}
 						>
+							{steps.map((item) => (
+								<Step
+									key={item.title}
+									title={item.title}
+									description={item.description}
+								/>
+							))}
+						</Steps>
+					</div>
+					<div className='StepContentContainer'>
+						<div className='StepContent'>
+							<h3>{currentStepObject.title}</h3>
+							<p>{currentStepObject.description}</p>
 							{steps.map((item) => (
 								<div
 									key={item.step}
@@ -141,26 +228,61 @@ const createVacancy = () => {
 									{item.content}
 								</div>
 							))}
-						</Form.Provider>
-					</div>
-					<div className='steps-action'>
-						<Button
-							onClick={prev}
-							type='primary'
-							ghost
-							className='wider-button'
+						</div>
+						<div className='steps-action'>
+							<Button
+								onClick={prev}
+								type='primary'
+								ghost
+								className='wider-button'
+							>
+								{currentStep === 0 ? 'cancel' : 'back'}
+							</Button>
+							{currentStep < steps.length - 1 ? (
+								<Button type='text' disabled icon={<ReloadOutlined />}>
+									Clear Form
+								</Button>
+							) : null}
+
+							<Button type='primary' onClick={next} className='wider-button'>
+								{currentStep == steps.length - 1 ? 'Save and Finalize' : 'save'}
+							</Button>
+						</div>
+						<div
+							className='ErrorPanel'
+							style={
+								errorSections.length === 0 || currentStep < steps.length - 1
+									? { display: 'none' }
+									: null
+							}
 						>
-							{currentStep === 0 ? 'cancel' : 'back'}
-						</Button>
-						<Button type='text' disabled icon={<ReloadOutlined />}>
-							Clear Form
-						</Button>
-						<Button type='primary' onClick={next} className='wider-button'>
-							{currentStep == steps.length - 1 ? 'Save and Finalize' : 'save'}
-						</Button>
+							<p>
+								{
+									"Sorry, we can't submit just yet.  The following sections have fields that need to change or have values: "
+								}
+							</p>
+							<ul>
+								{errorSections.map((section, index) => (
+									<li key={index}>{section}</li>
+								))}
+							</ul>
+							<p>
+								{
+									"We've highlighted those fields in red.  Please return to those sections and address the highlights, then return here and click 'Save and Finalize' again."
+								}
+							</p>
+						</div>
 					</div>
 				</div>
-			</div>
+			</Form.Provider>
+			{/* <Button type='primary' onClick={printState}>
+				Print State
+			</Button> */}
+			<ConfirmSubmitModal
+				visible={submitModalVisible}
+				onCancel={handleSubmitModalCancel}
+				setVisible={setSubmitModalVisible}
+			/>
 		</>
 	);
 };
