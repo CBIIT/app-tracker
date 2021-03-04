@@ -6,35 +6,16 @@ import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
+import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
-const BasicInformation = () => {
+const BasicInformation = (props) => {
+	const formInstance = props.formInstance;
+	const initialValues = props.initialValues;
+
 	const sliderMarks = {
 		1: '1',
 		2: '2',
 		3: '3',
-	};
-
-	const [formInstance] = Form.useForm();
-
-	const initialValues = {
-		numberOfRecommendations: 3,
-		description: '',
-		applicationDocuments: [
-			{
-				document: 'Curriculum Vitae (CV)',
-			},
-			{
-				document: 'Cover Letter',
-				isDocumentOptional: true,
-			},
-			{
-				document: 'Vision Statement',
-			},
-			{
-				document: 'Qualification Statement',
-				isDocumentOptional: true,
-			},
-		],
 	};
 
 	const disabledDate = (currentDate) => {
@@ -75,8 +56,12 @@ const BasicInformation = () => {
 		]);
 	};
 
-	const onFormChangeHandler = () => {
-		// console.log('Form Data: ' + JSON.stringify(formInstance.getFieldsValue()));
+	const validateDescription = async (_, description) => {
+		if (isRichTextEditorEmpty(description)) {
+			throw new Error('Please enter a description.');
+		}
+
+		formInstance.setFields([{ name: 'description', errors: '' }]);
 	};
 
 	return (
@@ -86,17 +71,23 @@ const BasicInformation = () => {
 			name='BasicInfo'
 			form={formInstance}
 			initialValues={initialValues}
-			onFieldsChange={onFormChangeHandler}
+			onValuesChange={(_, allValues) => {
+				props.setBasicInfo(allValues);
+			}}
 		>
 			<Form.Item
 				label='Position Title'
 				name='positionTitle'
-				rules={[{ required: true, message: 'Please enter' }]}
+				rules={[{ required: true, message: 'Please enter a title' }]}
 			>
 				<Input placeholder='Please enter' />
 			</Form.Item>
 
-			<Form.Item label='Position Description' name='description'>
+			<Form.Item
+				label='Position Description'
+				name='description'
+				rules={[{ validator: validateDescription }]}
+			>
 				<ReactQuill className='QuillEditor' />
 			</Form.Item>
 

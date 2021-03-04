@@ -41,5 +41,6 @@
 
 .QuillEditor {
 	height: 400px;
+	padding-bottom: 10px;
 	margin-bottom: 30px;
 }

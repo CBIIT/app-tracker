@@ -7,6 +7,7 @@ const vacancyCommittee = (props) => {
 				name='VacancyCommittee'
 				data={props.committeeMembers}
 				setData={props.setCommitteeMembers}
+				formInstance={props.formInstance}
 			/>
 		</>
 	);
