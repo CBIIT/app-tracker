@@ -12,6 +12,19 @@ import "./VacancyDashboard.css";
 import axios from "axios";
 
 const vacancyDashboard = () => {
+  // const vacancyTable = (
+  //   <Table
+  //     dataSource={}
+  //     columns={}
+  //     style={{
+  //       width: "1170px",
+  //       display: "block",
+  //       paddingLeft: "20px",
+  //       paddingRight: "20px",
+  //     }}
+  //   ></Table>
+  // );
+
   const [preFlightVacancies, setPreFlightVancacies] = useState([]);
 
   let preFlightCount = [];
@@ -112,7 +125,7 @@ const vacancyDashboard = () => {
               tab={
                 <span className="tab-letters">
                   <p className="num-count">{preFlightCount}</p>
-                  <p>pre-flight vacancies</p>
+                  <p className="vacancy-desc">pre-flight vacancies</p>
                 </span>
               }
               key="1"
@@ -146,7 +159,7 @@ const vacancyDashboard = () => {
               tab={
                 <span className="tab-letters">
                   <p className="num-count">{liveCount}</p>
-                  <p>live vacancies</p>
+                  <p className="vacancy-desc">live vacancies</p>
                 </span>
               }
               key="2"
@@ -180,7 +193,7 @@ const vacancyDashboard = () => {
               tab={
                 <span className="tab-letters">
                   <p className="num-count">{closedCount}</p>
-                  <p>closed vacancies</p>
+                  <p className="vacancy-desc">closed vacancies</p>
                 </span>
               }
               key="3"
