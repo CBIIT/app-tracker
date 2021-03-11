@@ -72,6 +72,16 @@ const vacancyDashboard = () => {
   //   ></Table>
   // );
 
+  const filterChangeHandler = async (e) => {
+    const newFilter = e.target.value;
+    const filteredData = await axios.get(url);
+    if (e.target.value == "all") {
+      setData(filteredData.data.result);
+    } else {
+      setData(filteredData.data.result.filter((res) => res.state == newFilter));
+    }
+  };
+
   return (
     <>
       <div style={{ backgroundColor: "#EDF1F4" }}>
@@ -115,6 +125,7 @@ const vacancyDashboard = () => {
                 <Radio.Group
                   defaultValue="all"
                   style={{ display: "inline-block", paddingLeft: "10px" }}
+                  onChange={filterChangeHandler}
                 >
                   <Radio.Button value="all">All</Radio.Button>
                   <Radio.Button value="draft">Draft</Radio.Button>
@@ -149,6 +160,7 @@ const vacancyDashboard = () => {
                 <Radio.Group
                   defaultValue="all"
                   style={{ display: "inline-block", paddingLeft: "10px" }}
+                  onChange={filterChangeHandler}
                 >
                   <Radio.Button value="all">All</Radio.Button>
                   <Radio.Button value="live">Live</Radio.Button>
@@ -183,6 +195,7 @@ const vacancyDashboard = () => {
                 <Radio.Group
                   defaultValue="all"
                   style={{ display: "inline-block", paddingLeft: "10px" }}
+                  onChange={filterChangeHandler}
                 >
                   <Radio.Button value="all">All</Radio.Button>
                   <Radio.Button value="closed">Closed</Radio.Button>
