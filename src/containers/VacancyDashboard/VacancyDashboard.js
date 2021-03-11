@@ -136,7 +136,6 @@ const vacancyDashboard = () => {
                 <Table
                   dataSource={data}
                   columns={preFlightColumns}
-                  // onChange={onChange}
                   style={{
                     width: "1170px",
                     display: "block",
@@ -171,7 +170,6 @@ const vacancyDashboard = () => {
                 <Table
                   dataSource={data}
                   columns={liveColumns}
-                  // onChange={onChange}
                   style={{
                     width: "1170px",
                     display: "block",
@@ -211,7 +209,6 @@ const vacancyDashboard = () => {
                 <Table
                   dataSource={data}
                   columns={closedColumns}
-                  // onChange={onChange}
                   style={{
                     width: "1170px",
                     display: "block",

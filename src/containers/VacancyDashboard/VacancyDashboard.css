@@ -25,6 +25,12 @@
   color: rgb(37, 96, 151) !important;
 }
 
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: rgb(37, 96, 151) !important;
+  pointer-events: none;
+}
+
 .num-count {
   font-size: 32px;
   font-family: "Montserrat";
