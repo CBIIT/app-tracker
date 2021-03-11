@@ -12,6 +12,53 @@ import "./VacancyDashboard.css";
 import axios from "axios";
 
 const vacancyDashboard = () => {
+  // const [columns, setColumns] = useState([defaultColumns]);
+  const [data, setData] = useState([]);
+  let [url, setURL] = useState(
+    "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/preflight"
+  );
+  const [preFlightCount, setPreFlightCount] = useState([]);
+  const [liveCount, setLiveCount] = useState([]);
+  const [closedCount, setClosedCount] = useState([]);
+  const urls = {
+    preflight: "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/preflight",
+    live: "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/live",
+    closed: "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/closed",
+  };
+
+  const tabChangeHandler = async (selectedTab) => {
+    url = urls[selectedTab];
+    try {
+      const newData = await axios.get(url);
+      setData(newData.data.result);
+      setURL(url);
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  try {
+    useEffect(async () => {
+      const currentData = await axios.get(url);
+      setData(currentData.data.result);
+
+      const currentPreCount = await axios.get(urls.preflight);
+      setPreFlightCount(currentPreCount.data.result.length);
+
+      const currentLiveCount = await axios.get(urls.live);
+      setLiveCount(currentLiveCount.data.result.length);
+
+      const currentClosedCount = await axios.get(urls.closed);
+      setClosedCount(currentClosedCount.data.result.length);
+    }, []);
+
+    data.map((i) => {
+      i.key = i.sys_id;
+    });
+  } catch (err) {
+    console.warn(err);
+  }
+
   // const vacancyTable = (
   //   <Table
   //     dataSource={}
@@ -25,77 +72,6 @@ const vacancyDashboard = () => {
   //   ></Table>
   // );
 
-  const [preFlightVacancies, setPreFlightVancacies] = useState([]);
-
-  let preFlightCount = [];
-  let count = [];
-
-  const preFlightUrl =
-    "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/preflight";
-
-  // const getData = () =>
-  //   useEffect(async (url) => {
-  //     await axios.get(url).then((res) => {
-  //       console.log(res.data);
-  //       useState(res.data);
-  //     });
-  //   }, []);
-
-  // const getData = (url, setFunct, count, vacancies) => {
-  //   try {
-  //     let result = useEffect(async () => {
-  //       await axios.get(url).then((res) => {
-  //         console.log(res);
-  //         setFunct(res.data);
-  //       });
-  //     }, []);
-  //     // debugger;
-  //     count = vacancies.result.length;
-  //     vacancies.result.map((i) => {
-  //       i.key = i.sys_id;
-  //     });
-  //     return result;
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  // };
-
-  try {
-    useEffect(async () => {
-      await axios.get(preFlightUrl).then((res) => {
-        console.log(res);
-        setPreFlightVancacies(res.data);
-      });
-    }, []);
-
-    preFlightCount = preFlightVacancies.result.length;
-    preFlightVacancies.result.map((i) => {
-      i.key = i.sys_id;
-    });
-  } catch (err) {
-    console.warn(err);
-  }
-
-  const [closedVacancies, setClosedVacancies] = useState([]);
-  let closedCount = [];
-  const closedUrl = "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/closed";
-
-  try {
-    useEffect(async () => {
-      await axios.get(closedUrl).then((res) => {
-        console.log(res);
-        setClosedVacancies(res.data);
-      });
-    }, []);
-
-    closedCount = closedVacancies.result.length;
-    closedVacancies.result.map((i) => {
-      i.key = i.sys_id;
-    });
-  } catch (err) {
-    console.warn(err);
-  }
-
   return (
     <>
       <div style={{ backgroundColor: "#EDF1F4" }}>
@@ -103,14 +79,14 @@ const vacancyDashboard = () => {
         breadcrumb={{ routes }}
         style={{ marginLeft: "220px", display: "inline-block" }}
       /> */}
-        <div className="app-container" style={{ width: "1170px" }}>
+        <div className="app-container">
           <Link to="/create-vacancy">
             <Button
               type="primary"
               style={{
                 display: "inline-block",
                 backgroundColor: "#015EA2",
-                marginLeft: "1010px",
+                marginLeft: "85%",
                 width: "161px",
                 height: "36px",
                 fontSize: "16px",
@@ -120,7 +96,11 @@ const vacancyDashboard = () => {
               + Create Vacancy
             </Button>
           </Link>
-          <Tabs size={"large"}>
+          <Tabs
+            size={"large"}
+            onChange={tabChangeHandler}
+            defaultActiveKey="preflight"
+          >
             <Tabs.TabPane
               tab={
                 <span className="tab-letters">
@@ -128,7 +108,7 @@ const vacancyDashboard = () => {
                   <p className="vacancy-desc">pre-flight vacancies</p>
                 </span>
               }
-              key="1"
+              key="preflight"
             >
               <div className="tabs-div">
                 <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
@@ -143,7 +123,7 @@ const vacancyDashboard = () => {
               </div>
               <div style={{ backgroundColor: "white" }}>
                 <Table
-                  dataSource={preFlightVacancies.result}
+                  dataSource={data}
                   columns={preFlightColumns}
                   // onChange={onChange}
                   style={{
@@ -162,7 +142,7 @@ const vacancyDashboard = () => {
                   <p className="vacancy-desc">live vacancies</p>
                 </span>
               }
-              key="2"
+              key="live"
             >
               <div className="tabs-div">
                 <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
@@ -177,7 +157,7 @@ const vacancyDashboard = () => {
               </div>
               <div style={{ backgroundColor: "white" }}>
                 <Table
-                  dataSource={liveData}
+                  dataSource={data}
                   columns={liveColumns}
                   // onChange={onChange}
                   style={{
@@ -196,7 +176,7 @@ const vacancyDashboard = () => {
                   <p className="vacancy-desc">closed vacancies</p>
                 </span>
               }
-              key="3"
+              key="closed"
             >
               <div className="tabs-div">
                 <p style={{ display: "inline-block" }}>Filter Vacancies: </p>
@@ -216,7 +196,7 @@ const vacancyDashboard = () => {
               </div>
               <div style={{ backgroundColor: "white" }}>
                 <Table
-                  dataSource={closedVacancies.result}
+                  dataSource={data}
                   columns={closedColumns}
                   // onChange={onChange}
                   style={{
@@ -248,6 +228,7 @@ const preFlightColumns = [
       compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
       multiple: 1,
     },
+    defaultSortOrder: "ascend",
   },
   {
     title: "Close Date",
@@ -332,44 +313,6 @@ const liveColumns = [
   },
 ];
 
-const liveData = [
-  {
-    key: "1",
-    title: "Director, Division of Cancer Control and Population Sciences",
-    applicants: "4",
-    odate: "01/12/2021",
-    cdate: "06/12/2021",
-  },
-  {
-    key: "2",
-    title: "Director, Division of Cancer Control and Population Sciences",
-    applicants: "3  ",
-    odate: "01/18/2021",
-    cdate: "06/12/2021",
-  },
-  {
-    key: "3",
-    title: "Director, Division of Cancer Control and Population Sciences",
-    applicants: "6",
-    odate: "01/12/2021",
-    cdate: "08/14/2021",
-  },
-  {
-    key: "4",
-    title: "Director, Division of Cancer Control and Population Sciences",
-    applicants: "9",
-    odate: "01/12/2021",
-    cdate: "8/14/2021",
-  },
-  {
-    key: "5",
-    title: "Director, Division of Cancer Control and Population Sciences",
-    applicants: "2",
-    odate: "01/13/2021",
-    cdate: "8/20/2021",
-  },
-];
-
 const closedColumns = [
   {
     title: "Vacancy Title",
@@ -410,139 +353,6 @@ const closedColumns = [
   },
 ];
 
-//  [
-//   {
-//     key: "1",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/12/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "2",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "3",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "6",
-//     odate: "01/12/2021",
-//     cdate: "08/14/2021",
-//   },
-//   {
-//     key: "4",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "9",
-//     odate: "01/12/2021",
-//     cdate: "8/14/2021",
-//   },
-//   {
-//     key: "5",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/13/2021",
-//     cdate: "8/20/2021",
-//   },
-//   {
-//     key: "6",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "6",
-//     odate: "01/12/2021",
-//     cdate: "8/14/2021",
-//   },
-//   {
-//     key: "7",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/12/2021",
-//     cdate: "8/14/2021",
-//   },
-//   {
-//     key: "8",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/12/2021",
-//     cdate: "8/14/2021",
-//   },
-//   {
-//     key: "9",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "10",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "2",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "11",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "12",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "13",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "1",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "14",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "15",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "7",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "16",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "4",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "17",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "2",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-//   {
-//     key: "18",
-//     title: "Director, Division of Cancer Control and Population Sciences",
-//     applicants: "3",
-//     odate: "01/18/2021",
-//     cdate: "06/12/2021",
-//   },
-// ];
-
-// function onChange(pagination, filters, sorter, extra) {
-//   console.log("params", pagination, filters, sorter, extra);
-// }
-
 // const routes = [
 //   {
 //     path: "index",
@@ -553,7 +363,5 @@ const closedColumns = [
 //     breadcrumbName: "Vacancy Dashboard",
 //   },
 // ];
-
-const liveCount = liveData.length;
 
 export default vacancyDashboard;
