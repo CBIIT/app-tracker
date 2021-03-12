@@ -4,6 +4,7 @@ import { Steps, Button, Form } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
+import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
 import './CreateVacancy.css';
 
 const createVacancy = () => {
@@ -20,8 +21,9 @@ const createVacancy = () => {
 		{
 			step: 2,
 			title: 'Mandatory Statements',
-			description: 'Mailing and business address',
-			content: <></>,
+			description:
+				'Select pre-written mandatory statements to add to the posting',
+			content: <MandatoryStatements />,
 		},
 		{
 			step: 3,
@@ -60,13 +62,22 @@ const createVacancy = () => {
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {
-		const { BasicInfo } = forms;
-		console.log(
-			'[CreateVacancy]: Form name: ' +
-				name +
-				' values: ' +
-				JSON.stringify(BasicInfo.getFieldsValue(), null, 2)
-		);
+		const { BasicInfo, MandatoryStatements } = forms;
+		if (name === 'BasicInfo')
+			console.log(
+				'[CreateVacancy]: Form name: ' +
+					name +
+					' values: ' +
+					JSON.stringify(BasicInfo.getFieldsValue(), null, 2)
+			);
+
+		if (name === 'MandatoryStatements')
+			console.log(
+				'[CreateVacancy]: Form name: ' +
+					name +
+					' values: ' +
+					JSON.stringify(MandatoryStatements.getFieldsValue(), null, 2)
+			);
 	};
 
 	return (
