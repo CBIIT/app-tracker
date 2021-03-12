@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+* {
+	font-family: Noto Sans;
+}
+
+.ant-input {
+	height: 40px;
+}
+
+.names > * {
+	height: 40px;
+	width: 249.7px;
+}
+
+.names {
+	padding-bottom: 40px !important;
+}
+
+.title-desc {
+	height: 44px;
+	width: 400px;
+	color: #333333;
+	font-family: 'Noto Sans';
+	font-size: 16px;
+	letter-spacing: 0;
+	line-height: 22px;
+}
+
+.form-title {
+	height: 24px;
+	width: 400px;
+	color: #000000;
+	font-family: 'Noto Sans';
+	font-size: 18px;
+	letter-spacing: 0;
+	line-height: 24px;
+}
