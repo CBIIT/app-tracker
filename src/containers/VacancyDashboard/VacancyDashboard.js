@@ -14,15 +14,15 @@ import axios from "axios";
 const vacancyDashboard = () => {
   const [data, setData] = useState([]);
   let [url, setURL] = useState(
-    "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/preflight"
+    "/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight"
   );
   const [preFlightCount, setPreFlightCount] = useState([]);
   const [liveCount, setLiveCount] = useState([]);
   const [closedCount, setClosedCount] = useState([]);
   const urls = {
-    preflight: "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/preflight",
-    live: "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/live",
-    closed: "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/closed",
+    preflight: "/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight",
+    live: "/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/live",
+    closed: "/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed",
   };
 
   const tabChangeHandler = async (selectedTab) => {
