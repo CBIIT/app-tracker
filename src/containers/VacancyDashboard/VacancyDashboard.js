@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, Button, Tabs, Radio, Space, Divider } from 'antd';
 import {
@@ -31,7 +31,6 @@ const vacancyDashboard = () => {
 		try {
 			const newData = await axios.get(url);
 			setData(newData.data.result);
-			console.log('NEW DATA:', newData);
 			setURL(url);
 		} catch (err) {
 			console.warn(err);
