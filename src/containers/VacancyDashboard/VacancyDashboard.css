@@ -3,10 +3,6 @@
 	color: rgb(37, 96, 151) !important;
 }
 
-.ant-tabs-tab.ant-tabs-tab-active p {
-	color: rgb(37, 96, 151);
-}
-
 .ant-tabs-tab-btn[aria-selected='true'] {
 	color: rgb(37, 96, 151) !important;
 }

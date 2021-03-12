@@ -9,10 +9,13 @@
 .ContentContainer {
 	width: min(95%, 1170px);
 	margin-inline: auto;
+<<<<<<< HEAD
 }
 
 .ContentContainer h1 {
 	margin: 0;
+=======
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 }
 
 .RouteContent {
@@ -28,6 +31,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+<<<<<<< HEAD
 }
 
 .HeaderTitle > h1 {
@@ -39,4 +43,6 @@
   font-weight: 600;
   letter-spacing: 0;
   line-height: 28px;
+=======
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 }

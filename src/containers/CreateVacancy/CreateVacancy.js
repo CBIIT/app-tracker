@@ -6,15 +6,19 @@ import { ReloadOutlined } from '@ant-design/icons';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
+<<<<<<< HEAD
 import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
 import EmailTemplates from './Forms/EmailTemplates/EmailTemplates';
 import FinalizeVacancy from './Forms/FinalizeVacancy/FinalizeVacancy';
 import { initialValues } from './Forms/FormsInitialValues';
+=======
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 import './CreateVacancy.css';
 
 const createVacancy = () => {
 	const { Step } = Steps;
 	const history = useHistory();
+<<<<<<< HEAD
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(initialValues);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
@@ -70,35 +74,46 @@ const createVacancy = () => {
 
 		if (errorForms.length === 0) showSubmitModal();
 	};
+=======
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 
 	const steps = [
 		{
 			step: 1,
 			title: 'Basic Vacancy Information',
 			description: 'Fill in vacancy information',
+<<<<<<< HEAD
 			content: (
 				<BasicInfo
 					initialValues={allForms.basicInfo}
 					formInstance={basicInfoForm}
 				/>
 			),
+=======
+			content: <BasicInfo />,
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		},
 		{
 			step: 2,
 			title: 'Mandatory Statements',
 			description:
 				'Select pre-written mandatory statements to add to the posting',
+<<<<<<< HEAD
 			content: (
 				<MandatoryStatements
 					initialValues={allForms.mandatoryStatements}
 					formInstance={mandatoryStatementsForm}
 				/>
 			),
+=======
+			content: <MandatoryStatements />,
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		},
 		{
 			step: 3,
 			title: 'Vacancy Committee',
 			description: 'Add and manage vacancy committee members',
+<<<<<<< HEAD
 			content: (
 				<VacancyCommittee
 					committeeMembers={allForms.committeeMembers}
@@ -106,33 +121,45 @@ const createVacancy = () => {
 					formInstance={vacancyCommitteeForm}
 				/>
 			),
+=======
+			content: <></>,
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		},
 		{
 			step: 4,
 			title: 'Email Templates',
 			description: 'Choose the emails to send applicants and manage email body',
+<<<<<<< HEAD
 			content: (
 				<EmailTemplates
 					initialValues={allForms.emailTemplates}
 					formInstance={emailTemplatesForm}
 				/>
 			),
+=======
+			content: <></>,
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		},
 		{
 			step: 5,
 			title: 'Review and Finalize',
 			description: '',
+<<<<<<< HEAD
 			content: (
 				<FinalizeVacancy
 					allForms={allForms}
 					onEditButtonClick={(number) => stepClickHandler(number)}
 				/>
 			),
+=======
+			content: <></>,
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		},
 	];
 
 	const [currentStep, setCurrentStep] = useState(0);
 
+<<<<<<< HEAD
 	const saveFormData = (currentStep) => {
 		updateBasicInfo();
 		switch (currentStep) {
@@ -155,17 +182,28 @@ const createVacancy = () => {
 
 	const prev = () => {
 		saveFormData(currentStep);
+=======
+	const next = () => {
+		setCurrentStep(currentStep + 1);
+	};
+
+	const prev = () => {
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = (current) => {
+<<<<<<< HEAD
 		saveFormData(currentStep);
+=======
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		setCurrentStep(current);
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {
+<<<<<<< HEAD
 		if (name === 'MandatoryStatements') {
 			const { MandatoryStatements } = forms;
 			const newMandatoryStatements = MandatoryStatements.getFieldsValue();
@@ -186,10 +224,29 @@ const createVacancy = () => {
 				});
 			}
 		}
+=======
+		const { BasicInfo, MandatoryStatements } = forms;
+		if (name === 'BasicInfo')
+			console.log(
+				'[CreateVacancy]: Form name: ' +
+					name +
+					' values: ' +
+					JSON.stringify(BasicInfo.getFieldsValue(), null, 2)
+			);
+
+		if (name === 'MandatoryStatements')
+			console.log(
+				'[CreateVacancy]: Form name: ' +
+					name +
+					' values: ' +
+					JSON.stringify(MandatoryStatements.getFieldsValue(), null, 2)
+			);
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 	};
 
 	return (
 		<>
+<<<<<<< HEAD
 			<Form.Provider
 				// TODO: Refactor this to call appropriate saves and validates on next, prev, or step change vs. onFormChange
 				onFormChange={(name, { forms, changedFields }) => {
@@ -217,6 +274,34 @@ const createVacancy = () => {
 							<h3>{currentStepObject.title}</h3>
 							<p>{currentStepObject.description}</p>
 							{steps.map((item) => (
+=======
+			<div className='CreateVacancyContainer'>
+				<div className='StepNavigation'>
+					<Steps
+						current={currentStep}
+						direction='vertical'
+						onChange={stepClickHandler}
+					>
+						{steps.map((item) => (
+							<Step
+								key={item.title}
+								title={item.title}
+								description={item.description}
+							/>
+						))}
+					</Steps>
+				</div>
+				<div className='StepContentContainer'>
+					<div className='StepContent'>
+						<h3>{currentStepObject.title}</h3>
+						<p>{currentStepObject.description}</p>
+						<Form.Provider
+							onFormChange={(name, { forms, changedFields }) => {
+								wizardFormChangeHandler(name, forms, changedFields);
+							}}
+						>
+							{steps.map((item) => (
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 								<div
 									key={item.step}
 									className={`${item.step !== currentStep + 1 && 'Hidden'}`}
@@ -224,6 +309,7 @@ const createVacancy = () => {
 									{item.content}
 								</div>
 							))}
+<<<<<<< HEAD
 						</div>
 						<div className='steps-action'>
 							<Button
@@ -277,6 +363,28 @@ const createVacancy = () => {
 				setVisible={setSubmitModalVisible}
 				data={allForms}
 			/>
+=======
+						</Form.Provider>
+					</div>
+					<div className='steps-action'>
+						<Button
+							onClick={prev}
+							type='primary'
+							ghost
+							className='wider-button'
+						>
+							{currentStep === 0 ? 'cancel' : 'back'}
+						</Button>
+						<Button type='text' disabled icon={<ReloadOutlined />}>
+							Clear Form
+						</Button>
+						<Button type='primary' onClick={next} className='wider-button'>
+							{currentStep == steps.length - 1 ? 'Save and Finalize' : 'save'}
+						</Button>
+					</div>
+				</div>
+			</div>
+>>>>>>> a27f91f3a5826c01e95f19cfbcf8219ecfe9b1f3
 		</>
 	);
 };
