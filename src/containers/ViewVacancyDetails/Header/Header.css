@@ -1,0 +1,44 @@
+.HeaderContainer {
+	width: 100%;
+	background-color: var(--secondary-bg-color);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.TitleAndDateContainer {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	flex-grow: 2;
+}
+
+.TitleContainer {
+	display: flex;
+}
+
+.TitleAndDateContainer h1 {
+	white-space: normal;
+}
+
+.TitleAndDateContainer label {
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.DateContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	flex-wrap: wrap;
+	max-width: 370px;
+}
+
+.ButtonContainer {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: row-reverse;
+	align-items: center;
+}

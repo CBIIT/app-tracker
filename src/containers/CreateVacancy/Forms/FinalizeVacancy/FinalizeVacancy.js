@@ -23,9 +23,9 @@ const finalizeVacancy = (props) => {
 				onClick={() => props.onEditButtonClick(0)}
 			/>
 			<div className='SectionContent'>
-				<h2>Position Title</h2>
-				<p>{basicInfo.positionTitle}</p>
-				<h2>Position Description</h2>
+				<h2>Vacancy Title</h2>
+				<p>{basicInfo.title}</p>
+				<h2>Vacancy Description</h2>
 				<ReactQuill
 					className='RichTextDisplay'
 					value={basicInfo.description}

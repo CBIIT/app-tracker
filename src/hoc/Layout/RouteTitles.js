@@ -1,5 +1,5 @@
 export const routeTitles = {
-  "/": "Executive Careers at NCI",
-  "/create-vacancy": "Create Vacancy",
-  "/vacancy-dashboard": "Vacancy Dashboard",
+	'/': 'Senior Scientific Careers at NCI',
+	'/create-vacancy': 'Create Vacancy',
+	'/vacancy-dashboard': 'Vacancy Dashboard',
 };

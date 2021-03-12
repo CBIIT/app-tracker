@@ -27,10 +27,6 @@ const createVacancy = () => {
 		setSubmitModalVisible(false);
 	};
 
-	// const printState = () => {
-	// 	console.log('[printState]: allForms ' + JSON.stringify(allForms, null, 2));
-	// };
-
 	const updateCommitteeMembers = (committeeMembers) => {
 		setAllForms({ ...allForms, vacancyCommittee: committeeMembers });
 	};
@@ -44,7 +40,7 @@ const createVacancy = () => {
 	const [vacancyCommitteeForm] = Form.useForm();
 	const [emailTemplatesForm] = Form.useForm();
 
-	const isFormValid = async () => {
+	const validateAllFormsAndDisplayModal = async () => {
 		const errorForms = [];
 		try {
 			await basicInfoForm.validateFields();
@@ -83,7 +79,6 @@ const createVacancy = () => {
 			content: (
 				<BasicInfo
 					initialValues={allForms.basicInfo}
-					setBasicInfo={updateBasicInfo}
 					formInstance={basicInfoForm}
 				/>
 			),
@@ -138,10 +133,10 @@ const createVacancy = () => {
 
 	const [currentStep, setCurrentStep] = useState(0);
 
-	const updateAllFormsData = (currentStep) => {
+	const saveFormData = (currentStep) => {
 		updateBasicInfo();
 		switch (currentStep) {
-			case 0:
+			case 1:
 				updateBasicInfo();
 				break;
 			default:
@@ -151,22 +146,22 @@ const createVacancy = () => {
 
 	const next = () => {
 		if (currentStep < steps.length - 1) {
-			updateAllFormsData(currentStep);
+			saveFormData(currentStep);
 			setCurrentStep(currentStep + 1);
 		} else {
-			isFormValid();
+			validateAllFormsAndDisplayModal();
 		}
 	};
 
 	const prev = () => {
-		updateAllFormsData(currentStep);
+		saveFormData(currentStep);
 		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = (current) => {
-		updateAllFormsData(current);
+		saveFormData(currentStep);
 		setCurrentStep(current);
 	};
 
@@ -196,6 +191,7 @@ const createVacancy = () => {
 	return (
 		<>
 			<Form.Provider
+				// TODO: Refactor this to call appropriate saves and validates on next, prev, or step change vs. onFormChange
 				onFormChange={(name, { forms, changedFields }) => {
 					wizardFormChangeHandler(name, forms, changedFields);
 				}}
@@ -275,13 +271,11 @@ const createVacancy = () => {
 					</div>
 				</div>
 			</Form.Provider>
-			{/* <Button type='primary' onClick={printState}>
-				Print State
-			</Button> */}
 			<ConfirmSubmitModal
 				visible={submitModalVisible}
 				onCancel={handleSubmitModalCancel}
 				setVisible={setSubmitModalVisible}
+				data={allForms}
 			/>
 		</>
 	);

@@ -1,0 +1,13 @@
+.Divider {
+	background-color: var(--secondary-bg-color);
+	height: 55px;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.Divider h2 {
+	margin: 0;
+	font-weight: bold;
+}

@@ -4,7 +4,6 @@ import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValid
 
 const emailTemplates = (props) => {
 	const formInstance = props.formInstance;
-	// const [formInstance] = Form.useForm();
 
 	const initialValues = { emailTemplates: props.initialValues };
 

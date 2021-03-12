@@ -1,0 +1,35 @@
+.TitleAndDateContainer h1 {
+	margin: 0;
+}
+.RichText .ql-editor {
+	padding: 0px;
+}
+
+.MandatoryStatements h2 {
+	margin: 0;
+	font-weight: bold;
+}
+
+.MandatoryStatements p {
+	font-size: 16px;
+	color: var(--text-dark);
+	line-height: 24px;
+}
+
+.BoldHeading {
+	font-weight: bold;
+	margin-bottom: 12px;
+}
+
+.DocumentsList {
+	list-style: none;
+}
+
+.DocumentsList li {
+	list-style-position: inside;
+}
+
+.DocumentsList li:before {
+	content: '✓';
+	padding-right: 5px;
+}
