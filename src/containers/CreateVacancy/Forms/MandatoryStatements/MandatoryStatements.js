@@ -32,13 +32,6 @@ const mandatoryStatements = (props) => {
 			throw new Error(
 				'One active mandatory statement with content is required.'
 			);
-		// else
-		// 	formInstance.setFields([
-		// 		{
-		// 			name: 'mandatoryStatements',
-		// 			errors: '',
-		// 		},
-		// 	]);
 	};
 
 	return (
@@ -66,7 +59,6 @@ const mandatoryStatements = (props) => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
-
 			<SwitchFormItemEditor
 				name='standardsOfConduct'
 				label='Standards of Conduct/Financial Disclosure'
@@ -78,7 +70,6 @@ const mandatoryStatements = (props) => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
-
 			<SwitchFormItemEditor
 				name='foreignEducation'
 				label='Foreign Education'
@@ -90,7 +81,6 @@ const mandatoryStatements = (props) => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
-
 			<SwitchFormItemEditor
 				name='reasonableAccomodation'
 				label='Reasonable Accommodation'
@@ -105,7 +95,10 @@ const mandatoryStatements = (props) => {
 			<Form.Item
 				name='mandatoryStatements'
 				rules={[{ validator: validateMandatoryStatements }]}
-			></Form.Item>
+			>
+				{/* Supress antd warning about using name */}
+				<input style={{ display: 'none' }} />
+			</Form.Item>
 		</Form>
 	);
 };
