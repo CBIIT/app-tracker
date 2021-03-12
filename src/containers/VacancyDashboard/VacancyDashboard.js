@@ -31,6 +31,7 @@ const vacancyDashboard = () => {
 		try {
 			const newData = await axios.get(url);
 			setData(newData.data.result);
+			console.log('NEW DATA:', newData);
 			setURL(url);
 		} catch (err) {
 			console.warn(err);
@@ -75,6 +76,8 @@ const vacancyDashboard = () => {
 		const filteredData = await axios.get(url);
 		if (e.target.value == 'all') {
 			setData(filteredData.data.result);
+		} else if (e.target.value == 'extended') {
+			setData(filteredData.data.result.filter((res) => res.extended == 1));
 		} else {
 			setData(filteredData.data.result.filter((res) => res.state == newFilter));
 		}
@@ -123,7 +126,7 @@ const vacancyDashboard = () => {
 								>
 									<Radio.Button value='all'>All</Radio.Button>
 									<Radio.Button value='draft'>Draft</Radio.Button>
-									<Radio.Button value='final'>Finalized</Radio.Button>
+									<Radio.Button value='finalized'>Finalized</Radio.Button>
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
@@ -157,7 +160,7 @@ const vacancyDashboard = () => {
 									onChange={filterChangeHandler}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
-									<Radio.Button value='live'>Live</Radio.Button>
+									<Radio.Button value='open'>Live</Radio.Button>
 									<Radio.Button value='extended'>Extended</Radio.Button>
 								</Radio.Group>
 							</div>
@@ -194,7 +197,7 @@ const vacancyDashboard = () => {
 									<Radio.Button value='all'>All</Radio.Button>
 									<Radio.Button value='closed'>Closed</Radio.Button>
 									<Radio.Button value='triaged'>Triaged</Radio.Button>
-									<Radio.Button value='individuallyscored'>
+									<Radio.Button value='individual_scored'>
 										Individually Scored
 									</Radio.Button>
 									<Radio.Button value='scored'>Scored</Radio.Button>
@@ -278,11 +281,9 @@ const liveColumns = [
 	},
 	{
 		title: 'Open Date',
-		dataIndex: 'odate',
+		dataIndex: 'open_date',
 		sorter: {
-			compare: (a, b) => {
-				new Date(a.odate) - new Date(b.odate);
-			},
+			compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
 			multiple: 2,
 		},
 	},
@@ -290,7 +291,7 @@ const liveColumns = [
 		title: 'Close Date',
 		dataIndex: 'cdate',
 		sorter: {
-			compare: (a, b) => new Date(a.cdate) - new Date(b.cdate),
+			compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 			multiple: 3,
 		},
 	},
