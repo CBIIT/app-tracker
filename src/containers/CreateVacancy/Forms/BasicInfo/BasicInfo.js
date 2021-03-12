@@ -1,17 +1,7 @@
 import { Form, Input, Slider, DatePicker } from 'antd';
 
-import 'tinymce/tinymce';
-import 'tinymce/icons/default';
-import 'tinymce/themes/silver';
-import 'tinymce/plugins/paste';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/table';
-import 'tinymce/skins/ui/oxide/skin.min.css';
-import 'tinymce/skins/ui/oxide/content.min.css';
-import 'tinymce/skins/content/default/content.min.css';
-import { Editor } from '@tinymce/tinymce-react';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 
 import './BasicInfo.css';
@@ -68,10 +58,6 @@ const BasicInformation = () => {
 		]);
 	};
 
-	const onEditorChangeHandler = (content) => {
-		formInstance.setFields([{ name: 'description', value: content }]);
-	};
-
 	const onFormChangeHandler = () => {
 		// console.log('Form Data: ' + JSON.stringify(formInstance.getFieldsValue()));
 	};
@@ -94,24 +80,7 @@ const BasicInformation = () => {
 			</Form.Item>
 
 			<Form.Item label='Position Description' name='description'>
-				<Editor
-					init={{
-						skin: false,
-						content_css: false,
-						height: 500,
-						menubar: false,
-						branding: false,
-						elementpath: false,
-						statusbar: false,
-						plugins: ['link image', 'table paste'],
-						toolbar:
-							'undo redo | formatselect | bold italic backcolor | \
-	                        alignleft aligncenter alignright alignjustify | \
-	                        bullist numlist outdent indent | removeformat | help',
-					}}
-					value={formInstance.getFieldsValue.description}
-					onEditorChange={onEditorChangeHandler}
-				/>
+				<ReactQuill className='QuillEditor' />
 			</Form.Item>
 
 			<div className='DatePickerContainer'>
