@@ -1,17 +1,20 @@
 .LegalStatement {
-    width: 100%;
-    background-color: white;
+	width: 100%;
+	background-color: white;
 }
 
 .LegalStatementContent {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    color: #333333;
-    font-family: "Noto Sans";
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 17px;
-    width: min(90%, 1216px);
-    margin: auto;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	width: min(90%, 1216px);
+	margin: auto;
+}
+
+.LegalStatementContent p {
+	color: #333333;
+	font-family: 'Noto Sans';
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 0;
+	line-height: 17px;
 }

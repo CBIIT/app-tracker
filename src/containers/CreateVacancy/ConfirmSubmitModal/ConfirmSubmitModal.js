@@ -30,26 +30,17 @@ const confirmSubmitModal = (props) => {
 	const handleOk = async () => {
 		setConfirmLoading(true);
 		const dataToSend = transformJsonToBackend(props.data);
-		console.log(
-			'[ConfirmSubmitModal] Data to send: ' +
-				JSON.stringify(dataToSend, null, 2)
-		);
-		// setTimeout(() => {
-		// 	setConfirmLoading(false);
-		// 	setCurrentStep(currentStep + 1);
-		// 	setSubmitted(true);
-		// }, 2000);
 		try {
-			const response = await axios.post(
+			await axios.post(
 				'/api/x_g_nci_app_tracke/vacancy/submit_vacancy',
 				dataToSend
 			);
-			console.log('[ConfirmSubmitModal] response.data: ' + response.data);
 			setConfirmLoading(false);
 			setCurrentStep(currentStep + 1);
 			setSubmitted(true);
 		} catch (error) {
 			setConfirmLoading(false);
+			// eslint-disable-next-line no-console
 			console.log('[ConfirmSubmitModal] error:' + error);
 		}
 	};

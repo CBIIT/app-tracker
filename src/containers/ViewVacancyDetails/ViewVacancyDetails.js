@@ -27,11 +27,6 @@ const viewVacancyDetails = () => {
 		})();
 	}, []);
 
-	console.log(
-		'[ViewVacancyDetails] vacancyDetails: ' +
-			JSON.stringify(vacancyDetails, null, 2)
-	);
-
 	isLoading ? null : extractAndTransformMandatoryStatements(vacancyDetails);
 
 	return isLoading ? (
@@ -51,7 +46,7 @@ const viewVacancyDetails = () => {
 					theme='bubble'
 				/>
 
-				<>
+				<div>
 					<h2 className='BoldHeading'>APPLICATION DOCUMENTS</h2>
 					<ul className='DocumentsList'>
 						{vacancyDetails.vacancy_documents.length > 0
@@ -75,7 +70,7 @@ const viewVacancyDetails = () => {
 								' of Recommendation'}
 						</li>
 					</ul>
-				</>
+				</div>
 			</div>
 			<Divider text='HHS and NIH are Equal Opportunity Employers' />
 			<div className='Content MandatoryStatements'>

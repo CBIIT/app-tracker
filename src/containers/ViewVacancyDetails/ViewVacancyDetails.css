@@ -7,6 +7,7 @@
 
 .MandatoryStatements h2 {
 	margin: 0;
+	font-family: var(--ff-primary);
 	font-weight: bold;
 }
 
