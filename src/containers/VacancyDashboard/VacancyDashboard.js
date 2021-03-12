@@ -12,7 +12,6 @@ import "./VacancyDashboard.css";
 import axios from "axios";
 
 const vacancyDashboard = () => {
-  // const [columns, setColumns] = useState([defaultColumns]);
   const [data, setData] = useState([]);
   let [url, setURL] = useState(
     "/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/preflight"
@@ -85,10 +84,6 @@ const vacancyDashboard = () => {
   return (
     <>
       <div style={{ backgroundColor: "#EDF1F4" }}>
-        {/* <PageHeader
-        breadcrumb={{ routes }}
-        style={{ marginLeft: "220px", display: "inline-block" }}
-      /> */}
         <div className="app-container">
           <Link to="/create-vacancy">
             <Button
@@ -266,78 +261,77 @@ const preFlightColumns = [
 ];
 
 const liveColumns = [
-  {
-    title: "Vacancy Title",
-    dataIndex: "title",
-  },
-  {
-    title: "Applicants",
-    dataIndex: "applicants",
-    sorter: {
-      compare: (a, b) => a.applicants - b.applicants,
-      multiple: 1,
-    },
-    defaultSortOrder: "ascend",
-  },
-  {
-    title: "Open Date",
-    dataIndex: "odate",
-    sorter: {
-      compare: (a, b) => {
-        new Date(a.odate) - new Date(b.odate);
-      },
-      multiple: 2,
-    },
-  },
-  {
-    title: "Close Date",
-    dataIndex: "cdate",
-    sorter: {
-      compare: (a, b) => new Date(a.cdate) - new Date(b.cdate),
-      multiple: 3,
-    },
-  },
-  {
-    title: "Actions",
-    key: "action",
-    width: "5px",
-    render: () => (
-      <Space size={0}>
-        <Button type="text" style={{ padding: "0px" }}>
-          <EditOutlined /> edit
-        </Button>
-        <Divider type="vertical" />
-        <Button type="text" style={{ padding: "0px" }}>
-          <LinkOutlined /> copy link
-        </Button>
-        <Divider type="vertical" />
-        <Button type="text" style={{ padding: "0px" }}>
-          <FieldTimeOutlined /> extend
-        </Button>
-        <Divider type="vertical" />
-        <Button type="text" style={{ padding: "0px" }}>
-          <MinusCircleOutlined /> close
-        </Button>
-      </Space>
-    ),
-  },
+	{
+		title: 'Vacancy Title',
+		dataIndex: 'title',
+	},
+	{
+		title: 'Applicants',
+		dataIndex: 'applicants',
+		sorter: {
+			compare: (a, b) => a.applicants - b.applicants,
+			multiple: 1,
+		},
+		defaultSortOrder: 'ascend',
+	},
+	{
+		title: 'Open Date',
+		dataIndex: 'odate',
+		sorter: {
+			compare: (a, b) => {
+				new Date(a.odate) - new Date(b.odate);
+			},
+			multiple: 2,
+		},
+	},
+	{
+		title: 'Close Date',
+		dataIndex: 'cdate',
+		sorter: {
+			compare: (a, b) => new Date(a.cdate) - new Date(b.cdate),
+			multiple: 3,
+		},
+	},
+	{
+		title: 'Actions',
+		key: 'action',
+		width: '5px',
+		render: () => (
+			<Space size={0}>
+				<Button type='text' style={{ padding: '0px' }}>
+					<EditOutlined /> edit
+				</Button>
+				<Divider type='vertical' />
+				<Button type='text' style={{ padding: '0px' }}>
+					<LinkOutlined /> copy link
+				</Button>
+				<Divider type='vertical' />
+				<Button type='text' style={{ padding: '0px' }}>
+					<FieldTimeOutlined /> extend
+				</Button>
+				<Divider type='vertical' />
+				<Button type='text' style={{ padding: '0px' }}>
+					<MinusCircleOutlined /> close
+				</Button>
+			</Space>
+		),
+	},
 ];
 
 const closedColumns = [
-  {
-    title: "Vacancy Title",
-    dataIndex: "title",
-  },
-  {
-    title: "Applicants",
-    dataIndex: "applicants",
-    sorter: {
-      compare: (a, b) => a.applicants - b.applicants,
-      multiple: 1,
-    },
-    defaultSortOrder: "ascend",
-  },
-
+	{
+		title: 'Vacancy Title',
+		dataIndex: 'title',
+	},
+	{
+		title: 'Applicants',
+		dataIndex: 'applicants',
+		sorter: {
+			compare: (a, b) => a.applicants - b.applicants,
+			multiple: 1,
+		},
+		defaultSortOrder: 'ascend',
+	},
   {
     title: "Close Date",
     dataIndex: "close_date",
@@ -362,16 +356,5 @@ const closedColumns = [
     ),
   },
 ];
-
-// const routes = [
-//   {
-//     path: "index",
-//     breadcrumbName: "Home",
-//   },
-//   {
-//     path: "first",
-//     breadcrumbName: "Vacancy Dashboard",
-//   },
-// ];
 
 export default vacancyDashboard;

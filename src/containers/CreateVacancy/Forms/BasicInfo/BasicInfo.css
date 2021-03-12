@@ -1,50 +1,46 @@
 .DatePickerContainer {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
 }
 
 .DatePicker {
-    flex-shrink: 0;
-    flex-grow: 1;
-    width: 320px;
-}
-
-.SmallText {
-    height: 22px;
-    font-family: "Noto Sans";
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: 22px;
-    padding: 0px;
-    margin: 0px;
+	flex-shrink: 0;
+	flex-grow: 1;
+	width: 320px;
 }
 
 .Slider {
-    flex: 0 1;
-    width: 182px;
+	flex: 0 1;
+	width: 182px;
 }
 
 .ant-checkbox-wrapper {
-    color: rgba(0, 0, 0, 0.65);
-    font-family: "Noto Sans";
-    font-size: 14px;
+	color: rgba(0, 0, 0, 0.65);
+	font-family: 'Noto Sans';
+	font-size: 14px;
 }
 
-.ant-form-item-label>label {
-    color: #333333;
-    font-family: "Noto Sans";
-    font-size: 16px;
+.ant-form-item-label > label {
+	color: #333333;
+	font-family: 'Noto Sans';
+	font-size: 16px;
 }
 
 .Radio {
-    height: 22px;
-    width: 248.47px;
-    color: rgba(0, 0, 0, 0.65);
-    font-family: "Noto Sans";
-    font-size: 14px;
-    letter-spacing: 0.3px;
-    line-height: 22px;
+	height: 22px;
+	width: 248.47px;
+	color: rgba(0, 0, 0, 0.65);
+	font-family: 'Noto Sans';
+	font-size: 14px;
+	letter-spacing: 0.3px;
+	line-height: 22px;
+}
+
+.QuillEditor {
+	height: 400px;
+	padding-bottom: 10px;
+	margin-bottom: 30px;
 }
