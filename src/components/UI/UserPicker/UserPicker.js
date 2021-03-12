@@ -49,7 +49,6 @@ const referenceField = ({ value = {}, onChange }) => {
 		try {
 			let res = await axios.get(url);
 			let data = res.data.result;
-			console.log('Data: ' + JSON.stringify(data));
 			if (data.length !== 0) {
 				options = data;
 				hasMore = true;
@@ -62,7 +61,6 @@ const referenceField = ({ value = {}, onChange }) => {
 	};
 
 	const buildUrl = (searchQuery, offset) => {
-		console.log('Offset: ' + offset);
 		const url = ['/api/x_g_nci_app_tracke/user/get_user_list?sysparm_query='];
 		// const url = ['/api/now/table/x_g_nci_app_tracke_user?sysparm_query='];
 		const responseFields = ['sys_id', 'name', 'email', 'organization'];

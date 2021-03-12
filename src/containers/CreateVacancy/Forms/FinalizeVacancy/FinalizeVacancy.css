@@ -49,7 +49,7 @@
 }
 
 .ListItemFalse:before {
-	content: 'x';
+	content: '×';
 	padding-right: 5px;
 }
 

@@ -9,6 +9,10 @@
 	margin-inline: auto;
 }
 
+.ContentContainer h1 {
+	margin: 0;
+}
+
 .RouteContent {
 	background-color: #ffffff;
 }

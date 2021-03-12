@@ -32,13 +32,13 @@ const mandatoryStatements = (props) => {
 			throw new Error(
 				'One active mandatory statement with content is required.'
 			);
-		else
-			formInstance.setFields([
-				{
-					name: 'mandatoryStatements',
-					errors: '',
-				},
-			]);
+		// else
+		// 	formInstance.setFields([
+		// 		{
+		// 			name: 'mandatoryStatements',
+		// 			errors: '',
+		// 		},
+		// 	]);
 	};
 
 	return (
@@ -60,10 +60,10 @@ const mandatoryStatements = (props) => {
 				label='Equal Opportunity Employer'
 				formInstance={formInstance}
 				onToggle={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 				onBlur={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
 
@@ -72,10 +72,10 @@ const mandatoryStatements = (props) => {
 				label='Standards of Conduct/Financial Disclosure'
 				formInstance={formInstance}
 				onToggle={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 				onBlur={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
 
@@ -84,10 +84,10 @@ const mandatoryStatements = (props) => {
 				label='Foreign Education'
 				formInstance={formInstance}
 				onToggle={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 				onBlur={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
 
@@ -96,10 +96,10 @@ const mandatoryStatements = (props) => {
 				label='Reasonable Accommodation'
 				formInstance={formInstance}
 				onToggle={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 				onBlur={() => {
-					formInstance.validateFields();
+					formInstance.validateFields(['mandatoryStatements']);
 				}}
 			/>
 			<Form.Item

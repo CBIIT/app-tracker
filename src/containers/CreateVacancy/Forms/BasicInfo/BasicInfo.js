@@ -8,7 +8,7 @@ import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
-const BasicInformation = (props) => {
+const basicInformation = (props) => {
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
 
@@ -71,21 +71,17 @@ const BasicInformation = (props) => {
 			name='BasicInfo'
 			form={formInstance}
 			initialValues={initialValues}
-			// 	onValuesChange={(_, allValues) => {
-			// 		props.setBasicInfo(allValues);
-			// 	}
-			// }
 		>
 			<Form.Item
-				label='Position Title'
-				name='positionTitle'
+				label='Vacancy Title'
+				name='title'
 				rules={[{ required: true, message: 'Please enter a title' }]}
 			>
 				<Input placeholder='Please enter' />
 			</Form.Item>
 
 			<Form.Item
-				label='Position Description'
+				label='Vacancy Description'
 				name='description'
 				rules={[{ validator: validateDescription }]}
 			>
@@ -136,4 +132,4 @@ const BasicInformation = (props) => {
 	);
 };
 
-export default BasicInformation;
+export default basicInformation;

@@ -1,7 +1,9 @@
 @import '~antd/dist/antd.less';
 
 :root {
-	--ff-primary: 'Noto Sans';
+	--ff-heading: 'Montserrat', sans-serif;
+	--ff-primary: 'Noto Sans', sans-serif;
+	--secondary-bg-color: #edf1f4;
 	--color-primary: #015ea2;
 	--text-dark: rgba(0, 0, 0, 0.85);
 	--text-light: rgba(0, 0, 0, 0.65);
@@ -15,22 +17,21 @@
 	padding: 0;
 }
 
-body,
 h1,
 h2,
 h3,
-p {
-	font-family: var(--ff-primary);
-	margin: 0;
-	line-height: 1.6;
+h4,
+h5 {
+	font-family: var(--ff-heading);
 	color: var(--text-dark);
 }
 
-h1,
-h2,
-h3 {
-	line-height: 1;
-	font-weight: 900;
+body,
+p {
+	margin: 0;
+	font-family: var(--ff-primary);
+	color: var(--text-dark);
+	line-height: 24px;
 }
 
 h2,
@@ -39,18 +40,19 @@ p {
 }
 
 h1 {
+	height: 28px;
 	font-size: 20px;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 1.2;
 }
 
 h2 {
-	font-family: 'Montserrat Medium';
 	font-size: 16px;
 	font-weight: 500;
 }
 
 h3 {
-	font-family: 'Montserrat';
-	color: #000000;
 	font-size: 18px;
 	font-weight: 500;
 	margin-bottom: 0.5em;
@@ -59,8 +61,11 @@ h3 {
 .Content {
 	margin-left: auto;
 	margin-right: auto;
+	letter-spacing: 0;
 	background-color: white;
 	width: min(95%, 1440px);
+	padding-top: 24px;
+	padding-bottom: 24px;
 }
 
 img {

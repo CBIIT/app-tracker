@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Modal, Steps } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
+import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
+import axios from 'axios';
 
 import './ConfirmSubmitModal.css';
 
@@ -27,11 +29,20 @@ const confirmSubmitModal = (props) => {
 
 	const handleOk = async () => {
 		setConfirmLoading(true);
-		setTimeout(() => {
+		const dataToSend = transformJsonToBackend(props.data);
+		try {
+			await axios.post(
+				'/api/x_g_nci_app_tracke/vacancy/submit_vacancy',
+				dataToSend
+			);
 			setConfirmLoading(false);
 			setCurrentStep(currentStep + 1);
 			setSubmitted(true);
-		}, 2000);
+		} catch (error) {
+			setConfirmLoading(false);
+			// eslint-disable-next-line no-console
+			console.log('[ConfirmSubmitModal] error:' + error);
+		}
 	};
 
 	const handleClose = () => {
@@ -50,7 +61,7 @@ const confirmSubmitModal = (props) => {
 		</Steps>
 	);
 
-	let modal = (
+	return !submitted ? (
 		<Modal
 			title={stepper}
 			visible={props.visible}
@@ -70,31 +81,25 @@ const confirmSubmitModal = (props) => {
 				</p>
 			</div>
 		</Modal>
+	) : (
+		<Modal
+			title={stepper}
+			visible={props.visible}
+			onOk={handleClose}
+			okButtonProps={{ ghost: true }}
+			confirmLoading={confirmLoading}
+			cancelButtonProps={{ style: { display: 'none' } }}
+			onCancel={props.onCancel}
+			closable={false}
+			className='ModalConfirmed'
+			okText='Close'
+		>
+			<div className='Confirmed'>
+				<CheckCircleFilled className='ConfirmedIcon' />
+				<h2>Vacancy finalized</h2>
+			</div>
+		</Modal>
 	);
-
-	if (submitted) {
-		modal = (
-			<Modal
-				title={stepper}
-				visible={props.visible}
-				onOk={handleClose}
-				okButtonProps={{ ghost: true }}
-				confirmLoading={confirmLoading}
-				cancelButtonProps={{ style: { display: 'none' } }}
-				onCancel={props.onCancel}
-				closable={false}
-				className='ModalConfirmed'
-				okText='Close'
-			>
-				<div className='Confirmed'>
-					<CheckCircleFilled className='ConfirmedIcon' />
-					<h2>Vacancy finalized</h2>
-				</div>
-			</Modal>
-		);
-	}
-
-	return modal;
 };
 
 export default confirmSubmitModal;
