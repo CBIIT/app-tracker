@@ -37,11 +37,6 @@ const editableTable = (props) => {
 				"Atleast one committee member must be of the role 'Chair'"
 			);
 		else form.setFields([{ name: 'vacancyCommitteeValidator', error: '' }]);
-
-		// console.log(
-		// 	'Number of chairs: ' +
-		// 		JSON.stringify(numberOfChairMembers.length, null, 2)
-		// );
 	};
 
 	const getInputType = (dataIndex) => {
@@ -205,12 +200,7 @@ const editableTable = (props) => {
 	});
 
 	return (
-		<Form
-			form={form}
-			component={false}
-			name={props.name}
-			// onValuesChange={() => form.validateFields(['vacancyCommitteeValidator'])}
-		>
+		<Form form={form} component={false} name={props.name}>
 			<Table
 				locale={{
 					emptyText:
@@ -239,7 +229,10 @@ const editableTable = (props) => {
 			<Form.Item
 				name='vacancyCommitteeValidator'
 				rules={[{ validator: validateCommittee }]}
-			></Form.Item>
+			>
+				{/* Supress antd warning about using name */}
+				<input style={{ display: 'none' }} />
+			</Form.Item>
 		</Form>
 	);
 };
