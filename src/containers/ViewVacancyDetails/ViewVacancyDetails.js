@@ -27,8 +27,6 @@ const viewVacancyDetails = () => {
 		})();
 	}, []);
 
-	isLoading ? null : extractAndTransformMandatoryStatements(vacancyDetails);
-
 	return isLoading ? (
 		<> </>
 	) : (
@@ -76,7 +74,7 @@ const viewVacancyDetails = () => {
 			<div className='Content MandatoryStatements'>
 				{extractAndTransformMandatoryStatements(vacancyDetails).map(
 					(statement, index) =>
-						statement.display ? (
+						statement.display == 1 ? (
 							<div key={index}>
 								<h2>{statement.label.toUpperCase()}</h2>
 								<ReactQuill
