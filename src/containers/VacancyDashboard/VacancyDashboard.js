@@ -7,6 +7,8 @@ import {
 	LinkOutlined,
 	FieldTimeOutlined,
 	MinusCircleOutlined,
+	UserOutlined,
+	FileTextOutlined,
 } from '@ant-design/icons';
 import './VacancyDashboard.css';
 import axios from 'axios';
@@ -288,7 +290,7 @@ const liveColumns = [
 	},
 	{
 		title: 'Close Date',
-		dataIndex: 'cdate',
+		dataIndex: 'close_date',
 		sorter: {
 			compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 			multiple: 3,
@@ -348,11 +350,11 @@ const closedColumns = [
 		render: () => (
 			<Space size='middle'>
 				<Button type='text'>
-					<EditOutlined /> edit
+					<UserOutlined /> view applicants
 				</Button>
 				<Divider type='vertical' />
 				<Button type='text'>
-					<DeleteOutlined /> remove
+					<FileTextOutlined /> view vacancy
 				</Button>
 			</Space>
 		),
