@@ -53,7 +53,7 @@ const viewVacancyDetails = () => {
 							? vacancyDetails.vacancy_documents.map((document, index) => (
 									<li key={index}>
 										{document.title.value +
-											(document.is_optional ? ' (optional)' : '')}
+											(document.is_optional.value == 1 ? ' (optional)' : '')}
 									</li>
 							  ))
 							: null}
