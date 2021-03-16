@@ -28,7 +28,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements) => {
 		show_eoes: mandatoryStatements.equalOpportunityEmployer,
 		show_socs: mandatoryStatements.standardsOfConduct,
 		show_fes: mandatoryStatements.foreignEducation,
-		show_ras: mandatoryStatements.standardsOfConduct,
+		show_ras: mandatoryStatements.reasonableAccomodation,
 	};
 
 	return transformedBasicInfo;

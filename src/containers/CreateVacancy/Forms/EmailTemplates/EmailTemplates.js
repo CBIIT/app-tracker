@@ -65,7 +65,10 @@ const emailTemplates = (props) => {
 			<Form.Item
 				name='emailTemplatesValidator'
 				rules={[{ validator: validateEmailTemplates }]}
-			></Form.Item>
+			>
+				{/* Supress antd warning about using name */}
+				<input style={{ display: 'none' }} />
+			</Form.Item>
 		</Form>
 	);
 };

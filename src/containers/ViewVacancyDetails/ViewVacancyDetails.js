@@ -27,8 +27,6 @@ const viewVacancyDetails = () => {
 		})();
 	}, []);
 
-	isLoading ? null : extractAndTransformMandatoryStatements(vacancyDetails);
-
 	return isLoading ? (
 		<> </>
 	) : (
@@ -53,7 +51,7 @@ const viewVacancyDetails = () => {
 							? vacancyDetails.vacancy_documents.map((document, index) => (
 									<li key={index}>
 										{document.title.value +
-											(document.is_optional ? ' (optional)' : '')}
+											(document.is_optional.value == 1 ? ' (optional)' : '')}
 									</li>
 							  ))
 							: null}
@@ -76,7 +74,7 @@ const viewVacancyDetails = () => {
 			<div className='Content MandatoryStatements'>
 				{extractAndTransformMandatoryStatements(vacancyDetails).map(
 					(statement, index) =>
-						statement.display ? (
+						statement.display == 1 ? (
 							<div key={index}>
 								<h2>{statement.label.toUpperCase()}</h2>
 								<ReactQuill

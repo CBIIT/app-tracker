@@ -37,7 +37,7 @@ const home = () => {
 	useEffect(() => {
 		(async () => {
 			const response = await axios.get(
-				'/api/x_g_nci_app_tracke/vacancy/get_vacancy_list/live'
+				'/api/x_g_nci_app_tracke/vacancy/get_homepage_vacancy_list'
 			);
 			setData(transformData(response.data.result));
 			setIsLoading(false);

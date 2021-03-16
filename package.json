@@ -4,7 +4,7 @@
 	"description": "App Tracker",
 	"main": "index.js",
 	"scripts": {
-		"start": "node_modules/.bin/webpack-dev-server --config=./webpack/webpack.dev.config.js",
+		"start": "webpack-dev-server --config=./webpack/webpack.dev.config.js",
 		"build": "node node_modules/webpack/bin/webpack.js --progress --config webpack/webpack.prod.config.js --bail",
 		"postbuild": "node webpack/servicenow.postbuild.js"
 	},
