@@ -1,58 +1,95 @@
-import React from 'react';
-// import { Link } from 'react-router-dom';
-import { Button, Menu, Dropdown, Icon } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Menu, Dropdown } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 import oktaIcon from '../../../assets/images/okta-login-icon.png';
+import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 
 import './Login.css';
 
-// ('/api/x_g_nci_app_tracke/login/check_auth')
-
-const getOktaIcon = <img src={oktaIcon} />;
-
 const login = () => {
+	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
+	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [userFirstName, setUserFirstName] = useState();
+	const [userLastInitial, setUserLastInitial] = useState();
+
+	useEffect(() => {
+		(async () => {
+			const response = await axios.get(
+				'/api/x_g_nci_app_tracke/login/check_auth'
+			);
+			setItrustGlideSsoId(response.data.result.itrust_idp);
+			setOktaGlideSsoId(response.data.result.okta_idp);
+			setUserFirstName(response.data.result.user.first_name);
+			setUserLastInitial(response.data.result.user.last_initial);
+			setIsLoggedIn(response.data.result.logged_in);
+		})();
+	}, []);
+
 	const handleMenuClick = (e) => {
 		switch (e.key) {
 			case 'itrust':
 				location.href =
 					'/nav_to.do?uri=' +
 					encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
-					'&glide_sso_id=14a8eb8cdb5b320054d8ff621f9619d3';
+					'&glide_sso_id=' +
+					iTrustGlideSsoId;
 				break;
 			case 'okta':
 				location.href =
 					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
-					'&glide_sso_id=7fa8fb711b6e6050e541631ee54bcb69';
+					encodeURIComponent('/nci-vms.do') +
+					'&glide_sso_id=' +
+					oktaGlideSsoId;
+				break;
+			case 'logout':
+				location.href = '/logout.do';
 				break;
 			default:
 				return;
 		}
 	};
 
-	const menu = (
+	const loginMenu = (
 		<Menu className='LoginMenu' onClick={handleMenuClick}>
-			<Menu.Item key='okta' icon={<Icon component={getOktaIcon} />}>
-				{/* <img src={oktaIcon} /> */}
-				{/* {getOktaIcon} */}
+			<Menu.Item
+				key='okta'
+				icon={<img className='CustomIcon' src={oktaIcon} />}
+			>
 				Login with Okta
 			</Menu.Item>
-			<Menu.Item key='itrust' icon={<UserOutlined />}>
+			<Menu.Item
+				key='itrust'
+				icon={<img className='CustomIcon' src={iTrustIcon} />}
+			>
 				Login with NIH iTrust
 			</Menu.Item>
 		</Menu>
 	);
 
-	// <Link to='/vacancy-dashboard'>
-	return (
-		<Dropdown className='Login' overlay={menu}>
+	const logoutMenu = (
+		<Menu className='LoginMenu' onClick={handleMenuClick}>
+			<Menu.Item key='logout'>Logout</Menu.Item>
+		</Menu>
+	);
+
+	return isLoggedIn ? (
+		<Dropdown className='Login' overlay={logoutMenu}>
+			<Button type='link'>
+				<UserOutlined />
+				{userFirstName + ' ' + userLastInitial + '.'}
+				<DownOutlined />
+			</Button>
+		</Dropdown>
+	) : (
+		<Dropdown className='Login' overlay={loginMenu}>
 			<Button type='link'>
 				<UserOutlined /> Login <DownOutlined />
 			</Button>
 		</Dropdown>
 	);
-	// </Link>
 };
 
 export default login;

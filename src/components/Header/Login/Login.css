@@ -16,3 +16,9 @@
 .LoginMenu .ant-dropdown-menu-item {
 	color: var(--color-primary);
 }
+
+.CustomIcon {
+	height: 32px;
+	display: inline-block;
+	padding: 5px;
+}
