@@ -1,35 +1,30 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { Button, Menu, Dropdown } from 'antd';
+// import { Link } from 'react-router-dom';
+import { Button, Menu, Dropdown, Icon } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
+
+import oktaIcon from '../../../assets/images/okta-login-icon.png';
 
 import './Login.css';
 
-const okta = () => {
-	location.href =
-		'nav_to.do?uri=' +
-		encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
-		'&glide_sso_id=7fa8fb711b6e6050e541631ee54bcb69';
-};
+// ('/api/x_g_nci_app_tracke/login/check_auth')
+
+const getOktaIcon = <img src={oktaIcon} />;
 
 const login = () => {
-	const history = useHistory();
-
 	const handleMenuClick = (e) => {
 		switch (e.key) {
 			case 'itrust':
 				location.href =
-					'nav_to.do?uri=' +
+					'/nav_to.do?uri=' +
 					encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
 					'&glide_sso_id=14a8eb8cdb5b320054d8ff621f9619d3';
 				break;
 			case 'okta':
-				console.log('[Login]: ' + window.location);
-				history.push(
-					'nav_to.do?uri=' +
-						encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
-						'&glide_sso_id=7fa8fb711b6e6050e541631ee54bcb69'
-				);
+				location.href =
+					'/nav_to.do?uri=' +
+					encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
+					'&glide_sso_id=7fa8fb711b6e6050e541631ee54bcb69';
 				break;
 			default:
 				return;
@@ -37,25 +32,25 @@ const login = () => {
 	};
 
 	const menu = (
-		<Menu onClick={handleMenuClick}>
-			<Menu.Item key='itrust' icon={<UserOutlined />}>
-				iTrust
+		<Menu className='LoginMenu' onClick={handleMenuClick}>
+			<Menu.Item key='okta' icon={<Icon component={getOktaIcon} />}>
+				{/* <img src={oktaIcon} /> */}
+				{/* {getOktaIcon} */}
+				Login with Okta
 			</Menu.Item>
-			<Menu.Item key='okta' icon={<UserOutlined />}>
-				okta
+			<Menu.Item key='itrust' icon={<UserOutlined />}>
+				Login with NIH iTrust
 			</Menu.Item>
 		</Menu>
 	);
 
 	// <Link to='/vacancy-dashboard'>
 	return (
-		<div className='Login'>
-			<Dropdown overlay={menu}>
-				<Button type='primary' ghost>
-					<UserOutlined /> Login <DownOutlined />
-				</Button>
-			</Dropdown>
-		</div>
+		<Dropdown className='Login' overlay={menu}>
+			<Button type='link'>
+				<UserOutlined /> Login <DownOutlined />
+			</Button>
+		</Dropdown>
 	);
 	// </Link>
 };
