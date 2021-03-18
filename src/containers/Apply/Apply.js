@@ -4,6 +4,10 @@ import { Steps, Button, Result, message } from 'antd';
 import FormContext, { defaulfFormData } from './Context';
 import axios from 'axios';
 
+import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
+import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
+import ApplicantReferences from './Forms/References/ApplicantReferences.js';
+
 import './Apply.css';
 
 const { Step } = Steps;
@@ -55,17 +59,17 @@ const uploadAttachments = (recordSysId, attachmentGroups) => {
 const steps = [
 	{
 		title: 'Basic Information',
-		content: null,
+		content: <ApplicantBasicInfo />,
 		description: 'Personal information about applicant',
 	},
 	{
 		title: 'Address',
-		content: null,
+		content: <ApplicantAddress />,
 		description: 'Mailing and business address',
 	},
 	{
 		title: 'References',
-		content: null,
+		content: <ApplicantReferences />,
 		description: 'References to support the application',
 	},
 	{
