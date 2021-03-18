@@ -8,6 +8,7 @@ import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
+import Apply from './containers/Apply/Apply';
 
 const app = () => {
 	return (
@@ -18,6 +19,7 @@ const app = () => {
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
 					<Route path='/vacancy/:sysId' component={ViewVacancyDetails} />
 					<Route path='/register-okta' component={RegisterOkta} />
+					<Route path='/apply' component={Apply} />
 					<Route path='/' exact component={Home} />
 				</Switch>
 			</Layout>
