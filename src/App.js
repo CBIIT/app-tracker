@@ -7,8 +7,9 @@ import Home from './containers/Home/Home';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
+import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
 
-function App() {
+const app = () => {
 	return (
 		<>
 			<Layout>
@@ -16,11 +17,12 @@ function App() {
 					<Route path='/create-vacancy' component={CreateVacancy} />
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
 					<Route path='/vacancy/:sysId' component={ViewVacancyDetails} />
+					<Route path='/register-okta' component={RegisterOkta} />
 					<Route path='/' exact component={Home} />
 				</Switch>
 			</Layout>
 		</>
 	);
-}
+};
 
-export default hot(module)(App);
+export default hot(module)(app);
