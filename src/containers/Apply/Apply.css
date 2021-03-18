@@ -1,0 +1,45 @@
+.ApplyContainer {
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+	padding-top: 20px;
+}
+
+.StepNavigation {
+	flex: 0 1 304px;
+}
+
+.StepContent {
+	width: 100%;
+	min-height: 780px;
+}
+
+.StepContentContainer {
+	flex: 2 2 768px;
+	padding-inline: 29px;
+	padding-bottom: 40px;
+	width: 100%;
+}
+
+.container-grid {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+}
+
+.step-navigation {
+	height: 368px;
+	width: 344px;
+}
+
+.step-content {
+	min-height: 650px;
+	width: 768px;
+	padding: 20px 30px 20px 30px;
+}
+
+.steps-action {
+	display: flex;
+	justify-content: space-between;
+}

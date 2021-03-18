@@ -1,4 +1,5 @@
 import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 const header = (props) => {
@@ -18,7 +19,9 @@ const header = (props) => {
 				</div>
 			</div>
 			<div className='ButtonContainer'>
-				<Button type='primary'>Sign In and Apply</Button>
+				<Link to='/apply'>
+					<Button type='primary'>Sign In and Apply</Button>
+				</Link>
 			</div>
 		</div>
 	);
