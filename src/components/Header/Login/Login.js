@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Menu, Dropdown } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -15,8 +16,11 @@ const login = () => {
 	const [userFirstName, setUserFirstName] = useState();
 	const [userLastInitial, setUserLastInitial] = useState();
 
+	const history = useHistory();
+
 	useEffect(() => {
 		(async () => {
+			// axios.defaults.auth = {};
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/login/check_auth'
 			);
@@ -44,6 +48,9 @@ const login = () => {
 					'&glide_sso_id=' +
 					oktaGlideSsoId;
 				break;
+			case 'register-okta':
+				history.push('/register-okta');
+				break;
 			case 'logout':
 				location.href = '/logout.do';
 				break;
@@ -65,6 +72,13 @@ const login = () => {
 				icon={<img className='CustomIcon' src={iTrustIcon} />}
 			>
 				Login with NIH iTrust
+			</Menu.Item>
+			<span className='NewUserSpan'>New user?</span>
+			<Menu.Item
+				key='register-okta'
+				icon={<img className='CustomIcon' src={oktaIcon} />}
+			>
+				Register for Okta
 			</Menu.Item>
 		</Menu>
 	);

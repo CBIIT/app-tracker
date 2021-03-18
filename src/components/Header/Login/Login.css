@@ -22,3 +22,8 @@
 	display: inline-block;
 	padding: 5px;
 }
+
+.NewUserSpan {
+	padding-left: 12px;
+	color: var(--text-light);
+}
