@@ -7,13 +7,6 @@ const applicantReferences = (props) => {
 	return (
 		<>
 			<div className='form-container'>
-				<div className='form-desc'>
-					<h3 className='form-title'>References</h3>
-					<p className='title-desc'>
-						Please provide three references that can submit a recommendation on
-						your behalf.
-					</p>
-				</div>
 				<div className='collapse-div'>
 					<Form>
 						<Collapse accordion='true' defaultActiveKey={['1']}>

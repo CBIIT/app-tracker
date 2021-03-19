@@ -1,26 +1,31 @@
-import {
-	Form,
-	Input,
-	Slider,
-	DatePicker,
-	InputNumber,
-	Button,
-	Select,
-} from 'antd';
+import { useEffect, useContext } from 'react';
+import { Form, Input } from 'antd';
+
+import FormContext from '../../Context';
 import './ApplicantAddress.css';
 
-const onSubmit = (values) => {
-	console.log('submitting:', values.user);
-};
-
 const ApplicantAddress = () => {
+	const [formInstance] = Form.useForm();
+	const contextValue = useContext(FormContext);
+	const { formData } = contextValue;
+
+	useEffect(() => {
+		const { setCurrentFormInstance } = contextValue;
+		setCurrentFormInstance(formInstance);
+	}, []);
+
 	return (
 		<div className='form-container'>
-			<Form layout='vertical' name='Address' onFinish={onSubmit}>
-				<h3 className='form-title'>Address</h3>
+			<Form
+				form={formInstance}
+				initialValues={formData.address}
+				requiredMark={false}
+				layout='vertical'
+				name='address'
+			>
 				<div className='flex-container'>
 					<Form.Item
-						name={['user', 'address', 'one']}
+						name='address'
 						label='Address Line One'
 						rules={[
 							{
@@ -31,13 +36,13 @@ const ApplicantAddress = () => {
 					>
 						<Input placeholder='Please Enter' />
 					</Form.Item>
-					<Form.Item name={['user', 'address', 'two']} label='Address Line Two'>
+					<Form.Item name='address2' label='Address Line Two'>
 						<Input placeholder='Please Enter' />
 					</Form.Item>
 				</div>
 				<div className='flex-container'>
 					<Form.Item
-						name={['user', 'city']}
+						name='city'
 						label='City'
 						rules={[
 							{
@@ -49,7 +54,7 @@ const ApplicantAddress = () => {
 						<Input placeholder='Please Enter' />
 					</Form.Item>
 					<Form.Item
-						name={['user', 'state/province']}
+						name='stateProvince'
 						label='State/Province'
 						rules={[
 							{
@@ -63,7 +68,7 @@ const ApplicantAddress = () => {
 				</div>
 				<div className='flex-container'>
 					<Form.Item
-						name={['user', 'country']}
+						name='country'
 						label='Country'
 						rules={[
 							{
@@ -75,7 +80,7 @@ const ApplicantAddress = () => {
 						<Input placeholder='Please Enter' />
 					</Form.Item>
 					<Form.Item
-						name={['user', 'zip']}
+						name='zip'
 						label='Zip / Postal Code'
 						rules={[
 							{

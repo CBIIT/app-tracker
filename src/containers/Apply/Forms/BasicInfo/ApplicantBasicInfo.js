@@ -1,13 +1,23 @@
-import { Form, Input, Slider, Button, Select, Radio } from 'antd';
+import { useContext, useEffect } from 'react';
+import { Form, Input, Select, Radio } from 'antd';
 import './ApplicantBasicInfo.css';
+import FormContext from '../../Context';
 
 const { Option } = Select;
 
 const ApplicantBasicInfo = () => {
+	const [formInstance] = Form.useForm();
+	const contextValue = useContext(FormContext);
+	const { formData } = contextValue;
+
+	useEffect(() => {
+		const { setCurrentFormInstance } = contextValue;
+		setCurrentFormInstance(formInstance);
+	}, []);
+
 	const phonePrefixSelector = (
 		<Form.Item name='phonePrefix' noStyle>
 			<Select
-				defaultValue='+1'
 				style={{
 					width: 70,
 				}}
@@ -19,10 +29,9 @@ const ApplicantBasicInfo = () => {
 		</Form.Item>
 	);
 
-	const busPhonePrefixSelector = (
-		<Form.Item name='busPhonePrefix' noStyle>
+	const businessPhonePrefixSelector = (
+		<Form.Item name='businessPhonePrefix' noStyle>
 			<Select
-				defaultValue='+1'
 				style={{
 					width: 70,
 				}}
@@ -33,28 +42,18 @@ const ApplicantBasicInfo = () => {
 			</Select>
 		</Form.Item>
 	);
-
-	const onSubmit = (values) => {
-		console.log('submitting:', values);
-	};
 
 	return (
 		<Form
+			form={formInstance}
+			initialValues={formData.basicInfo}
+			requiredMark={false}
 			layout='vertical'
-			name='BasicInfo'
 			className='basicInfoForm'
-			onFinish={onSubmit}
 		>
-			<div className='form-desc'>
-				<h3 className='form-title'>Basic Information</h3>
-				<p className='title-desc'>
-					Let’s start with some basic questions. You’ll have a chance to review
-					everything before submitting.
-				</p>
-			</div>
 			<div className='names'>
 				<Form.Item
-					name={['user', 'name', 'first']}
+					name='firstName'
 					label='First Name'
 					rules={[
 						{
@@ -65,11 +64,11 @@ const ApplicantBasicInfo = () => {
 				>
 					<Input placeholder='Please Enter' />
 				</Form.Item>
-				<Form.Item name={['user', 'name', 'middle']} label='Middle Name'>
+				<Form.Item name='middleName' label='Middle Name'>
 					<Input placeholder='Please Enter' />
 				</Form.Item>
 				<Form.Item
-					name={['user', 'name', 'last']}
+					name='lastName'
 					label='Last Name'
 					rules={[
 						{
@@ -83,7 +82,7 @@ const ApplicantBasicInfo = () => {
 			</div>
 			<div className='emailDiv'>
 				<Form.Item
-					name={['user', 'email']}
+					name={'email'}
 					label='Email Address'
 					rules={[
 						{
@@ -98,7 +97,7 @@ const ApplicantBasicInfo = () => {
 			</div>
 			<div className='phones'>
 				<Form.Item
-					name={['user', 'phone-number']}
+					name='phone'
 					label='Phone Number'
 					rules={[
 						{
@@ -113,20 +112,17 @@ const ApplicantBasicInfo = () => {
 						placeholder='(123) 456-7890'
 					/>
 				</Form.Item>
-				<Form.Item
-					name={['user', 'business-number']}
-					label='Business Phone Number'
-				>
+				<Form.Item name='business_phone' label='Business Phone Number'>
 					<Input
 						type='tel'
-						addonBefore={busPhonePrefixSelector}
+						addonBefore={businessPhonePrefixSelector}
 						placeholder='(123) 456-7890'
 					/>
 				</Form.Item>
 			</div>
 			<div className='degree'>
 				<Form.Item
-					name={['user', 'degree']}
+					name='hasDegree'
 					label='Do you possess a Doctorate Degree?'
 					rules={[
 						{
