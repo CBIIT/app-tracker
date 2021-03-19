@@ -3,10 +3,13 @@
 	color: rgb(37, 96, 151) !important;
 }
 
+<<<<<<< HEAD
 .ant-tabs-tab.ant-tabs-tab-active p {
 	color: rgb(37, 96, 151);
 }
 
+=======
+>>>>>>> origin/dev
 .ant-tabs-tab-btn[aria-selected='true'] {
 	color: rgb(37, 96, 151) !important;
 }
@@ -16,11 +19,18 @@
 }
 
 .ant-tabs-tab-btn {
+<<<<<<< HEAD
   font-size: 20px !important;
   width: 180px;
   height: 104px;
   margin-right: auto;
 
+=======
+	font-size: 20px !important;
+	width: 180px;
+	height: 104px;
+	margin-right: 0px;
+>>>>>>> origin/dev
 }
 
 .ant-tabs-tab:hover {
@@ -30,12 +40,15 @@
 	color: rgb(37, 96, 151) !important;
 }
 
+<<<<<<< HEAD
 .ant-tabs-ink-bar {
   position: absolute;
   background: rgb(37, 96, 151) !important;
   pointer-events: none;
 }
 
+=======
+>>>>>>> origin/dev
 .num-count {
 	font-size: 32px;
 	font-family: 'Montserrat';
@@ -50,6 +63,7 @@
 	margin-top: -15px;
 }
 
+<<<<<<< HEAD
 .tab-letters > * {
   text-align: center;
   font-family: "Montserrat" !important;
@@ -82,6 +96,26 @@
 	background-color: rgb(37, 96, 151) !important;
 }
 
+=======
+.tab-letters {
+	text-align: center;
+	font-family: 'Montserrat' !important;
+}
+
+.ant-radio-button-wrapper.ant-radio-button-wrapper-checked {
+	border-color: rgb(37, 96, 151) !important;
+	color: rgb(37, 96, 151);
+}
+
+.ant-radio-button-wrapper:hover {
+	color: rgb(37, 96, 151);
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+	background-color: rgb(37, 96, 151) !important;
+}
+
+>>>>>>> origin/dev
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before {
 	background-color: rgb(37, 96, 151) !important;
 }

@@ -26,9 +26,14 @@
 
 .StepContentContainer {
 	flex: 2 2 768px;
+<<<<<<< HEAD
 	padding-inline: 29px;
 	padding-bottom: 40px;
 	width: 100%;
+=======
+	padding-inline: 10px;
+	padding-bottom: 40px;
+>>>>>>> origin/dev
 }
 
 .container-grid {
@@ -61,6 +66,7 @@
 .StepNavigation .ant-steps-item-process.ant-steps-item-active {
 	background-color: rgba(1, 94, 162, 0.1);
 	border-left: 4px solid var(--color-primary);
+<<<<<<< HEAD
 }
 
 .StepNavigation .ant-steps-item-process.ant-steps-item-icon {
@@ -98,11 +104,39 @@
 
 .StepNavigation
 	.ant-steps-item-finish
+=======
+}
+
+.StepNavigation .ant-steps-item-process.ant-steps-item-icon {
+	background: var(--color-primary);
+	border-color: var(--color-primary);
+	margin-top: 5px;
+}
+
+.StepNavigation .ant-steps-item-container {
+	padding: 5px 10px;
+}
+
+.StepNavigationv .ant-steps-vertical .ant-steps-item-icon {
+	margin-top: 5px;
+}
+
+.StepNavigation
+	.ant-steps-item-wait
+	> .ant-steps-item-container
+	> .ant-steps-item-tail::after {
+	background-color: rgba(1, 94, 162, 0.1);
+}
+
+.StepNavigation
+	.ant-steps-item-process
+>>>>>>> origin/dev
 	> .ant-steps-item-container
 	> .ant-steps-item-tail::after {
 	background-color: var(--color-primary);
 }
 
+<<<<<<< HEAD
 .StepNavigation .ant-steps-item-finish .ant-steps-item-icon {
 	background-color: #fff;
 	border-color: var(--color-primary);
@@ -151,4 +185,54 @@
 	padding-left: 15px;
 	color: red;
 	list-style-position: inside;
+=======
+.StepNavigation .ant-steps-item-tail::after {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.StepNavigation
+	.ant-steps-item-finish
+	> .ant-steps-item-container
+	> .ant-steps-item-tail::after {
+	background-color: var(--color-primary);
+}
+
+.StepNavigation .ant-steps-item-finish .ant-steps-item-icon {
+	background-color: #fff;
+	border-color: var(--color-primary);
+}
+
+.StepNavigation .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+	color: var(--color-primary);
+}
+
+.StepNavigation .ant-steps-item-process .ant-steps-item-icon {
+	background: var(--color-primary) !important;
+}
+
+.StepNavigation .ant-steps-item-process .ant-steps-item-icon {
+	background-color: #fff;
+	border-color: var(--color-primary) !important;
+}
+
+.StepNavigation .ant-steps-item-finish .ant-steps-item-icon {
+	background-color: #fff;
+	border-color: var(--color-primary) !important;
+}
+
+.StepNavigation
+	.ant-steps-item-finish
+	> .ant-steps-item-container
+	> .ant-steps-item-tail::after {
+	background-color: var(--color-primary) !important;
+}
+
+.StepNavigation .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+	color: var(--color-primary) !important;
+}
+
+.Hidden {
+	display: none;
+>>>>>>> origin/dev
 }

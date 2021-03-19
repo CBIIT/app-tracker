@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Menu, Dropdown } from 'antd';
@@ -105,5 +106,26 @@ const login = () => {
 		</Dropdown>
 	);
 };
+=======
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "antd";
+import { DownOutlined, UserOutlined } from "@ant-design/icons";
+
+import "./Login.css";
+
+const login = () => (
+  <Link to="/vacancy-dashboard">
+    <div className="Login">
+      {/* <Dropdown overlay={menu}> */}
+
+      <Button type="primary" ghost>
+        <UserOutlined /> Login <DownOutlined />
+      </Button>
+      {/* </Dropdown> */}
+    </div>
+  </Link>
+);
+>>>>>>> origin/dev
 
 export default login;
