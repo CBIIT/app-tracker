@@ -7,6 +7,9 @@ import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
 import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import FormContext, { defaultFormData } from './Context';
+import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
+import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
+import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 
 import './Apply.css';
 
@@ -60,7 +63,7 @@ const steps = [
 	{
 		key: 'basicInfo',
 		title: 'Basic Information',
-		content: null,
+		content: <ApplicantBasicInfo />,
 		description: 'Personal information about applicant',
 		longDescription:
 			'Let’s start with some basic questions. You’ll have a chance to review everything before submitting.',
@@ -68,12 +71,13 @@ const steps = [
 	{
 		key: 'address',
 		title: 'Address',
-		content: null,
+		content: <ApplicantAddress />,
 		description: 'Mailing and business address',
 	},
 	{
 		key: 'references',
 		title: 'References',
+		// content: <ApplicantReferences name='applicantReferences' />,
 		content: null,
 		description: 'References to support the application',
 	},
