@@ -8,34 +8,22 @@ import { useState } from 'react';
 
 const switchFormItemEditor = (props) => {
 	const [showEditor, setShowEditor] = useState(
-<<<<<<< HEAD
 		props.showEditor
 			? props.showEditor
 			: props.formInstance.getFieldValue(props.name)
-=======
-		props.formInstance.getFieldValue(props.name)
->>>>>>> origin/dev
 	);
 
 	const onChangeHandler = (value) => {
 		setShowEditor(value);
-<<<<<<< HEAD
 		props.onToggle ? props.onToggle() : null;
 	};
 
 	return (
 		<div>
-=======
-	};
-
-	return (
-		<>
->>>>>>> origin/dev
 			<SwitchFormItem
 				name={props.name}
 				label={props.label}
 				onChangeHandler={onChangeHandler}
-<<<<<<< HEAD
 				rules={props.rules}
 			/>
 			<Form.Item
@@ -49,16 +37,6 @@ const switchFormItemEditor = (props) => {
 				/>
 			</Form.Item>
 		</div>
-=======
-			/>
-			<Form.Item
-				name={props.name + 'Text'}
-				style={showEditor ? {} : { display: 'none' }}
-			>
-				<ReactQuill className='SwitchFormItemTextEditor' />
-			</Form.Item>
-		</>
->>>>>>> origin/dev
 	);
 };
 

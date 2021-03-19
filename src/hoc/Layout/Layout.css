@@ -7,13 +7,10 @@
 .ContentContainer {
 	width: min(95%, 1170px);
 	margin-inline: auto;
-<<<<<<< HEAD
 }
 
 .ContentContainer h1 {
 	margin: 0;
-=======
->>>>>>> origin/dev
 }
 
 .RouteContent {
