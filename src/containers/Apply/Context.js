@@ -1,6 +1,10 @@
 import { createContext } from 'react';
 const defaultFormData = {
-	applicant: {},
+	basicInfo: {
+		phonePrefix: '+1',
+		businessPhonePrefix: '+1',
+	},
+	address: {},
 	references: [],
 	documents: {},
 	questions: {},

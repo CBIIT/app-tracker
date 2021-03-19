@@ -9,55 +9,53 @@ import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
-import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 
 import './Apply.css';
 
 const { Step } = Steps;
 
-const uploadApplicationForm = (data) => {
-	return null;
-	// axios
-	// 	.post('/api/x_entg_poc/react_app_api/submit', data)
-	// 	.then(function (response) {
-	// 		console.log(
-	// 			'>> response from ServiceNow on submitting a form data:',
-	// 			response
-	// 		);
-	// 		const { sys_id } = response.data.result;
-	// 		return sys_id;
-	// 	})
-	// 	.catch(function (error) {
-	// 		console.log('>> error:', error);
-	// 	});
-};
+// const uploadApplicationForm = (data) => {
+// axios
+// 	.post('/api/x_entg_poc/react_app_api/submit', data)
+// 	.then(function (response) {
+// 		console.log(
+// 			'>> response from ServiceNow on submitting a form data:',
+// 			response
+// 		);
+// 		const { sys_id } = response.data.result;
+// 		return sys_id;
+// 	})
+// 	.catch(function (error) {
+// 		console.log('>> error:', error);
+// 	});
+// };
 
-const uploadAttachments = (recordSysId, attachmentGroups) => {
-	console.log('>> Starting upoading attachments...');
-	const requests = [];
+// const uploadAttachments = (recordSysId, attachmentGroups) => {
+// 	console.log('>> Starting upoading attachments...');
+// 	const requests = [];
 
-	for (let group in attachmentGroups) {
-		for (let file of attachmentGroups[group].fileList) {
-			const actualFile = file.originFileObj;
+// 	for (let group in attachmentGroups) {
+// 		for (let file of attachmentGroups[group].fileList) {
+// 			const actualFile = file.originFileObj;
 
-			const options = {
-				params: {
-					file_name: file.name,
-					table_name: 'x_entg_poc_application',
-					table_sys_id: recordSysId,
-				},
-				headers: {
-					'Content-Type': file.type,
-				},
-			};
-			requests.push(
-				axios.post('/api/now/attachment/file', actualFile, options)
-			);
-		}
-	}
+// 			const options = {
+// 				params: {
+// 					file_name: file.name,
+// 					table_name: 'x_entg_poc_application',
+// 					table_sys_id: recordSysId,
+// 				},
+// 				headers: {
+// 					'Content-Type': file.type,
+// 				},
+// 			};
+// 			requests.push(
+// 				axios.post('/api/now/attachment/file', actualFile, options)
+// 			);
+// 		}
+// 	}
 
-	return Promise.all(requests);
-};
+// 	return Promise.all(requests);
+// };
 
 const steps = [
 	{
@@ -106,11 +104,11 @@ const updateFormData = (currentForm, newValues, step) => {
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
-			updatedForm.applicant = { ...currentForm.applicant, ...newValues };
+			updatedForm.basicInfo = { ...currentForm.applicant, ...newValues };
 			return updatedForm;
 		case 'address':
 			// (address) save to applicant
-			updatedForm.applicant = { ...currentForm.applicant, ...newValues };
+			updatedForm.address = { ...currentForm.applicant, ...newValues };
 			return updatedForm;
 		case 'references':
 			// (references) save to references
@@ -133,7 +131,7 @@ const Apply = () => {
 	const [formData, setFormData] = useState(defaultFormData);
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
-	const [isUploading, setIsUploading] = useState(false);
+	// const [isUploading, setIsUploading] = useState(false);
 	const [vacancyTitle, setVacancyTitle] = useState();
 
 	const history = useHistory();
@@ -152,15 +150,15 @@ const Apply = () => {
 		console.log('>> current-form data: ', result);
 		console.log('>> form before update: ', formData);
 		const updatedForm = updateFormData(formData, result, currentStepObj.key);
-		console.log('>> updatedForm: ', updatedForm);
+		console.log('>> updatedForm: ', JSON.stringify(updatedForm, null, 2));
 		setFormData(updatedForm);
 		return updatedForm;
 	};
 
 	const next = async () => {
 		try {
-			// const validationResult = currentFormInstance.validateFields();
-			// await saveCurrentForm(validationResult);
+			const validationResult = await currentFormInstance.validateFields();
+			await saveCurrentForm(validationResult);
 			setCurrentStep(currentStep + 1);
 		} catch (error) {
 			message.error('Please fill out all required fields.');
@@ -170,8 +168,8 @@ const Apply = () => {
 
 	const prev = async () => {
 		try {
-			// const fieldsValues = currentFormInstance.getFieldsValue();
-			// await saveCurrentForm(fieldsValues);
+			const fieldsValues = currentFormInstance.getFieldsValue();
+			await saveCurrentForm(fieldsValues);
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
@@ -179,37 +177,37 @@ const Apply = () => {
 		}
 	};
 
-	const submit = () => {
-		currentFormInstance
-			.validateFields()
-			.then((validationResult) => saveCurrentForm(validationResult))
-			.then((form) => {
-				const payload = { ...form };
-				delete payload.documents; // attachments are uploaded separately
-				setIsUploading(true);
-				uploadApplicationForm(payload).then((recordSysId) => {
-					console.log('>> created record sys_id: ' + recordSysId);
-					uploadAttachments(recordSysId, form.documents)
-						.then((res) => {
-							console.log(
-								'>> attachments uploaded successfully, ServiceNow response: ',
-								res
-							);
-							setCurrentStep(currentStep + 1);
-						})
-						.catch((error) => {
-							console.log('>> error while uploading attachments: ', error);
-						})
-						.finally(() => {
-							setIsUploading(false);
-						});
-				});
-			})
-			.catch((error) => {
-				message.error('Oops, something went wrong.');
-				console.log('>> error: ', error);
-			});
-	};
+	// const submit = () => {
+	// 	currentFormInstance
+	// 		.validateFields()
+	// 		.then((validationResult) => saveCurrentForm(validationResult))
+	// 		.then((form) => {
+	// 			const payload = { ...form };
+	// 			delete payload.documents; // attachments are uploaded separately
+	// 			setIsUploading(true);
+	// 			uploadApplicationForm(payload).then((recordSysId) => {
+	// 				console.log('>> created record sys_id: ' + recordSysId);
+	// 				uploadAttachments(recordSysId, form.documents)
+	// 					.then((res) => {
+	// 						console.log(
+	// 							'>> attachments uploaded successfully, ServiceNow response: ',
+	// 							res
+	// 						);
+	// 						setCurrentStep(currentStep + 1);
+	// 					})
+	// 					.catch((error) => {
+	// 						console.log('>> error while uploading attachments: ', error);
+	// 					})
+	// 					.finally(() => {
+	// 						setIsUploading(false);
+	// 					});
+	// 			});
+	// 		})
+	// 		.catch((error) => {
+	// 			message.error('Oops, something went wrong.');
+	// 			console.log('>> error: ', error);
+	// 		});
+	// };
 
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
