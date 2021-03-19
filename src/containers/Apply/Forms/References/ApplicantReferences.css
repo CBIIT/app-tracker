@@ -1,0 +1,33 @@
+.form-desc {
+	max-width: 769px;
+	display: inline-block;
+	/* flex-wrap: wrap; */
+}
+
+.referencesForm {
+	justify-content: center;
+}
+
+.names {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	max-width: 769px;
+}
+
+.names > * {
+	flex-grow: 1;
+	max-width: 365px;
+}
+
+.emailPhoneDiv {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	max-width: 765px;
+}
+
+.emailPhoneDiv > * {
+	flex-grow: 1;
+	max-width: 375px;
+}
