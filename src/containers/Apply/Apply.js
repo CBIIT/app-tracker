@@ -69,7 +69,8 @@ const steps = [
 	},
 	{
 		title: 'References',
-		content: <ApplicantReferences />,
+		// content: <ApplicantReferences name='applicantReferences' />,
+		content: null,
 		description: 'References to support the application',
 	},
 	{
