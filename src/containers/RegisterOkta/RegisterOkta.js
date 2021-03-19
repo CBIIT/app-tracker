@@ -25,14 +25,14 @@ const registerOkta = () => {
 			<Form.Item
 				label='First Name'
 				name='firstname'
-				rules={[{ required: true, message: 'Please enter a title' }]}
+				rules={[{ required: true, message: 'Please enter your first name' }]}
 			>
 				<Input placeholder='Please enter' />
 			</Form.Item>
 			<Form.Item
 				label='Last Name'
 				name='lastname'
-				rules={[{ required: true, message: 'Please enter a title' }]}
+				rules={[{ required: true, message: 'Please enter your last name' }]}
 			>
 				<Input placeholder='Please enter' />
 			</Form.Item>
@@ -40,7 +40,7 @@ const registerOkta = () => {
 				label='Email'
 				name='email'
 				rules={[
-					{ required: true, message: 'Please enter a title' },
+					{ required: true, message: 'Please enter your email' },
 					{ type: 'email' },
 				]}
 			>
@@ -49,7 +49,7 @@ const registerOkta = () => {
 			<Form.Item
 				label='Phone Number'
 				name='phone'
-				rules={[{ required: true, message: 'Please enter a title' }]}
+				rules={[{ required: true, message: 'Please enter your phone number' }]}
 			>
 				<Input placeholder='Please enter' />
 			</Form.Item>

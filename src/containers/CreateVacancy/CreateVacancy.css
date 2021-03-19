@@ -54,10 +54,6 @@
 	justify-content: space-between;
 }
 
-.wider-button {
-	width: 140px;
-}
-
 .StepNavigation .ant-steps-item-process.ant-steps-item-active {
 	background-color: rgba(1, 94, 162, 0.1);
 	border-left: 4px solid var(--color-primary);

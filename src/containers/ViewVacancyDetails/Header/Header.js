@@ -19,7 +19,7 @@ const header = (props) => {
 				</div>
 			</div>
 			<div className='ButtonContainer'>
-				<Link to='/apply'>
+				<Link to={'/apply/' + props.sysId}>
 					<Button type='primary'>Sign In and Apply</Button>
 				</Link>
 			</div>

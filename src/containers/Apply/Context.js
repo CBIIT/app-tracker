@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-const defaulfFormData = {
+const defaultFormData = {
 	applicant: {},
 	references: [],
 	documents: {},
@@ -11,6 +11,6 @@ const FormContext = createContext({
 	setCurrentFormInstance: () => {},
 });
 
-export { defaulfFormData };
+export { defaultFormData };
 
 export default FormContext;

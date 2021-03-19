@@ -7,6 +7,7 @@ import { extractAndTransformMandatoryStatements } from '../../components/Util/Va
 
 import Header from './Header/Header';
 import Divider from './Divider/Divider';
+import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
 
@@ -19,9 +20,7 @@ const viewVacancyDetails = () => {
 
 	useEffect(() => {
 		(async () => {
-			const response = await axios.get(
-				'/api/x_g_nci_app_tracke/vacancy/get_vacancy_applicants/' + sysId
-			);
+			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
 			setVacancyDetails(response.data.result);
 			setIsLoading(false);
 		})();
@@ -35,6 +34,7 @@ const viewVacancyDetails = () => {
 				title={vacancyDetails.basic_info.vacancy_title.value}
 				openDate={vacancyDetails.basic_info.open_date.value}
 				closeDate={vacancyDetails.basic_info.close_date.value}
+				sysId={sysId}
 			/>
 			<div className='Content'>
 				<ReactQuill
