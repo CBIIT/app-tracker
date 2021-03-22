@@ -159,5 +159,4 @@ const ApplicantDocuments = () => {
     </Form>
   )
 }
-
 export default ApplicantDocuments
