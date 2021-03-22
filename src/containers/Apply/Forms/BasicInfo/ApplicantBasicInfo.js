@@ -104,6 +104,20 @@ const ApplicantBasicInfo = () => {
 							required: true,
 							message: 'Please enter a valid phone number',
 						},
+						() => ({
+							validator(_, value) {
+								let regEx = new RegExp(
+									'^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$'
+								);
+
+								if (!value || regEx.test(value) == true) {
+									return Promise.resolve();
+								}
+								return Promise.reject(
+									new Error('Please enter a valid phone number')
+								);
+							},
+						}),
 					]}
 				>
 					<Input
@@ -112,7 +126,26 @@ const ApplicantBasicInfo = () => {
 						placeholder='(123) 456-7890'
 					/>
 				</Form.Item>
-				<Form.Item name='business_phone' label='Business Phone Number'>
+				<Form.Item
+					name='business_phone'
+					label='Business Phone Number'
+					rules={[
+						() => ({
+							validator(_, value) {
+								let regEx = new RegExp(
+									'^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$'
+								);
+
+								if (!value || regEx.test(value) == true) {
+									return Promise.resolve();
+								}
+								return Promise.reject(
+									new Error('Please enter a valid phone number')
+								);
+							},
+						}),
+					]}
+				>
 					<Input
 						type='tel'
 						addonBefore={businessPhonePrefixSelector}
