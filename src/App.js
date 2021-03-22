@@ -19,7 +19,7 @@ const app = () => {
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
 					<Route path='/vacancy/:sysId' component={ViewVacancyDetails} />
 					<Route path='/register-okta' component={RegisterOkta} />
-					<Route path='/apply' component={Apply} />
+					<Route path='/apply/:sysId' component={Apply} />
 					<Route path='/' exact component={Home} />
 				</Switch>
 			</Layout>
