@@ -2,7 +2,8 @@
 
 # dependencies
 /node_modules
-
+/webpack/servicenow.config.js
+/webpack
 # testing
 /coverage
 
@@ -20,3 +21,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+webpack/servicenow.config.js
