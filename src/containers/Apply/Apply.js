@@ -9,8 +9,7 @@ import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
-import ApplicantReferences from './Forms/References/ApplicantReferences.js';
-import ApplicantDocuments from './Forms/Applicant Documents/ApplicantDocuments'
+import ApplicantDocuments from './Forms/Applicant Documents/ApplicantDocuments';
 import './Apply.css';
 
 const { Step } = Steps;
@@ -83,7 +82,7 @@ const steps = [
 	{
 		key: 'applicantDocuments',
 		title: 'Applicant Documents',
-		content: <ApplicantDocuments/>,
+		content: <ApplicantDocuments />,
 		description: 'CV, cover letter, and statement of research interests',
 	},
 	{
@@ -105,11 +104,11 @@ const updateFormData = (currentForm, newValues, step) => {
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
-			updatedForm.basicInfo = { ...currentForm.applicant, ...newValues };
+			updatedForm.basicInfo = { ...currentForm.basicInfo, ...newValues };
 			return updatedForm;
 		case 'address':
 			// (address) save to applicant
-			updatedForm.address = { ...currentForm.applicant, ...newValues };
+			updatedForm.address = { ...currentForm.address, ...newValues };
 			return updatedForm;
 		case 'references':
 			// (references) save to references
@@ -124,7 +123,7 @@ const updateFormData = (currentForm, newValues, step) => {
 			updatedForm.questions = newValues;
 			return updatedForm;
 		default:
-			break;
+			return updatedForm;
 	}
 };
 
