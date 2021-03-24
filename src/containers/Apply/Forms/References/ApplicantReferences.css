@@ -2,22 +2,23 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	max-width: 769px;
+	max-width: 770px;
 }
 
 .names > * {
 	flex-grow: 1;
-	max-width: 365px;
+	max-width: 250px;
 }
 
 .emailPhoneDiv {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	max-width: 765px;
+	max-width: 770px;
 }
 
 .emailPhoneDiv > * {
+	display: block;
 	flex-grow: 1;
 	max-width: 375px;
 }

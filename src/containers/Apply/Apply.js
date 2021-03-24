@@ -113,7 +113,7 @@ const updateFormData = (currentForm, newValues, step) => {
 			return updatedForm;
 		case 'references':
 			// (references) save to references
-			updatedForm.references = newValues.references;
+			updatedForm.references = { ...currentForm.references, ...newValues };
 			return updatedForm;
 		case 'applicantDocuments':
 			// (documents) handle attachments
@@ -158,6 +158,7 @@ const Apply = () => {
 
 	const next = async () => {
 		try {
+			debugger;
 			const validationResult = await currentFormInstance.validateFields();
 			await saveCurrentForm(validationResult);
 			setCurrentStep(currentStep + 1);
