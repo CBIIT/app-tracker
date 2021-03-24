@@ -58,7 +58,6 @@ const ApplicantAddress = () => {
 						label='State/Province'
 						rules={[
 							{
-								required: true,
 								message: 'Please enter state/province',
 							},
 						]}
