@@ -82,7 +82,7 @@ const ApplicantBasicInfo = () => {
 			</div>
 			<div className='emailDiv'>
 				<Form.Item
-					name={'email'}
+					name='email'
 					label='Email Address'
 					rules={[
 						{

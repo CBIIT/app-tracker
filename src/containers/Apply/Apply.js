@@ -10,6 +10,7 @@ import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
 import ApplicantDocuments from './Forms/Applicant Documents/ApplicantDocuments';
+import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import './Apply.css';
 
 const { Step } = Steps;
@@ -75,8 +76,8 @@ const steps = [
 	{
 		key: 'references',
 		title: 'References',
-		// content: <ApplicantReferences name='applicantReferences' />,
-		content: null,
+		content: <ApplicantReferences name='applicantReferences' />,
+		// content: null,
 		description: 'References to support the application',
 	},
 	{

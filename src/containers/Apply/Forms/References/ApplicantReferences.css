@@ -1,13 +1,3 @@
-.form-desc {
-	max-width: 769px;
-	display: inline-block;
-	/* flex-wrap: wrap; */
-}
-
-.referencesForm {
-	justify-content: center;
-}
-
 .names {
 	display: flex;
 	flex-wrap: wrap;
