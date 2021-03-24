@@ -53,15 +53,7 @@ const ApplicantAddress = () => {
 					>
 						<Input placeholder='Please Enter' />
 					</Form.Item>
-					<Form.Item
-						name='stateProvince'
-						label='State/Province'
-						rules={[
-							{
-								message: 'Please enter state/province',
-							},
-						]}
-					>
+					<Form.Item name='stateProvince' label='State/Province'>
 						<Input placeholder='Please Enter' />
 					</Form.Item>
 				</div>
