@@ -156,12 +156,24 @@ const ApplicantBasicInfo = () => {
 			<div className='degree'>
 				<Form.Item
 					name='hasDegree'
-					label='Do you possess a Doctorate Degree?'
+					label='Do you possess a Doctoral degree?'
 					rules={[
 						{
-							message: 'Value should be yes or no',
+							message: 'Please answer this question',
 							required: true,
 						},
+						() => ({
+							validator(_, value) {
+								if (!value || value == 'Yes') {
+									return Promise.resolve();
+								}
+								return Promise.reject(
+									new Error(
+										'A Doctoral degree is minimally required to apply to this vacancy. If you do not have this, please click cancel to go back'
+									)
+								);
+							},
+						}),
 					]}
 				>
 					<Radio.Group>
