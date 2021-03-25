@@ -76,8 +76,7 @@ const steps = [
 	{
 		key: 'references',
 		title: 'References',
-		content: <ApplicantReferences name='applicantReferences' />,
-		// content: null,
+		content: <ApplicantReferences />,
 		description: 'References to support the application',
 	},
 	{
@@ -102,6 +101,7 @@ const steps = [
 
 const updateFormData = (currentForm, newValues, step) => {
 	const updatedForm = { ...currentForm };
+	console.log('[Apply] newvalues:', newValues);
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
@@ -113,7 +113,7 @@ const updateFormData = (currentForm, newValues, step) => {
 			return updatedForm;
 		case 'references':
 			// (references) save to references
-			updatedForm.references = { ...currentForm.references, ...newValues };
+			updatedForm.references = newValues.references;
 			return updatedForm;
 		case 'applicantDocuments':
 			// (documents) handle attachments
@@ -158,7 +158,6 @@ const Apply = () => {
 
 	const next = async () => {
 		try {
-			debugger;
 			const validationResult = await currentFormInstance.validateFields();
 			await saveCurrentForm(validationResult);
 			setCurrentStep(currentStep + 1);

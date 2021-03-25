@@ -5,7 +5,7 @@ const defaultFormData = {
 		businessPhonePrefix: '+1',
 	},
 	address: {},
-	references: [],
+	references: [{}, {}, {}],
 	documents: {},
 	questions: {},
 };
