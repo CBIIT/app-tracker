@@ -115,7 +115,6 @@ const Apply = () => {
 			) {
 				references.push({});
 			}
-			console.log('REFERENCES:', references);
 
 			const newFormData = {
 				...formData,
