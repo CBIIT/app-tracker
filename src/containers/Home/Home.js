@@ -26,9 +26,12 @@ const transformData = (data) => {
 	return data.map((item) => ({
 		key: item.sys_id,
 		vacancyTitle: item.title,
-		applicationPeriod: item.open_date + ' - ' + item.close_date,
+		applicationPeriod:
+			transformDate(item.open_date) + ' - ' + transformDate(item.close_date),
 	}));
 };
+
+const transformDate = (date) => new Date(date).toLocaleDateString('en-US');
 
 const home = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +69,10 @@ const home = () => {
 						columns={columns}
 						dataSource={data}
 						pagination={{ hideOnSinglePage: true }}
+						locale={{
+							emptyText:
+								'There are currently no open vacancies.  Please check back later.',
+						}}
 					/>
 				) : null}
 			</div>
