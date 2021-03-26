@@ -9,9 +9,10 @@ import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
-import ApplicantDocuments from './Forms/Applicant Documents/ApplicantDocuments';
+import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
 import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import './Apply.css';
+import { reduceGroupedOptions } from 'react-select-async-paginate';
 
 const { Step } = Steps;
 
@@ -102,7 +103,19 @@ const Apply = () => {
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 
 			// TODO: Fill logic  to dynamically produce the correct number of objects depending on number of recommendations on vacancy required
-			const references = [{}];
+			const references = [];
+
+			for (
+				let i = 0;
+				i <
+				parseInt(
+					response.data.result.basic_info.number_of_recommendation.value
+				);
+				i++
+			) {
+				references.push({});
+			}
+			console.log('REFERENCES:', references);
 
 			const newFormData = {
 				...formData,
