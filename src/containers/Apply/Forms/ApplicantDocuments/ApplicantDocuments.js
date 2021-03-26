@@ -15,18 +15,7 @@ const ApplicantDocuments = () => {
 		setIsLoading(true);
 		const { setCurrentFormInstance } = contextValue;
 		setCurrentFormInstance(formInstance);
-
-		let initialApplicantDocuments = formData.applicantDocuments;
-
-		if (initialApplicantDocuments && initialApplicantDocuments.length !== 0)
-			initialApplicantDocuments = initialApplicantDocuments.map(
-				(applicantDocument) =>
-					applicantDocument.file
-						? { ...applicantDocument }
-						: { ...applicantDocument, file: { fileList: [] } }
-			);
-
-		setApplicantDocuments(initialApplicantDocuments);
+		setApplicantDocuments(formData.applicantDocuments);
 		setIsLoading(false);
 	}, []);
 

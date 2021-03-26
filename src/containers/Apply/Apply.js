@@ -44,12 +44,12 @@ const steps = [
 		longDescription:
 			'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
 	},
-	{
-		key: 'additionalQuestions',
-		title: 'Additional Questions',
-		content: null,
-		description: 'Additional questions supplementary to application',
-	},
+	// {
+	// 	key: 'additionalQuestions',
+	// 	title: 'Additional Questions',
+	// 	content: null,
+	// 	description: 'Additional questions supplementary to application',
+	// },
 	{
 		key: 'review',
 		title: 'Review',
