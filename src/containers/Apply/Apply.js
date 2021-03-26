@@ -27,7 +27,7 @@ const steps = [
 		key: 'address',
 		title: 'Address',
 		content: <ApplicantAddress />,
-		description: 'Mailing and business address',
+		description: 'Mailing address',
 	},
 	{
 		key: 'references',
@@ -44,17 +44,12 @@ const steps = [
 		longDescription:
 			'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
 	},
-	// {
-	// 	key: 'additionalQuestions',
-	// 	title: 'Additional Questions',
-	// 	content: null,
-	// 	description: 'Additional questions supplementary to application',
-	// },
 	{
 		key: 'review',
 		title: 'Review',
 		content: null,
-		description: 'Review info before submission',
+		description: 'Review before submitting',
+		longDescription: 'Please review key information entered in each section.',
 	},
 ];
 
@@ -104,16 +99,19 @@ const Apply = () => {
 			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
 			console.log('[Apply] vacancyDetails: ', response.data.result);
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-			const newFormData = await updateFormData(
-				formData,
-				{
-					applicantDocuments: response.data.result.vacancy_documents.map(
-						(document) =>
-							document.file ? document : { ...document, file: { fileList: [] } }
-					),
-				},
-				'applicantDocuments'
-			);
+
+			// TODO: Fill logic  to dynamically produce the correct number of objects depending on number of recommendations on vacancy required
+			const references = [{}];
+
+			const newFormData = {
+				...formData,
+				applicantDocuments: response.data.result.vacancy_documents.map(
+					(document) =>
+						document.file ? document : { ...document, file: { fileList: [] } }
+				),
+				references: references,
+			};
+
 			setFormData(newFormData);
 			setIsLoading(false);
 		})();
