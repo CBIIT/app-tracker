@@ -169,7 +169,7 @@ const ApplicantBasicInfo = () => {
 								}
 								return Promise.reject(
 									new Error(
-										'A Doctoral degree is minimally required to apply to this vacancy. If you do not have this, please click cancel to go back'
+										'A Doctoral degree is minimally required to apply to this vacancy. Please click cancel to go back'
 									)
 								);
 							},
