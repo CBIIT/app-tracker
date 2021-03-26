@@ -1,0 +1,40 @@
+.document-row {
+	display: flex;
+	align-items: baseline;
+	padding: 16px;
+	flex-direction: column;
+}
+
+.document-title {
+	padding-bottom: 6px;
+	padding-right: 16px;
+	font-size: 16px;
+}
+
+.upload-documents {
+	display: flex;
+	flex-direction: column;
+	padding-top: 26px;
+}
+
+.doc-types {
+	font-size: 14px;
+	color: var(--text-light);
+	padding-left: 10px;
+}
+
+.UploadRow {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	margin-bottom: 24px;
+}
+
+.UploadRow .ant-form-item {
+	margin: 0px;
+}
+
+/* .UploadRow .ant-form-item-control-input-content span {
+	display: flex;
+	flex-direction: column-reverse;
+} */

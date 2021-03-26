@@ -9,53 +9,10 @@ import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
-import ApplicantDocuments from './Forms/Applicant Documents/ApplicantDocuments';
+import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
 import './Apply.css';
 
 const { Step } = Steps;
-
-// const uploadApplicationForm = (data) => {
-// axios
-// 	.post('/api/x_entg_poc/react_app_api/submit', data)
-// 	.then(function (response) {
-// 		console.log(
-// 			'>> response from ServiceNow on submitting a form data:',
-// 			response
-// 		);
-// 		const { sys_id } = response.data.result;
-// 		return sys_id;
-// 	})
-// 	.catch(function (error) {
-// 		console.log('>> error:', error);
-// 	});
-// };
-
-// const uploadAttachments = (recordSysId, attachmentGroups) => {
-// 	console.log('>> Starting upoading attachments...');
-// 	const requests = [];
-
-// 	for (let group in attachmentGroups) {
-// 		for (let file of attachmentGroups[group].fileList) {
-// 			const actualFile = file.originFileObj;
-
-// 			const options = {
-// 				params: {
-// 					file_name: file.name,
-// 					table_name: 'x_entg_poc_application',
-// 					table_sys_id: recordSysId,
-// 				},
-// 				headers: {
-// 					'Content-Type': file.type,
-// 				},
-// 			};
-// 			requests.push(
-// 				axios.post('/api/now/attachment/file', actualFile, options)
-// 			);
-// 		}
-// 	}
-
-// 	return Promise.all(requests);
-// };
 
 const steps = [
 	{
@@ -84,6 +41,8 @@ const steps = [
 		title: 'Applicant Documents',
 		content: <ApplicantDocuments />,
 		description: 'CV, cover letter, and statement of research interests',
+		longDescription:
+			'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
 	},
 	{
 		key: 'additionalQuestions',
@@ -116,7 +75,7 @@ const updateFormData = (currentForm, newValues, step) => {
 			return updatedForm;
 		case 'applicantDocuments':
 			// (documents) handle attachments
-			updatedForm.documents = newValues;
+			updatedForm.applicantDocuments = newValues.applicantDocuments;
 			return updatedForm;
 		case 'additionalQuestions':
 			// (last-content) save to questions
@@ -131,8 +90,8 @@ const Apply = () => {
 	const [formData, setFormData] = useState(defaultFormData);
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
-	// const [isUploading, setIsUploading] = useState(false);
 	const [vacancyTitle, setVacancyTitle] = useState();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -141,8 +100,22 @@ const Apply = () => {
 
 	useEffect(() => {
 		(async () => {
+			setIsLoading(true);
 			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
+			console.log('[Apply] vacancyDetails: ', response.data.result);
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
+			const newFormData = await updateFormData(
+				formData,
+				{
+					applicantDocuments: response.data.result.vacancy_documents.map(
+						(document) =>
+							document.file ? document : { ...document, file: { fileList: [] } }
+					),
+				},
+				'applicantDocuments'
+			);
+			setFormData(newFormData);
+			setIsLoading(false);
 		})();
 	}, []);
 
@@ -177,38 +150,6 @@ const Apply = () => {
 		}
 	};
 
-	// const submit = () => {
-	// 	currentFormInstance
-	// 		.validateFields()
-	// 		.then((validationResult) => saveCurrentForm(validationResult))
-	// 		.then((form) => {
-	// 			const payload = { ...form };
-	// 			delete payload.documents; // attachments are uploaded separately
-	// 			setIsUploading(true);
-	// 			uploadApplicationForm(payload).then((recordSysId) => {
-	// 				console.log('>> created record sys_id: ' + recordSysId);
-	// 				uploadAttachments(recordSysId, form.documents)
-	// 					.then((res) => {
-	// 						console.log(
-	// 							'>> attachments uploaded successfully, ServiceNow response: ',
-	// 							res
-	// 						);
-	// 						setCurrentStep(currentStep + 1);
-	// 					})
-	// 					.catch((error) => {
-	// 						console.log('>> error while uploading attachments: ', error);
-	// 					})
-	// 					.finally(() => {
-	// 						setIsUploading(false);
-	// 					});
-	// 			});
-	// 		})
-	// 		.catch((error) => {
-	// 			message.error('Oops, something went wrong.');
-	// 			console.log('>> error: ', error);
-	// 		});
-	// };
-
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
 
@@ -237,7 +178,7 @@ const Apply = () => {
 							<h3>{currentStepObj.title}</h3>
 							<p>{currentStepObj.longDescription}</p>
 							<div>
-								{currentStepObj.content}
+								{!isLoading ? currentStepObj.content : null}
 								{formIsFinished && (
 									<Result
 										style={{ marginTop: '6rem' }}
