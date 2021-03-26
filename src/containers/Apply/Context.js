@@ -6,7 +6,7 @@ const defaultFormData = {
 	},
 	address: {},
 	references: [],
-	documents: {},
+	applicantDocuments: [],
 	questions: {},
 };
 
