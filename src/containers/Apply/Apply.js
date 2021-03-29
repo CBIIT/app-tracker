@@ -10,6 +10,7 @@ import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
 import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
+import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import './Apply.css';
 
 const { Step } = Steps;
@@ -32,8 +33,7 @@ const steps = [
 	{
 		key: 'references',
 		title: 'References',
-		// content: <ApplicantReferences name='applicantReferences' />,
-		content: null,
+		content: <ApplicantReferences />,
 		description: 'References to support the application',
 	},
 	{
@@ -55,6 +55,7 @@ const steps = [
 
 const updateFormData = (currentForm, newValues, step) => {
 	const updatedForm = { ...currentForm };
+	console.log('[Apply] newvalues:', newValues);
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
@@ -101,7 +102,18 @@ const Apply = () => {
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 
 			// TODO: Fill logic  to dynamically produce the correct number of objects depending on number of recommendations on vacancy required
-			const references = [{}];
+			const references = [];
+
+			for (
+				let i = 0;
+				i <
+				parseInt(
+					response.data.result.basic_info.number_of_recommendation.value
+				);
+				i++
+			) {
+				references.push({});
+			}
 
 			const newFormData = {
 				...formData,
