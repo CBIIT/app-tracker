@@ -101,7 +101,6 @@ const Apply = () => {
 			console.log('[Apply] vacancyDetails: ', response.data.result);
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 
-			// TODO: Fill logic  to dynamically produce the correct number of objects depending on number of recommendations on vacancy required
 			const references = [];
 
 			for (
