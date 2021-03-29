@@ -110,12 +110,6 @@ const applicantReferences = () => {
 													label='Phone Number'
 													labelAlign='left'
 													colon={false}
-													rules={[
-														{
-															required: true,
-															message: 'Please enter a valid phone number',
-														},
-													]}
 												>
 													<Input
 														type='tel'
