@@ -12,7 +12,6 @@ import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
 import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
 import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import './Apply.css';
-import { reduceGroupedOptions } from 'react-select-async-paginate';
 
 const { Step } = Steps;
 
