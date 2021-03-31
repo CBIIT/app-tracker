@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 
-import './SectionHeader.css';
+import './ReviewSectionHeader.css';
 
 const sectionHeader = (props) => {
 	return (
