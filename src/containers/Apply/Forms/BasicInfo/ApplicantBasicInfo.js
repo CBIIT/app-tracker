@@ -127,7 +127,7 @@ const ApplicantBasicInfo = () => {
 					/>
 				</Form.Item>
 				<Form.Item
-					name='business_phone'
+					name='businessPhone'
 					label='Business Phone Number'
 					rules={[
 						() => ({
