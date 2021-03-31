@@ -128,6 +128,7 @@ const applicantReferences = () => {
 								</Panel>
 							))}
 						</Collapse>
+
 					);
 				}}
 			</Form.List>
