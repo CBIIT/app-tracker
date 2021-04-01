@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Steps, Button, Result, message } from 'antd';
+import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
@@ -160,6 +161,72 @@ const Apply = () => {
 		}
 	};
 
+	const saveLink = (
+		<Button
+			key='saveLink'
+			type='link'
+			style={{ paddingLeft: '150px', paddingRight: '10px' }}
+			onClick={() => history.push('/')}
+		>
+			Back to Applications Home?
+		</Button>
+	);
+
+	const save = async () => {
+		const fieldsValues = currentFormInstance.getFieldsValue();
+		const updatedFormData = await saveCurrentForm(fieldsValues);
+
+		let hide = () => {};
+		const successKey = 'success';
+		const errorKey = 'error';
+
+		const requiredFields = [
+			updatedFormData.basicInfo.firstName,
+			updatedFormData.basicInfo.lastName,
+			updatedFormData.basicInfo.email,
+		];
+
+		const requiredFieldNames = ['firstName', 'lastName', 'email'];
+
+		let blankFields = [];
+		requiredFields.map((field) => {
+			if (field == undefined || field == '') {
+				blankFields.push(field);
+			}
+		});
+
+		if (blankFields.length > 0) {
+			message.error({
+				errorKey,
+				content:
+					'First Name, Last Name, and Email are required to save. Please fill out required fields.',
+				className: 'save-error',
+				duration: 3,
+			});
+
+			await requiredFieldNames.map((field) => {
+				currentFormInstance.validateFields([field]);
+			});
+		} else {
+			hide = message.info({
+				successKey,
+				content: [
+					'Application successfully saved ',
+					saveLink,
+					<Button
+						key='saveButton'
+						className='save-X-button'
+						onClick={() => hide()}
+					>
+						x
+					</Button>,
+				],
+				className: 'save-message',
+				duration: 3,
+			});
+		}
+	};
+
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
 
@@ -208,6 +275,14 @@ const Apply = () => {
 									className='wider-button'
 								>
 									{currentStep === 0 ? 'cancel' : 'back'}
+								</Button>
+
+								<Button
+									className='wider-button'
+									style={{ border: 'none', color: '#015EA2' }}
+									onClick={save}
+								>
+									<SaveOutlined /> save application
 								</Button>
 
 								<Button type='primary' onClick={next} className='wider-button'>

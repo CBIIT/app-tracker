@@ -44,3 +44,26 @@
 	display: flex;
 	justify-content: space-between;
 }
+
+.save-message > * {
+	background-color: rgb(238, 240, 244);
+	border: 1px solid rgb(36, 94, 157);
+	padding-right: 0px;
+}
+
+.save-X-button {
+	border: none;
+	background-color: rgb(238, 240, 244);
+}
+
+.save-X-button:hover {
+	background-color: rgb(238, 240, 244);
+}
+
+.save-X-button:focus {
+	background-color: rgb(238, 240, 244);
+}
+
+.save-X-button:active {
+	border: none;
+}
