@@ -224,6 +224,15 @@ const Apply = () => {
 				className: 'save-message',
 				duration: 3,
 			});
+			try {
+				const saveRes = await axios.post(
+					'/api/x_g_nci_app_tracke/application/save_app_draft',
+					{ jsonobj: JSON.stringify(updatedFormData) }
+				);
+				console.log('[SAVING] success:', saveRes);
+			} catch (error) {
+				console.log('[ConfirmSave] error:' + error);
+			}
 		}
 	};
 
