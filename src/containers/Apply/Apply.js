@@ -174,7 +174,6 @@ const Apply = () => {
 		}
 	};
 
-
 	const saveLink = (
 		<Button
 			key='saveLink'
@@ -248,7 +247,7 @@ const Apply = () => {
 				console.log('[ConfirmSave] error:' + error);
 			}
 		}
-
+	};
 
 	const handleSubmitModalCancel = () => {
 		setSubmitModalVisible(false);
