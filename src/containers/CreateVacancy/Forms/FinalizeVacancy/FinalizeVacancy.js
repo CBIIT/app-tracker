@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import ReactQuill from 'react-quill';
-import SectionHeader from './SectionHeader/SectionHeader';
+import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewSectionHeader';
 import './FinalizeVacancy.css';
 
 const finalizeVacancy = (props) => {

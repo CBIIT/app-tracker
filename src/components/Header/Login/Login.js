@@ -20,7 +20,6 @@ const login = () => {
 
 	useEffect(() => {
 		(async () => {
-			// axios.defaults.auth = {};
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/login/check_auth'
 			);
@@ -37,14 +36,14 @@ const login = () => {
 			case 'itrust':
 				location.href =
 					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-vms.do#/vacancy-dashboard') +
+					encodeURIComponent('/nci-scss.do#/vacancy-dashboard') +
 					'&glide_sso_id=' +
 					iTrustGlideSsoId;
 				break;
 			case 'okta':
 				location.href =
 					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-vms.do') +
+					encodeURIComponent('/nci-scss.do') +
 					'&glide_sso_id=' +
 					oktaGlideSsoId;
 				break;

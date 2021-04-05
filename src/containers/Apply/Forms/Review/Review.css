@@ -1,0 +1,99 @@
+.SectionContent {
+	width: 100%;
+	border: 1px solid #dce1e5;
+	background-color: #f8fafc;
+	padding: 16px;
+	color: var(--text-light);
+	margin-bottom: 30px;
+}
+
+.SectionContent h2 {
+	color: black;
+	margin-bottom: 4px;
+}
+
+.SectionContent h3 {
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+
+.SectionContent p {
+	margin-bottom: 16px;
+	color: var(--text-light);
+}
+
+.SectionContent .ql-editor {
+	padding: 0px;
+	height: auto;
+}
+
+.SectionContent .ql-container {
+	height: auto;
+}
+
+.SectionContent ul {
+	list-style: none;
+}
+
+.SectionContent li {
+	list-style-position: inside;
+}
+
+.ListItemTrue:before {
+	content: '✓';
+	padding-right: 5px;
+}
+
+.ListItemFalse {
+	color: rgba(0, 0, 0, 0.25);
+}
+
+.ListItemFalse:before {
+	content: '×';
+	padding-right: 5px;
+}
+
+.DateSection {
+	display: flex;
+	flex-direction: row;
+	max-width: 206px;
+	justify-content: space-between;
+}
+
+.TwoColumnCheckList {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	height: 100px;
+}
+
+.TwoColumnCheckList ul {
+	columns: 2;
+	-webkit-columns: 2;
+	-moz-columns: 2;
+}
+
+.TwoColumnCheckList li {
+	flex-grow: 1;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.SectionContent .table-header {
+	height: 30px;
+	width: 353px;
+	background-color: rgba(0, 0, 0, 0.04);
+}
+
+.SectionContentRow {
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+}
+
+.FileListRow {
+	padding-left: 20px;
+}

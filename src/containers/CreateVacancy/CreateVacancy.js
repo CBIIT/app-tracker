@@ -274,7 +274,6 @@ const createVacancy = () => {
 			<ConfirmSubmitModal
 				visible={submitModalVisible}
 				onCancel={handleSubmitModalCancel}
-				setVisible={setSubmitModalVisible}
 				data={allForms}
 			/>
 		</>

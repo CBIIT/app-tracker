@@ -12,51 +12,15 @@ import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
 import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
 import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
 import ApplicantReferences from './Forms/References/ApplicantReferences.js';
+import Review from './Forms/Review/Review';
+import SubmitModal from './SubmitModal/SubmitModal';
+
 import './Apply.css';
 
 const { Step } = Steps;
 
-const steps = [
-	{
-		key: 'basicInfo',
-		title: 'Basic Information',
-		content: <ApplicantBasicInfo />,
-		description: 'Personal information about applicant',
-		longDescription:
-			'Let’s start with some basic questions. You’ll have a chance to review everything before submitting.',
-	},
-	{
-		key: 'address',
-		title: 'Address',
-		content: <ApplicantAddress />,
-		description: 'Mailing address',
-	},
-	{
-		key: 'references',
-		title: 'References',
-		content: <ApplicantReferences />,
-		description: 'References to support the application',
-	},
-	{
-		key: 'applicantDocuments',
-		title: 'Applicant Documents',
-		content: <ApplicantDocuments />,
-		description: 'CV, cover letter, and statement of research interests',
-		longDescription:
-			'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
-	},
-	{
-		key: 'review',
-		title: 'Review',
-		content: null,
-		description: 'Review before submitting',
-		longDescription: 'Please review key information entered in each section.',
-	},
-];
-
 const updateFormData = (currentForm, newValues, step) => {
 	const updatedForm = { ...currentForm };
-	console.log('[Apply] newvalues:', newValues);
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
@@ -88,6 +52,7 @@ const Apply = () => {
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [vacancyTitle, setVacancyTitle] = useState();
+	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const history = useHistory();
@@ -99,10 +64,8 @@ const Apply = () => {
 		(async () => {
 			setIsLoading(true);
 			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-			console.log('[Apply] vacancyDetails: ', response.data.result);
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 
-			// TODO: Fill logic  to dynamically produce the correct number of objects depending on number of recommendations on vacancy required
 			const references = [];
 
 			for (
@@ -118,6 +81,7 @@ const Apply = () => {
 
 			const newFormData = {
 				...formData,
+				sysId: sysId,
 				applicantDocuments: response.data.result.vacancy_documents.map(
 					(document) =>
 						document.file ? document : { ...document, file: { fileList: [] } }
@@ -130,6 +94,51 @@ const Apply = () => {
 		})();
 	}, []);
 
+	const steps = [
+		{
+			key: 'basicInfo',
+			title: 'Basic Information',
+			content: <ApplicantBasicInfo />,
+			description: 'Personal information about applicant',
+			longDescription:
+				'Let’s start with some basic questions. You’ll have a chance to review everything before submitting.',
+		},
+		{
+			key: 'address',
+			title: 'Address',
+			content: <ApplicantAddress />,
+			description: 'Mailing address',
+			longDescription: 'Please provide your mailing address.',
+		},
+		{
+			key: 'references',
+			title: 'References',
+			content: <ApplicantReferences />,
+			description: 'References to support the application',
+			longDescription:
+				'Please provide references that can submit a recommendation on your behalf.',
+		},
+		{
+			key: 'applicantDocuments',
+			title: 'Application Documents',
+			content: <ApplicantDocuments />,
+			description: 'CV, cover letter, and statement of research interests',
+			longDescription:
+				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
+		},
+		{
+			key: 'review',
+			title: 'Review',
+			content: <Review onEditButtonClick={(step) => onEditButtonClick(step)} />,
+			description: 'Review before submitting',
+			longDescription: 'Please review key information entered in each section.',
+		},
+	];
+
+	const onEditButtonClick = (step) => {
+		setCurrentStep(step);
+	};
+
 	const saveCurrentForm = async (result) => {
 		console.log('>> current-form data: ', result);
 		console.log('>> form before update: ', formData);
@@ -140,13 +149,17 @@ const Apply = () => {
 	};
 
 	const next = async () => {
-		try {
-			const validationResult = await currentFormInstance.validateFields();
-			await saveCurrentForm(validationResult);
-			setCurrentStep(currentStep + 1);
-		} catch (error) {
-			message.error('Please fill out all required fields.');
-			console.log('>> error: ', error);
+		if (currentStep < steps.length - 1) {
+			try {
+				const validationResult = await currentFormInstance.validateFields();
+				await saveCurrentForm(validationResult);
+				setCurrentStep(currentStep + 1);
+			} catch (error) {
+				message.error('Please fill out all required fields.');
+				console.log('>> error: ', error);
+			}
+		} else {
+			setSubmitModalVisible(true);
 		}
 	};
 
@@ -160,6 +173,7 @@ const Apply = () => {
 			console.log(error);
 		}
 	};
+
 
 	const saveLink = (
 		<Button
@@ -234,6 +248,10 @@ const Apply = () => {
 				console.log('[ConfirmSave] error:' + error);
 			}
 		}
+
+
+	const handleSubmitModalCancel = () => {
+		setSubmitModalVisible(false);
 	};
 
 	const currentStepObj = steps[currentStep] || {};
@@ -304,6 +322,11 @@ const Apply = () => {
 					</div>
 				</div>
 			</FormContext.Provider>
+			<SubmitModal
+				visible={submitModalVisible}
+				onCancel={handleSubmitModalCancel}
+				data={formData}
+			/>
 		</>
 	);
 };
