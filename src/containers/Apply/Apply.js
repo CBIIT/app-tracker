@@ -20,7 +20,6 @@ const { Step } = Steps;
 
 const updateFormData = (currentForm, newValues, step) => {
 	const updatedForm = { ...currentForm };
-	console.log('[Apply] newvalues:', newValues);
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
@@ -64,7 +63,6 @@ const Apply = () => {
 		(async () => {
 			setIsLoading(true);
 			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-			console.log('[Apply] vacancyDetails: ', response.data.result);
 			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 
 			const references = [];
@@ -82,6 +80,7 @@ const Apply = () => {
 
 			const newFormData = {
 				...formData,
+				sysId: sysId,
 				applicantDocuments: response.data.result.vacancy_documents.map(
 					(document) =>
 						document.file ? document : { ...document, file: { fileList: [] } }
