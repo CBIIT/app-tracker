@@ -22,9 +22,9 @@ const ApplicantBasicInfo = () => {
 					width: 70,
 				}}
 			>
-				<Option value='1'>+1</Option>
-				<Option value='86'>+86</Option>
-				<Option value='87'>+87</Option>
+				<Option value='+1'>+1</Option>
+				<Option value='+86'>+86</Option>
+				<Option value='+87'>+87</Option>
 			</Select>
 		</Form.Item>
 	);
@@ -36,9 +36,9 @@ const ApplicantBasicInfo = () => {
 					width: 70,
 				}}
 			>
-				<Option value='1'>+1</Option>
-				<Option value='86'>+86</Option>
-				<Option value='87'>+87</Option>
+				<Option value='+1'>+1</Option>
+				<Option value='+86'>+86</Option>
+				<Option value='+87'>+87</Option>
 			</Select>
 		</Form.Item>
 	);

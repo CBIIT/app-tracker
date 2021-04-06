@@ -7,11 +7,15 @@ export const transformJsonToBackend = (sourceJson) => {
 			last_name: sourceJson.basicInfo.lastName,
 			email: sourceJson.basicInfo.email,
 			phone:
-				sourceJson.basicInfo.phonePrefix.toString() +
-				sourceJson.basicInfo.phone.toString(),
+				sourceJson.basicInfo.phonePrefix +
+				(sourceJson.basicInfo.phone
+					? sourceJson.basicInfo.phone.toString()
+					: ''),
 			business_phone:
-				sourceJson.basicInfo.businessPhonePrefix.toString() +
-				sourceJson.basicInfo.businessPhone.toString(),
+				sourceJson.basicInfo.businessPhonePrefix +
+				(sourceJson.basicInfo.businessPhone
+					? sourceJson.basicInfo.businessPhone.toString()
+					: ''),
 			address: sourceJson.address.address,
 			address_2: sourceJson.address.address2,
 			city: sourceJson.address.city,
