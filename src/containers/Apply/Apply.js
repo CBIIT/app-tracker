@@ -154,6 +154,7 @@ const Apply = () => {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
 				setCurrentStep(currentStep + 1);
+				window.scrollTo(0, 0);
 			} catch (error) {
 				message.error('Please fill out all required fields.');
 				console.log('>> error: ', error);
@@ -168,6 +169,7 @@ const Apply = () => {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
+			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
 			console.log(error);

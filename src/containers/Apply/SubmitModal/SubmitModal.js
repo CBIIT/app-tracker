@@ -72,6 +72,8 @@ const submitModal = (props) => {
 			confirmLoading={confirmLoading}
 			onCancel={props.onCancel}
 			closable={false}
+			okText='ok'
+			cancelText='cancel'
 		>
 			<div className='ConfirmSubmitModal'>
 				<ExclamationCircleFilled
@@ -91,7 +93,7 @@ const submitModal = (props) => {
 			onCancel={props.onCancel}
 			closable={false}
 			className='ModalConfirmed'
-			okText='Done'
+			okText='done'
 		>
 			<div className='Confirmed'>
 				<CheckCircleFilled className='ConfirmedIcon' />
