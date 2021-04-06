@@ -22,7 +22,7 @@ const applicantList = () => {
 			<Table
 				dataSource={applicants}
 				columns={applicantColumns}
-				key='applicants'
+				rowKey='applicants'
 			></Table>
 		</>
 	);
@@ -42,7 +42,8 @@ const applicantColumns = [
 			);
 		},
 		sorter: {
-			compare: (a, b) => a.applicant_last_name - b.applicant_last_name,
+			compare: (a, b) =>
+				a.applicant_last_name.localeCompare(b.applicant_last_name),
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
