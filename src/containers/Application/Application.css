@@ -1,0 +1,33 @@
+.ApplicationContent {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	background-color: var(--secondary-bg-color);
+}
+
+.ApplicationContainer {
+	background-color: var(--secondary-bg-color);
+}
+
+.ApplicationContainer h1 {
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.ApplicationContentColumn {
+	flex-grow: 1;
+}
+
+.ApplicationHeaderBar {
+	display: flex;
+	flex: row;
+	justify-content: space-between;
+}
+
+.ApplicationHeaderBar h2 {
+	font-size: 18px;
+	font-weight: 600;
+	font-family: var(--ff-heading);
+	margin-bottom: 8px;
+}

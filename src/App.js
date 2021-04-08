@@ -9,12 +9,14 @@ import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
 import Apply from './containers/Apply/Apply';
+import Application from './containers/Application/Application';
 
 const app = () => {
 	return (
 		<>
 			<Layout>
 				<Switch>
+					<Route path='/manage/application/:sysId' component={Application} />
 					<Route path='/create-vacancy' component={CreateVacancy} />
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
 					<Route path='/vacancy/:sysId' component={ViewVacancyDetails} />

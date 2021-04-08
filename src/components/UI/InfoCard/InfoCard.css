@@ -1,0 +1,20 @@
+.InfoCardContainer {
+	margin-bottom: 16px;
+}
+
+.InfoCardContainer h3 {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-inline: 16px;
+	margin: 0px;
+}
+
+.InfoCardContainer hr {
+	border: 1px solid var(--secondary-bg-color);
+}
+
+.InfoCardContent {
+	width: 100%;
+	padding: 16px;
+	color: var(--text-light);
+}
