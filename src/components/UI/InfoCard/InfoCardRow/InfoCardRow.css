@@ -1,0 +1,6 @@
+.InfoCardRow {
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+}
