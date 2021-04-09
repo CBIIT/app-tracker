@@ -7,7 +7,7 @@ const manageDashboard = () => {
 		<>
 			<Tabs>
 				<Tabs.TabPane tab='Vacancy Details' key='details'>
-					<ViewVacancyDetails />
+					{/* <ViewVacancyDetails /> */}
 				</Tabs.TabPane>
 				<Tabs.TabPane tab='Applicants' key='applicants'>
 					<ApplicantList />
