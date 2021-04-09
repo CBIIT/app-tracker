@@ -12,7 +12,6 @@ const applicantList = () => {
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 			);
-			console.log(response.data.result);
 			setApplicants(response.data.result);
 		})();
 	}, []);
@@ -34,7 +33,6 @@ const applicantColumns = [
 		dataIndex: 'applicant_last_name',
 		key: 'name',
 		render: (text, record) => {
-			console.log(text, record);
 			return (
 				<a>
 					{text}, {record.applicant_first_name}
@@ -57,6 +55,9 @@ const applicantColumns = [
 		title: 'Submitted',
 		dataIndex: 'submitted',
 		key: 'submitted',
+		render: (text) => {
+			return <span>{text.split(' ')[0]}</span>;
+		},
 	},
 	{
 		title: 'OWM Triage Decision',
