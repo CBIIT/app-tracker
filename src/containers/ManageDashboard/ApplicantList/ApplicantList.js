@@ -12,6 +12,9 @@ const applicantList = () => {
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 			);
+			response.data.result.map((applicant, index) => {
+				applicant.key = index;
+			});
 			setApplicants(response.data.result);
 		})();
 	}, []);
@@ -21,12 +24,11 @@ const applicantList = () => {
 			<Table
 				dataSource={applicants}
 				columns={applicantColumns}
-				rowKey='applicants'
+				key='applicants'
 			></Table>
 		</>
 	);
 };
-
 const applicantColumns = [
 	{
 		title: 'Applicant',
