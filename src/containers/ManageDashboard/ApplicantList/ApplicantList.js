@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Table } from 'antd';
 import axios from 'axios';
+import './ApplicantList.css';
 
 const applicantList = () => {
 	const [applicants, setApplicants] = useState([]);
@@ -21,11 +22,13 @@ const applicantList = () => {
 
 	return (
 		<>
-			<Table
-				dataSource={applicants}
-				columns={applicantColumns}
-				key='applicants'
-			></Table>
+			<div className='applicant-table'>
+				<Table
+					dataSource={applicants}
+					columns={applicantColumns}
+					key='applicants'
+				></Table>
+			</div>
 		</>
 	);
 };
