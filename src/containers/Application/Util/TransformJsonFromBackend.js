@@ -15,5 +15,23 @@ export const transformJsonFromBackend = (backendJson) => {
 			stateProvince: backendJson.basic_info.state_province.value,
 			postalCode: backendJson.basic_info.zip_code.value,
 		},
+		documents: getDocuments(backendJson.app_documents),
+		references: getReferences(backendJson.references),
 	};
 };
+
+const getDocuments = (backendAppDocuments) =>
+	backendAppDocuments.map((document) => ({
+		title: document.doc_name,
+		filename: document.file_name,
+		downloadLink: document.attachment_dl,
+	}));
+
+const getReferences = (backendReferences) =>
+	backendReferences.map((reference) => ({
+		name: reference.name,
+		document: {
+			downloadLink: reference.attachment_dl,
+			filename: reference.file_name,
+		},
+	}));
