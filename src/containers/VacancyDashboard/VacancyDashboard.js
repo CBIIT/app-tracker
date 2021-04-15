@@ -105,6 +105,7 @@ const vacancyDashboard = () => {
 						</Button>
 					</Link>
 					<Tabs
+						className='vacancy-tabs'
 						size={'large'}
 						onChange={tabChangeHandler}
 						defaultActiveKey='preflight'

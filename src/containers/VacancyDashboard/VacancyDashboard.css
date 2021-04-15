@@ -1,35 +1,35 @@
-.ant-tabs-tab.ant-tabs-tab-active {
+.vacancy-tabs .ant-tabs-tab.ant-tabs-tab-active {
 	border-bottom: 5px solid rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151) !important;
 }
 
-.ant-tabs-tab.ant-tabs-tab-active p {
+.vacancy-tabs .ant-tabs-tab.ant-tabs-tab-active p {
 	color: rgb(37, 96, 151);
 }
 
-.ant-tabs-tab-btn[aria-selected='true'] {
+.vacancy-tabs .ant-tabs-tab-btn[aria-selected='true'] {
 	color: rgb(37, 96, 151) !important;
 }
 
-.ant-tabs-tab {
+.vacancy-tabs .ant-tabs-tab {
 	margin-right: 0px;
 }
 
-.ant-tabs-tab-btn {
+.vacancy-tabs .ant-tabs-tab-btn {
 	font-size: 20px !important;
 	width: 180px;
 	height: 104px;
 	margin-right: auto;
 }
 
-.ant-tabs-tab:hover {
+.vacancy-tabs .ant-tabs-tab:hover {
 	border-bottom: 5px solid rgb(37, 96, 151) !important;
 }
-.ant-tabs-tab:hover p {
+.vacancy-tabs .ant-tabs-tab:hover p {
 	color: rgb(37, 96, 151) !important;
 }
 
-.ant-tabs-ink-bar {
+.vacancy-tabs .ant-tabs-ink-bar {
 	position: absolute;
 	background: rgb(37, 96, 151) !important;
 	pointer-events: none;
@@ -49,13 +49,13 @@
 	margin-top: -15px;
 }
 
-.tab-letters > * {
+.tab-letters {
 	text-align: center;
 	font-family: 'Montserrat' !important;
 	font-weight: 500 !important;
 }
 
-.vacancy-desc {
+.vacancy-tabs .vacancy-desc {
 	height: 40px;
 	width: 164px;
 	color: rgba(0, 0, 0, 0.85);
@@ -67,37 +67,39 @@
 	text-align: center;
 }
 
-.ant-radio-button-wrapper.ant-radio-button-wrapper-checked {
+.vacancy-tabs .ant-radio-button-wrapper.ant-radio-button-wrapper-checked {
 	border-color: rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151);
 }
 
-.ant-radio-button-wrapper:hover {
+.vacancy-tabs .ant-radio-button-wrapper:hover {
 	color: rgb(37, 96, 151);
 }
 
-.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+.vacancy-tabs
+	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
 	background-color: rgb(37, 96, 151) !important;
 }
 
-.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before {
+.vacancy-tabs
+	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before {
 	background-color: rgb(37, 96, 151) !important;
 }
 
-.ant-pagination-item-active,
-.ant-pagination-item-active > a {
+.vacancy-tabs .ant-pagination-item-active,
+.vacancy-tabs .ant-pagination-item-active > a {
 	border-color: rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151) !important;
 }
 
-.ant-pagination-item:hover,
-.ant-pagination-item:hover > a {
+.vacancy-tabs .ant-pagination-item:hover,
+.vacancy-tabs .ant-pagination-item:hover > a {
 	border-color: rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151) !important;
 }
 
-.ant-pagination-prev[aria-disabled='false']:hover > *,
-.ant-pagination-next[aria-disabled='false']:hover > * {
+.vacancy-tabs .ant-pagination-prev[aria-disabled='false']:hover,
+.vacancy-tabs .ant-pagination-next[aria-disabled='false']:hover {
 	border-color: rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151) !important;
 }
