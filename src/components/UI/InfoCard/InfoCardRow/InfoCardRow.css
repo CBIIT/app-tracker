@@ -3,4 +3,5 @@
 	flex-direction: row;
 	margin-bottom: 16px;
 	flex-wrap: wrap;
+	padding-inline: 16px;
 }

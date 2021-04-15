@@ -2,6 +2,12 @@
 	margin-bottom: 16px;
 }
 
+.InfoCardHeading {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
 .InfoCardContainer h3 {
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -10,11 +16,22 @@
 }
 
 .InfoCardContainer hr {
-	border: 1px solid var(--secondary-bg-color);
+	border: transparent;
+	border-bottom: 1px solid var(--secondary-bg-color);
+	margin-bottom: 9px;
 }
 
 .InfoCardContent {
 	width: 100%;
-	padding: 16px;
 	color: var(--text-light);
+}
+
+.InfoCardSwitchLabel {
+	margin-right: 10px;
+	color: var(--text-light);
+	font-size: 10.5px;
+}
+
+.InfoCardSwitch {
+	margin-right: 5px;
 }
