@@ -17,7 +17,6 @@ const viewVacancyDetails = () => {
 				'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
 			);
 			const application = transformJsonFromBackend(response.data.result);
-			console.log('[APPLICATION]: ', application);
 
 			setAllForms(application);
 			setIsLoading(false);

@@ -15,7 +15,7 @@ const finalizeVacancy = (props) => {
 		{
 			title: 'Committee Member',
 			dataIndex: ['user', 'name', 'value'],
-			key: 'member',
+			key: 'key',
 		},
 		{ title: 'Role', dataIndex: 'role', key: 'role' },
 	];

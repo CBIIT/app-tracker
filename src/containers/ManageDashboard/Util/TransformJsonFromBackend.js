@@ -19,6 +19,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 		vacancyCommittee: sourceJson.committee.map((member) => ({
 			role: member.role.value,
 			user: { name: { value: member.user.label } },
+			key: member.sys_id.value,
 		})),
 		mandatoryStatements: {
 			equalOpportunityEmployer:
