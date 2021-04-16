@@ -25,7 +25,7 @@ const finalizeVacancy = (props) => {
 			<SectionHeader
 				title='Basic Vacancy Information'
 				onClick={() => props.onEditButtonClick(0)}
-				showButton='false'
+				showButton={props.showButton}
 			/>
 			<div className='SectionContent'>
 				<h2>Vacancy Title</h2>
@@ -77,7 +77,7 @@ const finalizeVacancy = (props) => {
 			<SectionHeader
 				title='Mandatory Statements'
 				onClick={() => props.onEditButtonClick(1)}
-				showButton='false'
+				showButton={props.showButton}
 			/>
 			<div className='SectionContent'>
 				<div className='TwoColumnCheckList'>
@@ -124,7 +124,7 @@ const finalizeVacancy = (props) => {
 			<SectionHeader
 				title='Vacancy Committee'
 				onClick={() => props.onEditButtonClick(2)}
-				showButton='false'
+				showButton={props.showButton}
 			/>
 			<div className='SectionContent'>
 				<Table
@@ -141,7 +141,7 @@ const finalizeVacancy = (props) => {
 			<SectionHeader
 				title='Email Templates'
 				onClick={() => props.onEditButtonClick(3)}
-				showButton='false'
+				showButton={props.showButton}
 			/>
 			<div className='SectionContent'>
 				<div className='TwoColumnCheckList'>

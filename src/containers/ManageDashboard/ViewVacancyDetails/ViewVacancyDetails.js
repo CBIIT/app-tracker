@@ -27,7 +27,7 @@ const viewVacancyDetails = () => {
 		<> </>
 	) : (
 		<>
-			<FinalizeVacancy allForms={allForms} />
+			<FinalizeVacancy allForms={allForms} showButton='false' />
 		</>
 	);
 };
