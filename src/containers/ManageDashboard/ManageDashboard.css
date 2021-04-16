@@ -2,3 +2,14 @@
 	background-color: rgb(237 240 243);
 	padding-left: 30px;
 }
+
+.HeaderTitle {
+	background-color: #edf1f4;
+	max-width: 1440px;
+	max-height: 76px;
+	margin: auto;
+	padding: 20px 20px 20px 0px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}

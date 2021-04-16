@@ -1,18 +1,55 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Tabs } from 'antd';
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
+import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
+import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
+import axios from 'axios';
 import './ManageDashboard.css';
 
 const manageDashboard = () => {
-	return (
+	const { sysId } = useParams();
+	const [isLoading, setIsLoading] = useState(true);
+	const [applicants, setApplicants] = useState([]);
+	const [allForms, setAllForms] = useState([]);
+	const [vacancyTitle, setVacancyTitle] = useState([]);
+	const [status, setStatus] = useState([]);
+
+	useEffect(() => {
+		(async () => {
+			const response = await axios.get(
+				'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
+			);
+			const application = transformJsonFromBackend(response.data.result);
+
+			const responseApplicantList = await axios.get(
+				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
+			);
+
+			setStatus(response.data.result.basic_info.status.label);
+			setVacancyTitle(application.basicInfo.title);
+			setAllForms(application);
+			setApplicants(responseApplicantList.data.result);
+			setIsLoading(false);
+		})();
+	}, []);
+
+	return isLoading ? (
+		<> </>
+	) : (
 		<>
+			<div className='HeaderTitle'>
+				<h1>{vacancyTitle}</h1>
+			</div>
+			<VacancyStatus status={status} />
 			<div className='manage-tabs'>
 				<Tabs>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
-						<ViewVacancyDetails />
+						<ViewVacancyDetails allForms={allForms} />
 					</Tabs.TabPane>
 					<Tabs.TabPane tab='Applicants' key='applicants'>
-						<ApplicantList />
+						<ApplicantList applicants={applicants} />
 					</Tabs.TabPane>
 					<Tabs.TabPane
 						tab='Review Summaries'
