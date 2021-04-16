@@ -1,0 +1,21 @@
+.NavBar {
+	display: flexbox;
+}
+
+.NavBar .ant-menu {
+	background: #01477a;
+	max-height: 50px;
+	padding-left: 200px;
+}
+
+.NavBar .ant-menu-horizontal > .ant-menu-item a {
+	/* color: white; */
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.NavBar .ant-menu-item-selected {
+	/* background-color: white; */
+}
