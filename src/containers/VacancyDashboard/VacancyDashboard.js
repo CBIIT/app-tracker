@@ -59,19 +59,6 @@ const vacancyDashboard = () => {
 		})();
 	}, []);
 
-	// const vacancyTable = (
-	//   <Table
-	//     dataSource={}
-	//     columns={}
-	//     style={{
-	//       width: "1170px",
-	//       display: "block",
-	//       paddingLeft: "20px",
-	//       paddingRight: "20px",
-	//     }}
-	//   ></Table>
-	// );
-
 	const filterChangeHandler = async (e) => {
 		const newFilter = e.target.value;
 		const filteredData = await axios.get(url);
@@ -232,6 +219,9 @@ const preFlightColumns = [
 	{
 		title: 'Vacancy Title',
 		dataIndex: 'title',
+		render: (title, record) => (
+			<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+		),
 	},
 	{
 		title: 'Open Date',
@@ -271,6 +261,9 @@ const liveColumns = [
 	{
 		title: 'Vacancy Title',
 		dataIndex: 'title',
+		render: (title, record) => (
+			<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+		),
 	},
 	{
 		title: 'Applicants',
@@ -327,6 +320,9 @@ const closedColumns = [
 	{
 		title: 'Vacancy Title',
 		dataIndex: 'title',
+		render: (title, record) => (
+			<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+		),
 	},
 	{
 		title: 'Applicants',
