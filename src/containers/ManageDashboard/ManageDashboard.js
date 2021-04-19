@@ -14,7 +14,7 @@ const manageDashboard = () => {
 	const [applicants, setApplicants] = useState([]);
 	const [allForms, setAllForms] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
-	const [status, setStatus] = useState([]);
+	const [state, setState] = useState([]);
 
 	useEffect(() => {
 		(async () => {
@@ -27,7 +27,7 @@ const manageDashboard = () => {
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 			);
 
-			setStatus(response.data.result.basic_info.status.label);
+			setState(response.data.result.basic_info.state.label);
 			setVacancyTitle(application.basicInfo.title);
 			setAllForms(application);
 			setApplicants(responseApplicantList.data.result);
@@ -42,7 +42,7 @@ const manageDashboard = () => {
 			<div className='HeaderTitle'>
 				<h1>{vacancyTitle}</h1>
 			</div>
-			<VacancyStatus status={status} />
+			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
 				<Tabs>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>

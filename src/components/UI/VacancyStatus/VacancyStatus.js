@@ -3,17 +3,17 @@ import './VacancyStatus.css';
 
 const VacancyStatus = (props) => {
 	const customDot = (dot) => <>{dot}</>;
-	const status = props.status;
+	const state = props.state;
 
 	let currentStatus = '';
-	switch (status) {
+	switch (state) {
 		case 'Open':
 			currentStatus = 0;
 			break;
-		case 'Triage':
+		case 'Triaged':
 			currentStatus = 1;
 			break;
-		case 'Individual Scoring':
+		case 'Individual Scored':
 			currentStatus = 2;
 			break;
 		case 'Committee Scoring':
