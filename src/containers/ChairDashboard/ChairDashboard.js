@@ -76,6 +76,10 @@ const chairColumns = [
 		title: 'Vacancy Title',
 		dataIndex: 'vacancy_title',
 		key: 'title',
+		sorter: {
+			compare: (a, b) => a.title.localeCompare(b.title),
+			multiple: 1,
+		},
 		render: (title, record) => <Link>{title}</Link>,
 	},
 	{
@@ -84,7 +88,7 @@ const chairColumns = [
 		key: 'applicants',
 		render: (number, record) => (
 			<Link>
-				{number} {number == 1 ? 'aplicant' : 'applicants'}
+				{number} {number == 1 ? 'applicant' : 'applicants'}
 			</Link>
 		),
 	},
