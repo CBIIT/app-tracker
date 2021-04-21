@@ -9,12 +9,17 @@ import axios from 'axios';
 import './ManageDashboard.css';
 
 const manageDashboard = () => {
-	const { sysId } = useParams();
+	const { sysId, tab } = useParams();
+	const [currentTab, setCurrentTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
 	const [applicants, setApplicants] = useState([]);
 	const [allForms, setAllForms] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
 	const [state, setState] = useState([]);
+
+	const onChangeTabHandler = (key) => {
+		setCurrentTab(key);
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -31,9 +36,12 @@ const manageDashboard = () => {
 			setVacancyTitle(application.basicInfo.title);
 			setAllForms(application);
 			setApplicants(responseApplicantList.data.result);
+			setCurrentTab(tab);
 			setIsLoading(false);
 		})();
 	}, []);
+
+	console.log;
 
 	return isLoading ? (
 		<> </>
@@ -44,7 +52,11 @@ const manageDashboard = () => {
 			</div>
 			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
-				<Tabs>
+				<Tabs
+					activeKey={currentTab}
+					defaultActiveKey='details'
+					onChange={onChangeTabHandler}
+				>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
 						<ViewVacancyDetails allForms={allForms} />
 					</Tabs.TabPane>
