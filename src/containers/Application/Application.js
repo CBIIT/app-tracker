@@ -18,6 +18,7 @@ import {
 	GET_APPLICATION,
 	GET_APPLICATION_TRIAGE_INFO,
 	SUBMIT_TRIAGE,
+	DISPLAY_REFERENCES,
 } from '../../constants/ApiEndpoints';
 
 import './Application.css';
@@ -66,6 +67,7 @@ const application = () => {
 	const [reloadingTriage, setReloadingTriage] = useState(false);
 	const [triageChoice, setTriageChoice] = useState();
 	const [triageComments, setTriageComments] = useState();
+	const [displayReferences, setDisplayReferences] = useState();
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -83,6 +85,7 @@ const application = () => {
 			setTriageComments(response.data.result.basic_info.triage_comments.value);
 			message.success('Unsaved feedback and notes changes undone.');
 		} catch (error) {
+			message.error('Sorry!  An error occurred.');
 			console.log('[Application] error:', error);
 		}
 		setReloadingTriage(false);
@@ -102,6 +105,19 @@ const application = () => {
 		} catch (error) {
 			message.error(
 				'Sorry!  There was an error in saving.  Try reloading the page and saving again.'
+			);
+		}
+	};
+
+	const handleDisplayReferenceToggle = async (isToggleOn) => {
+		try {
+			await axios.post(
+				DISPLAY_REFERENCES + '/' + application.appSysId + '/' + isToggleOn
+			);
+			message.success('References preference saved.');
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred.  Unable to save.  Try reloading the page and trying again.'
 			);
 		}
 	};
@@ -128,6 +144,9 @@ const application = () => {
 				setTriageChoice(responses[0].data.result.basic_info.triage.value);
 				setTriageComments(
 					responses[0].data.result.basic_info.triage_comments.value
+				);
+				setDisplayReferences(
+					+responses[0].data.result.basic_info.display_references.value
 				);
 
 				setIsLoading(false);
@@ -164,6 +183,8 @@ const application = () => {
 					<References
 						references={application.references}
 						style={{ backgroundColor: 'white' }}
+						switchInitialValue={displayReferences}
+						handleToggle={handleDisplayReferenceToggle}
 					/>
 					<Documents
 						documents={application.documents}

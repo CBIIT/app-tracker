@@ -18,6 +18,7 @@ const infoCard = (props) => {
 							unCheckedChildren={<CloseOutlined />}
 							title={props.switchTitle}
 							onChange={props.onSwitchToggle}
+							defaultChecked={props.switchInitialValue}
 						/>
 						<span className='InfoCardSwitchLabel'>{props.switchTitle}</span>
 					</div>

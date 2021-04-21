@@ -7,10 +7,13 @@ const GET_APPLICATION_TRIAGE_INFO =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_state/';
 
 const SUBMIT_TRIAGE = '/api/x_g_nci_app_tracke/application/submit_triage';
+const DISPLAY_REFERENCES =
+	'/api/x_g_nci_app_tracke/application/display_references';
 
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	GET_APPLICATION,
 	GET_APPLICATION_TRIAGE_INFO,
 	SUBMIT_TRIAGE,
+	DISPLAY_REFERENCES,
 };
