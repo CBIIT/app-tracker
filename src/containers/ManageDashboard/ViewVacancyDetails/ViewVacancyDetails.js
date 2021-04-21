@@ -7,7 +7,11 @@ const viewVacancyDetails = (props) => {
 
 	return (
 		<>
-			<FinalizeVacancy allForms={allForms} showButton='false' />
+			<FinalizeVacancy
+				allForms={allForms}
+				showButton='false'
+				sectionContentStyle={{ backgroundColor: 'white', border: 'none' }}
+			/>
 		</>
 	);
 };
