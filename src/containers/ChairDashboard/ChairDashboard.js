@@ -1,53 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import SectionHeader from '../../components/UI/ReviewSectionHeader/ReviewSectionHeader';
-import { Tabs, Table } from 'antd';
+import { Table } from 'antd';
 import './ChairDashboard.css';
 import axios from 'axios';
 
 const chairDashboard = () => {
 	const { sysId } = useParams();
-	let [url, setURL] = useState(
-		'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId + '/pending_triage'
-	);
 	const [data, setData] = useState([]);
-	const [pendingTriageCount, setPendingTriageCount] = useState([]);
-	const [individualScoringCount, setIndividualScoringCount] = useState([]);
-	const [committeeScoringCount, setCommitteeScoringCount] = useState([]);
-	debugger;
-
-	const urls = {
-		pending_triage:
-			'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId + '/pending_triage',
-		individual_scoring:
-			'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId + '/individual_scoring',
-		committee_scoring:
-			'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId + '/committee_scoring',
-	};
-
-	// const tabChangeHandler = async (selectedTab) => {
-	// 	url = urls[selectedTab];
-	// 	try {
-	// 		const newData = await axios.get(url);
-	// 		setData(newData.data.result);
-	// 		setURL(url);
-	// 	} catch (err) {
-	// 		console.warn(err);
-	// 	}
-	// };
 
 	useEffect(() => {
 		(async () => {
 			try {
-				const currentData = await axios.get(url);
-				// debugger;
+				const currentData = await axios.get(
+					'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId
+				);
 				setData(currentData.data.result);
-				const currentPendingTriageCount = await axios.get(urls.pending_triage);
-				setPendingTriageCount(currentPendingTriageCount.data.result.applicants);
-				// const currentIndividualScoringCount = await axios.get(urls.live);
-				// setIndividualScoringCount(currentIndividualScoringCount.data.result.length);
-				// const currentCommitteeScoringCount = await axios.get(urls.closed);
-				// setCommitteeScoringCount(currentCommitteeScoringCount.data.result.length);
 			} catch (err) {
 				console.warn(err);
 			}
@@ -61,7 +28,7 @@ const chairDashboard = () => {
 			</div>
 			<div className='ChairDashboard'>
 				<Table
-					// rowKey='pending_triage'
+					rowKey='vacancy'
 					dataSource={data}
 					columns={chairColumns}
 					key='ChairVacancies'
@@ -77,25 +44,32 @@ const chairColumns = [
 		dataIndex: 'vacancy_title',
 		key: 'title',
 		sorter: {
-			compare: (a, b) => a.title.localeCompare(b.title),
+			compare: (a, b) => a.vacancy_title.localeCompare(b.vacancy_title),
 			multiple: 1,
 		},
-		render: (title, record) => <Link>{title}</Link>,
+		render: (title, record) => (
+			<Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
+		),
 	},
 	{
 		title: 'Applicants',
 		dataIndex: 'applicants',
 		key: 'applicants',
 		render: (number, record) => (
-			<Link>
+			<Link to={'/manage/vacancy/' + record.vacancy_id}>
 				{number} {number == 1 ? 'applicant' : 'applicants'}
 			</Link>
 		),
 	},
 	{
 		title: 'Status',
-		// dataIndex: 'status',
+		dataIndex: 'status',
 		key: 'status',
+		render: (status) => (
+			<span style={{ color: 'rgb(86,86,86)' }}>
+				{status.charAt(0).toUpperCase() + status.slice(1)}
+			</span>
+		),
 	},
 ];
 
