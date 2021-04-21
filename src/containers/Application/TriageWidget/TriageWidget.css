@@ -1,0 +1,41 @@
+.TriageWidgetSteps {
+	display: flex;
+	justify-content: space-between;
+}
+
+.TriageWidgetContainer .ant-steps-item-container {
+	/* display: flex; */
+	width: 100px;
+	flex-shrink: 1;
+	/* margin: 0px; */
+}
+
+.TriageWidgetContainer .ant-steps-item-title {
+	font-size: 12px;
+}
+
+.TriageWidgetContainer .ant-radio-button-wrapper {
+	margin-right: 8px;
+}
+
+.TriageWidgetSteps .ant-steps-dot .ant-steps-item-content,
+.TriageWidgetSteps .ant-steps-dot.ant-steps-small .ant-steps-item-content {
+	width: 100%;
+	/* flex-shrink: 1; */
+}
+
+.TriageWidgetSteps .ant-steps-dot .ant-steps-item-tail::after,
+.TriageWidgetSteps .ant-steps-dot.ant-steps-small .ant-steps-item-tail::after {
+	margin: 0px;
+}
+
+.TriageWidgetSteps .ant-steps-dot .ant-steps-item-icon,
+.TriageWidgetSteps .ant-steps-dot.ant-steps-small .ant-steps-item-icon {
+	/* padding-inline: auto; */
+	margin-left: 40px;
+}
+
+.TriageWidgetSteps .ant-steps-dot .ant-steps-item-tail,
+.TriageWidgetSteps .ant-steps-dot.ant-steps-small .ant-steps-item-tail {
+	margin-left: 55px;
+}
