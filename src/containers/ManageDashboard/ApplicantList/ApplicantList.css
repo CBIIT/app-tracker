@@ -3,3 +3,7 @@
 	padding-left: 15px;
 	padding-right: 15px;
 }
+
+.applicant-table td.ant-table-column-sort {
+	background-color: inherit;
+}

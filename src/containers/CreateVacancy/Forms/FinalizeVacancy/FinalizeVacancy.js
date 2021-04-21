@@ -27,7 +27,7 @@ const finalizeVacancy = (props) => {
 				onClick={() => props.onEditButtonClick(0)}
 				showButton={props.showButton}
 			/>
-			<div className='SectionContent'>
+			<div className='SectionContent' style={props.sectionContentStyle}>
 				<h2>Vacancy Title</h2>
 				<p>{basicInfo.title}</p>
 				<h2>Vacancy Description</h2>
@@ -79,7 +79,7 @@ const finalizeVacancy = (props) => {
 				onClick={() => props.onEditButtonClick(1)}
 				showButton={props.showButton}
 			/>
-			<div className='SectionContent'>
+			<div className='SectionContent' style={props.sectionContentStyle}>
 				<div className='TwoColumnCheckList'>
 					<ul>
 						<li
@@ -126,7 +126,7 @@ const finalizeVacancy = (props) => {
 				onClick={() => props.onEditButtonClick(2)}
 				showButton={props.showButton}
 			/>
-			<div className='SectionContent'>
+			<div className='SectionContent' style={props.sectionContentStyle}>
 				<Table
 					pagination={{ hideOnSinglePage: true }}
 					locale={{
@@ -143,7 +143,7 @@ const finalizeVacancy = (props) => {
 				onClick={() => props.onEditButtonClick(3)}
 				showButton={props.showButton}
 			/>
-			<div className='SectionContent'>
+			<div className='SectionContent' style={props.sectionContentStyle}>
 				<div className='TwoColumnCheckList'>
 					<ul className='TwoColumnChecklist'>
 						{emailTemplates.map((template, index) => (
