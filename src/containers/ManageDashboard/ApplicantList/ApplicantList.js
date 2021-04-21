@@ -1,24 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Table } from 'antd';
-import axios from 'axios';
 import './ApplicantList.css';
 
-const applicantList = () => {
-	const [applicants, setApplicants] = useState([]);
-	const { sysId } = useParams();
-
-	useEffect(() => {
-		(async () => {
-			const response = await axios.get(
-				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
-			);
-			response.data.result.map((applicant, index) => {
-				applicant.key = index;
-			});
-			setApplicants(response.data.result);
-		})();
-	}, []);
+const applicantList = (props) => {
+	const applicants = props.applicants;
+	applicants.map((applicant, index) => {
+		applicant.key = index;
+	});
 
 	return (
 		<>
