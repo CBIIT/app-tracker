@@ -40,7 +40,7 @@ const triageOptions = [
 	{
 		label: (
 			<>
-				<LikeOutlined /> Yes
+				<LikeOutlined /> yes
 			</>
 		),
 		value: 'yes',
@@ -48,7 +48,7 @@ const triageOptions = [
 	{
 		label: (
 			<>
-				<DislikeOutlined /> No
+				<DislikeOutlined /> no
 			</>
 		),
 		value: 'no',
@@ -56,7 +56,7 @@ const triageOptions = [
 	{
 		label: (
 			<>
-				<QuestionCircleOutlined /> Maybe
+				<QuestionCircleOutlined /> maybe
 			</>
 		),
 		value: 'maybe',
@@ -69,7 +69,6 @@ const application = () => {
 	const [application, setApplication] = useState();
 	const [vacancyTitle, setVacancyTitle] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
-	const [reloadingTriage, setReloadingTriage] = useState(false);
 	const [triageChoice, setTriageChoice] = useState();
 	const [triageComments, setTriageComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
@@ -86,15 +85,13 @@ const application = () => {
 
 	const onTriageWidgetCancelClick = () => {
 		confirm({
-			title: 'Cancel unsaved changes and return to applicants list?',
+			title:
+				'Are you sure you want to cancel any unsaved changes and return back to the applicants list?',
 			icon: <ExclamationCircleOutlined />,
 			cancelText: 'cancel',
 			okText: 'ok',
 			onOk() {
 				history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
-			},
-			onCancel() {
-				console.log('Cancel');
 			},
 		});
 	};
@@ -209,20 +206,18 @@ const application = () => {
 						className='ApplicationContentColumn'
 						style={{ maxWidth: '480px' }}
 					>
-						{!reloadingTriage ? (
-							<TriageWidget
-								steps={steps}
-								style={{ backgroundColor: 'white' }}
-								triageOptions={triageOptions}
-								onTriageSelect={onTriageSelect}
-								onTriageCommentsChange={onTriageCommentsChange}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onTriageWidgetSaveClick}
-								triageChoice={triageChoice}
-								triageComments={triageComments}
-								triageCommentsPlaceholder={'Add notes (optional)'}
-							/>
-						) : null}
+						<TriageWidget
+							steps={steps}
+							style={{ backgroundColor: 'white' }}
+							triageOptions={triageOptions}
+							onTriageSelect={onTriageSelect}
+							onTriageCommentsChange={onTriageCommentsChange}
+							onCancelClick={onTriageWidgetCancelClick}
+							onSaveClick={onTriageWidgetSaveClick}
+							triageChoice={triageChoice}
+							triageComments={triageComments}
+							triageCommentsPlaceholder={'Add notes (optional)'}
+						/>
 						<Button>
 							{/* <a href='/exportAttachmentsToZip.do?sysparm_sys_id=828c84d71bdfe850e541631ee54bcbfa'> */}
 							<a>Download Application Package</a>

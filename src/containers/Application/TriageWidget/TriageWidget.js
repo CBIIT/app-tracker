@@ -2,9 +2,7 @@ import InfoCard from '../../../components/UI/InfoCard/InfoCard';
 import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 import LabelValuePair from '../../../components/UI/LabelValuePair/LabelValuePair';
 import './TriageWidget.css';
-import { Steps, Radio, Input, Button } from 'antd';
-
-const { Step } = Steps;
+import { Radio, Input, Button } from 'antd';
 const { TextArea } = Input;
 
 const triageWidget = (props) => (
@@ -13,23 +11,6 @@ const triageWidget = (props) => (
 			title='Hiring Team Feedback and Notes'
 			className='TriageWidgetContainer'
 		>
-			<div className='TriageWidgetSteps'>
-				<Steps
-					current={props.currentStep}
-					direction='horizontal'
-					progressDot
-					size='small'
-					responsive='true'
-				>
-					{props.steps.map((item) => (
-						<Step
-							key={item.title}
-							title={item.title}
-							description={item.description}
-						/>
-					))}
-				</Steps>
-			</div>
 			<InfoCardRow style={{ paddingBottom: '5px' }}>
 				<LabelValuePair
 					label='Your Recommendation'
@@ -56,7 +37,6 @@ const triageWidget = (props) => (
 					rows={4}
 					onChange={props.onTriageCommentsChange}
 					defaultValue={props.triageComments}
-					// value={props.triageComments}
 					placeholder={props.triageCommentsPlaceholder}
 				/>
 			</InfoCardRow>
