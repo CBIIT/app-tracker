@@ -48,6 +48,7 @@ const chairColumns = [
 			compare: (a, b) => a.vacancy_title.localeCompare(b.vacancy_title),
 			multiple: 1,
 		},
+		defaultSortOrder: 'ascend',
 		render: (title, record) => (
 			<Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
 		),
