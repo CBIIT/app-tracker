@@ -4,6 +4,15 @@ import { Link } from 'react-router-dom';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 import './ApplicantList.css';
 
+const renderDecision = (text) =>
+	text == 'Pending' ? (
+		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
+			{text}
+		</span>
+	) : (
+		<span style={{ textTransform: 'capitalize' }}>{text}</span>
+	);
+
 const applicantList = (props) => {
 	const applicants = props.applicants;
 	applicants.map((applicant, index) => {
@@ -47,35 +56,25 @@ const applicantList = (props) => {
 			title: 'OWM Triage Decision',
 			dataIndex: 'owm_triage_status',
 			key: 'OWMStatus',
-			render: (text) => {
-				if (text == 'Pending') {
-					return <span style={{ color: 'rgba(0,0,0,0.25)' }}>{text}</span>;
-				}
-			},
+			render: (text) => renderDecision(text),
 		},
 
 		{
 			title: 'Chair Triage Decision',
 			dataIndex: 'chair_triage_status',
 			key: 'ChairStatus',
-			render: (text) => {
-				if (text == 'Pending') {
-					return <span style={{ color: 'rgba(0,0,0,0.25)' }}>{text}</span>;
-				}
-			},
+			render: (text) => renderDecision(text),
 		},
 	];
 
 	return (
-		<>
-			<div className='applicant-table'>
-				<Table
-					dataSource={applicants}
-					columns={applicantColumns}
-					key='applicants'
-				></Table>
-			</div>
-		</>
+		<div className='applicant-table'>
+			<Table
+				dataSource={applicants}
+				columns={applicantColumns}
+				key='applicants'
+			></Table>
+		</div>
 	);
 };
 
