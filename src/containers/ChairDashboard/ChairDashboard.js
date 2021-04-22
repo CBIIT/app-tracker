@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table } from 'antd';
 import './ChairDashboard.css';
 import axios from 'axios';
@@ -28,7 +29,7 @@ const chairDashboard = () => {
 			</div>
 			<div className='ChairDashboard'>
 				<Table
-					rowKey='vacancy'
+					rowKey={(record) => record.vacancy_id}
 					dataSource={data}
 					columns={chairColumns}
 					key='ChairVacancies'
@@ -56,7 +57,7 @@ const chairColumns = [
 		dataIndex: 'applicants',
 		key: 'applicants',
 		render: (number, record) => (
-			<Link to={'/manage/vacancy/' + record.vacancy_id}>
+			<Link to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}>
 				{number} {number == 1 ? 'applicant' : 'applicants'}
 			</Link>
 		),
@@ -65,11 +66,24 @@ const chairColumns = [
 		title: 'Status',
 		dataIndex: 'status',
 		key: 'status',
-		render: (status) => (
-			<span style={{ color: 'rgb(86,86,86)' }}>
-				{status.charAt(0).toUpperCase() + status.slice(1)}
-			</span>
-		),
+		render: (status) => {
+			if (status.includes('owm')) {
+				status = status.split('_')[0].toUpperCase() + status.substring(3);
+			}
+			if (status.includes('_')) {
+				status = status
+					.split('_')
+					.map((word) => word[0].toUpperCase() + word.substring(1))
+					.join(' ');
+				return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
+			} else {
+				return (
+					<span style={{ color: 'rgb(86,86,86)' }}>
+						{status.charAt(0).toUpperCase() + status.slice(1)}
+					</span>
+				);
+			}
+		},
 	},
 ];
 
