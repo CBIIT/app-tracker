@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Tabs } from 'antd';
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
-// import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
+import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import axios from 'axios';
 import './ManageDashboard.css';
@@ -15,7 +15,7 @@ const manageDashboard = () => {
 	const [applicants, setApplicants] = useState([]);
 	const [allForms, setAllForms] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
-	// const [state, setState] = useState([]);
+	const [state, setState] = useState([]);
 
 	const onChangeTabHandler = (key) => {
 		setCurrentTab(key);
@@ -32,7 +32,7 @@ const manageDashboard = () => {
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 			);
 
-			// setState(response.data.result.basic_info.state.label);
+			setState(response.data.result.basic_info.state.label);
 			setVacancyTitle(application.basicInfo.title);
 			setAllForms(application);
 			setApplicants(responseApplicantList.data.result);
@@ -48,7 +48,7 @@ const manageDashboard = () => {
 			<div className='HeaderTitle'>
 				<h1>{vacancyTitle}</h1>
 			</div>
-			{/* <VacancyStatus state={state} /> */}
+			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
 				<Tabs
 					activeKey={currentTab}

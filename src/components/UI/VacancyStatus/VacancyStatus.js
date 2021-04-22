@@ -7,21 +7,30 @@ const VacancyStatus = (props) => {
 
 	let currentStatus = '';
 	switch (state) {
-		case 'Open':
+		case 'Live':
 			currentStatus = 0;
 			break;
-		case 'Triaged':
+		case 'OWM Team Triage':
 			currentStatus = 1;
 			break;
-		case 'Individual Scored':
+		case 'Chair Triage':
+			currentStatus = 1;
+			break;
+		case 'Individual Scoring in Progress':
 			currentStatus = 2;
 			break;
-		case 'Committee Scoring':
+		case 'Individual Scoring Complete':
+			currentStatus = 2;
+			break;
+		case 'Committee Review in Progress':
 			currentStatus = 3;
 			break;
-		case 'Scored':
-			currentStatus = 4;
+		case 'Committee Review Complete':
+			currentStatus = 3;
 			break;
+		// case 'Scored':
+		// 	currentStatus = 4;
+		// 	break;
 	}
 
 	return (
@@ -31,11 +40,11 @@ const VacancyStatus = (props) => {
 				className='vacancy-status'
 				progressDot={customDot}
 			>
-				<Steps.Step title='Open' />
+				<Steps.Step title='Live' />
 				<Steps.Step title='Triage' />
 				<Steps.Step title='Individual Scoring' />
-				<Steps.Step title='Committee Scoring' />
-				<Steps.Step title='Scored' />
+				<Steps.Step title='Committee Review' />
+				{/* <Steps.Step title='Scored' /> */}
 			</Steps>
 		</>
 	);
