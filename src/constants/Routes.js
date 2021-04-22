@@ -1,2 +1,3 @@
 const MANAGE_APPLICATION = '/manage/application/';
-export { MANAGE_APPLICATION };
+const MANAGE_VACANCY = '/manage/vacancy/';
+export { MANAGE_APPLICATION, MANAGE_VACANCY };
