@@ -2,8 +2,8 @@ import './LabelValuePair.css';
 
 const labelValuePair = (props) => (
 	<div className='LabelValuePairContainer'>
-		<h2>{props.label}</h2>
-		<span>{props.value}</span>
+		<h2 style={props.labelStyle}>{props.label}</h2>
+		<span style={props.valueStyle}>{props.value}</span>
 	</div>
 );
 

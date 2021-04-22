@@ -1,15 +1,12 @@
 import InfoCard from '../../../components/UI/InfoCard/InfoCard';
 
-const handleToggle = (isToggleOn) => {
-	console.log('[References] isToggleOn: ', isToggleOn);
-};
-
 const references = (props) => (
 	<div style={props.style}>
 		<InfoCard
 			title='References'
-			onSwitchToggle={handleToggle}
+			onSwitchToggle={props.handleToggle}
 			switchTitle='Display to committee members?'
+			switchInitialValue={props.switchInitialValue}
 		>
 			<ul className='ApplicantDocumentList'>
 				{props.references.map((reference, index) => (

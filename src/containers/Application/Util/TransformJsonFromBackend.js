@@ -1,5 +1,7 @@
 export const transformJsonFromBackend = (backendJson) => {
 	return {
+		vacancyId: backendJson.basic_info.vacancy.value,
+		appSysId: backendJson.basic_info.sys_id.value,
 		basicInfo: {
 			firstName: backendJson.basic_info.first_name.value,
 			middleName: backendJson.basic_info.middle_name.value,
