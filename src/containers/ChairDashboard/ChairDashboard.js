@@ -15,7 +15,11 @@ const chairDashboard = () => {
 				const currentData = await axios.get(
 					'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId
 				);
-				setData(currentData.data.result);
+				setData(
+					currentData.data.result.filter(
+						(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
+					)
+				);
 			} catch (err) {
 				console.warn(err);
 			}
@@ -67,6 +71,11 @@ const chairColumns = [
 		title: 'Status',
 		dataIndex: 'status',
 		key: 'status',
+		sorter: {
+			compare: (a, b) => a.status.localeCompare(b.status),
+			multiple: 2,
+		},
+		defaultSortOrder: 'ascend',
 		render: (status) => {
 			if (status.includes('owm')) {
 				status = status.split('_')[0].toUpperCase() + status.substring(3);
