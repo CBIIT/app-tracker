@@ -71,7 +71,9 @@ const finalizeVacancy = (props) => {
 				<h2>Letters of Recommendations</h2>
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
-					<li>{basicInfo.numberOfRecommendations} recommendations</li>
+					<li className='ListItemTrue'>
+						{basicInfo.numberOfRecommendations} recommendations
+					</li>
 				</ul>
 			</div>
 			<SectionHeader
