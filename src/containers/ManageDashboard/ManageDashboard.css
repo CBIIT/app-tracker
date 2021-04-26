@@ -3,7 +3,7 @@
 	padding-left: 30px;
 }
 
-.HeaderTitle {
+.ManageHeader .HeaderTitle {
 	background-color: #edf1f4;
 
 	margin-left: 0px;
@@ -11,7 +11,7 @@
 	justify-content: left;
 }
 
-.HeaderLink {
+.ManageHeader .HeaderLink {
 	padding-top: 15px;
 }
 
