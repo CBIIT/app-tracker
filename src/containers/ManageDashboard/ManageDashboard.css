@@ -5,11 +5,19 @@
 
 .HeaderTitle {
 	background-color: #edf1f4;
+
+	margin-left: 0px;
+	padding: 20px 20px 20px 0px !important;
+	justify-content: left;
+}
+
+.HeaderLink {
+	padding-top: 15px;
+}
+
+.ManageHeader {
+	display: flex;
+	background-color: #edf1f4;
 	max-width: 1440px;
 	max-height: 76px;
-	margin: auto;
-	padding: 20px 20px 20px 0px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
 }

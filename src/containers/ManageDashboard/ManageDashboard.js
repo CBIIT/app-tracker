@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Tabs } from 'antd';
+import { useParams, useHistory } from 'react-router-dom';
+import { Button, Tabs } from 'antd';
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
@@ -16,6 +16,7 @@ const manageDashboard = () => {
 	const [allForms, setAllForms] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
 	const [state, setState] = useState([]);
+	const history = useHistory();
 
 	const onChangeTabHandler = (key) => {
 		setCurrentTab(key);
@@ -45,8 +46,20 @@ const manageDashboard = () => {
 		<> </>
 	) : (
 		<>
-			<div className='HeaderTitle'>
-				<h1>{vacancyTitle}</h1>
+			<div className='ManageHeader'>
+				<div className='HeaderTitle'>
+					<h1>{vacancyTitle}</h1>
+				</div>
+				<div className='HeaderLink'>
+					<Button
+						type='link'
+						onClick={() => {
+							history.push('/vacancy-dashboard');
+						}}
+					>
+						Return to Dashboard
+					</Button>
+				</div>
 			</div>
 			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
