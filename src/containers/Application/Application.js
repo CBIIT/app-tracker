@@ -172,7 +172,7 @@ const application = () => {
 	}, []);
 
 	console.log('[Application] application:', application);
-	debugger;
+	console.log('[APPLICANT LIST]:', applicantsList);
 
 	return !isLoading ? (
 		<>
@@ -194,9 +194,9 @@ const application = () => {
 						</Link>
 						<Button
 							disabled={
-								sysId == applicantsList[applicantList.length - 1].sys_id
-									? false
-									: true
+								sysId == applicantsList[applicantsList.length - 1].sys_id
+									? true
+									: false
 							}
 						>
 							<RightOutlined />
