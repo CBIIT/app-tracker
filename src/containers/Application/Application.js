@@ -7,6 +7,8 @@ import {
 	DislikeOutlined,
 	QuestionCircleOutlined,
 	ExclamationCircleOutlined,
+	LeftOutlined,
+	RightOutlined,
 } from '@ant-design/icons';
 
 import ApplicantInfo from './ApplicantInfo/ApplicantInfo';
@@ -25,6 +27,7 @@ import {
 import { MANAGE_VACANCY } from '../../constants/Routes';
 
 import './Application.css';
+import applicantList from '../ManageDashboard/ApplicantList/ApplicantList';
 
 const steps = [
 	{
@@ -72,6 +75,7 @@ const application = () => {
 	const [triageChoice, setTriageChoice] = useState();
 	const [triageComments, setTriageComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
+	const [applicantsList, setApplicantsList] = useState([]);
 
 	const history = useHistory();
 
@@ -154,6 +158,12 @@ const application = () => {
 					+responses[0].data.result.basic_info.display_references.value
 				);
 
+				const appList = await axios.get(
+					'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' +
+						application.vacancyId
+				);
+				setApplicantsList(appList.data.result);
+
 				setIsLoading(false);
 			} catch (error) {
 				console.log('[Application] error: ', error);
@@ -162,6 +172,7 @@ const application = () => {
 	}, []);
 
 	console.log('[Application] application:', application);
+	debugger;
 
 	return !isLoading ? (
 		<>
@@ -174,9 +185,23 @@ const application = () => {
 							' ' +
 							application.basicInfo.lastName}
 					</h2>
-					<Link to={MANAGE_VACANCY + application.vacancyId + '/applicants'}>
-						<Button type='link'>view applicants list</Button>
-					</Link>
+					<div className='ApplicantsNav'>
+						<Button disabled={sysId == applicantsList[0].sys_id ? true : false}>
+							<LeftOutlined />
+						</Button>
+						<Link to={MANAGE_VACANCY + application.vacancyId + '/applicants'}>
+							<Button type='link'>view applicants list</Button>
+						</Link>
+						<Button
+							disabled={
+								sysId == applicantsList[applicantList.length - 1].sys_id
+									? false
+									: true
+							}
+						>
+							<RightOutlined />
+						</Button>
+					</div>
 				</div>
 				<div className='ApplicationContent'>
 					<div

@@ -31,3 +31,7 @@
 	font-family: var(--ff-heading);
 	margin-bottom: 8px;
 }
+
+.ApplicantsNav {
+	padding-bottom: 10px;
+}
