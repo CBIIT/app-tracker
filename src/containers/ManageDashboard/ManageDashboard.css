@@ -1,6 +1,22 @@
+.manage-tabs {
+	position: relative;
+}
+
+.AdvanceButton.ant-btn,
+.AdvanceButton.ant-tooltip-disabled-compatible-wrapper {
+	position: absolute;
+	top: 5px;
+	right: 0px;
+	z-index: 10;
+}
+
 .manage-tabs .ant-tabs-nav-wrap {
 	background-color: rgb(237 240 243);
-	padding-left: 30px;
+}
+
+.manage-tabs .ant-tabs-tab {
+	justify-content: center;
+	width: 160px;
 }
 
 .HeaderTitle {
