@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+
 import { Tabs, Button, Tooltip, message } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
+import { useParams, useHistory } from 'react-router-dom';
+
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
-// import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
+import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import { REQUEST_CHAIR_TRIAGE } from '../../constants/ApiEndpoints';
 import './ManageDashboard.css';
@@ -27,7 +29,8 @@ const manageDashboard = () => {
 	const [vacancyTitle, setVacancyTitle] = useState([]);
 	const [nextStep, setNextStep] = useState();
 	const [isNextButtonLoading, setIsNextButtonLoading] = useState(false);
-	// const [state, setState] = useState([]);
+	const [state, setState] = useState([]);
+	const history = useHistory();
 
 	const handleButtonClick = async (nextStep, sysId) => {
 		setIsNextButtonLoading(true);
@@ -66,10 +69,10 @@ const manageDashboard = () => {
 
 			setNextStep(responses[0].data.result.basic_info.next_step.value);
 
-			// setState(response.data.result.basic_info.state.label);
 			console.log('[ManageDashboard] vacancy: ', responses[0]);
 			setVacancyTitle(vacancy.basicInfo.title);
 			setVacancy(vacancy);
+			setState(responses[0].data.result.basic_info.state.label);
 			setApplicants(responseApplicantList.data.result);
 			setCurrentTab(tab);
 			setIsLoading(false);
@@ -80,10 +83,22 @@ const manageDashboard = () => {
 		<> </>
 	) : (
 		<>
-			<div className='HeaderTitle'>
-				<h1>{vacancyTitle}</h1>
+			<div className='ManageHeader'>
+				<div className='HeaderTitle'>
+					<h1>{vacancyTitle}</h1>
+				</div>
+				<div className='HeaderLink'>
+					<Button
+						type='link'
+						onClick={() => {
+							history.push('/vacancy-dashboard');
+						}}
+					>
+						Return to Dashboard
+					</Button>
+				</div>
 			</div>
-			{/* <VacancyStatus state={state} /> */}
+			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
 				<Tooltip
 					placement='top'

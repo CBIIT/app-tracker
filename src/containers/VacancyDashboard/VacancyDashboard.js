@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Table, Button, Tabs, Radio, Space, Divider } from 'antd';
 import {
 	DeleteOutlined,
@@ -15,6 +15,7 @@ import axios from 'axios';
 
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
+	const history = useHistory();
 	let [url, setURL] = useState(
 		'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight'
 	);
@@ -70,6 +71,159 @@ const vacancyDashboard = () => {
 			setData(filteredData.data.result.filter((res) => res.state == newFilter));
 		}
 	};
+	// Preflight Columns
+	const preFlightColumns = [
+		{
+			title: 'Vacancy Title',
+			dataIndex: 'title',
+			render: (title, record) => (
+				<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+			),
+		},
+		{
+			title: 'Open Date',
+			dataIndex: 'open_date',
+			sorter: {
+				compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
+				multiple: 1,
+			},
+			defaultSortOrder: 'ascend',
+		},
+		{
+			title: 'Close Date',
+			dataIndex: 'close_date',
+			sorter: {
+				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
+				multiple: 2,
+			},
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: () => (
+				<Space size='middle'>
+					<Button type='text'>
+						<EditOutlined /> edit
+					</Button>
+					<Divider type='vertical' />
+					<Button type='text'>
+						<DeleteOutlined /> remove
+					</Button>
+				</Space>
+			),
+		},
+	];
+
+	const liveColumns = [
+		{
+			title: 'Vacancy Title',
+			dataIndex: 'title',
+			render: (title, record) => (
+				<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+			),
+		},
+		{
+			title: 'Applicants',
+			dataIndex: 'applicants',
+			sorter: {
+				compare: (a, b) => a.applicants - b.applicants,
+				multiple: 1,
+			},
+			defaultSortOrder: 'ascend',
+		},
+		{
+			title: 'Open Date',
+			dataIndex: 'open_date',
+			sorter: {
+				compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
+				multiple: 2,
+			},
+		},
+		{
+			title: 'Close Date',
+			dataIndex: 'close_date',
+			sorter: {
+				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
+				multiple: 3,
+			},
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			width: '5px',
+			render: () => (
+				<Space size={0}>
+					<Button type='text' style={{ padding: '0px' }}>
+						<EditOutlined /> edit
+					</Button>
+					<Divider type='vertical' />
+					<Button type='text' style={{ padding: '0px' }}>
+						<LinkOutlined /> copy link
+					</Button>
+					<Divider type='vertical' />
+					<Button type='text' style={{ padding: '0px' }}>
+						<FieldTimeOutlined /> extend
+					</Button>
+					<Divider type='vertical' />
+					<Button type='text' style={{ padding: '0px' }}>
+						<MinusCircleOutlined /> close
+					</Button>
+				</Space>
+			),
+		},
+	];
+
+	const closedColumns = [
+		{
+			title: 'Vacancy Title',
+			dataIndex: 'title',
+			render: (title, record) => (
+				<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+			),
+		},
+		{
+			title: 'Applicants',
+			dataIndex: 'applicants',
+			sorter: {
+				compare: (a, b) => a.applicants - b.applicants,
+				multiple: 1,
+			},
+			defaultSortOrder: 'ascend',
+		},
+		{
+			title: 'Close Date',
+			dataIndex: 'close_date',
+			sorter: {
+				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
+				multiple: 2,
+			},
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: (vacancy) => (
+				<Space size='middle'>
+					<Button
+						type='text'
+						onClick={() => {
+							history.push('/manage/vacancy/' + vacancy.sys_id + '/applicants');
+						}}
+					>
+						<UserOutlined /> view applicants
+					</Button>
+					<Divider type='vertical' />
+					<Button
+						type='text'
+						onClick={() => {
+							history.push('/manage/vacancy/' + vacancy.sys_id);
+						}}
+					>
+						<FileTextOutlined /> view vacancy
+					</Button>
+				</Space>
+			),
+		},
+	];
 
 	return (
 		<>
@@ -213,149 +367,5 @@ const vacancyDashboard = () => {
 		</>
 	);
 };
-
-// Preflight Columns
-const preFlightColumns = [
-	{
-		title: 'Vacancy Title',
-		dataIndex: 'title',
-		render: (title, record) => (
-			<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
-		),
-	},
-	{
-		title: 'Open Date',
-		dataIndex: 'open_date',
-		sorter: {
-			compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
-			multiple: 1,
-		},
-		defaultSortOrder: 'ascend',
-	},
-	{
-		title: 'Close Date',
-		dataIndex: 'close_date',
-		sorter: {
-			compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
-			multiple: 2,
-		},
-	},
-	{
-		title: 'Actions',
-		key: 'action',
-		render: () => (
-			<Space size='middle'>
-				<Button type='text'>
-					<EditOutlined /> edit
-				</Button>
-				<Divider type='vertical' />
-				<Button type='text'>
-					<DeleteOutlined /> remove
-				</Button>
-			</Space>
-		),
-	},
-];
-
-const liveColumns = [
-	{
-		title: 'Vacancy Title',
-		dataIndex: 'title',
-		render: (title, record) => (
-			<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
-		),
-	},
-	{
-		title: 'Applicants',
-		dataIndex: 'applicants',
-		sorter: {
-			compare: (a, b) => a.applicants - b.applicants,
-			multiple: 1,
-		},
-		defaultSortOrder: 'ascend',
-	},
-	{
-		title: 'Open Date',
-		dataIndex: 'open_date',
-		sorter: {
-			compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
-			multiple: 2,
-		},
-	},
-	{
-		title: 'Close Date',
-		dataIndex: 'close_date',
-		sorter: {
-			compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
-			multiple: 3,
-		},
-	},
-	{
-		title: 'Actions',
-		key: 'action',
-		width: '5px',
-		render: () => (
-			<Space size={0}>
-				<Button type='text' style={{ padding: '0px' }}>
-					<EditOutlined /> edit
-				</Button>
-				<Divider type='vertical' />
-				<Button type='text' style={{ padding: '0px' }}>
-					<LinkOutlined /> copy link
-				</Button>
-				<Divider type='vertical' />
-				<Button type='text' style={{ padding: '0px' }}>
-					<FieldTimeOutlined /> extend
-				</Button>
-				<Divider type='vertical' />
-				<Button type='text' style={{ padding: '0px' }}>
-					<MinusCircleOutlined /> close
-				</Button>
-			</Space>
-		),
-	},
-];
-
-const closedColumns = [
-	{
-		title: 'Vacancy Title',
-		dataIndex: 'title',
-		render: (title, record) => (
-			<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
-		),
-	},
-	{
-		title: 'Applicants',
-		dataIndex: 'applicants',
-		sorter: {
-			compare: (a, b) => a.applicants - b.applicants,
-			multiple: 1,
-		},
-		defaultSortOrder: 'ascend',
-	},
-	{
-		title: 'Close Date',
-		dataIndex: 'close_date',
-		sorter: {
-			compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
-			multiple: 2,
-		},
-	},
-	{
-		title: 'Actions',
-		key: 'action',
-		render: () => (
-			<Space size='middle'>
-				<Button type='text'>
-					<UserOutlined /> view applicants
-				</Button>
-				<Divider type='vertical' />
-				<Button type='text'>
-					<FileTextOutlined /> view vacancy
-				</Button>
-			</Space>
-		),
-	},
-];
 
 export default vacancyDashboard;
