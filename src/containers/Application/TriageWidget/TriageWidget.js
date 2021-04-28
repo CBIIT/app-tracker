@@ -7,13 +7,10 @@ const { TextArea } = Input;
 
 const triageWidget = (props) => (
 	<div style={props.style}>
-		<InfoCard
-			title='Hiring Team Feedback and Notes'
-			className='TriageWidgetContainer'
-		>
+		<InfoCard title={props.title} className='TriageWidgetContainer'>
 			<InfoCardRow style={{ paddingBottom: '5px' }}>
 				<LabelValuePair
-					label='Your Recommendation'
+					label='Recommendation'
 					value='Should this applicant be considered for a full committee review?'
 					labelStyle={{ marginBottom: '0px' }}
 					valueStyle={{
@@ -24,28 +21,40 @@ const triageWidget = (props) => (
 				/>
 			</InfoCardRow>
 			<InfoCardRow>
-				<Radio.Group
-					options={props.triageOptions}
-					optionType='button'
-					buttonStyle='solid'
-					onChange={props.onTriageSelect}
-					value={props.triageChoice}
-				/>
+				{props.readOnly ? (
+					<span>{props.triageChoice}</span>
+				) : (
+					<Radio.Group
+						options={props.triageOptions}
+						optionType='button'
+						buttonStyle='solid'
+						onChange={props.onTriageSelect}
+						value={props.triageChoice}
+					/>
+				)}
 			</InfoCardRow>
 			<InfoCardRow>
-				<TextArea
-					rows={4}
-					onChange={props.onTriageCommentsChange}
-					defaultValue={props.triageComments}
-					placeholder={props.triageCommentsPlaceholder}
-				/>
+				{props.readOnly ? (
+					<LabelValuePair label='Comments' value={props.triageComments} />
+				) : (
+					<TextArea
+						rows={4}
+						onChange={props.onTriageCommentsChange}
+						defaultValue={props.triageComments}
+						placeholder={props.triageCommentsPlaceholder}
+					/>
+				)}
 			</InfoCardRow>
-			<InfoCardRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Button onClick={props.onCancelClick}>cancel</Button>
-				<Button onClick={props.onSaveClick} type='primary'>
-					save triage
-				</Button>
-			</InfoCardRow>
+			{!props.readOnly ? (
+				<InfoCardRow
+					style={{ display: 'flex', justifyContent: 'space-between' }}
+				>
+					<Button onClick={props.onCancelClick}>cancel</Button>
+					<Button onClick={props.onSaveClick} type='primary'>
+						save triage
+					</Button>
+				</InfoCardRow>
+			) : null}
 		</InfoCard>
 	</div>
 );

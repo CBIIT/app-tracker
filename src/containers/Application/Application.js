@@ -21,47 +21,10 @@ import {
 	SUBMIT_TRIAGE,
 	DISPLAY_REFERENCES,
 } from '../../constants/ApiEndpoints';
-
 import { MANAGE_VACANCY } from '../../constants/Routes';
+import { COMMITTEE_CHAIR, OWM_TEAM } from '../../constants/Roles';
 
 import './Application.css';
-
-const steps = [
-	{
-		key: 'owmTriage',
-		title: 'OWM Triage',
-	},
-	{ key: 'chairTriage', title: 'Chair Triage' },
-	{ key: 'individualScoring', title: 'Individual Scoring' },
-	{ key: 'committeeScoring', title: 'Committee Scoring' },
-];
-
-const triageOptions = [
-	{
-		label: (
-			<>
-				<LikeOutlined /> yes
-			</>
-		),
-		value: 'yes',
-	},
-	{
-		label: (
-			<>
-				<DislikeOutlined /> no
-			</>
-		),
-		value: 'no',
-	},
-	{
-		label: (
-			<>
-				<QuestionCircleOutlined /> maybe
-			</>
-		),
-		value: 'maybe',
-	},
-];
 
 const { confirm } = Modal;
 
@@ -71,9 +34,41 @@ const application = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [triageChoice, setTriageChoice] = useState();
 	const [triageComments, setTriageComments] = useState();
+	const [chairTriageChoice, setChairTriageChoice] = useState();
+	const [chairTriageComments, setChairTriageComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
+	const [userRole, setUserRole] = useState();
 
 	const history = useHistory();
+
+	let triageOptions = [
+		{
+			label: (
+				<>
+					<LikeOutlined /> yes
+				</>
+			),
+			value: 'yes',
+		},
+		{
+			label: (
+				<>
+					<DislikeOutlined /> no
+				</>
+			),
+			value: 'no',
+		},
+	];
+
+	if (userRole == OWM_TEAM)
+		triageOptions.push({
+			label: (
+				<>
+					<QuestionCircleOutlined /> maybe
+				</>
+			),
+			value: 'maybe',
+		});
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -153,6 +148,9 @@ const application = () => {
 				setDisplayReferences(
 					+responses[0].data.result.basic_info.display_references.value
 				);
+				setUserRole(OWM_TEAM);
+				setChairTriageChoice('Yes');
+				setChairTriageComments('Placeholder chair triage comments');
 
 				setIsLoading(false);
 			} catch (error) {
@@ -207,7 +205,7 @@ const application = () => {
 						style={{ maxWidth: '480px' }}
 					>
 						<TriageWidget
-							steps={steps}
+							title='OWM Team Feedback and Notes'
 							style={{ backgroundColor: 'white' }}
 							triageOptions={triageOptions}
 							onTriageSelect={onTriageSelect}
@@ -217,7 +215,22 @@ const application = () => {
 							triageChoice={triageChoice}
 							triageComments={triageComments}
 							triageCommentsPlaceholder={'Add notes (optional)'}
+							readOnly={!(userRole == OWM_TEAM)}
 						/>
+						{userRole == COMMITTEE_CHAIR ? (
+							<TriageWidget
+								title='Committee Chair Feedback and Notes'
+								style={{ backgroundColor: 'white' }}
+								triageOptions={triageOptions}
+								onTriageSelect={onTriageSelect}
+								onTriageCommentsChange={onTriageCommentsChange}
+								onCancelClick={onTriageWidgetCancelClick}
+								onSaveClick={onTriageWidgetSaveClick}
+								triageChoice={chairTriageChoice}
+								triageComments={chairTriageComments}
+								triageCommentsPlaceholder={'Add notes (optional)'}
+							/>
+						) : null}
 						<Button>
 							{/* <a href='/exportAttachmentsToZip.do?sysparm_sys_id=828c84d71bdfe850e541631ee54bcbfa'> */}
 							<a>Download Application Package</a>

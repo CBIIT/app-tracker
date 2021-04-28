@@ -1,5 +1,6 @@
 export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
+		state: sourceJson.basic_info.state.value,
 		basicInfo: {
 			openDate: sourceJson.basic_info.open_date.value,
 			closeDate: sourceJson.basic_info.close_date.value,
