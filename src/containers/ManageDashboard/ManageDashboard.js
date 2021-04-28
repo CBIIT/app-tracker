@@ -11,10 +11,15 @@ import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import { REQUEST_CHAIR_TRIAGE } from '../../constants/ApiEndpoints';
+import { OWM_TRIAGE, CHAIR_TRIAGE } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
+		case OWM_TRIAGE:
+			return 'Request Chair Triage';
+		case CHAIR_TRIAGE:
+			return 'Request Individual Scoring';
 		default:
 			return 'Request Chair Triage';
 	}
@@ -30,6 +35,7 @@ const manageDashboard = () => {
 	const [nextStep, setNextStep] = useState();
 	const [isNextButtonLoading, setIsNextButtonLoading] = useState(false);
 	const [state, setState] = useState([]);
+	const [nextButtonLabel, setNextButtonLabel] = useState();
 	const history = useHistory();
 
 	const handleButtonClick = async (nextStep, sysId) => {
@@ -38,7 +44,15 @@ const manageDashboard = () => {
 			case 'chair_triage':
 				try {
 					await axios.post(REQUEST_CHAIR_TRIAGE + sysId);
-					//TODO: Retrieve latest state of vacancy and update
+					const response = await axios.get(
+						'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
+					);
+					const state = response.data.result.basic_info.state.value;
+					const nextStep = response.data.result.basic_info.next_step.value;
+					setState(response.data.result.basic_info.state.label);
+					setNextStep(nextStep);
+					setNextButtonLabel(getNextStepButtonLabel(state));
+					message.success('Request sent!');
 				} catch (error) {
 					message.error('Sorry!  There was an error processing the request.');
 				}
@@ -68,11 +82,12 @@ const manageDashboard = () => {
 			const responseApplicantList = responses[1];
 
 			setNextStep(responses[0].data.result.basic_info.next_step.value);
-
-			console.log('[ManageDashboard] vacancy: ', responses[0]);
 			setVacancyTitle(vacancy.basicInfo.title);
 			setVacancy(vacancy);
 			setState(responses[0].data.result.basic_info.state.label);
+			setNextButtonLabel(
+				getNextStepButtonLabel(responses[0].data.result.basic_info.state.value)
+			);
 			setApplicants(responseApplicantList.data.result);
 			setCurrentTab(tab);
 			setIsLoading(false);
@@ -112,7 +127,7 @@ const manageDashboard = () => {
 						onClick={() => handleButtonClick(nextStep, sysId)}
 						loading={isNextButtonLoading}
 					>
-						{getNextStepButtonLabel(vacancy.state)} <DoubleRightOutlined />
+						{nextButtonLabel} <DoubleRightOutlined />
 					</Button>
 				</Tooltip>
 				<Tabs
