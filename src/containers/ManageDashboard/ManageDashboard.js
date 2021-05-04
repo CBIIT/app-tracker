@@ -10,9 +10,10 @@ import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
-import { REQUEST_CHAIR_TRIAGE } from '../../constants/ApiEndpoints';
+import { REQUEST_CHAIR_TRIAGE, CHECK_AUTH } from '../../constants/ApiEndpoints';
 import { OWM_TRIAGE, CHAIR_TRIAGE } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
+import { OWM_TEAM } from '../../constants/Roles';
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
@@ -36,7 +37,40 @@ const manageDashboard = () => {
 	const [isNextButtonLoading, setIsNextButtonLoading] = useState(false);
 	const [state, setState] = useState([]);
 	const [nextButtonLabel, setNextButtonLabel] = useState();
+	const [userRoles, setUserRoles] = useState([]);
 	const history = useHistory();
+
+	useEffect(() => {
+		(async () => {
+			const responses = await Promise.all([
+				axios.get(
+					'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
+				),
+				axios.get(
+					'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
+				),
+				axios.get(CHECK_AUTH),
+			]);
+			const vacancy = transformJsonFromBackend(responses[0].data.result);
+
+			const responseApplicantList = responses[1];
+
+			setNextStep(responses[0].data.result.basic_info.next_step.value);
+			setVacancyTitle(vacancy.basicInfo.title);
+			setVacancy(vacancy);
+			setState(responses[0].data.result.basic_info.state.label);
+			setNextButtonLabel(
+				getNextStepButtonLabel(responses[0].data.result.basic_info.state.value)
+			);
+			setApplicants(responseApplicantList.data.result);
+			setCurrentTab(tab);
+
+			console.log('[ManageDashboard] responses[2]', responses[2]);
+			setUserRoles(responses[2].data.result.user.roles);
+
+			setIsLoading(false);
+		})();
+	}, []);
 
 	const handleButtonClick = async (nextStep, sysId) => {
 		setIsNextButtonLoading(true);
@@ -67,32 +101,7 @@ const manageDashboard = () => {
 		setCurrentTab(key);
 	};
 
-	useEffect(() => {
-		(async () => {
-			const responses = await Promise.all([
-				await axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
-				),
-				await axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
-				),
-			]);
-			const vacancy = transformJsonFromBackend(responses[0].data.result);
-
-			const responseApplicantList = responses[1];
-
-			setNextStep(responses[0].data.result.basic_info.next_step.value);
-			setVacancyTitle(vacancy.basicInfo.title);
-			setVacancy(vacancy);
-			setState(responses[0].data.result.basic_info.state.label);
-			setNextButtonLabel(
-				getNextStepButtonLabel(responses[0].data.result.basic_info.state.value)
-			);
-			setApplicants(responseApplicantList.data.result);
-			setCurrentTab(tab);
-			setIsLoading(false);
-		})();
-	}, []);
+	console.log('[ManageDashboard]: vacancyTransformed: ', vacancy);
 
 	return isLoading ? (
 		<> </>
@@ -115,21 +124,27 @@ const manageDashboard = () => {
 			</div>
 			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
-				<Tooltip
-					placement='top'
-					title={!nextStep ? 'Not all applications have been triaged.' : ''}
-				>
-					<Button
-						type='primary'
-						ghost
-						className='AdvanceButton'
-						disabled={!nextStep}
-						onClick={() => handleButtonClick(nextStep, sysId)}
-						loading={isNextButtonLoading}
+				{userRoles.includes(OWM_TEAM) ? (
+					<Tooltip
+						placement='top'
+						title={
+							!nextStep
+								? 'Not all applications have been triaged or vacancy is still open.'
+								: ''
+						}
 					>
-						{nextButtonLabel} <DoubleRightOutlined />
-					</Button>
-				</Tooltip>
+						<Button
+							type='primary'
+							ghost
+							className='AdvanceButton'
+							disabled={!nextStep}
+							onClick={() => handleButtonClick(nextStep, sysId)}
+							loading={isNextButtonLoading}
+						>
+							{nextButtonLabel} <DoubleRightOutlined />
+						</Button>
+					</Tooltip>
+				) : null}
 				<Tabs
 					activeKey={currentTab}
 					defaultActiveKey='details'

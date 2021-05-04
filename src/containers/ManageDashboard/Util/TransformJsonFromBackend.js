@@ -2,8 +2,8 @@ export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
 		state: sourceJson.basic_info.state.value,
 		basicInfo: {
-			openDate: sourceJson.basic_info.open_date.value,
-			closeDate: sourceJson.basic_info.close_date.value,
+			openDate: sourceJson.basic_info.open_date.label,
+			closeDate: sourceJson.basic_info.close_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({

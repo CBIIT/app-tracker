@@ -6,6 +6,8 @@
 }
 
 .LabelValuePairContainer h2 {
+	font-family: var(--ff-primary);
+	font-size: 14px;
 	margin-bottom: 4px;
 }
 
