@@ -10,10 +10,14 @@ import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
-import { REQUEST_CHAIR_TRIAGE, CHECK_AUTH } from '../../constants/ApiEndpoints';
+import {
+	REQUEST_CHAIR_TRIAGE,
+	CHECK_AUTH,
+	GET_VACANCY_MANAGER_VIEW,
+} from '../../constants/ApiEndpoints';
 import { OWM_TRIAGE, CHAIR_TRIAGE } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
-import { OWM_TEAM } from '../../constants/Roles';
+import { OWM_TEAM, COMMITTEE_CHAIR } from '../../constants/Roles';
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
@@ -38,19 +42,21 @@ const manageDashboard = () => {
 	const [state, setState] = useState([]);
 	const [nextButtonLabel, setNextButtonLabel] = useState();
 	const [userRoles, setUserRoles] = useState([]);
+	const [userCommitteeRole, setUserCommitteeRole] = useState();
 	const history = useHistory();
 
 	useEffect(() => {
 		(async () => {
 			const responses = await Promise.all([
-				axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
-				),
+				axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
 				axios.get(
 					'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 				),
 				axios.get(CHECK_AUTH),
 			]);
+			setUserCommitteeRole(
+				responses[0].data.result.user.committee_role_of_current_vacancy
+			);
 			const vacancy = transformJsonFromBackend(responses[0].data.result);
 
 			const responseApplicantList = responses[1];
@@ -78,9 +84,7 @@ const manageDashboard = () => {
 			case 'chair_triage':
 				try {
 					await axios.post(REQUEST_CHAIR_TRIAGE + sysId);
-					const response = await axios.get(
-						'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/' + sysId
-					);
+					const response = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
 					const state = response.data.result.basic_info.state.value;
 					const nextStep = response.data.result.basic_info.next_step.value;
 					setState(response.data.result.basic_info.state.label);
@@ -99,6 +103,15 @@ const manageDashboard = () => {
 
 	const onChangeTabHandler = (key) => {
 		setCurrentTab(key);
+	};
+
+	const displayNextButton = () => {
+		if (
+			userRoles.includes(OWM_TEAM) ||
+			(userCommitteeRole === COMMITTEE_CHAIR && vacancy.state === CHAIR_TRIAGE)
+		)
+			return true;
+		else return false;
 	};
 
 	console.log('[ManageDashboard]: vacancyTransformed: ', vacancy);
@@ -124,7 +137,7 @@ const manageDashboard = () => {
 			</div>
 			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
-				{userRoles.includes(OWM_TEAM) ? (
+				{displayNextButton() ? (
 					<Tooltip
 						placement='top'
 						title={

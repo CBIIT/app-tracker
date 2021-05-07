@@ -28,14 +28,38 @@ const editableTable = (props) => {
 	};
 
 	const validateCommittee = async () => {
-		const numberOfChairMembers = data.filter((member) => {
-			return member.role === 'Chair';
+		const data = props.getData();
+		const errorMessages = [];
+
+		let numberOfChairMembers = 0;
+		let numberOfExecutiveSecretaries = 0;
+
+		data.forEach((member) => {
+			if (member.role === 'Chair')
+				numberOfChairMembers = numberOfChairMembers + 1;
+
+			if (member.role === 'Executive Secretary')
+				numberOfExecutiveSecretaries = numberOfExecutiveSecretaries + 1;
 		});
 
-		if (numberOfChairMembers.length < 1)
-			throw new Error(
+		const users = data.map((member) => member.user.sys_id.value);
+
+		if (new Set(users).size !== users.length)
+			errorMessages.push(
+				'A committee member can only be listed once on a committee.  Please remove duplicate committee members.'
+			);
+
+		if (numberOfChairMembers < 1)
+			errorMessages.push(
 				"Atleast one committee member must be of the role 'Chair'"
 			);
+
+		if (numberOfExecutiveSecretaries < 1)
+			errorMessages.push(
+				"Atleast one committee member must be of the role 'Executive Secretary'"
+			);
+
+		if (errorMessages.length > 0) throw new Error(errorMessages.join('\r\n'));
 		else form.setFields([{ name: 'vacancyCommitteeValidator', error: '' }]);
 	};
 
@@ -226,13 +250,15 @@ const editableTable = (props) => {
 				<PlusOutlined /> add member
 			</Button>
 
-			<Form.Item
-				name='vacancyCommitteeValidator'
-				rules={[{ validator: validateCommittee }]}
-			>
-				{/* Supress antd warning about using name */}
-				<input style={{ display: 'none' }} />
-			</Form.Item>
+			<div className='CommitteeErrorValidator'>
+				<Form.Item
+					name='vacancyCommitteeValidator'
+					rules={[{ validator: validateCommittee }]}
+				>
+					{/* Supress antd warning about using name */}
+					<input style={{ display: 'none' }} />
+				</Form.Item>
+			</div>
 		</Form>
 	);
 };

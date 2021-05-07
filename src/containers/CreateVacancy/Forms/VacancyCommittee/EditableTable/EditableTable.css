@@ -6,3 +6,7 @@
 	margin: 0 0;
 	padding-inline: 5px;
 }
+
+.CommitteeErrorValidator .ant-form-item-explain.ant-form-item-explain-error {
+	white-space: break-spaces;
+}

@@ -14,54 +14,62 @@ const sliderMax = 3;
 const { TextArea } = Input;
 const { Group } = Radio;
 
-const scoringWidget = (props) => (
-	<div style={props.style}>
-		<InfoCard title={props.title}>
-			<InfoCardRow>
-				<LabelValuePair
-					value={props.description}
-					valueStyle={{ marginBottom: '0px' }}
-				/>
-			</InfoCardRow>
-			<div className='ScoringWidgetContent'>
-				{props.categories.map((category) => (
-					<ScoringWidgetSlider
-						key={category.key}
-						title={category.title}
-						sliderMarks={sliderMarks}
-						sliderMin={sliderMin}
-						sliderMax={sliderMax}
-						onChange={(value) => props.scoreChangeHandler(value, category.key)}
+const scoringWidget = (props) => {
+	return (
+		<div style={props.style}>
+			<InfoCard title={props.title}>
+				<InfoCardRow>
+					<LabelValuePair
+						value={props.description}
+						valueStyle={{ marginBottom: '0px' }}
 					/>
-				))}
-				<h2 style={{ marginBottom: '6px' }}>Overall Score Comments</h2>
-				<TextArea
-					rows={3}
-					style={{ marginBottom: '16px' }}
-					onBlur={props.onScoreCommentsChange}
-				/>
-				<LabelValuePair
-					label='Interview Recommendation'
-					labelStyle={{ marginBottom: '0px' }}
-					value='Do you recommend this candidate for an interview?'
-					valueStyle={{ fontSize: '12px', marginBottom: '8px' }}
-				/>
-				<Group
-					options={props.triageOptions}
-					optionType='button'
-					buttonStyle='solid'
-					onChange={props.onTriageSelect}
-					value={props.triageChoice}
-				/>
-			</div>
-			<InfoCardRow style={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Button onClick={props.onCancelClick}>cancel</Button>
-				<Button onClick={props.onSaveClick} type='primary'>
-					save score
-				</Button>
-			</InfoCardRow>
-		</InfoCard>
-	</div>
-);
+				</InfoCardRow>
+				<div className='ScoringWidgetContent'>
+					{props.categories.map((category) => (
+						<ScoringWidgetSlider
+							key={category.key}
+							title={category.title}
+							sliderMarks={sliderMarks}
+							sliderMin={sliderMin}
+							sliderMax={sliderMax}
+							value={props.scores[category.key]}
+							onChange={(value) =>
+								props.scoreChangeHandler(value, category.key)
+							}
+						/>
+					))}
+					<h2 style={{ marginBottom: '6px' }}>Overall Score Comments</h2>
+					<TextArea
+						rows={3}
+						style={{ marginBottom: '16px' }}
+						onChange={props.onScoreCommentsChange}
+						defaultValue={props.triageComments}
+					/>
+					<LabelValuePair
+						label='Interview Recommendation'
+						labelStyle={{ marginBottom: '0px' }}
+						value='Do you recommend this candidate for an interview?'
+						valueStyle={{ fontSize: '12px', marginBottom: '8px' }}
+					/>
+					<Group
+						options={props.triageOptions}
+						optionType='button'
+						buttonStyle='solid'
+						onChange={props.onTriageSelect}
+						value={props.triageChoice}
+					/>
+				</div>
+				<InfoCardRow
+					style={{ display: 'flex', justifyContent: 'space-between' }}
+				>
+					<Button onClick={props.onCancelClick}>cancel</Button>
+					<Button onClick={props.onSaveClick} type='primary'>
+						save score
+					</Button>
+				</InfoCardRow>
+			</InfoCard>
+		</div>
+	);
+};
 
 export default scoringWidget;
