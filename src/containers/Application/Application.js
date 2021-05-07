@@ -23,6 +23,7 @@ import {
 	DISPLAY_REFERENCES,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
+	SUBMIT_INDIVIDUAL_SCORING,
 } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY } from '../../constants/Routes';
 import {
@@ -41,6 +42,79 @@ const individualScoreCategories = [
 	{ key: 'leadership', title: 'Leadership Skills' },
 	{ key: 'management', title: 'Management and Supervision' },
 	{ key: 'communication', title: 'Communication and Collaboration Skills' },
+];
+
+const chairTriageOptions = [
+	{
+		label: (
+			<>
+				<LikeOutlined /> yes
+			</>
+		),
+		value: 'yes',
+	},
+	{
+		label: (
+			<>
+				<DislikeOutlined /> no
+			</>
+		),
+		value: 'no',
+	},
+];
+
+const committeeMemberTriageOptions = [
+	{
+		label: (
+			<>
+				<LikeOutlined /> yes
+			</>
+		),
+		value: 'yes',
+	},
+	{
+		label: (
+			<>
+				<DislikeOutlined /> no
+			</>
+		),
+		value: 'no',
+	},
+	{
+		label: (
+			<>
+				<QuestionCircleOutlined /> maybe
+			</>
+		),
+		value: 'maybe',
+	},
+];
+
+const owmTriageOptions = [
+	{
+		label: (
+			<>
+				<LikeOutlined /> yes
+			</>
+		),
+		value: 'yes',
+	},
+	{
+		label: (
+			<>
+				<DislikeOutlined /> no
+			</>
+		),
+		value: 'no',
+	},
+	{
+		label: (
+			<>
+				<QuestionCircleOutlined /> maybe
+			</>
+		),
+		value: 'maybe',
+	},
 ];
 
 const application = () => {
@@ -96,8 +170,6 @@ const application = () => {
 				console.log('[Application] response[1]', responses[1]);
 				console.log('[Application] responses[2]', responses[2]);
 
-				// setUserRoles(OWM_TEAM);
-
 				console.log('[Application] roles:', roles);
 
 				setApplication(application);
@@ -109,8 +181,28 @@ const application = () => {
 				setDisplayReferences(
 					+responses[0].data.result.basic_info.display_references.value
 				);
-				setChairTriageChoice('Yes');
-				setChairTriageComments('Placeholder chair triage comments');
+				setChairTriageChoice(
+					responses[0].data.result.basic_info.chair_triage.value
+				);
+				setChairTriageComments(
+					responses[0].data.result.basic_info.chair_triage_comment.value
+				);
+
+				if (responses[0].data.result.individual_scoring) {
+					const individualScores = responses[0].data.result.individual_scoring;
+
+					setIndividualScores({
+						knowledge: individualScores.knowledge_experience.value,
+						leadership:
+							individualScores.development_implementation_coordination.value,
+						management:
+							individualScores.management_leadership_supervision.value,
+						communication: individualScores.communication_skill.value,
+					});
+
+					setIndividualScoresComments(individualScores.comments.value);
+					setIndividualTriageChoice(individualScores.recommend.value);
+				}
 
 				setIsLoading(false);
 			} catch (error) {
@@ -119,72 +211,24 @@ const application = () => {
 		})();
 	}, []);
 
-	let triageOptions = [
-		{
-			label: (
-				<>
-					<LikeOutlined /> yes
-				</>
-			),
-			value: 'yes',
-		},
-		{
-			label: (
-				<>
-					<DislikeOutlined /> no
-				</>
-			),
-			value: 'no',
-		},
-	];
-
-	const committeeMemberTriageOptions = [
-		{
-			label: (
-				<>
-					<LikeOutlined /> yes
-				</>
-			),
-			value: 'yes',
-		},
-		{
-			label: (
-				<>
-					<DislikeOutlined /> no
-				</>
-			),
-			value: 'no',
-		},
-		{
-			label: (
-				<>
-					<QuestionCircleOutlined /> maybe
-				</>
-			),
-			value: 'maybe',
-		},
-	];
-
-	if (userRoles.includes(OWM_TEAM))
-		triageOptions.push({
-			label: (
-				<>
-					<QuestionCircleOutlined /> maybe
-				</>
-			),
-			value: 'maybe',
-		});
-
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
+	};
+
+	const onTriageCommentsChange = (event) => {
+		setTriageComments(event.target.value);
 	};
 
 	const onIndividualTriageSelect = (event) => {
 		setIndividualTriageChoice(event.target.value);
 	};
 
-	const onTriageCommentsChange = (event) => {
-		setTriageComments(event.target.value);
+	const onChairTriageSelect = (event) => {
+		setChairTriageChoice(event.target.value);
+	};
+
+	const onChairCommentsChange = (event) => {
+		setChairTriageComments(event.target.value);
 	};
 
 	const onTriageWidgetCancelClick = () => {
@@ -203,13 +247,19 @@ const application = () => {
 	const onTriageWidgetSaveClick = async () => {
 		try {
 			const triage = {
-				vacancy_id: application.vacancyId,
 				app_sys_id: application.appSysId,
-				triage: triageChoice,
-				triage_comments: triageComments,
+				triage:
+					userVacancyCommitteeRole === COMMITTEE_CHAIR
+						? chairTriageChoice
+						: triageChoice,
+				triage_comments:
+					userVacancyCommitteeRole === COMMITTEE_CHAIR
+						? chairTriageComments
+						: triageComments,
 			};
 
-			await axios.post(SUBMIT_TRIAGE, triage);
+			const response = await axios.post(SUBMIT_TRIAGE, triage);
+			console.log('[Application] response:', response);
 			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
@@ -237,25 +287,21 @@ const application = () => {
 
 	const individualScoreSlideChangeHandler = (value, category) => {
 		const newIndividualScores = { ...individualScores, [category]: value };
-		console.log('[Application] newIndividualScores:', newIndividualScores);
 		setIndividualScores(newIndividualScores);
 	};
 
-	const onIndividualScoreSaveClick = () => {
+	const onIndividualScoreSaveClick = async () => {
 		try {
-			// TODO: Utilize post api to save scores and notes
 			const scoresAndNotes = {
-				vacancy_id: application.vacancyId,
 				app_sys_id: application.appSysId,
-				triage: triageChoice,
-				triage_comments: triageComments,
-				knowledge: individualScores.knowledge,
-				leadership: individualScores.leadership,
-				management: individualScores.management,
-				communication: individualScores.communication,
+				recommend: individualTriageChoice,
+				comments: individualScoresComments,
+				knowledge_experience: individualScores.knowledge,
+				development_implementation_coordination: individualScores.leadership,
+				management_leadership_supervision: individualScores.management,
+				communication_skill: individualScores.communication,
 			};
-			console.log('[Application] scoresAndNotes', scoresAndNotes);
-			// await axios.post(SUBMIT_TRIAGE, scoresAndNotes);
+			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
 			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
@@ -270,12 +316,6 @@ const application = () => {
 			userVacancyCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
 		);
 	};
-
-	console.log('[Application] application:', application);
-	console.log(
-		'[Application] current user is manager?: ',
-		userRoles.includes(OWM_TEAM)
-	);
 
 	return !isLoading ? (
 		<>
@@ -305,16 +345,20 @@ const application = () => {
 							address={application.address}
 							style={{ backgroundColor: 'white' }}
 						/>
-						<References
-							references={application.references}
-							style={{ backgroundColor: 'white' }}
-							switchInitialValue={displayReferences}
-							handleToggle={
-								userRoles.includes(OWM_TEAM)
-									? handleDisplayReferenceToggle
-									: null
-							}
-						/>
+
+						{!displayReferences && !userRoles.includes(OWM_TEAM) ? null : (
+							<References
+								references={application.references}
+								style={{ backgroundColor: 'white' }}
+								switchInitialValue={displayReferences}
+								handleToggle={
+									userRoles.includes(OWM_TEAM)
+										? handleDisplayReferenceToggle
+										: null
+								}
+							/>
+						)}
+
 						<Documents
 							documents={application.documents}
 							style={{ backgroundColor: 'white' }}
@@ -329,7 +373,7 @@ const application = () => {
 							<TriageWidget
 								title='OWM Team Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
-								triageOptions={triageOptions}
+								triageOptions={owmTriageOptions}
 								onTriageSelect={onTriageSelect}
 								onTriageCommentsChange={onTriageCommentsChange}
 								onCancelClick={onTriageWidgetCancelClick}
@@ -345,9 +389,9 @@ const application = () => {
 							<TriageWidget
 								title='Committee Chair Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
-								triageOptions={triageOptions}
-								onTriageSelect={onTriageSelect}
-								onTriageCommentsChange={onTriageCommentsChange}
+								triageOptions={chairTriageOptions}
+								onTriageSelect={onChairTriageSelect}
+								onTriageCommentsChange={onChairCommentsChange}
 								onCancelClick={onTriageWidgetCancelClick}
 								onSaveClick={onTriageWidgetSaveClick}
 								triageChoice={chairTriageChoice}
@@ -370,6 +414,7 @@ const application = () => {
 								categories={individualScoreCategories}
 								onCancelClick={onTriageWidgetCancelClick}
 								onSaveClick={onIndividualScoreSaveClick}
+								scores={individualScores}
 							/>
 						) : null}
 

@@ -10,6 +10,8 @@ const GET_VACANCY_MANAGER_VIEW =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/';
 
 const SUBMIT_TRIAGE = '/api/x_g_nci_app_tracke/application/submit_triage';
+const SUBMIT_INDIVIDUAL_SCORING =
+	'/api/x_g_nci_app_tracke/application/submit_individual_scoring';
 const DISPLAY_REFERENCES =
 	'/api/x_g_nci_app_tracke/application/display_references';
 
@@ -27,4 +29,5 @@ export {
 	REQUEST_CHAIR_TRIAGE,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
+	SUBMIT_INDIVIDUAL_SCORING,
 };

@@ -10,6 +10,7 @@ const scoringWidgetSlider = (props) => (
 				min={props.sliderMin}
 				max={props.sliderMax}
 				onChange={props.onChange}
+				value={props.value}
 			/>
 		</div>
 	</div>
