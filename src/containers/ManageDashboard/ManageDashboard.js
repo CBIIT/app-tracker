@@ -9,9 +9,10 @@ import { useParams, useHistory } from 'react-router-dom';
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
+import NextStepModal from './NextStepModal/NextStepModal';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
-	REQUEST_CHAIR_TRIAGE,
+	ADVANCE_VACANCY_TO_NEXT_STEP,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
 } from '../../constants/ApiEndpoints';
@@ -26,8 +27,51 @@ const getNextStepButtonLabel = (currentStep) => {
 		case CHAIR_TRIAGE:
 			return 'Request Individual Scoring';
 		default:
-			return 'Request Chair Triage';
+			return 'Advance to next stage';
 	}
+};
+
+const getNextStepModalConfirmTitle = () => {
+	return 'Confirm Request?';
+};
+
+const getNextStepModalSubmittedTitle = (currentStep) => {
+	switch (currentStep) {
+		case OWM_TRIAGE:
+			return 'Requested Committee Chair Triage';
+		case CHAIR_TRIAGE:
+			return 'Requested Individual Scoring';
+		default:
+			return 'Request sent';
+	}
+};
+
+const getNextStepModalConfirmDescription = (currentStep) => {
+	switch (currentStep) {
+		case OWM_TRIAGE:
+			return 'The vacancy will be advanced to the committee chair triage stage and the chair will receive a notification.';
+		case CHAIR_TRIAGE:
+			return 'The vacancy will be advanced to the individual scoring stage and the vacancy manager will receive a notification.';
+		default:
+			'The vacancy will be advanced to the next stage and notifications will be sent out.';
+	}
+};
+
+const getNextStepModalSteps = (currentStep) => {
+	const steps = [];
+	switch (currentStep) {
+		case OWM_TRIAGE:
+			steps.push({ title: 'Request Chair Triage?' });
+			break;
+		case CHAIR_TRIAGE:
+			steps.push({ title: 'Request Individual Scoring?' });
+			break;
+		default:
+			break;
+	}
+	steps.push({ title: 'Confirmed' });
+
+	return steps;
 };
 
 const manageDashboard = () => {
@@ -43,6 +87,7 @@ const manageDashboard = () => {
 	const [nextButtonLabel, setNextButtonLabel] = useState();
 	const [userRoles, setUserRoles] = useState([]);
 	const [userCommitteeRole, setUserCommitteeRole] = useState();
+	const [modalVisible, setModalVisible] = useState(false);
 	const history = useHistory();
 
 	useEffect(() => {
@@ -70,33 +115,36 @@ const manageDashboard = () => {
 			);
 			setApplicants(responseApplicantList.data.result);
 			setCurrentTab(tab);
-
-			console.log('[ManageDashboard] responses[2]', responses[2]);
 			setUserRoles(responses[2].data.result.user.roles);
 
 			setIsLoading(false);
 		})();
 	}, []);
 
-	const handleButtonClick = async (nextStep, sysId) => {
+	const handleButtonClick = () => {
+		setModalVisible(true);
+	};
+
+	const closeModal = async () => {
+		setModalVisible(false);
+		const response = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
+		const vacancy = transformJsonFromBackend(response.data.result);
+		const state = response.data.result.basic_info.state.value;
+		const nextStep = response.data.result.basic_info.next_step.value;
+		setVacancy(vacancy);
+		setState(response.data.result.basic_info.state.label);
+		setNextStep(nextStep);
+		setNextButtonLabel(getNextStepButtonLabel(state));
+	};
+
+	const handleNextStepModalConfirm = async (sysId) => {
 		setIsNextButtonLoading(true);
-		switch (nextStep) {
-			case 'chair_triage':
-				try {
-					await axios.post(REQUEST_CHAIR_TRIAGE + sysId);
-					const response = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
-					const state = response.data.result.basic_info.state.value;
-					const nextStep = response.data.result.basic_info.next_step.value;
-					setState(response.data.result.basic_info.state.label);
-					setNextStep(nextStep);
-					setNextButtonLabel(getNextStepButtonLabel(state));
-					message.success('Request sent!');
-				} catch (error) {
-					message.error('Sorry!  There was an error processing the request.');
-				}
-				break;
-			default:
-				break;
+		try {
+			await axios.post(ADVANCE_VACANCY_TO_NEXT_STEP + sysId);
+
+			message.success('Request sent!');
+		} catch (error) {
+			message.error('Sorry!  There was an error processing the request.');
 		}
 		setIsNextButtonLoading(false);
 	};
@@ -105,16 +153,14 @@ const manageDashboard = () => {
 		setCurrentTab(key);
 	};
 
-	const displayNextButton = () => {
+	const displayNextButton = (vacancyState) => {
 		if (
 			userRoles.includes(OWM_TEAM) ||
-			(userCommitteeRole === COMMITTEE_CHAIR && vacancy.state === CHAIR_TRIAGE)
+			(userCommitteeRole === COMMITTEE_CHAIR && vacancyState === CHAIR_TRIAGE)
 		)
 			return true;
 		else return false;
 	};
-
-	console.log('[ManageDashboard]: vacancyTransformed: ', vacancy);
 
 	return isLoading ? (
 		<> </>
@@ -137,7 +183,7 @@ const manageDashboard = () => {
 			</div>
 			<VacancyStatus state={state} />
 			<div className='manage-tabs'>
-				{displayNextButton() ? (
+				{displayNextButton(vacancy.state) ? (
 					<Tooltip
 						placement='top'
 						title={
@@ -151,7 +197,7 @@ const manageDashboard = () => {
 							ghost
 							className='AdvanceButton'
 							disabled={!nextStep}
-							onClick={() => handleButtonClick(nextStep, sysId)}
+							onClick={handleButtonClick}
 							loading={isNextButtonLoading}
 						>
 							{nextButtonLabel} <DoubleRightOutlined />
@@ -176,6 +222,15 @@ const manageDashboard = () => {
 					></Tabs.TabPane>
 				</Tabs>
 			</div>
+			<NextStepModal
+				visible={modalVisible}
+				confirmTitle={getNextStepModalConfirmTitle()}
+				confirmDescription={getNextStepModalConfirmDescription(vacancy.state)}
+				handleCloseModal={closeModal}
+				handleOk={() => handleNextStepModalConfirm(sysId)}
+				submittedTitle={getNextStepModalSubmittedTitle(vacancy.state)}
+				steps={getNextStepModalSteps(vacancy.state)}
+			/>
 		</>
 	);
 };
