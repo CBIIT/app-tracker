@@ -10,11 +10,14 @@ import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';
+import FileUploadAndDisplay from '../../components/UI/FileUploadAndDisplay/FileUploadAndDisplay';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
+	SERVICE_NOW_FILE_ATTACHMENT,
+	SERVICE_NOW_ATTACHMENT,
 } from '../../constants/ApiEndpoints';
 import { OWM_TRIAGE, CHAIR_TRIAGE } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
@@ -27,7 +30,7 @@ const getNextStepButtonLabel = (currentStep) => {
 		case CHAIR_TRIAGE:
 			return 'Request Individual Scoring';
 		default:
-			return 'Advance to next stage';
+			return 'Advance to Next Stage';
 	}
 };
 
@@ -73,6 +76,8 @@ const getNextStepModalSteps = (currentStep) => {
 
 	return steps;
 };
+
+const ratingPlanTable = 'x_g_nci_app_tracke_vacancy';
 
 const manageDashboard = () => {
 	const { sysId, tab } = useParams();
@@ -125,8 +130,7 @@ const manageDashboard = () => {
 		setModalVisible(true);
 	};
 
-	const closeModal = async () => {
-		setModalVisible(false);
+	const loadLatestVacancyInfo = async () => {
 		const response = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
 		const vacancy = transformJsonFromBackend(response.data.result);
 		const state = response.data.result.basic_info.state.value;
@@ -135,6 +139,11 @@ const manageDashboard = () => {
 		setState(response.data.result.basic_info.state.label);
 		setNextStep(nextStep);
 		setNextButtonLabel(getNextStepButtonLabel(state));
+	};
+
+	const closeModal = async () => {
+		setModalVisible(false);
+		loadLatestVacancyInfo();
 	};
 
 	const handleNextStepModalConfirm = async (sysId) => {
@@ -210,7 +219,30 @@ const manageDashboard = () => {
 					onChange={onChangeTabHandler}
 				>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
-						<ViewVacancyDetails allForms={vacancy} />
+						<>
+							<ViewVacancyDetails allForms={vacancy} />
+							{userRoles.includes(OWM_TEAM) ? (
+								<div style={{ paddingLeft: '16px', paddingBottom: '16px' }}>
+									<h2>Rating Plan</h2>
+									<FileUploadAndDisplay
+										buttonText='Upload Rating Plan'
+										sysId={vacancy.sysId}
+										url={SERVICE_NOW_FILE_ATTACHMENT}
+										table={ratingPlanTable}
+										afterUploadSuccess={loadLatestVacancyInfo}
+										downloadLink={vacancy.ratingPlan.downloadLink}
+										fileName={vacancy.ratingPlan.fileName}
+										fileSysId={vacancy.ratingPlan.sysId}
+										deleteUrl={
+											SERVICE_NOW_ATTACHMENT + vacancy.ratingPlan.sysId
+										}
+										onDeleteSuccess={loadLatestVacancyInfo}
+										deleteConfirmTitle='Delete the attached rating plan?'
+										deleteConfirmText='This action cannot be undone, but you will be able to upload a new rating plan afterwards.'
+									/>
+								</div>
+							) : null}
+						</>
 					</Tabs.TabPane>
 					<Tabs.TabPane tab='Applicants' key='applicants'>
 						<ApplicantList applicants={applicants} />

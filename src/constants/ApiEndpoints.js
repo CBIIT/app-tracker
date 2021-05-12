@@ -23,6 +23,9 @@ const REQUEST_CHAIR_TRIAGE =
 
 const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/check_auth';
 
+const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
+const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
+
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	GET_APPLICATION,
@@ -34,4 +37,6 @@ export {
 	GET_VACANCY_MANAGER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
 	ADVANCE_VACANCY_TO_NEXT_STEP,
+	SERVICE_NOW_FILE_ATTACHMENT,
+	SERVICE_NOW_ATTACHMENT,
 };
