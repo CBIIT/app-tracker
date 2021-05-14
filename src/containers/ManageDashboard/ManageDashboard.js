@@ -19,7 +19,11 @@ import {
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
 } from '../../constants/ApiEndpoints';
-import { OWM_TRIAGE, CHAIR_TRIAGE } from '../../constants/VacancyStates';
+import {
+	OWM_TRIAGE,
+	CHAIR_TRIAGE,
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+} from '../../constants/VacancyStates';
 import './ManageDashboard.css';
 import { OWM_TEAM, COMMITTEE_CHAIR } from '../../constants/Roles';
 
@@ -29,6 +33,8 @@ const getNextStepButtonLabel = (currentStep) => {
 			return 'Request Chair Triage';
 		case CHAIR_TRIAGE:
 			return 'Request Individual Scoring';
+		case INDIVIDUAL_SCORING_IN_PROGRESS:
+			return 'Advance to Committee Scoring';
 		default:
 			return 'Advance to Next Stage';
 	}
@@ -44,6 +50,8 @@ const getNextStepModalSubmittedTitle = (currentStep) => {
 			return 'Requested Committee Chair Triage';
 		case CHAIR_TRIAGE:
 			return 'Requested Individual Scoring';
+		case INDIVIDUAL_SCORING_IN_PROGRESS:
+			return 'Advanced to Committee Scoring';
 		default:
 			return 'Request sent';
 	}
@@ -55,8 +63,22 @@ const getNextStepModalConfirmDescription = (currentStep) => {
 			return 'The vacancy will be advanced to the committee chair triage stage and the chair will receive a notification.';
 		case CHAIR_TRIAGE:
 			return 'The vacancy will be advanced to the individual scoring stage and the vacancy manager will receive a notification.';
+		case INDIVIDUAL_SCORING_IN_PROGRESS:
+			return 'The vacancy will be advanced to the committee scoring stage.';
 		default:
-			'The vacancy will be advanced to the next stage and notifications will be sent out.';
+			return 'The vacancy will be advanced to the next stage and notifications will be sent out.';
+	}
+};
+
+const getNextStepCannotAdvanceTooltip = (currentStep) => {
+	switch (currentStep) {
+		case OWM_TRIAGE:
+		case CHAIR_TRIAGE:
+			return 'Not all applications have been triaged or vacancy is still open.';
+		case INDIVIDUAL_SCORING_IN_PROGRESS:
+			return 'Not all applicants have been scored by all committee members.';
+		default:
+			return 'Not all advancing conditions have been met yet.';
 	}
 };
 
@@ -68,6 +90,9 @@ const getNextStepModalSteps = (currentStep) => {
 			break;
 		case CHAIR_TRIAGE:
 			steps.push({ title: 'Request Individual Scoring?' });
+			break;
+		case INDIVIDUAL_SCORING_IN_PROGRESS:
+			steps.push({ title: 'Advance to Committee Scoring?' });
 			break;
 		default:
 			break;
@@ -104,6 +129,9 @@ const manageDashboard = () => {
 				),
 				axios.get(CHECK_AUTH),
 			]);
+
+			console.log('[ManageDashboard] applicants:', responses[1]);
+
 			setUserCommitteeRole(
 				responses[0].data.result.user.committee_role_of_current_vacancy
 			);
@@ -171,6 +199,8 @@ const manageDashboard = () => {
 		else return false;
 	};
 
+	console.log('[ManageDashboard] state: ', state);
+
 	return isLoading ? (
 		<> </>
 	) : (
@@ -196,9 +226,7 @@ const manageDashboard = () => {
 					<Tooltip
 						placement='top'
 						title={
-							!nextStep
-								? 'Not all applications have been triaged or vacancy is still open.'
-								: ''
+							!nextStep ? getNextStepCannotAdvanceTooltip(vacancy.state) : ''
 						}
 					>
 						<Button

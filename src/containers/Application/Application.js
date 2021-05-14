@@ -131,6 +131,7 @@ const application = () => {
 	const [individualTriageChoice, setIndividualTriageChoice] = useState();
 	const [individualScores, setIndividualScores] = useState({});
 	const [individualScoresComments, setIndividualScoresComments] = useState();
+	const [ratingPlanDownloadLink, setRatingPlanDownloadLink] = useState();
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -157,20 +158,13 @@ const application = () => {
 
 				const vacancyCommitteeRole =
 					vacancy.data.result.user.committee_role_of_current_vacancy;
-				console.log(
-					'[Application]: vacancyCommitteeRole',
-					vacancyCommitteeRole
-				);
+
+				if (vacancy.data.result.rating_plan)
+					setRatingPlanDownloadLink(
+						vacancy.data.result.rating_plan.attachment_dl
+					);
+
 				setUserVacancyCommitteeRole(vacancyCommitteeRole);
-
-				console.log('[Application] vacancy:', vacancy);
-
-				console.log('[Application] application', application);
-				console.log('[Application] response[0]', responses[0]);
-				console.log('[Application] response[1]', responses[1]);
-				console.log('[Application] responses[2]', responses[2]);
-
-				console.log('[Application] roles:', roles);
 
 				setApplication(application);
 				setVacancyTitle(responses[0].data.result.basic_info.vacancy.label);
@@ -402,8 +396,13 @@ const application = () => {
 						{isUserAllowedToScore() ? (
 							<ScoringWidget
 								title='Committee Member Feedback and Notes'
-								description='Please score the applicant on a scale of 0 - 3 below and leave detailed
-							notes in the comments box below.'
+								description={
+									<>
+										Please score the applicant on a scale of 0 - 3 below and
+										leave detailed notes in the comments box below.{' '}
+										<a href={ratingPlanDownloadLink}>See Rating Plan.</a>
+									</>
+								}
 								style={{ backgroundColor: 'white' }}
 								scoreChangeHandler={individualScoreSlideChangeHandler}
 								onScoreCommentsChange={onScoreCommentsChange}
