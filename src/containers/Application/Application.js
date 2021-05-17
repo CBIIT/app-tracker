@@ -252,8 +252,7 @@ const application = () => {
 						: triageComments,
 			};
 
-			const response = await axios.post(SUBMIT_TRIAGE, triage);
-			console.log('[Application] response:', response);
+			await axios.post(SUBMIT_TRIAGE, triage);
 			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
@@ -290,10 +289,18 @@ const application = () => {
 				app_sys_id: application.appSysId,
 				recommend: individualTriageChoice,
 				comments: individualScoresComments,
-				knowledge_experience: individualScores.knowledge,
-				development_implementation_coordination: individualScores.leadership,
-				management_leadership_supervision: individualScores.management,
-				communication_skill: individualScores.communication,
+				knowledge_experience: individualScores.knowledge
+					? individualScores.knowledge
+					: 0,
+				development_implementation_coordination: individualScores.leadership
+					? individualScores.leadership
+					: 0,
+				management_leadership_supervision: individualScores.management
+					? individualScores.management
+					: 0,
+				communication_skill: individualScores.communication
+					? individualScores.communication
+					: 0,
 			};
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
 			message.success('Feedback and notes saved.');
