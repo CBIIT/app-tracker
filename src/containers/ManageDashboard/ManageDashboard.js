@@ -273,7 +273,10 @@ const manageDashboard = () => {
 						</>
 					</Tabs.TabPane>
 					<Tabs.TabPane tab='Applicants' key='applicants'>
-						<ApplicantList applicants={applicants} />
+						<ApplicantList
+							applicants={applicants}
+							vacancyState={vacancy.state}
+						/>
 					</Tabs.TabPane>
 					<Tabs.TabPane
 						tab='Review Summaries'
