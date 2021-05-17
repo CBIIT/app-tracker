@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 import { INDIVIDUAL_SCORING_IN_PROGRESS } from '../../../constants/VacancyStates';
+import { OWM_TEAM, COMMITTEE_CHAIR } from '../../../constants/Roles';
 import './ApplicantList.css';
 
 const renderDecision = (text) =>
@@ -63,23 +64,38 @@ const applicantColumns = [
 	},
 ];
 
-const getTable = (vacancyState, applicants) => {
-	switch (vacancyState) {
-		case INDIVIDUAL_SCORING_IN_PROGRESS:
-			return <IndividualScoringTable applicants={applicants} />;
-		default:
-			return (
-				<Table
-					dataSource={applicants}
-					columns={applicantColumns}
-					rowKey='sys_id'
-				></Table>
-			);
+const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
+	if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
+		switch (vacancyState) {
+			case INDIVIDUAL_SCORING_IN_PROGRESS:
+				return <IndividualScoringTable applicants={applicants} />;
+			default:
+				return (
+					<Table
+						dataSource={applicants}
+						columns={applicantColumns}
+						rowKey='sys_id'
+					></Table>
+				);
+		}
+	} else {
+		return (
+			<Table
+				dataSource={applicants}
+				columns={applicantColumns}
+				rowKey='sys_id'
+			></Table>
+		);
 	}
 };
 
 const applicantList = (props) => {
-	const table = getTable(props.vacancyState, props.applicants);
+	const table = getTable(
+		props.vacancyState,
+		props.applicants,
+		props.userRoles,
+		props.userCommitteeRole
+	);
 
 	return <div className='applicant-table'>{table}</div>;
 };

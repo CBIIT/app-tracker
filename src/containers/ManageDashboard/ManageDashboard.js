@@ -272,6 +272,8 @@ const manageDashboard = () => {
 						<ApplicantList
 							applicants={applicants}
 							vacancyState={vacancy.state}
+							userRoles={userRoles}
+							userCommitteeRole={userCommitteeRole}
 						/>
 					</Tabs.TabPane>
 					<Tabs.TabPane
