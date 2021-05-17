@@ -130,8 +130,6 @@ const manageDashboard = () => {
 				axios.get(CHECK_AUTH),
 			]);
 
-			console.log('[ManageDashboard] applicants:', responses[1]);
-
 			setUserCommitteeRole(
 				responses[0].data.result.user.committee_role_of_current_vacancy
 			);
@@ -198,8 +196,6 @@ const manageDashboard = () => {
 			return true;
 		else return false;
 	};
-
-	console.log('[ManageDashboard] state: ', state);
 
 	return isLoading ? (
 		<> </>
