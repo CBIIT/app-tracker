@@ -8,6 +8,11 @@ const GET_APPLICATION_TRIAGE_INFO =
 
 const GET_VACANCY_MANAGER_VIEW =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/';
+const SUBMIT_COMMITTEE_DECISION =
+	'/api/x_g_nci_app_tracke/application/submit_committee_decision';
+
+const SUBMIT_COMMITTEE_COMMENTS =
+	'/api/x_g_nci_app_tracke/application/submit_committee_comments';
 
 const SUBMIT_TRIAGE = '/api/x_g_nci_app_tracke/application/submit_triage';
 const SUBMIT_INDIVIDUAL_SCORING =
@@ -39,4 +44,6 @@ export {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
+	SUBMIT_COMMITTEE_DECISION,
+	SUBMIT_COMMITTEE_COMMENTS,
 };
