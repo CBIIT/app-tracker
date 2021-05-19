@@ -7,6 +7,7 @@ import {
 	DislikeOutlined,
 	QuestionCircleOutlined,
 	ExclamationCircleOutlined,
+	DownloadOutlined,
 } from '@ant-design/icons';
 
 import ApplicantInfo from './ApplicantInfo/ApplicantInfo';
@@ -126,6 +127,7 @@ const application = () => {
 	const [chairTriageChoice, setChairTriageChoice] = useState();
 	const [chairTriageComments, setChairTriageComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
+	const [appDocIds, setAppDocIds] = useState();
 	const [userRoles, setUserRoles] = useState([]);
 	const [userVacancyCommitteeRole, setUserVacancyCommitteeRole] = useState();
 	const [individualTriageChoice, setIndividualTriageChoice] = useState();
@@ -165,6 +167,12 @@ const application = () => {
 					);
 
 				setUserVacancyCommitteeRole(vacancyCommitteeRole);
+
+				const appDocs = responses[0].data.result.app_documents;
+				const filteredAppDocs = appDocs
+					.filter((doc) => doc.attach_sys_id.length > 0)
+					.map((filtDoc) => filtDoc.doc_sys_id);
+				setAppDocIds(filteredAppDocs);
 
 				setApplication(application);
 				setVacancyTitle(responses[0].data.result.basic_info.vacancy.label);
@@ -425,8 +433,24 @@ const application = () => {
 						) : null}
 
 						<Button>
-							{/* <a href='/exportAttachmentsToZip.do?sysparm_sys_id=828c84d71bdfe850e541631ee54bcbfa'> */}
-							<a>Download Application Package</a>
+							<a
+								href={
+									'https://service-dev2.nci.nih.gov/exportAttachmentsToZip.do?sysparm_sys_id=' +
+									appDocIds
+								}
+							>
+								Download Application Documents {<DownloadOutlined />}
+							</a>
+						</Button>
+						<Button style={{ marginTop: '10px' }}>
+							<a
+								href={
+									'https://service-dev2.nci.nih.gov/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
+									application.appSysId
+								}
+							>
+								Download Applicant Info {<DownloadOutlined />}
+							</a>
 						</Button>
 					</div>
 				</div>
