@@ -108,7 +108,6 @@ const manageDashboard = () => {
 	const { sysId, tab } = useParams();
 	const [currentTab, setCurrentTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
-	const [applicants, setApplicants] = useState([]);
 	const [vacancy, setVacancy] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
 	const [nextStep, setNextStep] = useState();
@@ -122,34 +121,27 @@ const manageDashboard = () => {
 
 	useEffect(() => {
 		(async () => {
-			const responses = await Promise.all([
+			const [vacancyResponse, checkAuthResponse] = await Promise.all([
 				axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
-				axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
-				),
 				axios.get(CHECK_AUTH),
 			]);
 
-			console.log('[ManageDasboard] vacancy: ', responses[0]);
-			console.log('[ManageDasboard] applicant list: ', responses[1]);
-
 			setUserCommitteeRole(
-				responses[0].data.result.user.committee_role_of_current_vacancy
+				vacancyResponse.data.result.user.committee_role_of_current_vacancy
 			);
-			const vacancy = transformJsonFromBackend(responses[0].data.result);
+			const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
 
-			const responseApplicantList = responses[1];
-
-			setNextStep(responses[0].data.result.basic_info.next_step.value);
+			setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 			setVacancyTitle(vacancy.basicInfo.title);
 			setVacancy(vacancy);
-			setState(responses[0].data.result.basic_info.state.label);
+			setState(vacancyResponse.data.result.basic_info.state.label);
 			setNextButtonLabel(
-				getNextStepButtonLabel(responses[0].data.result.basic_info.state.value)
+				getNextStepButtonLabel(
+					vacancyResponse.data.result.basic_info.state.value
+				)
 			);
-			setApplicants(responseApplicantList.data.result);
 			setCurrentTab(tab);
-			setUserRoles(responses[2].data.result.user.roles);
+			setUserRoles(checkAuthResponse.data.result.user.roles);
 
 			setIsLoading(false);
 		})();
@@ -273,7 +265,6 @@ const manageDashboard = () => {
 					</Tabs.TabPane>
 					<Tabs.TabPane tab='Applicants' key='applicants'>
 						<ApplicantList
-							applicants={applicants}
 							vacancyState={vacancy.state}
 							userRoles={userRoles}
 							userCommitteeRole={userCommitteeRole}

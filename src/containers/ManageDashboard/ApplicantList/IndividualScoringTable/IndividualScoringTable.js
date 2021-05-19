@@ -4,23 +4,24 @@ import { Table, Tooltip, Select, Modal, Input, Button, message } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
-import { SUBMIT_COMMITTEE_DECISION } from '../../../../constants/ApiEndpoints';
+import {
+	SUBMIT_COMMITTEE_DECISION,
+	SUBMIT_COMMITTEE_COMMENTS,
+} from '../../../../constants/ApiEndpoints';
 import { MANAGE_APPLICATION } from '../../../../constants/Routes';
 
 const { Option } = Select;
 const { TextArea } = Input;
-const committeeVoteChangeHandler = async (vote, sysId) => {
-	console.log('[IndividualScoringTable] vote', vote ? vote : '');
-	console.log('[IndividualScoringTable] sysId', sysId);
+
+const committeeVoteChangeHandler = async (vote, sysId, postChangeHandler) => {
 	try {
-		const response = await axios.post(SUBMIT_COMMITTEE_DECISION, {
+		await axios.post(SUBMIT_COMMITTEE_DECISION, {
 			app_sys_id: sysId,
 			committee_decision: vote ? vote : '',
 		});
-		console.log('[IndividualScoringTable] response: ', response);
+		postChangeHandler();
 		message.success('Decision saved.');
 	} catch (error) {
-		console.log('[IndividualScoringTable] error: ', error);
 		message.error(
 			'Sorry, an error occurred while attempting to save.  Please try reloading the page and selecting again.'
 		);
@@ -86,9 +87,37 @@ const expandedRowRender = (scores) => {
 const individualScoringTable = (props) => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [committeeComments, setCommitteeComments] = useState('');
+	const [applicantSysId, setAppicantSysId] = useState();
 
-	const onCommentButtonClick = () => {
+	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
+		setCommitteeComments(comment);
+		setAppicantSysId(sysId);
+	};
+
+	const handleCancel = () => {
+		setCommitteeComments('');
+		setIsModalVisible(false);
+	};
+
+	const onTextAreaChangeHandler = (event) => {
+		setCommitteeComments(event.target.value);
+	};
+
+	const handleCommentSave = async (comment, sysId) => {
+		try {
+			await axios.post(SUBMIT_COMMITTEE_COMMENTS, {
+				app_sys_id: sysId,
+				committee_comments: comment,
+			});
+			setIsModalVisible(false);
+			props.postChangeHandler();
+			message.success('Comments saved!');
+		} catch (error) {
+			message.error(
+				'Sorry!  An issue occurred while trying to save.  Please reload and try again.'
+			);
+		}
 	};
 
 	const getColumns = (isCommitteeVoting) => {
@@ -136,7 +165,11 @@ const individualScoringTable = (props) => {
 								value={value}
 								allowClear
 								onChange={(value) =>
-									committeeVoteChangeHandler(value, record.sys_id)
+									committeeVoteChangeHandler(
+										value,
+										record.sys_id,
+										props.postChangeHandler
+									)
 								}
 							>
 								<Option value='selected'>Selected</Option>
@@ -150,8 +183,12 @@ const individualScoringTable = (props) => {
 					dataIndex: 'committee_comments',
 					key: 'committee_comments',
 					align: 'center',
-					render: (comment) => (
-						<Button type='text' shape='circle' onClick={onCommentButtonClick}>
+					render: (comment, record) => (
+						<Button
+							type='text'
+							shape='circle'
+							onClick={() => onCommentButtonClick(comment, record.sys_id)}
+						>
 							<CommentOutlined />
 						</Button>
 					),
@@ -192,13 +229,15 @@ const individualScoringTable = (props) => {
 			<Modal
 				title='Voting Comments'
 				visible={isModalVisible}
-				// onOk={handleOk}
-				// onCancel={handleCancel}
+				onOk={() => handleCommentSave(committeeComments, applicantSysId)}
+				onCancel={handleCancel}
+				destroyOnClose={true}
 			>
 				<TextArea
 					placeholder='add your comments here'
 					rows={4}
 					defaultValue={committeeComments}
+					onChange={onTextAreaChangeHandler}
 				/>
 			</Modal>
 		</>

@@ -1,5 +1,7 @@
-import { Table } from 'antd';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { message, Table } from 'antd';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
@@ -67,42 +69,65 @@ const applicantColumns = [
 	},
 ];
 
-const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
-	if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
-		switch (vacancyState) {
-			case INDIVIDUAL_SCORING_IN_PROGRESS:
-				return <IndividualScoringTable applicants={applicants} />;
-			case COMMITTEE_REVIEW_IN_PROGRESS:
-				return (
-					<IndividualScoringTable
-						applicants={applicants}
-						committeeVoting={true}
-					/>
-				);
-			default:
-				return (
-					<Table
-						dataSource={applicants}
-						columns={applicantColumns}
-						rowKey='sys_id'
-					></Table>
-				);
-		}
-	} else {
-		return (
-			<Table
-				dataSource={applicants}
-				columns={applicantColumns}
-				rowKey='sys_id'
-			></Table>
-		);
-	}
-};
-
 const applicantList = (props) => {
+	const { sysId } = useParams();
+	const [applicants, setApplicants] = useState([]);
+
+	useEffect(() => {
+		loadApplicants();
+	}, []);
+
+	const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
+		if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
+			switch (vacancyState) {
+				case INDIVIDUAL_SCORING_IN_PROGRESS:
+					return <IndividualScoringTable applicants={applicants} />;
+				case COMMITTEE_REVIEW_IN_PROGRESS:
+					return (
+						<IndividualScoringTable
+							applicants={applicants}
+							committeeVoting={true}
+							postChangeHandler={loadApplicants}
+						/>
+					);
+				default:
+					return (
+						<Table
+							dataSource={applicants}
+							columns={applicantColumns}
+							scroll={{ x: 'true' }}
+							rowKey='sys_id'
+						></Table>
+					);
+			}
+		} else {
+			return (
+				<Table
+					dataSource={applicants}
+					columns={applicantColumns}
+					scroll={{ x: 'true' }}
+					rowKey='sys_id'
+				></Table>
+			);
+		}
+	};
+
+	const loadApplicants = async () => {
+		try {
+			const response = await axios.get(
+				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
+			);
+			setApplicants(response.data.result);
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred while loading the page.  Try reloading.'
+			);
+		}
+	};
+
 	const table = getTable(
 		props.vacancyState,
-		props.applicants,
+		applicants,
 		props.userRoles,
 		props.userCommitteeRole
 	);
