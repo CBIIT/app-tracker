@@ -138,6 +138,7 @@ const individualScoringTable = (props) => {
 						a.applicant_last_name.localeCompare(b.applicant_last_name),
 					multiple: 1,
 				},
+				defaultSortOrder: 'ascend',
 			},
 			{
 				title: 'Email',
@@ -147,7 +148,10 @@ const individualScoringTable = (props) => {
 			{
 				title: 'Average Member Score',
 				dataIndex: 'average_member_score',
-				sorter: (a, b) => a.average_member_score - b.average_member_score,
+				sorter: {
+					compare: (a, b) => a.average_member_score - b.average_member_score,
+					multiple: 2,
+				},
 				defaultSortOrder: 'descend',
 			},
 		];
