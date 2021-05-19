@@ -28,7 +28,12 @@
 }
 
 .SectionContent .ql-container {
-	height: auto;
+	max-height: auto;
+	margin-bottom: 16px;
+}
+
+.SectionContent .ql-hidden {
+	display: none;
 }
 
 .SectionContent ul {

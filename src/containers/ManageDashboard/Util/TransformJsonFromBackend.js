@@ -1,9 +1,10 @@
 export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
+		sysId: sourceJson.basic_info.sys_id.value,
 		state: sourceJson.basic_info.state.value,
 		basicInfo: {
-			openDate: sourceJson.basic_info.open_date.value,
-			closeDate: sourceJson.basic_info.close_date.value,
+			openDate: sourceJson.basic_info.open_date.label,
+			closeDate: sourceJson.basic_info.close_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({
@@ -31,6 +32,15 @@ export const transformJsonFromBackend = (sourceJson) => {
 				sourceJson.basic_info.show_fes.value == '1' ? true : false,
 			reasonableAccomodation:
 				sourceJson.basic_info.show_ras.value == '1' ? true : false,
+		},
+		ratingPlan: {
+			sysId: sourceJson.rating_plan ? sourceJson.rating_plan.sys_id : null,
+			downloadLink: sourceJson.rating_plan
+				? sourceJson.rating_plan.attachment_dl
+				: null,
+			fileName: sourceJson.rating_plan
+				? sourceJson.rating_plan.file_name
+				: null,
 		},
 	};
 	return targetJson;

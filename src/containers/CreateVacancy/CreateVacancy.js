@@ -71,6 +71,10 @@ const createVacancy = () => {
 		if (errorForms.length === 0) showSubmitModal();
 	};
 
+	const getVacancyCommittee = () => {
+		return allForms.vacancyCommittee;
+	};
+
 	const steps = [
 		{
 			step: 1,
@@ -104,6 +108,7 @@ const createVacancy = () => {
 					committeeMembers={allForms.committeeMembers}
 					setCommitteeMembers={updateCommitteeMembers}
 					formInstance={vacancyCommitteeForm}
+					getCommitteeMembers={getVacancyCommittee}
 				/>
 			),
 		},

@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import oktaIcon from '../../../assets/images/okta-login-icon.png';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
+import { CHECK_AUTH } from '../../../constants/ApiEndpoints';
 
 import './Login.css';
 
@@ -20,9 +21,7 @@ const login = () => {
 
 	useEffect(() => {
 		(async () => {
-			const response = await axios.get(
-				'/api/x_g_nci_app_tracke/login/check_auth'
-			);
+			const response = await axios.get(CHECK_AUTH);
 			setItrustGlideSsoId(response.data.result.itrust_idp);
 			setOktaGlideSsoId(response.data.result.okta_idp);
 			setUserFirstName(response.data.result.user.first_name);

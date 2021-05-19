@@ -15,19 +15,108 @@ import Address from './Address/Address';
 import Documents from './Documents/Documents';
 import References from './References/References';
 import TriageWidget from './TriageWidget/TriageWidget';
+import ScoringWidget from './ScoringWidget/ScoringWidget';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 import {
 	GET_APPLICATION,
 	GET_APPLICATION_TRIAGE_INFO,
 	SUBMIT_TRIAGE,
 	DISPLAY_REFERENCES,
+	CHECK_AUTH,
+	GET_VACANCY_MANAGER_VIEW,
+	SUBMIT_INDIVIDUAL_SCORING,
 } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY } from '../../constants/Routes';
-import { COMMITTEE_CHAIR, OWM_TEAM } from '../../constants/Roles';
+import {
+	COMMITTEE_CHAIR,
+	OWM_TEAM,
+	COMMITTEE_MEMBER_VOTING,
+	COMMITTEE_MEMBER_NON_VOTING,
+} from '../../constants/Roles';
 
 import './Application.css';
 
 const { confirm } = Modal;
+
+const individualScoreCategories = [
+	{ key: 'knowledge', title: 'Knowledge and Experience' },
+	{ key: 'leadership', title: 'Leadership Skills' },
+	{ key: 'management', title: 'Management and Supervision' },
+	{ key: 'communication', title: 'Communication and Collaboration Skills' },
+];
+
+const chairTriageOptions = [
+	{
+		label: (
+			<>
+				<LikeOutlined /> yes
+			</>
+		),
+		value: 'yes',
+	},
+	{
+		label: (
+			<>
+				<DislikeOutlined /> no
+			</>
+		),
+		value: 'no',
+	},
+];
+
+const committeeMemberTriageOptions = [
+	{
+		label: (
+			<>
+				<LikeOutlined /> yes
+			</>
+		),
+		value: 'yes',
+	},
+	{
+		label: (
+			<>
+				<DislikeOutlined /> no
+			</>
+		),
+		value: 'no',
+	},
+	{
+		label: (
+			<>
+				<QuestionCircleOutlined /> maybe
+			</>
+		),
+		value: 'maybe',
+	},
+];
+
+const owmTriageOptions = [
+	{
+		label: (
+			<>
+				<LikeOutlined /> yes
+			</>
+		),
+		value: 'yes',
+	},
+	{
+		label: (
+			<>
+				<DislikeOutlined /> no
+			</>
+		),
+		value: 'no',
+	},
+	{
+		label: (
+			<>
+				<QuestionCircleOutlined /> maybe
+			</>
+		),
+		value: 'maybe',
+	},
+];
 
 const application = () => {
 	const [application, setApplication] = useState();
@@ -38,39 +127,91 @@ const application = () => {
 	const [chairTriageChoice, setChairTriageChoice] = useState();
 	const [chairTriageComments, setChairTriageComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
-	const [userRole, setUserRole] = useState();
 	const [appDocIds, setAppDocIds] = useState();
+	const [userRoles, setUserRoles] = useState([]);
+	const [userVacancyCommitteeRole, setUserVacancyCommitteeRole] = useState();
+	const [individualTriageChoice, setIndividualTriageChoice] = useState();
+	const [individualScores, setIndividualScores] = useState({});
+	const [individualScoresComments, setIndividualScoresComments] = useState();
+	const [ratingPlanDownloadLink, setRatingPlanDownloadLink] = useState();
 
 	const history = useHistory();
+	const { sysId } = useParams();
 
-	let triageOptions = [
-		{
-			label: (
-				<>
-					<LikeOutlined /> yes
-				</>
-			),
-			value: 'yes',
-		},
-		{
-			label: (
-				<>
-					<DislikeOutlined /> no
-				</>
-			),
-			value: 'no',
-		},
-	];
+	useEffect(() => {
+		(async () => {
+			setIsLoading(true);
 
-	if (userRole == OWM_TEAM)
-		triageOptions.push({
-			label: (
-				<>
-					<QuestionCircleOutlined /> maybe
-				</>
-			),
-			value: 'maybe',
-		});
+			try {
+				const responses = await Promise.all([
+					axios.get(GET_APPLICATION + sysId),
+					axios.get(GET_APPLICATION_TRIAGE_INFO + sysId),
+					axios.get(CHECK_AUTH),
+				]);
+				const application = transformJsonFromBackend(responses[0].data.result);
+
+				const vacancySysId = responses[0].data.result.basic_info.vacancy.value;
+				const vacancy = await axios.get(
+					GET_VACANCY_MANAGER_VIEW + vacancySysId
+				);
+
+				const roles = vacancy.data.result.user.roles;
+				setUserRoles(roles);
+
+				const vacancyCommitteeRole =
+					vacancy.data.result.user.committee_role_of_current_vacancy;
+
+				if (vacancy.data.result.rating_plan)
+					setRatingPlanDownloadLink(
+						vacancy.data.result.rating_plan.attachment_dl
+					);
+
+				setUserVacancyCommitteeRole(vacancyCommitteeRole);
+
+				const appDocs = responses[0].data.result.app_documents;
+				const filteredAppDocs = appDocs
+					.filter((doc) => doc.attach_sys_id.length > 0)
+					.map((filtDoc) => filtDoc.doc_sys_id);
+				setAppDocIds(filteredAppDocs);
+
+				setApplication(application);
+				setVacancyTitle(responses[0].data.result.basic_info.vacancy.label);
+				setTriageChoice(responses[0].data.result.basic_info.triage.value);
+				setTriageComments(
+					responses[0].data.result.basic_info.triage_comments.value
+				);
+				setDisplayReferences(
+					+responses[0].data.result.basic_info.display_references.value
+				);
+				setChairTriageChoice(
+					responses[0].data.result.basic_info.chair_triage.value
+				);
+				setChairTriageComments(
+					responses[0].data.result.basic_info.chair_triage_comment.value
+				);
+
+				if (responses[0].data.result.individual_scoring) {
+					const individualScores = responses[0].data.result.individual_scoring;
+
+					setIndividualScores({
+						knowledge: individualScores.knowledge_experience.value,
+						leadership:
+							individualScores.development_implementation_coordination.value,
+						management:
+							individualScores.management_leadership_supervision.value,
+						communication: individualScores.communication_skill.value,
+					});
+
+					setIndividualScoresComments(individualScores.comments.value);
+					setIndividualTriageChoice(individualScores.recommend.value);
+				}
+
+				setIsLoading(false);
+			} catch (error) {
+				console.log('[Application] error: ', error);
+			}
+		})();
+	}, []);
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -78,6 +219,18 @@ const application = () => {
 
 	const onTriageCommentsChange = (event) => {
 		setTriageComments(event.target.value);
+	};
+
+	const onIndividualTriageSelect = (event) => {
+		setIndividualTriageChoice(event.target.value);
+	};
+
+	const onChairTriageSelect = (event) => {
+		setChairTriageChoice(event.target.value);
+	};
+
+	const onChairCommentsChange = (event) => {
+		setChairTriageComments(event.target.value);
 	};
 
 	const onTriageWidgetCancelClick = () => {
@@ -96,10 +249,15 @@ const application = () => {
 	const onTriageWidgetSaveClick = async () => {
 		try {
 			const triage = {
-				vacancy_id: application.vacancyId,
 				app_sys_id: application.appSysId,
-				triage: triageChoice,
-				triage_comments: triageComments,
+				triage:
+					userVacancyCommitteeRole === COMMITTEE_CHAIR
+						? chairTriageChoice
+						: triageChoice,
+				triage_comments:
+					userVacancyCommitteeRole === COMMITTEE_CHAIR
+						? chairTriageComments
+						: triageComments,
 			};
 
 			await axios.post(SUBMIT_TRIAGE, triage);
@@ -109,6 +267,10 @@ const application = () => {
 				'Sorry!  There was an error in saving.  Try reloading the page and saving again.'
 			);
 		}
+	};
+
+	const onScoreCommentsChange = (event) => {
+		setIndividualScoresComments(event.target.value);
 	};
 
 	const handleDisplayReferenceToggle = async (isToggleOn) => {
@@ -124,52 +286,45 @@ const application = () => {
 		}
 	};
 
-	const { sysId } = useParams();
+	const individualScoreSlideChangeHandler = (value, category) => {
+		const newIndividualScores = { ...individualScores, [category]: value };
+		setIndividualScores(newIndividualScores);
+	};
 
-	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
+	const onIndividualScoreSaveClick = async () => {
+		try {
+			const scoresAndNotes = {
+				app_sys_id: application.appSysId,
+				recommend: individualTriageChoice,
+				comments: individualScoresComments,
+				knowledge_experience: individualScores.knowledge
+					? individualScores.knowledge
+					: 0,
+				development_implementation_coordination: individualScores.leadership
+					? individualScores.leadership
+					: 0,
+				management_leadership_supervision: individualScores.management
+					? individualScores.management
+					: 0,
+				communication_skill: individualScores.communication
+					? individualScores.communication
+					: 0,
+			};
+			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
+			message.success('Feedback and notes saved.');
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred.  Save unsuccessful.  Try reloading the page and trying again.'
+			);
+		}
+	};
 
-			try {
-				const responses = await Promise.all([
-					axios.get(GET_APPLICATION + sysId),
-					axios.get(GET_APPLICATION_TRIAGE_INFO + sysId),
-				]);
-				const application = transformJsonFromBackend(responses[0].data.result);
-
-				console.log('[Application] application', application);
-				console.log('[Application] response[0]', responses[0]);
-				console.log('[Application] response[1]', responses[1]);
-
-				const appDocs = responses[0].data.result.app_documents;
-				console.log('[APP DOCS]: ', appDocs);
-				const filteredAppDocs = appDocs
-					.filter((doc) => doc.attach_sys_id.length > 0)
-					.map((filtDoc) => filtDoc.doc_sys_id);
-				setAppDocIds(filteredAppDocs);
-
-				setApplication(application);
-
-				setVacancyTitle(responses[0].data.result.basic_info.vacancy.label);
-				setTriageChoice(responses[0].data.result.basic_info.triage.value);
-				setTriageComments(
-					responses[0].data.result.basic_info.triage_comments.value
-				);
-				setDisplayReferences(
-					+responses[0].data.result.basic_info.display_references.value
-				);
-				setUserRole(OWM_TEAM);
-				setChairTriageChoice('Yes');
-				setChairTriageComments('Placeholder chair triage comments');
-
-				setIsLoading(false);
-			} catch (error) {
-				console.log('[Application] error: ', error);
-			}
-		})();
-	}, []);
-
-	console.log('[Application] application:', application);
+	const isUserAllowedToScore = () => {
+		return (
+			userVacancyCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+			userVacancyCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
+		);
+	};
 
 	return !isLoading ? (
 		<>
@@ -199,12 +354,20 @@ const application = () => {
 							address={application.address}
 							style={{ backgroundColor: 'white' }}
 						/>
-						<References
-							references={application.references}
-							style={{ backgroundColor: 'white' }}
-							switchInitialValue={displayReferences}
-							handleToggle={handleDisplayReferenceToggle}
-						/>
+
+						{!displayReferences && !userRoles.includes(OWM_TEAM) ? null : (
+							<References
+								references={application.references}
+								style={{ backgroundColor: 'white' }}
+								switchInitialValue={displayReferences}
+								handleToggle={
+									userRoles.includes(OWM_TEAM)
+										? handleDisplayReferenceToggle
+										: null
+								}
+							/>
+						)}
+
 						<Documents
 							documents={application.documents}
 							style={{ backgroundColor: 'white' }}
@@ -214,26 +377,30 @@ const application = () => {
 						className='ApplicationContentColumn'
 						style={{ maxWidth: '480px' }}
 					>
-						<TriageWidget
-							title='OWM Team Feedback and Notes'
-							style={{ backgroundColor: 'white' }}
-							triageOptions={triageOptions}
-							onTriageSelect={onTriageSelect}
-							onTriageCommentsChange={onTriageCommentsChange}
-							onCancelClick={onTriageWidgetCancelClick}
-							onSaveClick={onTriageWidgetSaveClick}
-							triageChoice={triageChoice}
-							triageComments={triageComments}
-							triageCommentsPlaceholder={'Add notes (optional)'}
-							readOnly={!(userRole == OWM_TEAM)}
-						/>
-						{userRole == COMMITTEE_CHAIR ? (
+						{userRoles.includes(OWM_TEAM) ||
+						userVacancyCommitteeRole === COMMITTEE_CHAIR ? (
+							<TriageWidget
+								title='OWM Team Feedback and Notes'
+								style={{ backgroundColor: 'white' }}
+								triageOptions={owmTriageOptions}
+								onTriageSelect={onTriageSelect}
+								onTriageCommentsChange={onTriageCommentsChange}
+								onCancelClick={onTriageWidgetCancelClick}
+								onSaveClick={onTriageWidgetSaveClick}
+								triageChoice={triageChoice}
+								triageComments={triageComments}
+								triageCommentsPlaceholder={'Add notes (optional)'}
+								readOnly={!userRoles.includes(OWM_TEAM)}
+							/>
+						) : null}
+
+						{userVacancyCommitteeRole === COMMITTEE_CHAIR ? (
 							<TriageWidget
 								title='Committee Chair Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
-								triageOptions={triageOptions}
-								onTriageSelect={onTriageSelect}
-								onTriageCommentsChange={onTriageCommentsChange}
+								triageOptions={chairTriageOptions}
+								onTriageSelect={onChairTriageSelect}
+								onTriageCommentsChange={onChairCommentsChange}
 								onCancelClick={onTriageWidgetCancelClick}
 								onSaveClick={onTriageWidgetSaveClick}
 								triageChoice={chairTriageChoice}
@@ -241,6 +408,30 @@ const application = () => {
 								triageCommentsPlaceholder={'Add notes (optional)'}
 							/>
 						) : null}
+						{isUserAllowedToScore() ? (
+							<ScoringWidget
+								title='Committee Member Feedback and Notes'
+								description={
+									<>
+										Please score the applicant on a scale of 0 - 3 below and
+										leave detailed notes in the comments box below.{' '}
+										<a href={ratingPlanDownloadLink}>See Rating Plan.</a>
+									</>
+								}
+								style={{ backgroundColor: 'white' }}
+								scoreChangeHandler={individualScoreSlideChangeHandler}
+								onScoreCommentsChange={onScoreCommentsChange}
+								triageOptions={committeeMemberTriageOptions}
+								triageChoice={individualTriageChoice}
+								triageComments={individualScoresComments}
+								onTriageSelect={onIndividualTriageSelect}
+								categories={individualScoreCategories}
+								onCancelClick={onTriageWidgetCancelClick}
+								onSaveClick={onIndividualScoreSaveClick}
+								scores={individualScores}
+							/>
+						) : null}
+
 						<Button>
 							<a
 								href={
