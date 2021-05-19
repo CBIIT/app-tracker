@@ -8,6 +8,7 @@ import { MANAGE_APPLICATION } from '../../../constants/Routes';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
+	VOTING_COMPLETE,
 } from '../../../constants/VacancyStates';
 import { OWM_TEAM, COMMITTEE_CHAIR } from '../../../constants/Roles';
 import './ApplicantList.css';
@@ -82,12 +83,13 @@ const applicantList = (props) => {
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
 					return <IndividualScoringTable applicants={applicants} />;
+				case VOTING_COMPLETE:
 				case COMMITTEE_REVIEW_IN_PROGRESS:
 					return (
 						<IndividualScoringTable
 							applicants={applicants}
 							committeeVoting={true}
-							postChangeHandler={loadApplicants}
+							postChangeHandler={loadVacancyAndApplicants}
 						/>
 					);
 				default:
@@ -123,6 +125,11 @@ const applicantList = (props) => {
 				'Sorry!  An error occurred while loading the page.  Try reloading.'
 			);
 		}
+	};
+
+	const loadVacancyAndApplicants = () => {
+		loadApplicants();
+		props.reloadVacancy();
 	};
 
 	const table = getTable(
