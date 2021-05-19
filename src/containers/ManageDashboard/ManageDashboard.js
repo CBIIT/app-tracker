@@ -130,6 +130,9 @@ const manageDashboard = () => {
 				axios.get(CHECK_AUTH),
 			]);
 
+			console.log('[ManageDasboard] vacancy: ', responses[0]);
+			console.log('[ManageDasboard] applicant list: ', responses[1]);
+
 			setUserCommitteeRole(
 				responses[0].data.result.user.committee_role_of_current_vacancy
 			);

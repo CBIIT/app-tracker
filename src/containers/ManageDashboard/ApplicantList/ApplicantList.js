@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
-import { INDIVIDUAL_SCORING_IN_PROGRESS } from '../../../constants/VacancyStates';
+import {
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+	COMMITTEE_REVIEW_IN_PROGRESS,
+} from '../../../constants/VacancyStates';
 import { OWM_TEAM, COMMITTEE_CHAIR } from '../../../constants/Roles';
 import './ApplicantList.css';
 
@@ -69,6 +72,13 @@ const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
 		switch (vacancyState) {
 			case INDIVIDUAL_SCORING_IN_PROGRESS:
 				return <IndividualScoringTable applicants={applicants} />;
+			case COMMITTEE_REVIEW_IN_PROGRESS:
+				return (
+					<IndividualScoringTable
+						applicants={applicants}
+						committeeVoting={true}
+					/>
+				);
 			default:
 				return (
 					<Table
