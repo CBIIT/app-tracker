@@ -259,6 +259,8 @@ const manageDashboard = () => {
 										onDeleteSuccess={loadLatestVacancyInfo}
 										deleteConfirmTitle='Delete the attached rating plan?'
 										deleteConfirmText='This action cannot be undone, but you will be able to upload a new rating plan afterwards.'
+										uploadSuccessMessage={'Rating plan updated.'}
+										deleteSuccessMessage={'Rating plan deleted.'}
 									/>
 								</div>
 							) : null}

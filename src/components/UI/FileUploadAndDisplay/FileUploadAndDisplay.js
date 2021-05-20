@@ -13,7 +13,8 @@ const uploadFile = async (
 	tableSysId,
 	url,
 	table,
-	afterUploadSuccess
+	afterUploadSuccess,
+	uploadSuccessMessage
 ) => {
 	const options = {
 		params: {
@@ -25,12 +26,16 @@ const uploadFile = async (
 			'Content-Type': file.type,
 		},
 	};
+
 	try {
+		message.info('Uploading...', 0);
 		await axios.post(url, file, options);
 		onSuccess(null, file);
 		afterUploadSuccess();
-		message.success('Rating plan updated.');
+		message.destroy();
+		message.success(uploadSuccessMessage);
 	} catch (error) {
+		message.destroy();
 		message.error(
 			'Sorry, an error occurred while uploading.  Try reloading the page and uploading again.'
 		);
@@ -42,25 +47,34 @@ const onDeleteButtonClick = (
 	deleteConfirmTitle,
 	deleteConfirmText,
 	onDeleteSuccess,
-	deleteUrl
+	deleteUrl,
+	deleteSuccessMessage
 ) => {
 	confirm({
 		title: deleteConfirmTitle,
 		icon: <ExclamationCircleOutlined />,
 		content: deleteConfirmText,
 		onOk() {
-			onDeleteConfirm(onDeleteSuccess, deleteUrl);
+			onDeleteConfirm(onDeleteSuccess, deleteUrl, deleteSuccessMessage);
 		},
 		onCancel() {},
 	});
 };
 
-const onDeleteConfirm = async (onDeleteSuccess, deleteUrl) => {
+const onDeleteConfirm = async (
+	onDeleteSuccess,
+	deleteUrl,
+	deleteSuccessMessage
+) => {
 	try {
+		message.info('Deleting...', 0);
 		await axios.delete(deleteUrl);
-		message.success('Rating plan deleted.');
+		message.destroy();
+		message.success(deleteSuccessMessage);
 		onDeleteSuccess();
 	} catch (error) {
+		console.log('Error:', error);
+		message.destroy();
 		message.error(
 			'Sorry, there was an issue deleting.  Try reloading the page and deleting again.'
 		);
@@ -80,7 +94,8 @@ const fileUploadAndDisplay = (props) => (
 							props.deleteConfirmTitle,
 							props.deleteConfirmText,
 							props.onDeleteSuccess,
-							props.deleteUrl
+							props.deleteUrl,
+							props.deleteSuccessMessage
 						)
 					}
 					icon={<DeleteOutlined />}
@@ -90,13 +105,14 @@ const fileUploadAndDisplay = (props) => (
 			<Upload
 				maxCount={1}
 				showUploadList={false}
-				customRequest={({ file, onSuccess, onError }) =>
+				customRequest={({ file, onSuccess, onError, onProgress }) =>
 					uploadFile(
-						{ file, onSuccess, onError },
+						{ file, onSuccess, onError, onProgress },
 						props.sysId,
 						props.url,
 						props.table,
-						props.afterUploadSuccess
+						props.afterUploadSuccess,
+						props.uploadSuccessMessage
 					)
 				}
 			>

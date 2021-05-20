@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table } from 'antd';
+import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const chairDashboard = () => {
-	const { sysId } = useParams();
 	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		(async () => {
+			setIsLoading(true);
 			try {
-				const currentData = await axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/chair/' + sysId
-				);
+				const currentData = await axios.get(GET_COMMITTEE_CHAIR_VACANCIES);
 				setData(
 					currentData.data.result.filter(
 						(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
@@ -23,6 +24,7 @@ const chairDashboard = () => {
 			} catch (err) {
 				console.warn(err);
 			}
+			setIsLoading(false);
 		})();
 	}, []);
 
@@ -36,6 +38,11 @@ const chairDashboard = () => {
 					rowKey={(record) => record.vacancy_id}
 					dataSource={data}
 					columns={chairColumns}
+					loading={
+						isLoading
+							? { indicator: <LoadingOutlined style={{ fontSize: 24 }} spin /> }
+							: false
+					}
 					key='ChairVacancies'
 				></Table>
 			</div>
