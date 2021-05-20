@@ -17,6 +17,7 @@ const renderDecision = (text) =>
 
 const committeeDashboard = () => {
 	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		(async () => {
@@ -31,18 +32,18 @@ const committeeDashboard = () => {
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
 				debugger;
 				console.log(currentData);
-				setData(
-					currentData.data.result.filter(
-						(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
-					)
-				);
+				setData(currentData.data.result);
 			} catch (err) {
 				console.warn(err);
 			}
+
+			setIsLoading(false);
 		})();
 	}, []);
 
-	return (
+	return isLoading ? (
+		<> </>
+	) : (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
@@ -64,10 +65,10 @@ const committeeColumns = [
 		title: 'Vacancy Title',
 		dataIndex: 'vacancy_title',
 		key: 'title',
-		sorter: {
-			compare: (a, b) => a.vacancy_title.localeCompare(b.vacancy_title),
-			multiple: 1,
-		},
+		// sorter: {
+		// 	compare: (a, b) => a.vacancy_title.localeCompare(b.vacancy_title),
+		// 	multiple: 1,
+		// },
 		defaultSortOrder: 'ascend',
 		// render: (title, record) => (
 		//  <Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
@@ -77,43 +78,45 @@ const committeeColumns = [
 		title: 'Applicants',
 		dataIndex: 'applicants',
 		key: 'applicants',
-		// render: (number, record) => (
-		//  <Link to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}>
-		//      {number} {number == 1 ? 'applicant' : 'applicants'}
-		//  </Link>
-		// ),
+		render: (number, record) => (
+			<Link to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}>
+				{number} {number == 1 ? 'applicant' : 'applicants'}
+			</Link>
+		),
 	},
 	{
 		title: 'Status',
 		dataIndex: 'status',
 		key: 'status',
-		sorter: {
-			compare: (a, b) => a.status.localeCompare(b.status),
-			multiple: 2,
-		},
+		// sorter: {
+		// 	compare: (a, b) => a.status.localeCompare(b.status),
+		// 	multiple: 2,
+		// },
 		defaultSortOrder: 'ascend',
-		render: (status) => {
-			if (status.includes('owm')) {
-				status = status.split('_')[0].toUpperCase() + status.substring(3);
-			}
-			if (status.includes('_')) {
-				status = status
-					.split('_')
-					.map((word) => word[0].toUpperCase() + word.substring(1))
-					.join(' ');
-				return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
-			} else {
-				return (
-					<span style={{ color: 'rgb(86,86,86)' }}>
-						{status.charAt(0).toUpperCase() + status.slice(1)}
-					</span>
-				);
-			}
-		},
+		// render: (status) => {
+		// 	// 	if (status.includes('owm')) {
+		// 	// 		status = status.split('_')[0].toUpperCase() + status.substring(3);
+		// 	// 	}
+		// 	if (status.includes('_')) {
+		// 		status = status
+		// 			.split('_')
+		// 			.map((word) => word[0].toUpperCase() + word.substring(1))
+		// 			.join(' ');
+		// 		return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
+		// 	}
+		// },
+		// else {
+		// 		return (
+		// 			<span style={{ color: 'rgb(86,86,86)' }}>
+		// 				{status.charAt(0).toUpperCase() + status.slice(1)}
+		// 			</span>
+		// 		);
+		// 	}
+		// },
 	},
 	{
 		title: 'Your Scoring',
-		dataIndex: 'scoring',
+		dataIndex: 'your_scoring',
 		key: 'scoring',
 		render: (text) => renderDecision(text),
 	},
