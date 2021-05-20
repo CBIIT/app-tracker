@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
+import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table } from 'antd';
 // import './CommitteeDashboard.css';
 import axios from 'axios';
@@ -15,15 +16,19 @@ const renderDecision = (text) =>
 	);
 
 const committeeDashboard = () => {
-	const { sysId } = useParams();
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		(async () => {
 			try {
-				const currentData = await axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/committee/' + sysId
-				);
+				// for local development
+				const username = 'apptrack.committee_member';
+				const password = process.env.REACT_APP_PASSWORD;
+				axios.defaults.auth = {
+					username,
+					password,
+				};
+				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
 				debugger;
 				console.log(currentData);
 				setData(

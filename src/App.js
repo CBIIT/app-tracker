@@ -35,10 +35,7 @@ const app = () => {
 						path={MANAGE_VACANCY + ':sysId/:tab?'}
 						component={ManageDashboard}
 					/>
-					<Route
-						path={COMMITTEE_DASHBOARD + ':sysId'}
-						component={CommitteeDashboard}
-					/>
+					<Route path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
 					<Route path='/register-okta' component={RegisterOkta} />
 					<Route path='/' exact component={Home} />
 				</Switch>
