@@ -23,6 +23,7 @@ import {
 	OWM_TRIAGE,
 	CHAIR_TRIAGE,
 	INDIVIDUAL_SCORING_IN_PROGRESS,
+	COMMITTEE_REVIEW_IN_PROGRESS,
 } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
 import { OWM_TEAM, COMMITTEE_CHAIR } from '../../constants/Roles';
@@ -35,6 +36,8 @@ const getNextStepButtonLabel = (currentStep) => {
 			return 'Request Individual Scoring';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
 			return 'Advance to Committee Scoring';
+		case COMMITTEE_REVIEW_IN_PROGRESS:
+			return 'Mark Voting Complete';
 		default:
 			return 'Advance to Next Stage';
 	}
@@ -52,6 +55,8 @@ const getNextStepModalSubmittedTitle = (currentStep) => {
 			return 'Requested Individual Scoring';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
 			return 'Advanced to Committee Scoring';
+		case COMMITTEE_REVIEW_IN_PROGRESS:
+			return 'Vacancy advanced to Voting Complete';
 		default:
 			return 'Request sent';
 	}
@@ -65,6 +70,8 @@ const getNextStepModalConfirmDescription = (currentStep) => {
 			return 'The vacancy will be advanced to the individual scoring stage and the vacancy manager will receive a notification.';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
 			return 'The vacancy will be advanced to the committee scoring stage.';
+		case COMMITTEE_REVIEW_IN_PROGRESS:
+			return 'The vacancy will be advanced to the voting complete stage.';
 		default:
 			return 'The vacancy will be advanced to the next stage and notifications will be sent out.';
 	}
@@ -77,6 +84,8 @@ const getNextStepCannotAdvanceTooltip = (currentStep) => {
 			return 'Not all applications have been triaged or vacancy is still open.';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
 			return 'Not all applicants have been scored by all committee members.';
+		case COMMITTEE_REVIEW_IN_PROGRESS:
+			return 'Not all applicants have had a final committee vote selected.';
 		default:
 			return 'Not all advancing conditions have been met yet.';
 	}
@@ -94,6 +103,9 @@ const getNextStepModalSteps = (currentStep) => {
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
 			steps.push({ title: 'Advance to Committee Scoring?' });
 			break;
+		case COMMITTEE_REVIEW_IN_PROGRESS:
+			steps.push({ title: 'Mark Voting Complete' });
+			break;
 		default:
 			break;
 	}
@@ -108,7 +120,6 @@ const manageDashboard = () => {
 	const { sysId, tab } = useParams();
 	const [currentTab, setCurrentTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
-	const [applicants, setApplicants] = useState([]);
 	const [vacancy, setVacancy] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
 	const [nextStep, setNextStep] = useState();
@@ -121,35 +132,7 @@ const manageDashboard = () => {
 	const history = useHistory();
 
 	useEffect(() => {
-		(async () => {
-			const responses = await Promise.all([
-				axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
-				axios.get(
-					'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
-				),
-				axios.get(CHECK_AUTH),
-			]);
-
-			setUserCommitteeRole(
-				responses[0].data.result.user.committee_role_of_current_vacancy
-			);
-			const vacancy = transformJsonFromBackend(responses[0].data.result);
-
-			const responseApplicantList = responses[1];
-
-			setNextStep(responses[0].data.result.basic_info.next_step.value);
-			setVacancyTitle(vacancy.basicInfo.title);
-			setVacancy(vacancy);
-			setState(responses[0].data.result.basic_info.state.label);
-			setNextButtonLabel(
-				getNextStepButtonLabel(responses[0].data.result.basic_info.state.value)
-			);
-			setApplicants(responseApplicantList.data.result);
-			setCurrentTab(tab);
-			setUserRoles(responses[2].data.result.user.roles);
-
-			setIsLoading(false);
-		})();
+		loadLatestVacancyInfo();
 	}, []);
 
 	const handleButtonClick = () => {
@@ -157,14 +140,27 @@ const manageDashboard = () => {
 	};
 
 	const loadLatestVacancyInfo = async () => {
-		const response = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
-		const vacancy = transformJsonFromBackend(response.data.result);
-		const state = response.data.result.basic_info.state.value;
-		const nextStep = response.data.result.basic_info.next_step.value;
+		const [vacancyResponse, checkAuthResponse] = await Promise.all([
+			axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
+			axios.get(CHECK_AUTH),
+		]);
+
+		setUserCommitteeRole(
+			vacancyResponse.data.result.user.committee_role_of_current_vacancy
+		);
+		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
+
+		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
+		setVacancyTitle(vacancy.basicInfo.title);
 		setVacancy(vacancy);
-		setState(response.data.result.basic_info.state.label);
-		setNextStep(nextStep);
-		setNextButtonLabel(getNextStepButtonLabel(state));
+		setState(vacancyResponse.data.result.basic_info.state.label);
+		setNextButtonLabel(
+			getNextStepButtonLabel(vacancyResponse.data.result.basic_info.state.value)
+		);
+		setCurrentTab(tab);
+		setUserRoles(checkAuthResponse.data.result.user.roles);
+
+		setIsLoading(false);
 	};
 
 	const closeModal = async () => {
@@ -263,6 +259,8 @@ const manageDashboard = () => {
 										onDeleteSuccess={loadLatestVacancyInfo}
 										deleteConfirmTitle='Delete the attached rating plan?'
 										deleteConfirmText='This action cannot be undone, but you will be able to upload a new rating plan afterwards.'
+										uploadSuccessMessage={'Rating plan updated.'}
+										deleteSuccessMessage={'Rating plan deleted.'}
 									/>
 								</div>
 							) : null}
@@ -270,10 +268,10 @@ const manageDashboard = () => {
 					</Tabs.TabPane>
 					<Tabs.TabPane tab='Applicants' key='applicants'>
 						<ApplicantList
-							applicants={applicants}
 							vacancyState={vacancy.state}
 							userRoles={userRoles}
 							userCommitteeRole={userCommitteeRole}
+							reloadVacancy={loadLatestVacancyInfo}
 						/>
 					</Tabs.TabPane>
 					<Tabs.TabPane

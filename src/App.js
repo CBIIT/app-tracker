@@ -25,8 +25,7 @@ const app = () => {
 			<Layout>
 				<Switch>
 					<Route path={MANAGE_APPLICATION + ':sysId'} component={Application} />
-
-					<Route path='/chair-dashboard/:sysId' component={ChairDashboard} />
+					<Route path='/chair-dashboard/' component={ChairDashboard} />
 					<Route path='/create-vacancy' component={CreateVacancy} />
 					<Route path='/apply/:sysId' component={Apply} />
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
