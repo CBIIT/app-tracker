@@ -22,13 +22,6 @@ const committeeDashboard = () => {
 	useEffect(() => {
 		(async () => {
 			try {
-				// for local development
-				const username = 'apptrack.committee_member';
-				const password = process.env.REACT_APP_PASSWORD;
-				axios.defaults.auth = {
-					username,
-					password,
-				};
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
 				debugger;
 				console.log(currentData);
