@@ -4,11 +4,16 @@ import './App.less';
 import { hot } from 'react-hot-loader';
 import Layout from './hoc/Layout/Layout';
 import Home from './containers/Home/Home';
-import { MANAGE_APPLICATION, MANAGE_VACANCY } from './constants/Routes';
+import {
+	MANAGE_APPLICATION,
+	MANAGE_VACANCY,
+	COMMITTEE_DASHBOARD,
+} from './constants/Routes';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import ManageDashboard from './containers/ManageDashboard/ManageDashboard';
+import CommitteeDashboard from './containers/CommitteeDashboard/CommitteeDashboard';
 import ChairDashboard from './containers/ChairDashboard/ChairDashboard';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
 import Apply from './containers/Apply/Apply';
@@ -20,6 +25,7 @@ const app = () => {
 			<Layout>
 				<Switch>
 					<Route path={MANAGE_APPLICATION + ':sysId'} component={Application} />
+
 					<Route path='/chair-dashboard/:sysId' component={ChairDashboard} />
 					<Route path='/create-vacancy' component={CreateVacancy} />
 					<Route path='/apply/:sysId' component={Apply} />
@@ -28,6 +34,10 @@ const app = () => {
 					<Route
 						path={MANAGE_VACANCY + ':sysId/:tab?'}
 						component={ManageDashboard}
+					/>
+					<Route
+						path={COMMITTEE_DASHBOARD + ':sysId'}
+						component={CommitteeDashboard}
 					/>
 					<Route path='/register-okta' component={RegisterOkta} />
 					<Route path='/' exact component={Home} />
