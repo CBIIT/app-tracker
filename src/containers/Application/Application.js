@@ -434,10 +434,7 @@ const application = () => {
 
 						<Button>
 							<a
-								href={
-									'https://service-dev2.nci.nih.gov/exportAttachmentsToZip.do?sysparm_sys_id=' +
-									appDocIds
-								}
+								href={'/exportAttachmentsToZip.do?sysparm_sys_id=' + appDocIds}
 							>
 								Download Application Documents {<DownloadOutlined />}
 							</a>
@@ -445,7 +442,7 @@ const application = () => {
 						<Button style={{ marginTop: '10px' }}>
 							<a
 								href={
-									'https://service-dev2.nci.nih.gov/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
+									'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
 									application.appSysId
 								}
 							>
