@@ -35,5 +35,7 @@ const getReferences = (backendReferences) =>
 		document: {
 			downloadLink: reference.attachment_dl,
 			filename: reference.file_name,
+			referenceSysId: reference.ref_sys_id,
+			attachmentSysId: reference.attach_sys_id,
 		},
 	}));

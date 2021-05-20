@@ -19,10 +19,8 @@ import ScoringWidget from './ScoringWidget/ScoringWidget';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 import {
 	GET_APPLICATION,
-	GET_APPLICATION_TRIAGE_INFO,
 	SUBMIT_TRIAGE,
 	DISPLAY_REFERENCES,
-	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
 } from '../../constants/ApiEndpoints';
@@ -134,84 +132,95 @@ const application = () => {
 	const [individualScores, setIndividualScores] = useState({});
 	const [individualScoresComments, setIndividualScoresComments] = useState();
 	const [ratingPlanDownloadLink, setRatingPlanDownloadLink] = useState();
+	const [references, setReferences] = useState([]);
 
 	const history = useHistory();
 	const { sysId } = useParams();
 
 	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-
-			try {
-				const responses = await Promise.all([
-					axios.get(GET_APPLICATION + sysId),
-					axios.get(GET_APPLICATION_TRIAGE_INFO + sysId),
-					axios.get(CHECK_AUTH),
-				]);
-				const application = transformJsonFromBackend(responses[0].data.result);
-
-				const vacancySysId = responses[0].data.result.basic_info.vacancy.value;
-				const vacancy = await axios.get(
-					GET_VACANCY_MANAGER_VIEW + vacancySysId
-				);
-
-				const roles = vacancy.data.result.user.roles;
-				setUserRoles(roles);
-
-				const vacancyCommitteeRole =
-					vacancy.data.result.user.committee_role_of_current_vacancy;
-
-				if (vacancy.data.result.rating_plan)
-					setRatingPlanDownloadLink(
-						vacancy.data.result.rating_plan.attachment_dl
-					);
-
-				setUserVacancyCommitteeRole(vacancyCommitteeRole);
-
-				const appDocs = responses[0].data.result.app_documents;
-				const filteredAppDocs = appDocs
-					.filter((doc) => doc.attach_sys_id.length > 0)
-					.map((filtDoc) => filtDoc.doc_sys_id);
-				setAppDocIds(filteredAppDocs);
-
-				setApplication(application);
-				setVacancyTitle(responses[0].data.result.basic_info.vacancy.label);
-				setTriageChoice(responses[0].data.result.basic_info.triage.value);
-				setTriageComments(
-					responses[0].data.result.basic_info.triage_comments.value
-				);
-				setDisplayReferences(
-					+responses[0].data.result.basic_info.display_references.value
-				);
-				setChairTriageChoice(
-					responses[0].data.result.basic_info.chair_triage.value
-				);
-				setChairTriageComments(
-					responses[0].data.result.basic_info.chair_triage_comment.value
-				);
-
-				if (responses[0].data.result.individual_scoring) {
-					const individualScores = responses[0].data.result.individual_scoring;
-
-					setIndividualScores({
-						knowledge: individualScores.knowledge_experience.value,
-						leadership:
-							individualScores.development_implementation_coordination.value,
-						management:
-							individualScores.management_leadership_supervision.value,
-						communication: individualScores.communication_skill.value,
-					});
-
-					setIndividualScoresComments(individualScores.comments.value);
-					setIndividualTriageChoice(individualScores.recommend.value);
-				}
-
-				setIsLoading(false);
-			} catch (error) {
-				console.log('[Application] error: ', error);
-			}
-		})();
+		loadApplication();
 	}, []);
+
+	const reloadReferences = async () => {
+		const applicationResponse = await axios.get(GET_APPLICATION + sysId);
+		const application = transformJsonFromBackend(
+			applicationResponse.data.result
+		);
+
+		setReferences(application.references);
+	};
+
+	const loadApplication = async () => {
+		setIsLoading(true);
+
+		try {
+			const applicationResponse = await axios.get(GET_APPLICATION + sysId);
+			const application = transformJsonFromBackend(
+				applicationResponse.data.result
+			);
+
+			setReferences(application.references);
+
+			const vacancySysId =
+				applicationResponse.data.result.basic_info.vacancy.value;
+			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + vacancySysId);
+
+			const roles = vacancy.data.result.user.roles;
+			setUserRoles(roles);
+
+			const vacancyCommitteeRole =
+				vacancy.data.result.user.committee_role_of_current_vacancy;
+
+			if (vacancy.data.result.rating_plan)
+				setRatingPlanDownloadLink(
+					vacancy.data.result.rating_plan.attachment_dl
+				);
+
+			setUserVacancyCommitteeRole(vacancyCommitteeRole);
+
+			const appDocs = applicationResponse.data.result.app_documents;
+			const filteredAppDocs = appDocs
+				.filter((doc) => doc.attach_sys_id.length > 0)
+				.map((filtDoc) => filtDoc.doc_sys_id);
+			setAppDocIds(filteredAppDocs);
+
+			setApplication(application);
+			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
+			setTriageChoice(applicationResponse.data.result.basic_info.triage.value);
+			setTriageComments(
+				applicationResponse.data.result.basic_info.triage_comments.value
+			);
+			setDisplayReferences(
+				+applicationResponse.data.result.basic_info.display_references.value
+			);
+			setChairTriageChoice(
+				applicationResponse.data.result.basic_info.chair_triage.value
+			);
+			setChairTriageComments(
+				applicationResponse.data.result.basic_info.chair_triage_comment.value
+			);
+
+			if (applicationResponse.data.result.individual_scoring) {
+				const individualScores =
+					applicationResponse.data.result.individual_scoring;
+
+				setIndividualScores({
+					knowledge: individualScores.knowledge_experience.value,
+					leadership:
+						individualScores.development_implementation_coordination.value,
+					management: individualScores.management_leadership_supervision.value,
+					communication: individualScores.communication_skill.value,
+				});
+
+				setIndividualScoresComments(individualScores.comments.value);
+				setIndividualTriageChoice(individualScores.recommend.value);
+			}
+
+			setIsLoading(false);
+		} catch (error) {
+			console.log('[Application] error: ', error);
+		}
+	};
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -357,7 +366,7 @@ const application = () => {
 
 						{!displayReferences && !userRoles.includes(OWM_TEAM) ? null : (
 							<References
-								references={application.references}
+								references={references}
 								style={{ backgroundColor: 'white' }}
 								switchInitialValue={displayReferences}
 								handleToggle={
@@ -365,6 +374,8 @@ const application = () => {
 										? handleDisplayReferenceToggle
 										: null
 								}
+								allowUploadOrDelete={userRoles.includes(OWM_TEAM)}
+								afterUploadOrDelete={reloadReferences}
 							/>
 						)}
 

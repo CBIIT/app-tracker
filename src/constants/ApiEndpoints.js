@@ -1,6 +1,8 @@
 const VACANCY_DETAILS_FOR_APPLICANTS =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_applicants/';
 
+const GET_COMMITTEE_CHAIR_VACANCIES = '/api/x_g_nci_app_tracke/vacancy/chair';
+
 const GET_APPLICATION = '/api/x_g_nci_app_tracke/application/get_application/';
 
 const GET_APPLICATION_TRIAGE_INFO =
@@ -46,4 +48,5 @@ export {
 	SERVICE_NOW_ATTACHMENT,
 	SUBMIT_COMMITTEE_DECISION,
 	SUBMIT_COMMITTEE_COMMENTS,
+	GET_COMMITTEE_CHAIR_VACANCIES,
 };
