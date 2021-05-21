@@ -7,6 +7,7 @@ import Home from './containers/Home/Home';
 import {
 	MANAGE_APPLICATION,
 	MANAGE_VACANCY,
+	COMMITTEE_DASHBOARD,
 	APPLY,
 	REGISTER_OKTA,
 } from './constants/Routes';
@@ -14,6 +15,7 @@ import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import ManageDashboard from './containers/ManageDashboard/ManageDashboard';
+import CommitteeDashboard from './containers/CommitteeDashboard/CommitteeDashboard';
 import ChairDashboard from './containers/ChairDashboard/ChairDashboard';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
 import Apply from './containers/Apply/Apply';
@@ -34,7 +36,9 @@ const app = () => {
 						path={MANAGE_VACANCY + ':sysId/:tab?'}
 						component={ManageDashboard}
 					/>
+					<Route path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
 					<Route path={REGISTER_OKTA} component={RegisterOkta} />
+
 					<Route path='/' exact component={Home} />
 				</Switch>
 			</Layout>

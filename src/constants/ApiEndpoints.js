@@ -16,6 +16,8 @@ const SUBMIT_COMMITTEE_DECISION =
 const SUBMIT_COMMITTEE_COMMENTS =
 	'/api/x_g_nci_app_tracke/application/submit_committee_comments';
 
+const GET_COMMITTEE_MEMBER_VIEW = '/api/x_g_nci_app_tracke/vacancy/committee';
+
 const SUBMIT_TRIAGE = '/api/x_g_nci_app_tracke/application/submit_triage';
 const SUBMIT_INDIVIDUAL_SCORING =
 	'/api/x_g_nci_app_tracke/application/submit_individual_scoring';
@@ -42,6 +44,7 @@ export {
 	REQUEST_CHAIR_TRIAGE,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
+	GET_COMMITTEE_MEMBER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
 	ADVANCE_VACANCY_TO_NEXT_STEP,
 	SERVICE_NOW_FILE_ATTACHMENT,

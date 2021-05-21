@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
+import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table } from 'antd';
-import './CommitteeDashboard.css';
 import axios from 'axios';
 
 const renderDecision = (text) =>
@@ -15,27 +15,26 @@ const renderDecision = (text) =>
 	);
 
 const committeeDashboard = () => {
-	const { sysId } = useParams();
 	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
-	// useEffect(() => {
-	//  (async () => {
-	//      try {
-	//          const currentData = await axios.get(
-	//              '/api/x_g_nci_app_tracke/vacancy/chair/' + sysId
-	//          );
-	//          setData(
-	//              currentData.data.result.filter(
-	//                  (vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
-	//              )
-	//          );
-	//      } catch (err) {
-	//          console.warn(err);
-	//      }
-	//  })();
-	// }, []);
+	useEffect(() => {
+		(async () => {
+			try {
+				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
+				console.log('[COMMITTEE DASHBOARD RESPONSE]:', currentData);
+				setData(currentData.data.result);
+			} catch (err) {
+				console.warn(err);
+			}
 
-	return (
+			setIsLoading(false);
+		})();
+	}, []);
+
+	return isLoading ? (
+		<> </>
+	) : (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
@@ -62,19 +61,27 @@ const committeeColumns = [
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
-		// render: (title, record) => (
-		//  <Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
-		// ),
+		render: (title, record) => (
+			<Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
+		),
 	},
 	{
 		title: 'Applicants',
 		dataIndex: 'applicants',
 		key: 'applicants',
-		// render: (number, record) => (
-		//  <Link to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}>
-		//      {number} {number == 1 ? 'applicant' : 'applicants'}
-		//  </Link>
-		// ),
+		render: (number, record) => (
+			<Link
+				key={record.vacancy_id}
+				to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}
+			>
+				{number}{' '}
+				{number == 1
+					? 'applicant'
+					: number == undefined
+					? '0 applicants'
+					: 'applicants'}
+			</Link>
+		),
 	},
 	{
 		title: 'Status',
@@ -106,7 +113,7 @@ const committeeColumns = [
 	},
 	{
 		title: 'Your Scoring',
-		dataIndex: 'scoring',
+		dataIndex: 'your_scoring',
 		key: 'scoring',
 		render: (text) => renderDecision(text),
 	},

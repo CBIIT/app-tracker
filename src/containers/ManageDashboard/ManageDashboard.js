@@ -159,6 +159,7 @@ const manageDashboard = () => {
 		);
 		setCurrentTab(tab);
 		setUserRoles(checkAuthResponse.data.result.user.roles);
+		console.log(checkAuthResponse.data.result.user.roles);
 
 		setIsLoading(false);
 	};
