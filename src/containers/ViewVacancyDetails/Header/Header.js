@@ -1,8 +1,34 @@
+import { useEffect, useState } from 'react';
 import { Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
+
+import { CHECK_AUTH } from '../../../constants/ApiEndpoints';
+import { APPLY, REGISTER_OKTA } from '../../../constants/Routes';
+
 import './Header.css';
 
 const header = (props) => {
+	const history = useHistory();
+
+	const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+	useEffect(() => {
+		checkUserAuthentication();
+	}, []);
+
+	const checkUserAuthentication = async () => {
+		try {
+			const response = await axios.get(CHECK_AUTH);
+			setIsUserAuthenticated(response.data.result.logged_in);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const onButtonClick = (link) => {
+		history.push(link);
+	};
+
 	return (
 		<div className='HeaderContainer'>
 			<div className='TitleAndDateContainer'>
@@ -19,9 +45,18 @@ const header = (props) => {
 				</div>
 			</div>
 			<div className='ButtonContainer'>
-				<Link to={'/apply/' + props.sysId}>
-					<Button type='primary'>Sign In and Apply</Button>
-				</Link>
+				{isUserAuthenticated ? (
+					<Button
+						onClick={() => onButtonClick(APPLY + props.sysId)}
+						type='primary'
+					>
+						Apply
+					</Button>
+				) : (
+					<Button onClick={() => onButtonClick(REGISTER_OKTA)} type='primary'>
+						Sign In and Apply
+					</Button>
+				)}
 			</div>
 		</div>
 	);

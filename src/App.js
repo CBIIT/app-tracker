@@ -8,6 +8,8 @@ import {
 	MANAGE_APPLICATION,
 	MANAGE_VACANCY,
 	COMMITTEE_DASHBOARD,
+	APPLY,
+	REGISTER_OKTA,
 } from './constants/Routes';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
@@ -27,7 +29,7 @@ const app = () => {
 					<Route path={MANAGE_APPLICATION + ':sysId'} component={Application} />
 					<Route path='/chair-dashboard/' component={ChairDashboard} />
 					<Route path='/create-vacancy' component={CreateVacancy} />
-					<Route path='/apply/:sysId' component={Apply} />
+					<Route path={APPLY + ':sysId'} component={Apply} />
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
 					<Route path='/vacancy/:sysId' component={ViewVacancyDetails} />
 					<Route
@@ -35,7 +37,8 @@ const app = () => {
 						component={ManageDashboard}
 					/>
 					<Route path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
-					<Route path='/register-okta' component={RegisterOkta} />
+					<Route path={REGISTER_OKTA} component={RegisterOkta} />
+
 					<Route path='/' exact component={Home} />
 				</Switch>
 			</Layout>
