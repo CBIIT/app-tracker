@@ -4,6 +4,7 @@ import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table } from 'antd';
 import axios from 'axios';
+import { response } from 'express';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -20,8 +21,15 @@ const committeeDashboard = () => {
 
 	useEffect(() => {
 		(async () => {
+			const username = 'apptrack.committee_member';
+			const password = process.env.REACT_APP_PASSWORD;
+			axios.defaults.auth = {
+				username,
+				password,
+			};
 			try {
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
+				console.log('[COMMITTEE DASHBOARD RESPONSE]:', response);
 				setData(currentData.data.result);
 			} catch (err) {
 				console.warn(err);

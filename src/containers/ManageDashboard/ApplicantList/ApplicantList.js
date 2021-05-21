@@ -5,12 +5,18 @@ import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
+import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	VOTING_COMPLETE,
 } from '../../../constants/VacancyStates';
-import { OWM_TEAM, COMMITTEE_CHAIR } from '../../../constants/Roles';
+import {
+	OWM_TEAM,
+	COMMITTEE_CHAIR,
+	COMMITTEE_MEMBER_VOTING,
+	COMMITTEE_MEMBER_NON_VOTING,
+} from '../../../constants/Roles';
 import './ApplicantList.css';
 
 const renderDecision = (text) =>
@@ -80,6 +86,7 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
 		if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
+			console.log('HERE', userRoles);
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
 					return <IndividualScoringTable applicants={applicants} />;
@@ -102,6 +109,11 @@ const applicantList = (props) => {
 						></Table>
 					);
 			}
+		} else if (
+			userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+			COMMITTEE_MEMBER_NON_VOTING
+		) {
+			return <ApplicantList applicants={applicants} />;
 		} else {
 			return (
 				<Table
@@ -119,6 +131,7 @@ const applicantList = (props) => {
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 			);
+			console.log('[LOAD APPLICANTS]:', response);
 			setApplicants(response.data.result);
 		} catch (error) {
 			message.error(
@@ -138,6 +151,8 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
+
+	console.log(props.userCommitteeRole);
 
 	return <div className='applicant-table'>{table}</div>;
 };

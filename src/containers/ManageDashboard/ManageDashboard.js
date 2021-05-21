@@ -132,6 +132,12 @@ const manageDashboard = () => {
 	const history = useHistory();
 
 	useEffect(() => {
+		const username = 'apptrack.committee_member';
+		const password = process.env.REACT_APP_PASSWORD;
+		axios.defaults.auth = {
+			username,
+			password,
+		};
 		loadLatestVacancyInfo();
 	}, []);
 
@@ -159,6 +165,7 @@ const manageDashboard = () => {
 		);
 		setCurrentTab(tab);
 		setUserRoles(checkAuthResponse.data.result.user.roles);
+		console.log(checkAuthResponse.data.result.user.roles);
 
 		setIsLoading(false);
 	};
