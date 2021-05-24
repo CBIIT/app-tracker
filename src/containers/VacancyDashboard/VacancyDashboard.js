@@ -119,7 +119,9 @@ const vacancyDashboard = () => {
 			title: 'Vacancy Title',
 			dataIndex: 'title',
 			render: (title, record) => (
-				<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+				<Link id={record.sys_id} to={'/manage/vacancy/' + record.sys_id}>
+					{title}
+				</Link>
 			),
 		},
 		{
@@ -151,13 +153,26 @@ const vacancyDashboard = () => {
 			title: 'Actions',
 			key: 'action',
 			width: '5px',
-			render: () => (
+			render: (vacancy) => (
 				<Space size={0}>
 					<Button type='text' style={{ padding: '0px' }}>
 						<EditOutlined /> edit
 					</Button>
 					<Divider type='vertical' />
-					<Button type='text' style={{ padding: '0px' }}>
+					<Button
+						type='text'
+						onClick={() => {
+							const copyLink = document.getElementById(vacancy.sys_id).href;
+							const copyInput = document.createElement('input');
+							copyInput.id = 'copy_link_' + vacancy.sys_id;
+							copyInput.value = copyLink;
+							document.body.append(copyInput);
+							document.getElementById(`copy_link_${vacancy.sys_id}`).select();
+							document.execCommand('copy');
+							document.getElementById(`copy_link_${vacancy.sys_id}`).remove();
+						}}
+						style={{ padding: '0px' }}
+					>
 						<LinkOutlined /> copy link
 					</Button>
 					<Divider type='vertical' />
