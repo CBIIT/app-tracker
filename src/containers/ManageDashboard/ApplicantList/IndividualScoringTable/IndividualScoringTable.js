@@ -153,6 +153,17 @@ const individualScoringTable = (props) => {
 					multiple: 2,
 				},
 				defaultSortOrder: 'descend',
+				render: (text) => {
+					if (text == 'NaN') {
+						return (
+							<span style={{ color: 'rgba(0,0,0,0.25)' }}>
+								{(text = 'Pending')}
+							</span>
+						);
+					} else {
+						return text;
+					}
+				},
 			},
 		];
 
