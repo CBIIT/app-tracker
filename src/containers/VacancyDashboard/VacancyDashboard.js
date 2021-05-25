@@ -6,7 +6,6 @@ import {
 	EditOutlined,
 	LinkOutlined,
 	FieldTimeOutlined,
-	MinusCircleOutlined,
 	UserOutlined,
 	FileTextOutlined,
 } from '@ant-design/icons';
@@ -178,10 +177,6 @@ const vacancyDashboard = () => {
 					<Divider type='vertical' />
 					<Button type='text' style={{ padding: '0px' }}>
 						<FieldTimeOutlined /> extend
-					</Button>
-					<Divider type='vertical' />
-					<Button type='text' style={{ padding: '0px' }}>
-						<MinusCircleOutlined /> close
 					</Button>
 				</Space>
 			),
