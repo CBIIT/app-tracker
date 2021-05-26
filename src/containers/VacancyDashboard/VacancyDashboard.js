@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { EXTEND_VACANCY } from '../../constants/ApiEndpoints';
 import { Table, Button, Tabs, Radio, Space, Divider } from 'antd';
 import {
 	DeleteOutlined,
@@ -70,6 +71,17 @@ const vacancyDashboard = () => {
 			setData(filteredData.data.result.filter((res) => res.state == newFilter));
 		}
 	};
+
+	const extendVacancy = async (vacancy) => {
+		try {
+			await axios.post(EXTEND_VACANCY + vacancy.sys_id);
+			const updatedExtendedData = await axios.get(url);
+			//Refresh data onClick of extend button
+			setData(updatedExtendedData.data.result);
+		} catch (error) {
+			console.log('[EXTEND] error: ', error);
+		}
+	};
 	// Preflight Columns
 	const preFlightColumns = [
 		{
@@ -117,11 +129,34 @@ const vacancyDashboard = () => {
 		{
 			title: 'Vacancy Title',
 			dataIndex: 'title',
-			render: (title, record) => (
-				<Link id={record.sys_id} to={'/manage/vacancy/' + record.sys_id}>
-					{title}
-				</Link>
-			),
+			render: (title, record) => {
+				return (
+					<>
+						<Link id={record.sys_id} to={'/manage/vacancy/' + record.sys_id}>
+							{title}
+						</Link>
+					</>
+				);
+			},
+		},
+		{
+			dataIndex: 'extended',
+			render: (vacancy, record) => {
+				if (record.extended == '1') {
+					return (
+						<>
+							<FieldTimeOutlined
+								style={{
+									fontSize: '20px',
+									color: 'rgb(191,191,191)',
+								}}
+							/>
+						</>
+					);
+				} else {
+					return null;
+				}
+			},
 		},
 		{
 			title: 'Applicants',
@@ -175,7 +210,14 @@ const vacancyDashboard = () => {
 						<LinkOutlined /> copy link
 					</Button>
 					<Divider type='vertical' />
-					<Button type='text' style={{ padding: '0px' }}>
+					<Button
+						type='text'
+						onClick={() => {
+							// vacancy.extended = '1';
+							extendVacancy(vacancy);
+						}}
+						style={{ padding: '0px' }}
+					>
 						<FieldTimeOutlined /> extend
 					</Button>
 				</Space>
