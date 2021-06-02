@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { EXTEND_VACANCY } from '../../constants/ApiEndpoints';
-import { Table, Button, Tabs, Radio, Space, Divider } from 'antd';
+import {
+	Table,
+	Button,
+	Tabs,
+	Radio,
+	Space,
+	Divider,
+	message,
+	Modal,
+} from 'antd';
 import {
 	DeleteOutlined,
 	EditOutlined,
@@ -9,7 +17,9 @@ import {
 	FieldTimeOutlined,
 	UserOutlined,
 	FileTextOutlined,
+	ExclamationCircleFilled,
 } from '@ant-design/icons';
+import { EXTEND_VACANCY } from '../../constants/ApiEndpoints';
 import './VacancyDashboard.css';
 import axios from 'axios';
 
@@ -22,6 +32,8 @@ const vacancyDashboard = () => {
 	const [preFlightCount, setPreFlightCount] = useState([]);
 	const [liveCount, setLiveCount] = useState([]);
 	const [closedCount, setClosedCount] = useState([]);
+	const [currentVacancy, setCurrentVacancy] = useState([]);
+	const [extendModalVisible, setExtendModalVisible] = useState(false);
 	const urls = {
 		preflight:
 			'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight',
@@ -72,15 +84,24 @@ const vacancyDashboard = () => {
 		}
 	};
 
-	const extendVacancy = async (vacancy) => {
+	const extendVacancy = async () => {
 		try {
-			await axios.post(EXTEND_VACANCY + vacancy.sys_id);
+			await axios.post(EXTEND_VACANCY + currentVacancy.sys_id);
 			const updatedExtendedData = await axios.get(url);
 			//Refresh data onClick of extend button
 			setData(updatedExtendedData.data.result);
+			setExtendModalVisible(false);
 		} catch (error) {
 			console.log('[EXTEND] error: ', error);
 		}
+	};
+
+	const handleExtendModalCancel = () => {
+		setExtendModalVisible(false);
+	};
+
+	const copyLinkMessage = () => {
+		message.info('Vacancy link copied to clipboard');
 	};
 	// Preflight Columns
 	const preFlightColumns = [
@@ -204,6 +225,7 @@ const vacancyDashboard = () => {
 							document.getElementById(`copy_link_${vacancy.sys_id}`).select();
 							document.execCommand('copy');
 							document.getElementById(`copy_link_${vacancy.sys_id}`).remove();
+							copyLinkMessage();
 						}}
 						style={{ padding: '0px' }}
 					>
@@ -212,9 +234,9 @@ const vacancyDashboard = () => {
 					<Divider type='vertical' />
 					<Button
 						type='text'
-						onClick={() => {
-							// vacancy.extended = '1';
-							extendVacancy(vacancy);
+						onClick={async () => {
+							setExtendModalVisible(true);
+							setCurrentVacancy(vacancy);
 						}}
 						style={{ padding: '0px' }}
 					>
@@ -416,6 +438,36 @@ const vacancyDashboard = () => {
 					</Tabs>
 				</div>
 			</div>
+			<Modal
+				visible={extendModalVisible}
+				onOk={extendVacancy}
+				onCancel={handleExtendModalCancel}
+				closable={false}
+				okText='Confirm'
+				cancelText='Cancel'
+			>
+				<div>
+					<ExclamationCircleFilled
+						style={{
+							color: '#faad14',
+							fontSize: '24px',
+							display: 'inline-block',
+							marginRight: '15px',
+						}}
+					/>
+					<h2
+						style={{
+							display: 'inline-block',
+						}}
+					>
+						Are you sure you want to extend this vacancy?
+					</h2>
+					<p>
+						Please confirm you would like to extend this vacancy or click cancel
+						to return to the previous screen.
+					</p>
+				</div>
+			</Modal>
 		</>
 	);
 };
