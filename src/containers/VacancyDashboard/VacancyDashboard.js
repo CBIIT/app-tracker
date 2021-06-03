@@ -19,7 +19,7 @@ import {
 	FileTextOutlined,
 	ExclamationCircleFilled,
 } from '@ant-design/icons';
-import { EXTEND_VACANCY } from '../../constants/ApiEndpoints';
+import { EXTEND_VACANCY, REMOVE_VACANCY } from '../../constants/ApiEndpoints';
 import './VacancyDashboard.css';
 import axios from 'axios';
 
@@ -34,6 +34,7 @@ const vacancyDashboard = () => {
 	const [closedCount, setClosedCount] = useState([]);
 	const [currentVacancy, setCurrentVacancy] = useState([]);
 	const [extendModalVisible, setExtendModalVisible] = useState(false);
+	const [removeModalVisible, setRemoveModalVisible] = useState(false);
 	const urls = {
 		preflight:
 			'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight',
@@ -100,6 +101,25 @@ const vacancyDashboard = () => {
 		setExtendModalVisible(false);
 	};
 
+	const removeVacancy = async () => {
+		try {
+			await axios.post(REMOVE_VACANCY + currentVacancy.sys_id);
+			const updatedRemovedData = await axios.get(url);
+			//Refresh data onClick of remove button
+			setData(updatedRemovedData.data.result);
+			const updatedPreFlightCount = await axios.get(urls.preflight);
+			//Refresh Pre-Flight Count onClick of remove button
+			setPreFlightCount(updatedPreFlightCount.data.result.length);
+			setRemoveModalVisible(false);
+		} catch (error) {
+			console.log('[REMOVE VACANCY] error: ', error);
+		}
+	};
+
+	const handleRemoveModalCancel = () => {
+		setRemoveModalVisible(false);
+	};
+
 	const copyLinkMessage = () => {
 		message.info('Vacancy link copied to clipboard');
 	};
@@ -132,13 +152,19 @@ const vacancyDashboard = () => {
 		{
 			title: 'Actions',
 			key: 'action',
-			render: () => (
+			render: (vacancy) => (
 				<Space size='middle'>
 					<Button type='text'>
 						<EditOutlined /> edit
 					</Button>
 					<Divider type='vertical' />
-					<Button type='text'>
+					<Button
+						type='text'
+						onClick={async () => {
+							setRemoveModalVisible(true);
+							setCurrentVacancy(vacancy);
+						}}
+					>
 						<DeleteOutlined /> remove
 					</Button>
 				</Space>
@@ -464,6 +490,36 @@ const vacancyDashboard = () => {
 					</h2>
 					<p>
 						Please confirm you would like to extend this vacancy or click cancel
+						to return to the previous screen.
+					</p>
+				</div>
+			</Modal>
+			<Modal
+				visible={removeModalVisible}
+				onOk={removeVacancy}
+				onCancel={handleRemoveModalCancel}
+				closable={false}
+				okText='Confirm'
+				cancelText='Cancel'
+			>
+				<div>
+					<ExclamationCircleFilled
+						style={{
+							color: '#faad14',
+							fontSize: '24px',
+							display: 'inline-block',
+							marginRight: '15px',
+						}}
+					/>
+					<h2
+						style={{
+							display: 'inline-block',
+						}}
+					>
+						Are you sure you want to remove this vacancy?
+					</h2>
+					<p>
+						Please confirm you would like to remove this vacancy or click cancel
 						to return to the previous screen.
 					</p>
 				</div>
