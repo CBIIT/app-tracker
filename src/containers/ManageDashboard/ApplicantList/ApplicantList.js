@@ -86,7 +86,6 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
 		if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
-			console.log('HERE', userRoles);
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
 					return <IndividualScoringTable applicants={applicants} />;
@@ -131,7 +130,6 @@ const applicantList = (props) => {
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
 			);
-			console.log('[LOAD APPLICANTS]:', response);
 			setApplicants(response.data.result);
 		} catch (error) {
 			message.error(
@@ -151,8 +149,6 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
-
-	console.log(props.userCommitteeRole);
 
 	return <div className='applicant-table'>{table}</div>;
 };
