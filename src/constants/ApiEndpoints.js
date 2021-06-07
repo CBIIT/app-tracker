@@ -34,6 +34,7 @@ const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/check_auth';
 
 const EXTEND_VACANCY = '/api/x_g_nci_app_tracke/vacancy/extend/';
 const REMOVE_VACANCY = '/api/x_g_nci_app_tracke/vacancy/remove/';
+const REMOVE_DRAFT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/remove_draft/';
 
 const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
@@ -57,4 +58,5 @@ export {
 	GET_COMMITTEE_CHAIR_VACANCIES,
 	EXTEND_VACANCY,
 	REMOVE_VACANCY,
+	REMOVE_DRAFT_VACANCY,
 };

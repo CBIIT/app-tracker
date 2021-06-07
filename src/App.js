@@ -10,11 +10,13 @@ import {
 	COMMITTEE_DASHBOARD,
 	APPLY,
 	REGISTER_OKTA,
+	// EDIT_VACANCY,
 } from './constants/Routes';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import ManageDashboard from './containers/ManageDashboard/ManageDashboard';
+// import EditVacancy from './containers/EditVacancy/EditVacancy';
 import CommitteeDashboard from './containers/CommitteeDashboard/CommitteeDashboard';
 import ChairDashboard from './containers/ChairDashboard/ChairDashboard';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
@@ -36,6 +38,7 @@ const app = () => {
 						path={MANAGE_VACANCY + ':sysId/:tab?'}
 						component={ManageDashboard}
 					/>
+					{/* <Route path={EDIT_VACANCY + ':sysId'} component={EditVacancy} /> */}
 					<Route path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
 					<Route path={REGISTER_OKTA} component={RegisterOkta} />
 
