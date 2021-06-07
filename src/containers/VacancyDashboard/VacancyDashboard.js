@@ -19,7 +19,12 @@ import {
 	FileTextOutlined,
 	ExclamationCircleFilled,
 } from '@ant-design/icons';
-import { EXTEND_VACANCY, REMOVE_VACANCY } from '../../constants/ApiEndpoints';
+import {
+	EXTEND_VACANCY,
+	REMOVE_VACANCY,
+	REMOVE_DRAFT_VACANCY,
+} from '../../constants/ApiEndpoints';
+// import { EDIT_VACANCY } from '../../constants/Routes';
 import './VacancyDashboard.css';
 import axios from 'axios';
 
@@ -103,7 +108,11 @@ const vacancyDashboard = () => {
 
 	const removeVacancy = async () => {
 		try {
-			await axios.post(REMOVE_VACANCY + currentVacancy.sys_id);
+			if (currentVacancy.state == 'draft') {
+				await axios.post(REMOVE_DRAFT_VACANCY + currentVacancy.sys_id);
+			} else if (currentVacancy.state == 'final') {
+				await axios.post(REMOVE_VACANCY + currentVacancy.sys_id);
+			}
 			const updatedRemovedData = await axios.get(url);
 			//Refresh data onClick of remove button
 			setData(updatedRemovedData.data.result);
@@ -369,7 +378,7 @@ const vacancyDashboard = () => {
 								>
 									<Radio.Button value='all'>All</Radio.Button>
 									<Radio.Button value='draft'>Draft</Radio.Button>
-									<Radio.Button value='finalized'>Finalized</Radio.Button>
+									<Radio.Button value='final'>Finalized</Radio.Button>
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
@@ -403,7 +412,7 @@ const vacancyDashboard = () => {
 									onChange={filterChangeHandler}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
-									<Radio.Button value='open'>Live</Radio.Button>
+									<Radio.Button value='live'>Live</Radio.Button>
 									<Radio.Button value='extended'>Extended</Radio.Button>
 								</Radio.Group>
 							</div>
