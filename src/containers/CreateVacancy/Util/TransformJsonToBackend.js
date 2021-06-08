@@ -9,6 +9,8 @@ export const transformJsonToBackend = (sourceJson) => {
 		vacancy_documents: sourceJson.basicInfo.applicationDocuments,
 	};
 
+	if (sourceJson.draftId) targetJson['draft_id'] = sourceJson.draftId;
+
 	return targetJson;
 };
 

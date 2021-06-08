@@ -19,6 +19,7 @@ import {
 	FileTextOutlined,
 	ExclamationCircleFilled,
 } from '@ant-design/icons';
+import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import { EXTEND_VACANCY, REMOVE_VACANCY } from '../../constants/ApiEndpoints';
 import './VacancyDashboard.css';
 import axios from 'axios';
@@ -56,16 +57,21 @@ const vacancyDashboard = () => {
 	useEffect(() => {
 		(async () => {
 			try {
-				const currentData = await axios.get(url);
+				const [
+					currentData,
+					currentPreCount,
+					currentLiveCount,
+					currentClosedCount,
+				] = await Promise.all([
+					axios.get(url),
+					axios.get(urls.preflight),
+					axios.get(urls.live),
+					axios.get(urls.closed),
+				]);
+
 				setData(currentData.data.result);
-
-				const currentPreCount = await axios.get(urls.preflight);
 				setPreFlightCount(currentPreCount.data.result.length);
-
-				const currentLiveCount = await axios.get(urls.live);
 				setLiveCount(currentLiveCount.data.result.length);
-
-				const currentClosedCount = await axios.get(urls.closed);
 				setClosedCount(currentClosedCount.data.result.length);
 			} catch (err) {
 				console.warn(err);
@@ -123,6 +129,13 @@ const vacancyDashboard = () => {
 	const copyLinkMessage = () => {
 		message.info('Vacancy link copied to clipboard');
 	};
+
+	const dateCompare = (dateA, dateB) => {
+		if (dateA == '--') dateA = null;
+		if (dateB == '--') dateB = null;
+		return new Date(dateA) - new Date(dateB);
+	};
+
 	// Preflight Columns
 	const preFlightColumns = [
 		{
@@ -135,8 +148,13 @@ const vacancyDashboard = () => {
 		{
 			title: 'Open Date',
 			dataIndex: 'open_date',
+			render: (date) => transformDateToDisplay(date),
 			sorter: {
-				compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
+				compare: (a, b) => {
+					const dateA = a.open_date;
+					const dateB = b.open_date;
+					return dateCompare(dateA, dateB);
+				},
 				multiple: 1,
 			},
 			defaultSortOrder: 'ascend',
@@ -144,8 +162,13 @@ const vacancyDashboard = () => {
 		{
 			title: 'Close Date',
 			dataIndex: 'close_date',
+			render: (date) => transformDateToDisplay(date),
 			sorter: {
-				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
+				compare: (a, b) => {
+					const dateA = a.close_date;
+					const dateB = b.close_date;
+					return dateCompare(dateA, dateB);
+				},
 				multiple: 2,
 			},
 		},
@@ -217,6 +240,7 @@ const vacancyDashboard = () => {
 		{
 			title: 'Open Date',
 			dataIndex: 'open_date',
+			render: (date) => transformDateToDisplay(date),
 			sorter: {
 				compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
 				multiple: 2,
@@ -225,6 +249,7 @@ const vacancyDashboard = () => {
 		{
 			title: 'Close Date',
 			dataIndex: 'close_date',
+			render: (date) => transformDateToDisplay(date),
 			sorter: {
 				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 				multiple: 3,
@@ -293,6 +318,7 @@ const vacancyDashboard = () => {
 		{
 			title: 'Close Date',
 			dataIndex: 'close_date',
+			render: (date) => transformDateToDisplay(date),
 			sorter: {
 				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 				multiple: 2,
