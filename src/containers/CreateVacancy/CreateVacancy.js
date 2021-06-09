@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
-import { Steps, Button, Form } from 'antd';
+import { Steps, Button, Form, message } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
@@ -10,14 +10,19 @@ import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
 import EmailTemplates from './Forms/EmailTemplates/EmailTemplates';
 import FinalizeVacancy from './Forms/FinalizeVacancy/FinalizeVacancy';
 import { initialValues } from './Forms/FormsInitialValues';
+import { SAVE_VACANCY_DRAFT } from '../../constants/ApiEndpoints';
 import './CreateVacancy.css';
+import axios from 'axios';
 
-const createVacancy = () => {
+const createVacancy = (props) => {
 	const { Step } = Steps;
 	const history = useHistory();
 	const [errorSections, setErrorSections] = useState([]);
-	const [allForms, setAllForms] = useState(initialValues);
+	const [allForms, setAllForms] = useState(
+		props.initialValues ? props.initialValues : initialValues
+	);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
+	const [draftSysId, setDraftSysId] = useState();
 
 	const showSubmitModal = () => {
 		setSubmitModalVisible(true);
@@ -32,7 +37,12 @@ const createVacancy = () => {
 	};
 
 	const updateBasicInfo = () => {
-		setAllForms({ ...allForms, basicInfo: basicInfoForm.getFieldsValue() });
+		const newFormData = {
+			...allForms,
+			basicInfo: basicInfoForm.getFieldsValue(),
+		};
+		setAllForms(newFormData);
+		return newFormData;
 	};
 
 	const [basicInfoForm] = Form.useForm();
@@ -77,7 +87,8 @@ const createVacancy = () => {
 
 	const steps = [
 		{
-			step: 1,
+			step: 0,
+			key: 'basicInfo',
 			title: 'Basic Vacancy Information',
 			description: 'Fill in vacancy information',
 			content: (
@@ -88,7 +99,8 @@ const createVacancy = () => {
 			),
 		},
 		{
-			step: 2,
+			step: 1,
+			key: 'mandatoryStatements',
 			title: 'Mandatory Statements',
 			description:
 				'Select pre-written mandatory statements to add to the posting',
@@ -100,7 +112,8 @@ const createVacancy = () => {
 			),
 		},
 		{
-			step: 3,
+			step: 2,
+			key: 'vacancyCommittee',
 			title: 'Vacancy Committee',
 			description: 'Add and manage vacancy committee members',
 			content: (
@@ -113,7 +126,8 @@ const createVacancy = () => {
 			),
 		},
 		{
-			step: 4,
+			step: 3,
+			key: 'emailTemplates',
 			title: 'Email Templates',
 			description: 'Choose the emails to send applicants and manage email body',
 			content: (
@@ -124,7 +138,8 @@ const createVacancy = () => {
 			),
 		},
 		{
-			step: 5,
+			step: 4,
+			key: 'reviewAndFinalize',
 			title: 'Review and Finalize',
 			description: '',
 			content: (
@@ -139,48 +154,91 @@ const createVacancy = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 
 	const saveFormData = (currentStep) => {
-		updateBasicInfo();
-		switch (currentStep) {
-			case 1:
-				updateBasicInfo();
-				break;
+		switch (steps[currentStep].key) {
+			case 'basicInfo':
+				return updateBasicInfo();
+			case 'mandatoryStatements':
+				return saveMandatoryStatements();
+			case 'emailTemplates':
+				return saveEmailTemplates();
 			default:
-				return;
+				return allForms;
 		}
 	};
 
-	const next = () => {
+	const saveEmailTemplates = () => {
+		const newFormValues = {
+			...allForms,
+			emailTemplates: emailTemplatesForm.getFieldsValue().emailTemplates,
+		};
+		setAllForms(newFormValues);
+		return newFormValues;
+	};
+
+	const saveMandatoryStatements = () => {
+		const newFormValues = {
+			...allForms,
+			mandatoryStatements: mandatoryStatementsForm.getFieldsValue(),
+		};
+		setAllForms(newFormValues);
+		return newFormValues;
+	};
+
+	const saveDraft = async (data) => {
+		if (!data.basicInfo.title || data.basicInfo.title == '') {
+			message.error('A vacancy title is required.');
+			return false;
+		}
+		try {
+			let draft = {
+				jsonobj: data,
+			};
+
+			if (draftSysId)
+				draft = {
+					sys_id: draftSysId,
+					jsonobj: data,
+				};
+
+			const response = await axios.post(SAVE_VACANCY_DRAFT, draft);
+			if (!draftSysId) setDraftSysId(response.data.result.draft_id);
+			message.success('Changes saved.');
+			return true;
+		} catch (error) {
+			message.error('Sorry!  There was an error saving.');
+			return false;
+		}
+	};
+
+	const next = async () => {
 		if (currentStep < steps.length - 1) {
-			saveFormData(currentStep);
-			setCurrentStep(currentStep + 1);
+			const data = saveFormData(currentStep);
+			if ((await saveDraft(data)) === true) {
+				setCurrentStep(currentStep + 1);
+			}
 		} else {
 			validateAllFormsAndDisplayModal();
 		}
 	};
 
-	const prev = () => {
-		saveFormData(currentStep);
-		currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
+	const prev = async () => {
+		if (currentStep === 0) history.goBack();
+		else {
+			const data = saveFormData(currentStep);
+			if ((await saveDraft(data)) === true) {
+				setCurrentStep(currentStep - 1);
+			}
+		}
 	};
 
 	const currentStepObject = steps[currentStep] || {};
 
-	const stepClickHandler = (current) => {
-		saveFormData(currentStep);
-		setCurrentStep(current);
+	const stepClickHandler = async (current) => {
+		const data = saveFormData(currentStep);
+		if ((await saveDraft(data)) === true) setCurrentStep(current);
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {
-		if (name === 'MandatoryStatements') {
-			const { MandatoryStatements } = forms;
-			const newMandatoryStatements = MandatoryStatements.getFieldsValue();
-			setAllForms({
-				...allForms,
-				mandatoryStatements: newMandatoryStatements,
-			});
-		}
-
-		// For some currently unknown reason, EmailTemplates is firing off the onChange handler on render
 		if (name === 'EmailTemplates') {
 			const { EmailTemplates } = forms;
 			if (EmailTemplates) {
@@ -196,7 +254,6 @@ const createVacancy = () => {
 	return (
 		<>
 			<Form.Provider
-				// TODO: Refactor this to call appropriate saves and validates on next, prev, or step change vs. onFormChange
 				onFormChange={(name, { forms, changedFields }) => {
 					wizardFormChangeHandler(name, forms, changedFields);
 				}}
@@ -224,7 +281,7 @@ const createVacancy = () => {
 							{steps.map((item) => (
 								<div
 									key={item.step}
-									className={`${item.step !== currentStep + 1 && 'Hidden'}`}
+									className={`${item.step !== currentStep && 'Hidden'}`}
 								>
 									{item.content}
 								</div>
@@ -279,7 +336,7 @@ const createVacancy = () => {
 			<ConfirmSubmitModal
 				visible={submitModalVisible}
 				onCancel={handleSubmitModalCancel}
-				data={allForms}
+				data={draftSysId ? { ...allForms, draftId: draftSysId } : allForms}
 			/>
 		</>
 	);
