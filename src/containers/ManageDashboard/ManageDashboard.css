@@ -1,4 +1,39 @@
+.manage-tabs {
+	position: relative;
+}
+
+.AdvanceButton.ant-btn,
+.AdvanceButton.ant-tooltip-disabled-compatible-wrapper {
+	position: absolute;
+	top: 5px;
+	right: 0px;
+	z-index: 10;
+}
+
 .manage-tabs .ant-tabs-nav-wrap {
 	background-color: rgb(237 240 243);
-	padding-left: 30px;
+}
+
+.manage-tabs .ant-tabs-tab {
+	justify-content: center;
+	width: 160px;
+}
+
+.ManageHeader .HeaderTitle {
+	background-color: #edf1f4;
+
+	margin-left: 0px;
+	padding: 20px 20px 20px 0px !important;
+	justify-content: left;
+}
+
+.ManageHeader .HeaderLink {
+	padding-top: 15px;
+}
+
+.ManageHeader {
+	display: flex;
+	background-color: #edf1f4;
+	max-width: 1440px;
+	max-height: 76px;
 }

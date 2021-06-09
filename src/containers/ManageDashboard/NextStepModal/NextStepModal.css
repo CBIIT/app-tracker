@@ -1,0 +1,36 @@
+.ConfirmSubmitModal {
+	padding-inline: 20px;
+}
+
+.ConfirmSubmitModal h2 {
+	display: inline-block;
+	padding-left: 10px;
+}
+
+.ConfirmSubmitModal p {
+	display: inline-block;
+	padding-left: 30px;
+}
+
+.Confirmed {
+	padding-inline: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.Confirmed h2 {
+	margin-bottom: 10px;
+}
+
+.ConfirmedIcon {
+	color: #389e0d;
+	font-size: 48px;
+	margin-bottom: 10px;
+}
+
+.ModalConfirmed .ant-modal-footer {
+	display: flex;
+	justify-content: center;
+}
