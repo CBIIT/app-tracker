@@ -57,9 +57,9 @@ const applicantColumns = [
 		title: 'Submitted',
 		dataIndex: 'submitted',
 		key: 'submitted',
-		render: (text) => {
-			return <span>{text.split(' ')[0]}</span>;
-		},
+		// render: (text) => {
+		// 	return <span>{text.split(' ')[0]}</span>;
+		// },
 	},
 	{
 		title: 'OWM Triage Decision',

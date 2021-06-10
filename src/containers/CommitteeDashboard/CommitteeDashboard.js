@@ -20,9 +20,9 @@ const committeeDashboard = () => {
 
 	useEffect(() => {
 		(async () => {
+			setIsLoading(true);
 			try {
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
-				console.log('[COMMITTEE DASHBOARD RESPONSE]:', currentData);
 				setData(currentData.data.result);
 			} catch (err) {
 				console.warn(err);
@@ -57,7 +57,7 @@ const committeeColumns = [
 		dataIndex: 'vacancy_title',
 		key: 'title',
 		sorter: {
-			compare: (a, b) => a.vacancy_title.localeCompare(b.vacancy_title),
+			compare: (a, b) => a.vacancy_title - b.vacancy_title,
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
@@ -88,26 +88,28 @@ const committeeColumns = [
 		dataIndex: 'status',
 		key: 'status',
 		sorter: {
-			compare: (a, b) => a.status.localeCompare(b.status),
+			compare: (a, b) => a.status - b.status,
 			multiple: 2,
 		},
 		defaultSortOrder: 'ascend',
 		render: (status) => {
-			if (status.includes('owm')) {
-				status = status.split('_')[0].toUpperCase() + status.substring(3);
-			}
-			if (status.includes('_')) {
-				status = status
-					.split('_')
-					.map((word) => word[0].toUpperCase() + word.substring(1))
-					.join(' ');
-				return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
-			} else {
-				return (
-					<span style={{ color: 'rgb(86,86,86)' }}>
-						{status.charAt(0).toUpperCase() + status.slice(1)}
-					</span>
-				);
+			if (status) {
+				if (status.includes('owm')) {
+					status = status.split('_')[0].toUpperCase() + status.substring(3);
+				}
+				if (status.includes('_')) {
+					status = status
+						.split('_')
+						.map((word) => word[0].toUpperCase() + word.substring(1))
+						.join(' ');
+					return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
+				} else {
+					return (
+						<span style={{ color: 'rgb(86,86,86)' }}>
+							{status.charAt(0).toUpperCase() + status.slice(1)}
+						</span>
+					);
+				}
 			}
 		},
 	},
