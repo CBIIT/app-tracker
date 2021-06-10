@@ -145,6 +145,8 @@ const manageDashboard = () => {
 			axios.get(CHECK_AUTH),
 		]);
 
+		console.log('[ManageDashboard] vacancyResponse: ', vacancyResponse);
+
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);

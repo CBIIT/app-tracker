@@ -24,6 +24,8 @@ const SUBMIT_INDIVIDUAL_SCORING =
 const DISPLAY_REFERENCES =
 	'/api/x_g_nci_app_tracke/application/display_references';
 
+const GET_DRAFT = '/api/x_g_nci_app_tracke/vacancy/get_draft/';
+
 const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/save_draft';
 
 const ADVANCE_VACANCY_TO_NEXT_STEP =
@@ -62,4 +64,5 @@ export {
 	REMOVE_VACANCY,
 	SAVE_VACANCY_DRAFT,
 	REMOVE_DRAFT_VACANCY,
+	GET_DRAFT,
 };

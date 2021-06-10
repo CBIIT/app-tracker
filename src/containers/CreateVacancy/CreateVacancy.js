@@ -22,7 +22,7 @@ const createVacancy = (props) => {
 		props.initialValues ? props.initialValues : initialValues
 	);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
-	const [draftSysId, setDraftSysId] = useState();
+	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
 
 	const showSubmitModal = () => {
 		setSubmitModalVisible(true);
@@ -118,7 +118,7 @@ const createVacancy = (props) => {
 			description: 'Add and manage vacancy committee members',
 			content: (
 				<VacancyCommittee
-					committeeMembers={allForms.committeeMembers}
+					committeeMembers={allForms.vacancyCommittee}
 					setCommitteeMembers={updateCommitteeMembers}
 					formInstance={vacancyCommitteeForm}
 					getCommitteeMembers={getVacancyCommittee}
@@ -184,36 +184,41 @@ const createVacancy = (props) => {
 		return newFormValues;
 	};
 
-	const saveDraft = async (data) => {
+	const save = async (data) => {
 		if (!data.basicInfo.title || data.basicInfo.title == '') {
 			message.error('A vacancy title is required.');
 			return false;
 		}
-		try {
-			let draft = {
-				jsonobj: data,
-			};
-
-			if (draftSysId)
-				draft = {
-					sys_id: draftSysId,
+		if (!props.sysId) {
+			message.loading({ duration: 0, content: 'Saving...' });
+			try {
+				let draft = {
 					jsonobj: data,
 				};
 
-			const response = await axios.post(SAVE_VACANCY_DRAFT, draft);
-			if (!draftSysId) setDraftSysId(response.data.result.draft_id);
-			message.success('Changes saved.');
-			return true;
-		} catch (error) {
-			message.error('Sorry!  There was an error saving.');
-			return false;
+				if (draftSysId)
+					draft = {
+						sys_id: draftSysId,
+						jsonobj: data,
+					};
+
+				const response = await axios.post(SAVE_VACANCY_DRAFT, draft);
+				if (!draftSysId) setDraftSysId(response.data.result.draft_id);
+				message.destroy();
+				message.success('Changes saved.');
+				return true;
+			} catch (error) {
+				message.destroy();
+				message.error('Sorry!  There was an error saving.');
+				return false;
+			}
 		}
 	};
 
 	const next = async () => {
 		if (currentStep < steps.length - 1) {
 			const data = saveFormData(currentStep);
-			if ((await saveDraft(data)) === true) {
+			if ((await save(data)) === true) {
 				setCurrentStep(currentStep + 1);
 			}
 		} else {
@@ -225,7 +230,7 @@ const createVacancy = (props) => {
 		if (currentStep === 0) history.goBack();
 		else {
 			const data = saveFormData(currentStep);
-			if ((await saveDraft(data)) === true) {
+			if ((await save(data)) === true) {
 				setCurrentStep(currentStep - 1);
 			}
 		}
@@ -235,7 +240,7 @@ const createVacancy = (props) => {
 
 	const stepClickHandler = async (current) => {
 		const data = saveFormData(currentStep);
-		if ((await saveDraft(data)) === true) setCurrentStep(current);
+		if ((await save(data)) === true) setCurrentStep(current);
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {

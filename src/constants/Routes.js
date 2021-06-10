@@ -4,6 +4,7 @@ const EDIT_VACANCY = '/manage/vacancy/edit/';
 const COMMITTEE_DASHBOARD = '/committee-dashboard/';
 const APPLY = '/apply/';
 const REGISTER_OKTA = '/register-okta';
+const EDIT_DRAFT = '/manage/edit/draft/';
 export {
 	MANAGE_APPLICATION,
 	MANAGE_VACANCY,
@@ -11,4 +12,5 @@ export {
 	APPLY,
 	REGISTER_OKTA,
 	EDIT_VACANCY,
+	EDIT_DRAFT,
 };

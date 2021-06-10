@@ -25,7 +25,7 @@ import {
 	REMOVE_VACANCY,
 	REMOVE_DRAFT_VACANCY,
 } from '../../constants/ApiEndpoints';
-// import { EDIT_VACANCY } from '../../constants/Routes';
+import { EDIT_DRAFT, EDIT_VACANCY } from '../../constants/Routes';
 import './VacancyDashboard.css';
 import axios from 'axios';
 
@@ -145,6 +145,12 @@ const vacancyDashboard = () => {
 		return new Date(dateA) - new Date(dateB);
 	};
 
+	const handleEditButtonClick = (record) => {
+		console.log('[VacancyDashboard] record', record);
+		if (record.state === 'draft') history.push(EDIT_DRAFT + record.sys_id);
+		else history.push(EDIT_VACANCY + record.sys_id);
+	};
+
 	// Preflight Columns
 	const preFlightColumns = [
 		{
@@ -184,9 +190,14 @@ const vacancyDashboard = () => {
 		{
 			title: 'Actions',
 			key: 'action',
-			render: (vacancy) => (
+			render: (vacancy, record) => (
 				<Space size='middle'>
-					<Button type='text'>
+					<Button
+						type='text'
+						onClick={() => {
+							handleEditButtonClick(record);
+						}}
+					>
 						<EditOutlined /> edit
 					</Button>
 					<Divider type='vertical' />
@@ -268,9 +279,15 @@ const vacancyDashboard = () => {
 			title: 'Actions',
 			key: 'action',
 			width: '5px',
-			render: (vacancy) => (
+			render: (vacancy, record) => (
 				<Space size={0}>
-					<Button type='text' style={{ padding: '0px' }}>
+					<Button
+						type='text'
+						style={{ padding: '0px' }}
+						onClick={() => {
+							handleEditButtonClick(record);
+						}}
+					>
 						<EditOutlined /> edit
 					</Button>
 					<Divider type='vertical' />
