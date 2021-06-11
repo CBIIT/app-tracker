@@ -18,6 +18,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 		emailTemplates: sourceJson.vacancy_emails.map((temp) => ({
 			active: temp.active.value == '1' ? true : false,
 			type: temp.email_type.value,
+			text: temp.email_message.value,
 		})),
 		vacancyCommittee: sourceJson.committee.map((member) => ({
 			role: member.role.value,
@@ -33,6 +34,14 @@ export const transformJsonFromBackend = (sourceJson) => {
 				sourceJson.basic_info.show_fes.value == '1' ? true : false,
 			reasonableAccomodation:
 				sourceJson.basic_info.show_ras.value == '1' ? true : false,
+			equalOpportunityEmployerText:
+				sourceJson.basic_info.equal_opportunity_employment_statement.value,
+			standardsOfConductText:
+				sourceJson.basic_info.standards_of_conduct_statement.value,
+			foreignEducationText:
+				sourceJson.basic_info.foreign_education_statement.value,
+			reasonableAccomodationText:
+				sourceJson.basic_info.reasonable_accommodation_statement.value,
 		},
 		ratingPlan: {
 			sysId: sourceJson.rating_plan ? sourceJson.rating_plan.sys_id : null,

@@ -18,7 +18,6 @@ const editVacancy = () => {
 	const getData = async () => {
 		setIsLoading(true);
 		const response = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
-		console.log('[Edit Vacancy] response: ', response);
 		const newData = transformJsonFromBackend(response.data.result);
 		setData(newData);
 		setIsLoading(false);
@@ -27,7 +26,11 @@ const editVacancy = () => {
 	return isLoading ? (
 		<></>
 	) : (
-		<CreateVacancy initialValues={data} sysId={data.sysId} />
+		<CreateVacancy
+			initialValues={data}
+			sysId={data.sysId}
+			editFinalizedVacancy={true}
+		/>
 	);
 };
 

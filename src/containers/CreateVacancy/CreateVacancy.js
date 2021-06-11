@@ -137,7 +137,10 @@ const createVacancy = (props) => {
 				/>
 			),
 		},
-		{
+	];
+
+	if (!props.editFinalizedVacancy) {
+		steps.push({
 			step: 4,
 			key: 'reviewAndFinalize',
 			title: 'Review and Finalize',
@@ -148,8 +151,8 @@ const createVacancy = (props) => {
 					onEditButtonClick={(number) => stepClickHandler(number)}
 				/>
 			),
-		},
-	];
+		});
+	}
 
 	const [currentStep, setCurrentStep] = useState(0);
 
@@ -205,24 +208,29 @@ const createVacancy = (props) => {
 				const response = await axios.post(SAVE_VACANCY_DRAFT, draft);
 				if (!draftSysId) setDraftSysId(response.data.result.draft_id);
 				message.destroy();
-				message.success('Changes saved.');
+				message.success('Saved.');
 				return true;
 			} catch (error) {
 				message.destroy();
 				message.error('Sorry!  There was an error saving.');
 				return false;
 			}
+		} else {
+			return true;
 		}
 	};
 
+	const isCurrentStepFinalize = () =>
+		steps[currentStep].key === 'reviewAndFinalize';
+
 	const next = async () => {
-		if (currentStep < steps.length - 1) {
+		if (isCurrentStepFinalize()) {
+			validateAllFormsAndDisplayModal();
+		} else {
 			const data = saveFormData(currentStep);
-			if ((await save(data)) === true) {
+			if ((await save(data)) === true && currentStep < steps.length - 1) {
 				setCurrentStep(currentStep + 1);
 			}
-		} else {
-			validateAllFormsAndDisplayModal();
 		}
 	};
 
@@ -308,7 +316,7 @@ const createVacancy = (props) => {
 							) : null}
 
 							<Button type='primary' onClick={next} className='wider-button'>
-								{currentStep == steps.length - 1 ? 'Save and Finalize' : 'save'}
+								{isCurrentStepFinalize() ? 'save and finalize' : 'save'}
 							</Button>
 						</div>
 						<div
