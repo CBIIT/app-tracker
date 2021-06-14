@@ -47,9 +47,6 @@ const applicantList = (props) => {
 			title: 'Raw Score',
 			dataIndex: 'raw_score',
 			key: 'rawscore',
-			render: (text) => {
-				return <span>{text.split(' ')[0]}</span>;
-			},
 		},
 
 		{

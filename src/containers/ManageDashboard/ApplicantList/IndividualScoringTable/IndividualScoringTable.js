@@ -188,7 +188,7 @@ const individualScoringTable = (props) => {
 								}
 							>
 								<Option value='selected'>Selected</Option>
-								<Option value='rejected'>Rejected</Option>
+								<Option value='non-selected'>Non-Selected</Option>
 							</Select>
 						</>
 					),

@@ -34,3 +34,11 @@
 	content: '✓';
 	padding-right: 5px;
 }
+
+.ql-tooltip.ql-hidden {
+	display: none;
+}
+
+.quill.RichText {
+	margin-bottom: 15px;
+}
