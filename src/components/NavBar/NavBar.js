@@ -14,14 +14,11 @@ const navBar = () => {
 				const currentAuthResponse = await axios.get(CHECK_AUTH);
 				console.log('[NAV AUTH RESPONSE]:', currentAuthResponse);
 				setAuthResponse(currentAuthResponse.data.result);
-				// debugger;
 			} catch (err) {
 				console.warn(err);
 			}
 		})();
 	}, []);
-
-	// debugger;
 
 	if (authResponse.logged_in == true) {
 		return (
