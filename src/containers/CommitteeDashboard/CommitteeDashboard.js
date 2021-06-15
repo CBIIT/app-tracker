@@ -55,6 +55,13 @@ const committeeDashboard = () => {
 						dataSource={data}
 						columns={committeeColumns}
 						key='CommitteeVacancies'
+						style={{
+							width: '1170px',
+							display: 'block',
+							paddingLeft: '20px',
+							paddingRight: '20px',
+							paddingTop: '20px',
+						}}
 					></Table>
 				</ConfigProvider>
 			</div>

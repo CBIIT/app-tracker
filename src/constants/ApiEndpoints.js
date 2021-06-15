@@ -8,6 +8,9 @@ const GET_APPLICATION = '/api/x_g_nci_app_tracke/application/get_application/';
 const GET_APPLICATION_TRIAGE_INFO =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_state/';
 
+const GET_USER_APPLICATIONS =
+	'/api/x_g_nci_app_tracke/application/get_user_apps';
+
 const GET_VACANCY_MANAGER_VIEW =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/';
 const SUBMIT_COMMITTEE_DECISION =
@@ -45,6 +48,7 @@ export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	GET_APPLICATION,
 	GET_APPLICATION_TRIAGE_INFO,
+	GET_USER_APPLICATIONS,
 	SUBMIT_TRIAGE,
 	DISPLAY_REFERENCES,
 	REQUEST_CHAIR_TRIAGE,
