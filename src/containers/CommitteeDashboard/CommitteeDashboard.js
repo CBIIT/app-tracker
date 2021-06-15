@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
-import { Table } from 'antd';
+import { Table, ConfigProvider, Empty } from 'antd';
 import axios from 'axios';
 
 const renderDecision = (text) =>
@@ -17,6 +17,15 @@ const renderDecision = (text) =>
 const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+
+	let customizeRenderEmpty = () => (
+		<div style={{ textAlign: 'center' }}>
+			<Empty
+				image={Empty.PRESENTED_IMAGE_SIMPLE}
+				description={'No Vacancies Assigned To You'}
+			/>
+		</div>
+	);
 
 	useEffect(() => {
 		(async () => {
@@ -40,12 +49,14 @@ const committeeDashboard = () => {
 				<h1>Vacancies Assigned To You</h1>
 			</div>
 			<div className='CommitteeDashboard'>
-				<Table
-					rowKey={(record) => record.vacancy_id}
-					dataSource={data}
-					columns={committeeColumns}
-					key='CommitteeVacancies'
-				></Table>
+				<ConfigProvider renderEmpty={customizeRenderEmpty}>
+					<Table
+						rowKey={(record) => record.vacancy_id}
+						dataSource={data}
+						columns={committeeColumns}
+						key='CommitteeVacancies'
+					></Table>
+				</ConfigProvider>
 			</div>
 		</>
 	);

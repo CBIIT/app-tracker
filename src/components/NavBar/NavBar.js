@@ -12,7 +12,6 @@ const navBar = () => {
 		(async () => {
 			try {
 				const currentAuthResponse = await axios.get(CHECK_AUTH);
-				console.log('[NAV AUTH RESPONSE]:', currentAuthResponse);
 				setAuthResponse(currentAuthResponse.data.result);
 			} catch (err) {
 				console.warn(err);
@@ -21,20 +20,71 @@ const navBar = () => {
 	}, []);
 
 	if (authResponse.logged_in == true) {
-		return (
+		if (authResponse.is_manager == true && authResponse.is_exec_sec == true) {
+			return (
+				<>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='vacancy-dashboard'>
+								<Link to='/vacancy-dashboard'>Vacancy Dashboard</Link>
+							</Menu.Item>
+							<Menu.Item key='your-vacancies'>
+								<Link to='/committee-dashboard'>Your Vacancies</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</>
+			);
+		} else if (authResponse.is_manager == true) {
 			<>
 				<div className='NavBar'>
 					<Menu mode='horizontal'>
 						<Menu.Item key='home'>
 							<Link to='/'>Home</Link>
 						</Menu.Item>
-						<Menu.Item key='dashboard'>
-							<Link to='/vacancy-dashboard'>Vacancies Dashboard</Link>
+						<Menu.Item key='vacancy-dashboard'>
+							<Link to='/vacancy-dashboard'>Vacany Dashboard</Link>
 						</Menu.Item>
 					</Menu>
 				</div>
-			</>
-		);
+			</>;
+		} else if (
+			authResponse.user.roles.includes('x_g_nci_app_tracke.committee_member') ==
+			true
+		) {
+			return (
+				<>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-vacancies'>
+								<Link to='/committee-dashboard'>Your Vacancies</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</>
+			);
+		} else {
+			return (
+				<>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-applications'>
+								<Link to='/'>Your Applications</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</>
+			);
+		}
 	} else {
 		return (
 			<>
@@ -44,7 +94,9 @@ const navBar = () => {
 							<Link to='/'>Home</Link>
 						</Menu.Item>
 						<Menu.Item key='hiring'>
-							<Link to='/'>The NCI Hiring Experience</Link>
+							<Link to='https://hr.nih.gov/jobs/executive/recruit/nih-executive-experience'>
+								The NCI Hiring Experience
+							</Link>
 						</Menu.Item>
 					</Menu>
 				</div>
