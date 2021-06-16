@@ -39,18 +39,20 @@ const navBar = () => {
 				</>
 			);
 		} else if (authResponse.is_manager == true) {
-			<>
-				<div className='NavBar'>
-					<Menu mode='horizontal'>
-						<Menu.Item key='home'>
-							<Link to='/'>Home</Link>
-						</Menu.Item>
-						<Menu.Item key='vacancy-dashboard'>
-							<Link to='/vacancy-dashboard'>Vacany Dashboard</Link>
-						</Menu.Item>
-					</Menu>
-				</div>
-			</>;
+			return (
+				<>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='vacancy-dashboard'>
+								<Link to='/vacancy-dashboard'>Vacany Dashboard</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</>
+			);
 		} else if (authResponse.is_chair == true) {
 			return (
 				<>
