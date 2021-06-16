@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { Steps, Button, Form, message } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
-
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
@@ -10,9 +8,10 @@ import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
 import EmailTemplates from './Forms/EmailTemplates/EmailTemplates';
 import FinalizeVacancy from './Forms/FinalizeVacancy/FinalizeVacancy';
 import { initialValues } from './Forms/FormsInitialValues';
-import { SAVE_VACANCY_DRAFT } from '../../constants/ApiEndpoints';
+import { EDIT_VACANCY, SAVE_VACANCY_DRAFT } from '../../constants/ApiEndpoints';
 import './CreateVacancy.css';
 import axios from 'axios';
+import { transformJsonToBackend } from './Util/TransformJsonToBackend';
 
 const createVacancy = (props) => {
 	const { Step } = Steps;
@@ -139,7 +138,12 @@ const createVacancy = (props) => {
 		},
 	];
 
-	if (!props.editFinalizedVacancy) {
+	const isEditingFinalizedVacancy = () => {
+		if (props.editFinalizedVacancy) return true;
+		else return false;
+	};
+
+	if (!isEditingFinalizedVacancy()) {
 		steps.push({
 			step: 4,
 			key: 'reviewAndFinalize',
@@ -166,6 +170,23 @@ const createVacancy = (props) => {
 				return saveEmailTemplates();
 			default:
 				return allForms;
+		}
+	};
+
+	const validateFormData = async (currentStep) => {
+		switch (steps[currentStep].key) {
+			case 'basicInfo':
+				await basicInfoForm.validateFields();
+				break;
+			case 'mandatoryStatements':
+				await mandatoryStatementsForm.validateFields();
+				break;
+			case 'emailTemplates':
+				await emailTemplatesForm.validateFields();
+				break;
+			case 'vacancyCommittee':
+				await vacancyCommitteeForm.validateFields();
+				break;
 		}
 	};
 
@@ -216,7 +237,31 @@ const createVacancy = (props) => {
 				return false;
 			}
 		} else {
-			return true;
+			message.loading({ duration: 0, content: 'Saving...' });
+			try {
+				await validateFormData(currentStep);
+				try {
+					console.log('[CreateVacancy] data: ', data);
+					const transformedData = transformJsonToBackend(data);
+					console.log(
+						'[CreateVacancy] transformedData' +
+							JSON.stringify(transformedData, null, 2)
+					);
+					const response = await axios.post(EDIT_VACANCY, transformedData);
+					console.log('[CreateVacancy] save edit vacacny response ', response);
+					message.destroy();
+					message.success('Saved.');
+					return true;
+				} catch (error) {
+					console.log('[CreateVacancy] error: ', error);
+					message.destroy();
+					message.error('Sorry!  There was an error saving.');
+					return false;
+				}
+			} catch (error) {
+				message.destroy();
+				message.error('No changes saved.  Please fix validation errors.');
+			}
 		}
 	};
 
@@ -228,7 +273,11 @@ const createVacancy = (props) => {
 			validateAllFormsAndDisplayModal();
 		} else {
 			const data = saveFormData(currentStep);
-			if ((await save(data)) === true && currentStep < steps.length - 1) {
+			if (
+				(await save(data)) === true &&
+				currentStep < steps.length - 1 &&
+				!isEditingFinalizedVacancy()
+			) {
 				setCurrentStep(currentStep + 1);
 			}
 		}
@@ -300,20 +349,23 @@ const createVacancy = (props) => {
 								</div>
 							))}
 						</div>
-						<div className='steps-action'>
+						<div
+							className='steps-action'
+							style={
+								isEditingFinalizedVacancy()
+									? { justifyContent: 'flex-end' }
+									: null
+							}
+						>
 							<Button
 								onClick={prev}
 								type='primary'
 								ghost
 								className='wider-button'
+								style={isEditingFinalizedVacancy() ? { display: 'none' } : null}
 							>
 								{currentStep === 0 ? 'cancel' : 'back'}
 							</Button>
-							{currentStep < steps.length - 1 ? (
-								<Button type='text' disabled icon={<ReloadOutlined />}>
-									Clear Form
-								</Button>
-							) : null}
 
 							<Button type='primary' onClick={next} className='wider-button'>
 								{isCurrentStepFinalize() ? 'save and finalize' : 'save'}

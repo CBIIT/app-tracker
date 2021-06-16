@@ -42,6 +42,7 @@ const REMOVE_DRAFT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/remove_draft/';
 
 const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
+const EDIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/edit';
 
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
@@ -65,4 +66,5 @@ export {
 	SAVE_VACANCY_DRAFT,
 	REMOVE_DRAFT_VACANCY,
 	GET_DRAFT,
+	EDIT_VACANCY,
 };

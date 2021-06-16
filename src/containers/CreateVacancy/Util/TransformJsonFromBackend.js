@@ -4,11 +4,13 @@ export const transformJsonFromBackend = (sourceJson) => {
 		sysId: sourceJson.basic_info.sys_id.value,
 		state: sourceJson.basic_info.state.value,
 		basicInfo: {
+			sys_id: sourceJson.basic_info.sys_id.value,
 			openDate: moment(sourceJson.basic_info.open_date.value),
 			closeDate: moment(sourceJson.basic_info.close_date.value),
 			title: sourceJson.basic_info.vacancy_title.value,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({
+				sys_id: doc.sys_id.value,
 				document: doc.title.value,
 				isDocumentOptional: doc.is_optional.value == '1' ? true : false,
 			})),
@@ -16,15 +18,12 @@ export const transformJsonFromBackend = (sourceJson) => {
 				sourceJson.basic_info.number_of_recommendation.value,
 		},
 		emailTemplates: sourceJson.vacancy_emails.map((temp) => ({
+			sys_id: temp.sys_id.value,
 			active: temp.active.value == '1' ? true : false,
 			type: temp.email_type.value,
 			text: temp.email_message.value,
 		})),
-		vacancyCommittee: sourceJson.committee.map((member) => ({
-			role: member.role.value,
-			user: { name: { value: member.user.label } },
-			key: member.sys_id.value,
-		})),
+		vacancyCommittee: transformVacancyCommittee(sourceJson.committee),
 		mandatoryStatements: {
 			equalOpportunityEmployer:
 				sourceJson.basic_info.show_eoes.value == '1' ? true : false,
@@ -54,4 +53,28 @@ export const transformJsonFromBackend = (sourceJson) => {
 		},
 	};
 	return targetJson;
+};
+
+const transformVacancyCommittee = (vacancyCommittee) => {
+	return vacancyCommittee.map((member, index) => {
+		const transformedCommitteeMember = {
+			role: member.role.value,
+			user: {
+				sys_id: { value: member.user.value, display_value: member.user.value },
+				name: { value: member.user.label, display_value: member.user.label },
+				email: member.email,
+				orginization: member.orginization,
+			},
+			key: index,
+		};
+
+		if (!member.email) {
+			transformedCommitteeMember['user']['email'] = { value: '' };
+		}
+
+		if (!member.organization)
+			transformedCommitteeMember['user']['organization'] = { value: '' };
+
+		return transformedCommitteeMember;
+	});
 };
