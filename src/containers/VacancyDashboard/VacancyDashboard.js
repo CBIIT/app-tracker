@@ -375,22 +375,23 @@ const vacancyDashboard = () => {
 		<>
 			<div style={{ backgroundColor: '#EDF1F4' }}>
 				<div className='app-container'>
-					<Link to='/create-vacancy'>
-						<Button
-							type='primary'
-							style={{
-								display: 'inline-block',
-								backgroundColor: '#015EA2',
-								marginLeft: '85%',
-								width: '161px',
-								height: '36px',
-								fontSize: '16px',
-							}}
-							link='true'
-						>
-							+ Create Vacancy
-						</Button>
-					</Link>
+					<div className='CreateVacancyButtonDiv'>
+						<Link to='/create-vacancy'>
+							<Button
+								className='CreateVacancyButton'
+								type='primary'
+								style={{
+									fontSize: '16px',
+									maxWidth: '161px',
+									height: '36px',
+									float: 'right',
+								}}
+								link='true'
+							>
+								+ Create Vacancy
+							</Button>
+						</Link>
+					</div>
 					<Tabs
 						className='vacancy-tabs'
 						size={'large'}
