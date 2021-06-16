@@ -7,6 +7,7 @@ import {
 	MinusCircleOutlined,
 } from '@ant-design/icons';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
+import './ApplicantDashboard.css';
 import axios from 'axios';
 
 const applicantDashboard = () => {
@@ -27,7 +28,6 @@ const applicantDashboard = () => {
 			setIsLoading(true);
 			try {
 				const currentData = await axios.get(GET_USER_APPLICATIONS);
-				console.log(currentData);
 				setData(currentData.data.result);
 			} catch (err) {
 				console.warn(err);
@@ -47,11 +47,13 @@ const applicantDashboard = () => {
 			<div className='ApplicantDashboard'>
 				<ConfigProvider renderEmpty={customizeRenderEmpty}>
 					<Table
-						rowKey={(record, index) => {
-							return index;
+						className='ApplicantTable'
+						rowKey={(record) => {
+							return record.vacancy_id;
 						}}
 						dataSource={data}
 						columns={applicationColumns}
+						scroll={{ x: 'true' }}
 						key='Applications'
 						style={{
 							width: '1170px',
@@ -82,7 +84,7 @@ const applicationColumns = [
 		title: 'State',
 		dataIndex: 'state',
 		key: 'state',
-		render: (state, record) => {
+		render: (state) => {
 			return <span style={{ textTransform: 'capitalize' }}>{state}</span>;
 		},
 	},
@@ -101,48 +103,40 @@ const applicationColumns = [
 
 	{
 		title: 'Application Submitted',
-		dataIndex: 'vacancy-submitted',
+		dataIndex: 'vacancy_submitted',
 		key: 'submitted',
 		render: (date) => transformDateToDisplay(date),
-		// sorter: {
-		// 	compare: (a, b) =>
-		// 		// prettier-ignore
-		// 		new Date(a.vacancy-submitted) - new Date(b.vacancy-submitted),
-		// 	//
-		// 	multiple: 3,
-		// },
-		// defaultSortOrder: 'ascend',
+		sorter: {
+			compare: (a, b) =>
+				new Date(a.vacancy_submitted) - new Date(b.vacancy_submitted),
+			multiple: 3,
+		},
+		defaultSortOrder: 'ascend',
 	},
 	{
 		title: 'Actions',
 		key: 'action',
 		render: (application) => {
-			// if (application) {
-			// 	return (
-			// 		<Button type='text'>
-			// 			<MinusCircleOutlined />
-			// 			withdraw
-			// 		</Button>
-			// 	);
-			// } else {
-			return (
-				<Space size='middle'>
+			if (application.state == 'submitted') {
+				return (
 					<Button type='text'>
-						<EditOutlined /> edit
+						<MinusCircleOutlined />
+						withdraw
 					</Button>
-					<Divider type='vertical' />
-					<Button
-						type='text'
-						// onClick={async () => {
-						//     setRemoveModalVisible(true);
-						//     setCurrentVacancy(vacancy);
-						// }}
-					>
-						<DeleteOutlined /> remove
-					</Button>
-				</Space>
-			);
-			// }
+				);
+			} else {
+				return (
+					<Space size='middle'>
+						<Button type='text'>
+							<EditOutlined /> edit
+						</Button>
+						<Divider type='vertical' />
+						<Button type='text'>
+							<DeleteOutlined /> remove
+						</Button>
+					</Space>
+				);
+			}
 		},
 	},
 ];

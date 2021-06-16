@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty } from 'antd';
+import './CommitteeDashboard.css';
 import axios from 'axios';
 
 const renderDecision = (text) =>
@@ -51,9 +52,11 @@ const committeeDashboard = () => {
 			<div className='CommitteeDashboard'>
 				<ConfigProvider renderEmpty={customizeRenderEmpty}>
 					<Table
+						className='CommitteeTable'
 						rowKey={(record) => record.vacancy_id}
 						dataSource={data}
 						columns={committeeColumns}
+						scroll={{ x: 'true' }}
 						key='CommitteeVacancies'
 						style={{
 							width: '1170px',

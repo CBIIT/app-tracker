@@ -424,6 +424,7 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={data}
 										columns={preFlightColumns}
+										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
 											display: 'block',
@@ -461,6 +462,7 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={data}
 										columns={liveColumns}
+										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
 											display: 'block',
@@ -503,6 +505,7 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={data}
 										columns={closedColumns}
+										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
 											display: 'block',
