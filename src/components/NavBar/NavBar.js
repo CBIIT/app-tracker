@@ -47,7 +47,7 @@ const navBar = () => {
 								<Link to='/'>Home</Link>
 							</Menu.Item>
 							<Menu.Item key='vacancy-dashboard'>
-								<Link to='/vacancy-dashboard'>Vacany Dashboard</Link>
+								<Link to='/vacancy-dashboard'>Vacancy Dashboard</Link>
 							</Menu.Item>
 						</Menu>
 					</div>
