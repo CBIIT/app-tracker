@@ -2,7 +2,8 @@ export const transformJsonToBackend = (sourceJson) => {
 	const targetJson = {
 		basic_info: transformBasicInfo(
 			sourceJson.basicInfo,
-			sourceJson.mandatoryStatements
+			sourceJson.mandatoryStatements,
+			sourceJson.sysId
 		),
 		vacancy_committee: sourceJson.vacancyCommittee,
 		vacancy_emails: transformEmails(sourceJson.emailTemplates),
@@ -14,7 +15,7 @@ export const transformJsonToBackend = (sourceJson) => {
 	return targetJson;
 };
 
-const transformBasicInfo = (basicInfo, mandatoryStatements) => {
+const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 	const transformedBasicInfo = {
 		vacancy_title: basicInfo.title,
 		vacancy_description: basicInfo.description,
@@ -33,6 +34,8 @@ const transformBasicInfo = (basicInfo, mandatoryStatements) => {
 		show_ras: mandatoryStatements.reasonableAccomodation,
 	};
 
+	if (sysId) transformedBasicInfo['sys_id'] = sysId;
+
 	return transformedBasicInfo;
 };
 
@@ -42,10 +45,14 @@ const getDateFromDateTime = (dateTime) => {
 
 const transformEmails = (emails) => {
 	return emails.map((item) => {
-		return {
+		const transformedItem = {
 			email: item.type,
 			email_message: item.text,
 			active: item.active,
 		};
+
+		if (item.sys_id) transformedItem['sys_id'] = item.sys_id;
+
+		return transformedItem;
 	});
 };

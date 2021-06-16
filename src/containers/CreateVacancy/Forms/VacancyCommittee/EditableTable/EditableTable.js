@@ -12,11 +12,9 @@ import {
 import './EditableTable.css';
 import EditableCell from './EditableCell/EditableCell';
 
-const originData = [];
-
 const editableTable = (props) => {
 	const form = props.formInstance;
-	const [data, setData] = useState(originData);
+	const [data, setData] = useState(props.data || []);
 	const [editingKey, setEditingKey] = useState('');
 	const [addingKey, setAddingKey] = useState('');
 
