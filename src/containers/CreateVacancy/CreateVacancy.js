@@ -241,19 +241,12 @@ const createVacancy = (props) => {
 			try {
 				await validateFormData(currentStep);
 				try {
-					console.log('[CreateVacancy] data: ', data);
 					const transformedData = transformJsonToBackend(data);
-					console.log(
-						'[CreateVacancy] transformedData' +
-							JSON.stringify(transformedData, null, 2)
-					);
-					const response = await axios.post(EDIT_VACANCY, transformedData);
-					console.log('[CreateVacancy] save edit vacacny response ', response);
+					await axios.post(EDIT_VACANCY, transformedData);
 					message.destroy();
 					message.success('Saved.');
 					return true;
 				} catch (error) {
-					console.log('[CreateVacancy] error: ', error);
 					message.destroy();
 					message.error('Sorry!  There was an error saving.');
 					return false;

@@ -140,10 +140,7 @@ const Apply = () => {
 	};
 
 	const saveCurrentForm = async (result) => {
-		console.log('>> current-form data: ', result);
-		console.log('>> form before update: ', formData);
 		const updatedForm = updateFormData(formData, result, currentStepObj.key);
-		console.log('>> updatedForm: ', JSON.stringify(updatedForm, null, 2));
 		setFormData(updatedForm);
 		return updatedForm;
 	};
@@ -157,7 +154,6 @@ const Apply = () => {
 				window.scrollTo(0, 0);
 			} catch (error) {
 				message.error('Please fill out all required fields.');
-				console.log('>> error: ', error);
 			}
 		} else {
 			setSubmitModalVisible(true);
@@ -172,7 +168,6 @@ const Apply = () => {
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
-			console.log(error);
 		}
 	};
 
@@ -240,13 +235,11 @@ const Apply = () => {
 				duration: 3,
 			});
 			try {
-				const saveRes = await axios.post(
-					'/api/x_g_nci_app_tracke/application/save_app_draft',
-					{ jsonobj: JSON.stringify(updatedFormData) }
-				);
-				console.log('[SAVING] success:', saveRes);
+				await axios.post('/api/x_g_nci_app_tracke/application/save_app_draft', {
+					jsonobj: JSON.stringify(updatedFormData),
+				});
 			} catch (error) {
-				console.log('[ConfirmSave] error:' + error);
+				message.error('There was an error saving');
 			}
 		}
 	};
