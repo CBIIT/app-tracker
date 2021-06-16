@@ -51,6 +51,21 @@ const navBar = () => {
 					</Menu>
 				</div>
 			</>;
+		} else if (authResponse.is_chair == true) {
+			return (
+				<>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-vacancies'>
+								<Link to='/chair-dashboard'>Your Vacancies</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</>
+			);
 		} else if (
 			authResponse.user.roles.includes('x_g_nci_app_tracke.committee_member') ==
 			true
