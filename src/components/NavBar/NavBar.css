@@ -14,8 +14,10 @@
 /********** PLAY AROUND HERE ********* */
 @media (min-width: 2000px) {
 	.NavBar {
-		margin-inline: auto;
-		/* padding-left: 18%; */
+		/* margin-inline: auto; */
+		margin-left: auto;
+		margin-right: auto;
+		width: min(95%, 1440px);
 	}
 }
 /************************************** */
