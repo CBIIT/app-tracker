@@ -7,7 +7,12 @@ const { TextArea } = Input;
 
 const triageWidget = (props) => (
 	<div style={props.style}>
-		<InfoCard title={props.title} className='TriageWidgetContainer'>
+		<InfoCard
+			title={props.title}
+			className='TriageWidgetContainer'
+			allowToggle={true}
+			initiallyHideContent={props.initiallyHideContent}
+		>
 			<InfoCardRow style={{ paddingBottom: '5px' }}>
 				<LabelValuePair
 					label='Recommendation'

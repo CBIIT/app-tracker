@@ -10,6 +10,8 @@ import {
 	DownloadOutlined,
 } from '@ant-design/icons';
 
+import InfoCard from '../../components/UI/InfoCard/InfoCard';
+import InfoCardRow from '../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 import ApplicantInfo from './ApplicantInfo/ApplicantInfo';
 import Address from './Address/Address';
 import Documents from './Documents/Documents';
@@ -32,7 +34,16 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 } from '../../constants/Roles';
 
+import {
+	COMMITTEE_REVIEW_IN_PROGRESS,
+	COMMITTEE_REVIEW_COMPLETE,
+	VOTING_COMPLETE,
+	OWM_TRIAGE,
+	CHAIR_TRIAGE,
+} from '../../constants/VacancyStates.js';
+
 import './Application.css';
+import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 
 const { confirm } = Modal;
 
@@ -116,6 +127,17 @@ const owmTriageOptions = [
 	},
 ];
 
+const displayCommitteeReview = (vacancyState) => {
+	switch (vacancyState) {
+		case COMMITTEE_REVIEW_IN_PROGRESS:
+		case COMMITTEE_REVIEW_COMPLETE:
+		case VOTING_COMPLETE:
+			return true;
+		default:
+			return false;
+	}
+};
+
 const application = () => {
 	const [application, setApplication] = useState();
 	const [vacancyTitle, setVacancyTitle] = useState('');
@@ -124,6 +146,8 @@ const application = () => {
 	const [triageComments, setTriageComments] = useState();
 	const [chairTriageChoice, setChairTriageChoice] = useState();
 	const [chairTriageComments, setChairTriageComments] = useState();
+	const [committeeDecision, setCommitteeDecision] = useState();
+	const [committeeComments, setCommitteeComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
 	const [appDocIds, setAppDocIds] = useState();
 	const [userRoles, setUserRoles] = useState([]);
@@ -133,6 +157,7 @@ const application = () => {
 	const [individualScoresComments, setIndividualScoresComments] = useState();
 	const [ratingPlanDownloadLink, setRatingPlanDownloadLink] = useState();
 	const [references, setReferences] = useState([]);
+	const [vacancyState, setVacancyState] = useState();
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -157,6 +182,12 @@ const application = () => {
 			const applicationResponse = await axios.get(GET_APPLICATION + sysId);
 			const application = transformJsonFromBackend(
 				applicationResponse.data.result
+			);
+			setCommitteeComments(
+				applicationResponse.data.result.basic_info.committee_comments.label
+			);
+			setCommitteeDecision(
+				applicationResponse.data.result.basic_info.committee_decision.label
 			);
 
 			setReferences(application.references);
@@ -186,6 +217,7 @@ const application = () => {
 
 			setApplication(application);
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
+			setVacancyState(vacancy.data.result.basic_info.state.value);
 			setTriageChoice(applicationResponse.data.result.basic_info.triage.value);
 			setTriageComments(
 				applicationResponse.data.result.basic_info.triage_comments.value
@@ -402,10 +434,14 @@ const application = () => {
 								triageComments={triageComments}
 								triageCommentsPlaceholder={'Add notes (optional)'}
 								readOnly={!userRoles.includes(OWM_TEAM)}
+								initiallyHideContent={
+									vacancyState === OWM_TRIAGE ? false : true
+								}
 							/>
 						) : null}
 
-						{userVacancyCommitteeRole === COMMITTEE_CHAIR ? (
+						{userVacancyCommitteeRole === COMMITTEE_CHAIR ||
+						userRoles.includes(OWM_TEAM) ? (
 							<TriageWidget
 								title='Committee Chair Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
@@ -417,6 +453,10 @@ const application = () => {
 								triageChoice={chairTriageChoice}
 								triageComments={chairTriageComments}
 								triageCommentsPlaceholder={'Add notes (optional)'}
+								readOnly={userVacancyCommitteeRole !== COMMITTEE_CHAIR}
+								initiallyHideContent={
+									vacancyState === CHAIR_TRIAGE ? false : true
+								}
 							/>
 						) : null}
 						{isUserAllowedToScore() ? (
@@ -441,6 +481,30 @@ const application = () => {
 								onSaveClick={onIndividualScoreSaveClick}
 								scores={individualScores}
 							/>
+						) : null}
+
+						{(userVacancyCommitteeRole === COMMITTEE_CHAIR ||
+							userRoles.includes(OWM_TEAM)) &&
+						displayCommitteeReview(vacancyState) ? (
+							<InfoCard
+								title='Committee Review'
+								style={{ backgroundColor: 'white' }}
+								allowToggle={true}
+								initiallyHideContent={false}
+							>
+								<InfoCardRow>
+									<LabelValuePair
+										label='Committee Vote'
+										value={committeeDecision}
+									/>
+								</InfoCardRow>
+								<InfoCardRow>
+									<LabelValuePair
+										label='Committee Comments'
+										value={committeeComments}
+									/>
+								</InfoCardRow>
+							</InfoCard>
 						) : null}
 
 						<Button>
