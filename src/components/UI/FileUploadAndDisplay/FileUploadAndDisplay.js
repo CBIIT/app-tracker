@@ -73,7 +73,6 @@ const onDeleteConfirm = async (
 		message.success(deleteSuccessMessage);
 		onDeleteSuccess();
 	} catch (error) {
-		console.log('Error:', error);
 		message.destroy();
 		message.error(
 			'Sorry, there was an issue deleting.  Try reloading the page and deleting again.'

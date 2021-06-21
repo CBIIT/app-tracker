@@ -27,7 +27,11 @@ import {
 	REMOVE_VACANCY,
 	REMOVE_DRAFT_VACANCY,
 } from '../../constants/ApiEndpoints';
-// import { EDIT_VACANCY } from '../../constants/Routes';
+import {
+	EDIT_DRAFT,
+	EDIT_VACANCY,
+	MANAGE_VACANCY,
+} from '../../constants/Routes';
 import './VacancyDashboard.css';
 import axios from 'axios';
 
@@ -155,9 +159,14 @@ const vacancyDashboard = () => {
 	};
 
 	const dateCompare = (dateA, dateB) => {
-		if (dateA == '--') dateA = null;
-		if (dateB == '--') dateB = null;
+		if (dateA == '--' || dateA == '') dateA = null;
+		if (dateB == '--' || dateB == '') dateB = null;
 		return new Date(dateA) - new Date(dateB);
+	};
+
+	const handleEditButtonClick = (record) => {
+		if (record.state === 'draft') history.push(EDIT_DRAFT + record.sys_id);
+		else history.push(EDIT_VACANCY + record.sys_id);
 	};
 
 	// Preflight Columns
@@ -165,9 +174,11 @@ const vacancyDashboard = () => {
 		{
 			title: 'Vacancy Title',
 			dataIndex: 'title',
-			render: (title, record) => (
-				<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
-			),
+			render: (title, record) => {
+				let route = MANAGE_VACANCY;
+				if (record.state === 'draft') route = EDIT_DRAFT;
+				return <Link to={route + record.sys_id}>{title}</Link>;
+			},
 		},
 		{
 			title: 'Open Date',
@@ -199,9 +210,14 @@ const vacancyDashboard = () => {
 		{
 			title: 'Actions',
 			key: 'action',
-			render: (vacancy) => (
+			render: (vacancy, record) => (
 				<Space size='middle'>
-					<Button type='text'>
+					<Button
+						type='text'
+						onClick={() => {
+							handleEditButtonClick(record);
+						}}
+					>
 						<EditOutlined /> edit
 					</Button>
 					<Divider type='vertical' />
@@ -226,7 +242,7 @@ const vacancyDashboard = () => {
 			render: (title, record) => {
 				return (
 					<>
-						<Link id={record.sys_id} to={'/manage/vacancy/' + record.sys_id}>
+						<Link id={record.sys_id} to={MANAGE_VACANCY + record.sys_id}>
 							{title}
 						</Link>
 					</>
@@ -283,9 +299,15 @@ const vacancyDashboard = () => {
 			title: 'Actions',
 			key: 'action',
 			width: '5px',
-			render: (vacancy) => (
+			render: (vacancy, record) => (
 				<Space size={0}>
-					<Button type='text' style={{ padding: '0px' }}>
+					<Button
+						type='text'
+						style={{ padding: '0px' }}
+						onClick={() => {
+							handleEditButtonClick(record);
+						}}
+					>
 						<EditOutlined /> edit
 					</Button>
 					<Divider type='vertical' />
@@ -327,7 +349,7 @@ const vacancyDashboard = () => {
 			title: 'Vacancy Title',
 			dataIndex: 'title',
 			render: (title, record) => (
-				<Link to={'/manage/vacancy/' + record.sys_id}>{title}</Link>
+				<Link to={MANAGE_VACANCY + record.sys_id}>{title}</Link>
 			),
 		},
 		{
@@ -356,7 +378,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push('/manage/vacancy/' + vacancy.sys_id + '/applicants');
+							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
 						}}
 					>
 						<UserOutlined /> view applicants
@@ -365,7 +387,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push('/manage/vacancy/' + vacancy.sys_id);
+							history.push(MANAGE_VACANCY + vacancy.sys_id);
 						}}
 					>
 						<FileTextOutlined /> view vacancy

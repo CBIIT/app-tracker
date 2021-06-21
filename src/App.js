@@ -11,19 +11,21 @@ import {
 	APPLY,
 	REGISTER_OKTA,
 	APPLICANT_DASHBOARD,
-	// EDIT_VACANCY,
+	EDIT_DRAFT,
+	EDIT_VACANCY
 } from './constants/Routes';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import ManageDashboard from './containers/ManageDashboard/ManageDashboard';
-// import EditVacancy from './containers/EditVacancy/EditVacancy';
+import EditVacancy from './containers/CreateVacancy/EditVacancy';
 import CommitteeDashboard from './containers/CommitteeDashboard/CommitteeDashboard';
 import ChairDashboard from './containers/ChairDashboard/ChairDashboard';
 import ApplicantDashboard from './containers/ApplicantDashboard/ApplicantDashboard';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
 import Apply from './containers/Apply/Apply';
 import Application from './containers/Application/Application';
+import EditDraft from './containers/CreateVacancy/EditDraft';
 
 const app = () => {
 	return (
@@ -36,11 +38,13 @@ const app = () => {
 					<Route path={APPLY + ':sysId'} component={Apply} />
 					<Route path='/vacancy-dashboard' exact component={VacancyDashboard} />
 					<Route path='/vacancy/:sysId' component={ViewVacancyDetails} />
+					<Route path={EDIT_VACANCY + ':sysId'} component={EditVacancy} exact />
 					<Route
 						path={MANAGE_VACANCY + ':sysId/:tab?'}
 						component={ManageDashboard}
+						exact
 					/>
-					{/* <Route path={EDIT_VACANCY + ':sysId'} component={EditVacancy} /> */}
+					<Route path={EDIT_DRAFT + ':sysId'} component={EditDraft} />
 					<Route path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
 
 					<Route path={APPLICANT_DASHBOARD} component={ApplicantDashboard} />
