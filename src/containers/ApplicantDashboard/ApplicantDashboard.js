@@ -207,7 +207,11 @@ const applicantDashboard = () => {
 					<Table
 						className='ApplicantTable'
 						rowKey={(record) => {
-							return record.vacancy_id;
+							if (record.app_id != undefined) {
+								return record.app_id;
+							} else if (record.draft_id != undefined) {
+								return record.draft_id;
+							}
 						}}
 						dataSource={data}
 						columns={applicationColumns}
