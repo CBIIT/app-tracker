@@ -13,6 +13,7 @@ import {
 	Button,
 	Divider,
 	Modal,
+	message,
 } from 'antd';
 import {
 	EditOutlined,
@@ -59,8 +60,10 @@ const applicantDashboard = () => {
 			// //Refresh data onClick of remove button
 			setData(updatedRemovedData.data.result);
 			setRemoveDraftModalVisible(false);
+			message.success('Draft removed');
 		} catch (error) {
-			console.log('[REMOVE DRAFT] error: ', error);
+			setRemoveDraftModalVisible(false);
+			message.error('Sorry, an error occurred while trying to remove draft');
 		}
 	};
 
@@ -70,8 +73,12 @@ const applicantDashboard = () => {
 			const updatedWithdrawnData = await axios.get(GET_USER_APPLICATIONS);
 			setData(updatedWithdrawnData.data.result);
 			setWithdrawAppModalVisible(false);
+			message.success('Withdrawn application');
 		} catch (error) {
-			console.log('[WITHDRAW APP] error: ', error);
+			setWithdrawAppModalVisible(false);
+			message.error(
+				'Sorry, an error occurred while trying to withdraw application'
+			);
 		}
 	};
 

@@ -11,6 +11,7 @@ import {
 	Modal,
 	Empty,
 	ConfigProvider,
+	message,
 } from 'antd';
 import {
 	DeleteOutlined,
@@ -114,8 +115,10 @@ const vacancyDashboard = () => {
 			//Refresh data onClick of extend button
 			setData(updatedExtendedData.data.result);
 			setExtendModalVisible(false);
+			message.success('Vacancy extended');
 		} catch (error) {
-			console.log('[EXTEND] error: ', error);
+			setExtendModalVisible(false);
+			message.error('Sorry, an error occurred while trying to extend vacancy');
 		}
 	};
 
@@ -137,8 +140,10 @@ const vacancyDashboard = () => {
 			//Refresh Pre-Flight Count onClick of remove button
 			setPreFlightCount(updatedPreFlightCount.data.result.length);
 			setRemoveModalVisible(false);
+			message.success('Removed vacancy');
 		} catch (error) {
-			console.log('[REMOVE VACANCY] error: ', error);
+			setRemoveModalVisible(false);
+			message.error('Sorry, an error occurred while trying to remove vacancy');
 		}
 	};
 
