@@ -13,6 +13,8 @@ const GET_USER_APPLICATIONS =
 
 const REMOVE_USER_APPLICATION_DRAFT =
 	'/api/x_g_nci_app_tracke/application/remove/';
+const WITHDRAW_USER_APPLICATION =
+	'/api/x_g_nci_app_tracke/application/withdraw/';
 
 const GET_VACANCY_MANAGER_VIEW =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_manager_view/';
@@ -53,6 +55,7 @@ export {
 	GET_APPLICATION_TRIAGE_INFO,
 	GET_USER_APPLICATIONS,
 	REMOVE_USER_APPLICATION_DRAFT,
+	WITHDRAW_USER_APPLICATION,
 	SUBMIT_TRIAGE,
 	DISPLAY_REFERENCES,
 	REQUEST_CHAIR_TRIAGE,

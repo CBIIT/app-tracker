@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import {
 	GET_USER_APPLICATIONS,
 	REMOVE_USER_APPLICATION_DRAFT,
+	WITHDRAW_USER_APPLICATION,
 } from '../../constants/ApiEndpoints';
 import {
 	Table,
@@ -17,6 +19,7 @@ import {
 	DeleteOutlined,
 	MinusCircleOutlined,
 	ExclamationCircleFilled,
+	FileTextOutlined,
 } from '@ant-design/icons';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import './ApplicantDashboard.css';
@@ -24,8 +27,10 @@ import axios from 'axios';
 
 const applicantDashboard = () => {
 	const [data, setData] = useState([]);
+	const history = useHistory();
 	const [isLoading, setIsLoading] = useState(true);
 	const [removeDraftModalVisible, setRemoveDraftModalVisible] = useState(false);
+	const [withdrawAppModalVisible, setWithdrawAppModalVisible] = useState(false);
 	const [currentApplication, setCurrentApplication] = useState([]);
 
 	let customizeRenderEmpty = () => (
@@ -41,6 +46,10 @@ const applicantDashboard = () => {
 		setRemoveDraftModalVisible(false);
 	};
 
+	const handleWithdrawModalCancel = () => {
+		setWithdrawAppModalVisible(false);
+	};
+
 	const removeDraft = async () => {
 		try {
 			await axios.post(
@@ -51,7 +60,18 @@ const applicantDashboard = () => {
 			setData(updatedRemovedData.data.result);
 			setRemoveDraftModalVisible(false);
 		} catch (error) {
-			console.log('[REMOVE VACANCY] error: ', error);
+			console.log('[REMOVE DRAFT] error: ', error);
+		}
+	};
+
+	const withdrawApp = async () => {
+		try {
+			await axios.post(WITHDRAW_USER_APPLICATION + currentApplication.app_id);
+			const updatedWithdrawnData = await axios.get(GET_USER_APPLICATIONS);
+			setData(updatedWithdrawnData.data.result);
+			setWithdrawAppModalVisible(false);
+		} catch (error) {
+			console.log('[WITHDRAW APP] error: ', error);
 		}
 	};
 
@@ -79,6 +99,9 @@ const applicantDashboard = () => {
 				multiple: 1,
 			},
 			defaultSortOrder: 'ascend',
+			render: (title, record) => (
+				<Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>
+			),
 		},
 		{
 			title: 'State',
@@ -119,9 +142,27 @@ const applicantDashboard = () => {
 			render: (application) => {
 				if (application.state == 'submitted') {
 					return (
-						<Button type='text'>
+						<Button
+							type='text'
+							onClick={async () => {
+								setWithdrawAppModalVisible(true);
+								setCurrentApplication(application);
+							}}
+						>
 							<MinusCircleOutlined />
 							withdraw
+						</Button>
+					);
+				} else if (application.state == 'withdrawn') {
+					return (
+						<Button
+							type='text'
+							onClick={() => {
+								history.push('/vacancy/' + application.vacancy_id);
+							}}
+						>
+							<FileTextOutlined />
+							view vacancy
 						</Button>
 					);
 				} else {
@@ -202,6 +243,36 @@ const applicantDashboard = () => {
 					<p>
 						Please confirm you would like to remove this draft or click cancel
 						to return to the previous screen.
+					</p>
+				</div>
+			</Modal>
+			<Modal
+				visible={withdrawAppModalVisible}
+				onOk={withdrawApp}
+				onCancel={handleWithdrawModalCancel}
+				closable={false}
+				okText='Confirm'
+				cancelText='Cancel'
+			>
+				<div>
+					<ExclamationCircleFilled
+						style={{
+							color: '#faad14',
+							fontSize: '24px',
+							display: 'inline-block',
+							marginRight: '15px',
+						}}
+					/>
+					<h2
+						style={{
+							display: 'inline-block',
+						}}
+					>
+						Are you sure you want to withdraw this application?
+					</h2>
+					<p>
+						Please confirm you would like to withdraw this application or click
+						cancel to return to the previous screen.
 					</p>
 				</div>
 			</Modal>
