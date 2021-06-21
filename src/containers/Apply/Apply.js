@@ -4,6 +4,8 @@ import { Steps, Button, Result, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
+import { APPLICANT_DASHBOARD } from '../../constants/Routes';
+
 import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
 import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
@@ -176,7 +178,7 @@ const Apply = () => {
 			key='saveLink'
 			type='link'
 			style={{ paddingLeft: '150px', paddingRight: '10px' }}
-			onClick={() => history.push('/')}
+			onClick={() => history.push(APPLICANT_DASHBOARD)}
 		>
 			Back to Applications Home?
 		</Button>

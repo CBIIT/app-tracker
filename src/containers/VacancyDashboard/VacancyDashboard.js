@@ -118,8 +118,10 @@ const vacancyDashboard = () => {
 			//Refresh data onClick of extend button
 			setData(updatedExtendedData.data.result);
 			setExtendModalVisible(false);
+			message.success('Vacancy extended');
 		} catch (error) {
-			console.log('[EXTEND] error: ', error);
+			setExtendModalVisible(false);
+			message.error('Sorry, an error occurred while trying to extend vacancy');
 		}
 	};
 
@@ -141,8 +143,10 @@ const vacancyDashboard = () => {
 			//Refresh Pre-Flight Count onClick of remove button
 			setPreFlightCount(updatedPreFlightCount.data.result.length);
 			setRemoveModalVisible(false);
+			message.success('Removed vacancy');
 		} catch (error) {
-			console.log('[REMOVE VACANCY] error: ', error);
+			setRemoveModalVisible(false);
+			message.error('Sorry, an error occurred while trying to remove vacancy');
 		}
 	};
 
@@ -397,22 +401,23 @@ const vacancyDashboard = () => {
 		<>
 			<div style={{ backgroundColor: '#EDF1F4' }}>
 				<div className='app-container'>
-					<Link to='/create-vacancy'>
-						<Button
-							type='primary'
-							style={{
-								display: 'inline-block',
-								backgroundColor: '#015EA2',
-								marginLeft: '85%',
-								width: '161px',
-								height: '36px',
-								fontSize: '16px',
-							}}
-							link='true'
-						>
-							+ Create Vacancy
-						</Button>
-					</Link>
+					<div className='CreateVacancyButtonDiv'>
+						<Link to='/create-vacancy'>
+							<Button
+								className='CreateVacancyButton'
+								type='primary'
+								style={{
+									fontSize: '16px',
+									maxWidth: '161px',
+									height: '36px',
+									float: 'right',
+								}}
+								link='true'
+							>
+								+ Create Vacancy
+							</Button>
+						</Link>
+					</div>
 					<Tabs
 						className='vacancy-tabs'
 						size={'large'}
@@ -446,6 +451,7 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={data}
 										columns={preFlightColumns}
+										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
 											display: 'block',
@@ -483,6 +489,7 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={data}
 										columns={liveColumns}
+										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
 											display: 'block',
@@ -525,6 +532,7 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={data}
 										columns={closedColumns}
+										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
 											display: 'block',

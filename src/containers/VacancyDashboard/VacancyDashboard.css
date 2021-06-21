@@ -95,3 +95,21 @@
 	border-color: rgb(37, 96, 151) !important;
 	color: rgb(37, 96, 151) !important;
 }
+
+.CreateVacancyButton {
+	background-color: '#015EA2';
+}
+
+.CreateVacancyButtonDiv {
+	/* margin-bottom: 20px; */
+	margin-top: -30px;
+	height: 40px;
+}
+
+@media (max-width: 500px) {
+	.CreateVacancyButtonDiv {
+		margin-left: -20px;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+}
