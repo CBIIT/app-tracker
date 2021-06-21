@@ -1,0 +1,52 @@
+.NavBar {
+	display: flex;
+	flex-basis: 1000px;
+	flex-grow: 2;
+	height: 100%;
+}
+
+.NavBar .ant-menu {
+	background: #01477a;
+	max-height: 50px;
+	padding-left: 12%;
+	width: 100%;
+	float: left;
+	display: flex;
+	flex-flow: row;
+	/* justify-content: space-between; */
+	align-items: left;
+}
+
+@media (max-width: 1300px) {
+	.NavBar .ant-menu {
+		padding-left: 20px;
+	}
+}
+.NavBar .ant-menu-horizontal > .ant-menu-item a {
+	/* color: white; */
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.NavBar
+	.ant-menu-horizontal:not(.ant-menu-dark)
+	> .ant-menu-item-selected::after {
+	border-bottom: 5px solid white;
+}
+
+.NavBar .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after {
+	border-bottom: 5px solid white;
+}
+
+.NavBar
+	.ant-menu-horizontal:not(.ant-menu-dark)
+	> .ant-menu-submenu:hover::after {
+	border-bottom: 5px solid #015ea2;
+}
+
+.NavBar .ant-menu-horizontal .ant-menu-submenu {
+	opacity: 0.8 !important;
+	background: white;
+}

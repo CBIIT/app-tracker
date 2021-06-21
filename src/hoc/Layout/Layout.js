@@ -4,6 +4,7 @@ import './Layout.css';
 import { routeTitles } from './RouteTitles';
 import { EDIT_VACANCY, EDIT_DRAFT } from '../../constants/Routes';
 import Header from '../../components/Header/Header';
+import NavBar from '../../components/NavBar/NavBar.js';
 import Footer from '../../components/Footer/Footer';
 
 const layout = (props) => {
@@ -22,6 +23,7 @@ const layout = (props) => {
 	return (
 		<>
 			<Header />
+			<NavBar />
 			<div className='OuterContainer'>
 				<div className='ContentContainer'>
 					<div

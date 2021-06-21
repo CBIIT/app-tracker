@@ -9,6 +9,8 @@ import {
 	Divider,
 	message,
 	Modal,
+	Empty,
+	ConfigProvider,
 } from 'antd';
 import {
 	DeleteOutlined,
@@ -51,6 +53,15 @@ const vacancyDashboard = () => {
 		live: '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/live',
 		closed: '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed',
 	};
+
+	let customizeRenderEmpty = () => (
+		<div style={{ textAlign: 'center' }}>
+			<Empty
+				image={Empty.PRESENTED_IMAGE_SIMPLE}
+				description={'No Vacancies'}
+			/>
+		</div>
+	);
 
 	const tabChangeHandler = async (selectedTab) => {
 		url = urls[selectedTab];
@@ -430,17 +441,19 @@ const vacancyDashboard = () => {
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
-								<Table
-									rowKey='sys_id'
-									dataSource={data}
-									columns={preFlightColumns}
-									style={{
-										width: '1170px',
-										display: 'block',
-										paddingLeft: '20px',
-										paddingRight: '20px',
-									}}
-								/>
+								<ConfigProvider renderEmpty={customizeRenderEmpty}>
+									<Table
+										rowKey='sys_id'
+										dataSource={data}
+										columns={preFlightColumns}
+										style={{
+											width: '1170px',
+											display: 'block',
+											paddingLeft: '20px',
+											paddingRight: '20px',
+										}}
+									/>
+								</ConfigProvider>
 							</div>
 						</Tabs.TabPane>
 						<Tabs.TabPane
@@ -465,17 +478,19 @@ const vacancyDashboard = () => {
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
-								<Table
-									rowKey='sys_id'
-									dataSource={data}
-									columns={liveColumns}
-									style={{
-										width: '1170px',
-										display: 'block',
-										paddingLeft: '20px',
-										paddingRight: '20px',
-									}}
-								/>
+								<ConfigProvider renderEmpty={customizeRenderEmpty}>
+									<Table
+										rowKey='sys_id'
+										dataSource={data}
+										columns={liveColumns}
+										style={{
+											width: '1170px',
+											display: 'block',
+											paddingLeft: '20px',
+											paddingRight: '20px',
+										}}
+									/>
+								</ConfigProvider>
 							</div>
 						</Tabs.TabPane>
 						<Tabs.TabPane
@@ -505,17 +520,19 @@ const vacancyDashboard = () => {
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
-								<Table
-									rowKey='sys_id'
-									dataSource={data}
-									columns={closedColumns}
-									style={{
-										width: '1170px',
-										display: 'block',
-										paddingLeft: '20px',
-										paddingRight: '20px',
-									}}
-								/>
+								<ConfigProvider renderEmpty={customizeRenderEmpty}>
+									<Table
+										rowKey='sys_id'
+										dataSource={data}
+										columns={closedColumns}
+										style={{
+											width: '1170px',
+											display: 'block',
+											paddingLeft: '20px',
+											paddingRight: '20px',
+										}}
+									/>
+								</ConfigProvider>
 							</div>
 						</Tabs.TabPane>
 					</Tabs>
