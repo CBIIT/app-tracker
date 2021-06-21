@@ -11,7 +11,6 @@ import {
 	Modal,
 	Empty,
 	ConfigProvider,
-	message,
 } from 'antd';
 import {
 	DeleteOutlined,
