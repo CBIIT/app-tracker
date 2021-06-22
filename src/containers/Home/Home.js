@@ -19,6 +19,12 @@ const columns = [
 	{
 		title: 'Application Period',
 		dataIndex: 'applicationPeriod',
+		sorter: (a, b) => {
+			const newA = a.applicationPeriod.split(' -')[0];
+			const newB = b.applicationPeriod.split(' -')[0];
+			return new Date(newA) - new Date(newB);
+		},
+		defaultSortOrder: 'descend',
 	},
 ];
 
