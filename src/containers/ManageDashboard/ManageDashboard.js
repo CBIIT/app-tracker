@@ -13,6 +13,11 @@ import NextStepModal from './NextStepModal/NextStepModal';
 import FileUploadAndDisplay from '../../components/UI/FileUploadAndDisplay/FileUploadAndDisplay';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
+	VACANCY_DASHBOARD,
+	CHAIR_DASHBOARD,
+	COMMITTEE_DASHBOARD,
+} from '../../constants/Routes';
+import {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
@@ -211,11 +216,11 @@ const manageDashboard = () => {
 						type='link'
 						onClick={() => {
 							if (isManager == true) {
-								history.push('/vacancy-dashboard');
+								history.push(VACANCY_DASHBOARD);
 							} else if (isChair == true) {
-								history.push('/chair-dashboard');
+								history.push(CHAIR_DASHBOARD);
 							} else {
-								history.push('/committee-dashboard');
+								history.push(COMMITTEE_DASHBOARD);
 							}
 						}}
 					>
