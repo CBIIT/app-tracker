@@ -38,6 +38,7 @@ const chairDashboard = () => {
 					rowKey={(record) => record.vacancy_id}
 					dataSource={data}
 					columns={chairColumns}
+					scroll={{ x: 'true' }}
 					loading={
 						isLoading
 							? { indicator: <LoadingOutlined style={{ fontSize: 24 }} spin /> }
