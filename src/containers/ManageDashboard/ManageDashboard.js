@@ -122,6 +122,8 @@ const manageDashboard = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [vacancy, setVacancy] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
+	const [isChair, setIsChair] = useState([]);
+	const [isManager, setIsManager] = useState([]);
 	const [nextStep, setNextStep] = useState();
 	const [isNextButtonLoading, setIsNextButtonLoading] = useState(false);
 	const [state, setState] = useState([]);
@@ -144,6 +146,9 @@ const manageDashboard = () => {
 			axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
 			axios.get(CHECK_AUTH),
 		]);
+
+		setIsChair(checkAuthResponse.data.result.is_chair);
+		setIsManager(checkAuthResponse.data.result.is_manager);
 
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
@@ -205,7 +210,13 @@ const manageDashboard = () => {
 					<Button
 						type='link'
 						onClick={() => {
-							history.push('/vacancy-dashboard');
+							if (isManager == true) {
+								history.push('/vacancy-dashboard');
+							} else if (isChair == true) {
+								history.push('/chair-dashboard');
+							} else {
+								history.push('/committee-dashboard');
+							}
 						}}
 					>
 						Return to Dashboard
