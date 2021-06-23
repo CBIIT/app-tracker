@@ -28,9 +28,13 @@ const editDraft = () => {
 	const transformBackendJson = (json) => {
 		const newBasicInfo = {
 			...json.basicInfo,
-			openDate: moment(json.basicInfo.openDate),
-			closeDate: moment(json.basicInfo.closeDate),
 		};
+
+		if (json.basicInfo.openDate)
+			newBasicInfo['openDate'] = moment(json.basicInfo.openDate);
+
+		if (json.basicInfo.closeDate)
+			newBasicInfo['closeDate'] = moment(json.basicInfo.closeDate);
 
 		const newJson = {
 			...json,
