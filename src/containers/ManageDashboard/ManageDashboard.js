@@ -257,21 +257,11 @@ const manageDashboard = () => {
 				>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
 						<>
-							{isUserChair() ? (
-								<ViewVacancyDetails
-									allForms={vacancy}
-									hideCommitteeSection={false}
-									hideEmails={true}
-								/>
-							) : isUserAllowedToScore() ? (
-								<ViewVacancyDetails
-									allForms={vacancy}
-									hideCommitteeSection={true}
-									hideEmails={true}
-								/>
-							) : (
-								<ViewVacancyDetails allForms={vacancy} />
-							)}
+							<ViewVacancyDetails
+								allForms={vacancy}
+								hideCommitteeSection={isUserAllowedToScore()}
+								hideEmails={isUserChair() || isUserAllowedToScore()}
+							/>
 
 							{userRoles.includes(OWM_TEAM) ? (
 								<div style={{ paddingLeft: '16px', paddingBottom: '16px' }}>
