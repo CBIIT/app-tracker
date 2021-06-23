@@ -31,6 +31,7 @@ import {
 	EDIT_DRAFT,
 	EDIT_VACANCY,
 	MANAGE_VACANCY,
+	CREATE_VACANCY,
 } from '../../constants/Routes';
 import './VacancyDashboard.css';
 import axios from 'axios';
@@ -402,7 +403,7 @@ const vacancyDashboard = () => {
 			<div style={{ backgroundColor: '#EDF1F4' }}>
 				<div className='app-container'>
 					<div className='CreateVacancyButtonDiv'>
-						<Link to='/create-vacancy'>
+						<Link to={CREATE_VACANCY}>
 							<Button
 								className='CreateVacancyButton'
 								type='primary'

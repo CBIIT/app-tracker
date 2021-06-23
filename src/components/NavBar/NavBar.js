@@ -1,5 +1,11 @@
 import { Menu } from 'antd';
 import { CHECK_AUTH } from '../../constants/ApiEndpoints';
+import {
+	COMMITTEE_DASHBOARD,
+	VACANCY_DASHBOARD,
+	CHAIR_DASHBOARD,
+	APPLICANT_DASHBOARD,
+} from '../../constants/Routes';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -30,10 +36,10 @@ const navBar = () => {
 									<Link to='/'>Home</Link>
 								</Menu.Item>
 								<Menu.Item key='vacancy-dashboard'>
-									<Link to='/vacancy-dashboard'>Vacancy Dashboard</Link>
+									<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
 								</Menu.Item>
 								<Menu.Item key='your-vacancies'>
-									<Link to='/committee-dashboard'>Your Vacancies</Link>
+									<Link to={COMMITTEE_DASHBOARD}>Your Vacancies</Link>
 								</Menu.Item>
 							</Menu>
 						</div>
@@ -50,7 +56,7 @@ const navBar = () => {
 									<Link to='/'>Home</Link>
 								</Menu.Item>
 								<Menu.Item key='vacancy-dashboard'>
-									<Link to='/vacancy-dashboard'>Vacancy Dashboard</Link>
+									<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
 								</Menu.Item>
 							</Menu>
 						</div>
@@ -67,7 +73,7 @@ const navBar = () => {
 									<Link to='/'>Home</Link>
 								</Menu.Item>
 								<Menu.Item key='your-vacancies'>
-									<Link to='/chair-dashboard'>Your Vacancies</Link>
+									<Link to={CHAIR_DASHBOARD}>Your Vacancies</Link>
 								</Menu.Item>
 							</Menu>
 						</div>
@@ -87,7 +93,7 @@ const navBar = () => {
 									<Link to='/'>Home</Link>
 								</Menu.Item>
 								<Menu.Item key='your-vacancies'>
-									<Link to='/committee-dashboard'>Your Vacancies</Link>
+									<Link to={COMMITTEE_DASHBOARD}>Your Vacancies</Link>
 								</Menu.Item>
 							</Menu>
 						</div>
@@ -104,7 +110,7 @@ const navBar = () => {
 									<Link to='/'>Home</Link>
 								</Menu.Item>
 								<Menu.Item key='your-applications'>
-									<Link to='/applicant-dashboard'>Your Applications</Link>
+									<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
 								</Menu.Item>
 							</Menu>
 						</div>

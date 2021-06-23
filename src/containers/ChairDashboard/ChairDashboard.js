@@ -62,7 +62,7 @@ const chairColumns = [
 		},
 		defaultSortOrder: 'ascend',
 		render: (title, record) => (
-			<Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
+			<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
 		),
 	},
 	{
