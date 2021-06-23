@@ -258,11 +258,16 @@ const manageDashboard = () => {
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
 						<>
 							{isUserChair() ? (
-								<ViewVacancyDetails allForms={vacancy} hideEmails={true} />
+								<ViewVacancyDetails
+									allForms={vacancy}
+									hideCommitteeSection={false}
+									hideEmails={true}
+								/>
 							) : isUserAllowedToScore() ? (
 								<ViewVacancyDetails
 									allForms={vacancy}
 									hideCommitteeSection={true}
+									hideEmails={true}
 								/>
 							) : (
 								<ViewVacancyDetails allForms={vacancy} />

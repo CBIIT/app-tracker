@@ -119,29 +119,7 @@ const finalizeVacancy = (props) => {
 					</ul>
 				</div>
 			</div>
-			{props.hideCommitteeSection == true ? null : props.hideEmails == true ? (
-				<>
-					<SectionHeader
-						title='Vacancy Committee'
-						onClick={() => props.onEditButtonClick(2)}
-						showButton={props.showButton}
-					/>
-					<div className='SectionContent' style={props.sectionContentStyle}>
-						<Table
-							pagination={{ hideOnSinglePage: true }}
-							locale={{
-								emptyText: 'Currently no committee members selected.',
-							}}
-							dataSource={
-								Object.keys(vacancyCommittee).length === 0
-									? null
-									: vacancyCommittee
-							}
-							columns={vacancyCommitteeColumns}
-						/>
-					</div>{' '}
-				</>
-			) : (
+			{props.hideCommitteeSection ? null : (
 				<>
 					<SectionHeader
 						title='Vacancy Committee'
@@ -162,6 +140,10 @@ const finalizeVacancy = (props) => {
 							columns={vacancyCommitteeColumns}
 						/>
 					</div>
+				</>
+			)}
+			{props.hideEmails ? null : (
+				<>
 					<SectionHeader
 						title='Email Templates'
 						onClick={() => props.onEditButtonClick(3)}
