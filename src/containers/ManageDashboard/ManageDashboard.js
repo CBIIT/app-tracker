@@ -20,13 +20,18 @@ import {
 	SERVICE_NOW_ATTACHMENT,
 } from '../../constants/ApiEndpoints';
 import {
+	COMMITTEE_MEMBER_VOTING,
+	COMMITTEE_MEMBER_NON_VOTING,
+	OWM_TEAM,
+	COMMITTEE_CHAIR,
+} from '../../constants/Roles';
+import {
 	OWM_TRIAGE,
 	CHAIR_TRIAGE,
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
-import { OWM_TEAM, COMMITTEE_CHAIR } from '../../constants/Roles';
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
@@ -139,6 +144,17 @@ const manageDashboard = () => {
 		setModalVisible(true);
 	};
 
+	const isUserAllowedToScore = () => {
+		return (
+			userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+			userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
+		);
+	};
+
+	const isUserChair = () => {
+		return userCommitteeRole === COMMITTEE_CHAIR;
+	};
+
 	const loadLatestVacancyInfo = async () => {
 		const [vacancyResponse, checkAuthResponse] = await Promise.all([
 			axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
@@ -148,6 +164,7 @@ const manageDashboard = () => {
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);
+
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
 
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
@@ -240,7 +257,17 @@ const manageDashboard = () => {
 				>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
 						<>
-							<ViewVacancyDetails allForms={vacancy} />
+							{isUserChair() ? (
+								<ViewVacancyDetails allForms={vacancy} hideEmails={true} />
+							) : isUserAllowedToScore() ? (
+								<ViewVacancyDetails
+									allForms={vacancy}
+									hideCommitteeSection={true}
+								/>
+							) : (
+								<ViewVacancyDetails allForms={vacancy} />
+							)}
+
 							{userRoles.includes(OWM_TEAM) ? (
 								<div style={{ paddingLeft: '16px', paddingBottom: '16px' }}>
 									<h2>Rating Plan</h2>
