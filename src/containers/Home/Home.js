@@ -31,7 +31,9 @@ const transformData = (data) => {
 	}));
 };
 
-const transformDate = (date) => new Date(date).toLocaleDateString('en-US');
+const transformDate = (date) => {
+	return new Date(date + 'T00:00:00').toLocaleDateString('en-US');
+};
 
 const home = () => {
 	const [isLoading, setIsLoading] = useState(true);
