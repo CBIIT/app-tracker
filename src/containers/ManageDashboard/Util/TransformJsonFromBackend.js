@@ -14,15 +14,19 @@ export const transformJsonFromBackend = (sourceJson) => {
 			numberOfRecommendations:
 				sourceJson.basic_info.number_of_recommendation.value,
 		},
-		emailTemplates: sourceJson.vacancy_emails.map((temp) => ({
-			active: temp.active.value == '1' ? true : false,
-			type: temp.email_type.value,
-		})),
-		vacancyCommittee: sourceJson.committee.map((member) => ({
-			role: member.role.value,
-			user: { name: { value: member.user.label } },
-			key: member.sys_id.value,
-		})),
+		emailTemplates: sourceJson.vacancy_emails
+			? sourceJson.vacancy_emails.map((temp) => ({
+					active: temp.active.value == '1' ? true : false,
+					type: temp.email_type.value,
+			  }))
+			: [],
+		vacancyCommittee: sourceJson.committee
+			? sourceJson.committee.map((member) => ({
+					role: member.role.value,
+					user: { name: { value: member.user.label } },
+					key: member.sys_id.value,
+			  }))
+			: [],
 		mandatoryStatements: {
 			equalOpportunityEmployer:
 				sourceJson.basic_info.show_eoes.value == '1' ? true : false,

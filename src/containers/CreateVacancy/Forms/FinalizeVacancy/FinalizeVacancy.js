@@ -4,12 +4,8 @@ import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewS
 import './FinalizeVacancy.css';
 
 const finalizeVacancy = (props) => {
-	const {
-		basicInfo,
-		mandatoryStatements,
-		vacancyCommittee,
-		emailTemplates,
-	} = props.allForms;
+	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
+		props.allForms;
 
 	const vacancyCommitteeColumns = [
 		{
@@ -123,42 +119,54 @@ const finalizeVacancy = (props) => {
 					</ul>
 				</div>
 			</div>
-			<SectionHeader
-				title='Vacancy Committee'
-				onClick={() => props.onEditButtonClick(2)}
-				showButton={props.showButton}
-			/>
-			<div className='SectionContent' style={props.sectionContentStyle}>
-				<Table
-					pagination={{ hideOnSinglePage: true }}
-					locale={{
-						emptyText: 'Currently no committee members selected.',
-					}}
-					dataSource={
-						Object.keys(vacancyCommittee).length === 0 ? null : vacancyCommittee
-					}
-					columns={vacancyCommitteeColumns}
-				/>
-			</div>
-			<SectionHeader
-				title='Email Templates'
-				onClick={() => props.onEditButtonClick(3)}
-				showButton={props.showButton}
-			/>
-			<div className='SectionContent' style={props.sectionContentStyle}>
-				<div className='TwoColumnCheckList'>
-					<ul className='TwoColumnChecklist'>
-						{emailTemplates.map((template, index) => (
-							<li
-								key={index}
-								className={template.active ? 'ListItemTrue' : 'ListItemFalse'}
-							>
-								{template.type}
-							</li>
-						))}
-					</ul>
-				</div>
-			</div>
+			{props.hideCommitteeSection ? null : (
+				<>
+					<SectionHeader
+						title='Vacancy Committee'
+						onClick={() => props.onEditButtonClick(2)}
+						showButton={props.showButton}
+					/>
+					<div className='SectionContent' style={props.sectionContentStyle}>
+						<Table
+							pagination={{ hideOnSinglePage: true }}
+							locale={{
+								emptyText: 'Currently no committee members selected.',
+							}}
+							dataSource={
+								Object.keys(vacancyCommittee).length === 0
+									? null
+									: vacancyCommittee
+							}
+							columns={vacancyCommitteeColumns}
+						/>
+					</div>
+				</>
+			)}
+			{props.hideEmails ? null : (
+				<>
+					<SectionHeader
+						title='Email Templates'
+						onClick={() => props.onEditButtonClick(3)}
+						showButton={props.showButton}
+					/>
+					<div className='SectionContent' style={props.sectionContentStyle}>
+						<div className='TwoColumnCheckList'>
+							<ul className='TwoColumnChecklist'>
+								{emailTemplates.map((template, index) => (
+									<li
+										key={index}
+										className={
+											template.active ? 'ListItemTrue' : 'ListItemFalse'
+										}
+									>
+										{template.type}
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
+				</>
+			)}
 		</>
 	);
 };
