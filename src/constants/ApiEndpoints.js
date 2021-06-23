@@ -5,6 +5,8 @@ const GET_COMMITTEE_CHAIR_VACANCIES = '/api/x_g_nci_app_tracke/vacancy/chair';
 
 const GET_APPLICATION = '/api/x_g_nci_app_tracke/application/get_application/';
 
+const GET_APPLICATION_DRAFT = '/api/x_g_nci_app_tracke/application/app_draft/';
+
 const GET_APPLICATION_TRIAGE_INFO =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_state/';
 
@@ -78,4 +80,5 @@ export {
 	REMOVE_DRAFT_VACANCY,
 	GET_DRAFT,
 	EDIT_VACANCY,
+	GET_APPLICATION_DRAFT,
 };

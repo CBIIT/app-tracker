@@ -49,52 +49,79 @@ const updateFormData = (currentForm, newValues, step) => {
 	}
 };
 
-const Apply = () => {
-	const [formData, setFormData] = useState(defaultFormData);
+const Apply = (props) => {
+	const [formData, setFormData] = useState(
+		props.initialValues ? props.initialValues : defaultFormData
+	);
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [vacancyTitle, setVacancyTitle] = useState();
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [draftId, setDraftId] = useState(props.draftId);
 
 	const history = useHistory();
-	const { sysId } = useParams();
+	const { sysId, appSysId } = useParams();
 
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-
-			const references = [];
-
-			for (
-				let i = 0;
-				i <
-				parseInt(
-					response.data.result.basic_info.number_of_recommendation.value
-				);
-				i++
-			) {
-				references.push({});
+			if (props.initialValues) {
+				await loadExistingApplication();
+			} else {
+				await instantiateNewApplication();
 			}
-
-			const newFormData = {
-				...formData,
-				sysId: sysId,
-				applicantDocuments: response.data.result.vacancy_documents.map(
-					(document) =>
-						document.file ? document : { ...document, file: { fileList: [] } }
-				),
-				references: references,
-			};
-
-			setFormData(newFormData);
 			setIsLoading(false);
 		})();
 	}, []);
+
+	const loadExistingApplication = async () => {
+		const response = await axios.get(
+			VACANCY_DETAILS_FOR_APPLICANTS + props.initialValues.sysId
+		);
+		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
+		setDraftId(appSysId);
+
+		const formData = {
+			...props.initialValues,
+			applicantDocuments: response.data.result.vacancy_documents.map(
+				(document) =>
+					document.file ? document : { ...document, file: { fileList: [] } }
+			),
+		};
+
+		setFormData(formData);
+	};
+
+	const instantiateNewApplication = async () => {
+		const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
+		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
+
+		const references = [];
+
+		for (
+			let i = 0;
+			i <
+			parseInt(response.data.result.basic_info.number_of_recommendation.value);
+			i++
+		) {
+			references.push({});
+		}
+
+		const newFormData = {
+			...formData,
+			sysId: sysId,
+			applicantDocuments: response.data.result.vacancy_documents.map(
+				(document) =>
+					document.file ? document : { ...document, file: { fileList: [] } }
+			),
+			references: references,
+		};
+
+		setFormData(newFormData);
+	};
 
 	const steps = [
 		{
@@ -188,7 +215,6 @@ const Apply = () => {
 		const fieldsValues = currentFormInstance.getFieldsValue();
 		const updatedFormData = await saveCurrentForm(fieldsValues);
 
-		let hide = () => {};
 		const successKey = 'success';
 		const errorKey = 'error';
 
@@ -220,28 +246,39 @@ const Apply = () => {
 				currentFormInstance.validateFields([field]);
 			});
 		} else {
-			hide = message.info({
-				successKey,
-				content: [
-					'Application successfully saved ',
-					saveLink,
-					<Button
-						key='saveButton'
-						className='save-X-button'
-						onClick={() => hide()}
-					>
-						x
-					</Button>,
-				],
-				className: 'save-message',
-				duration: 3,
-			});
 			try {
-				await axios.post('/api/x_g_nci_app_tracke/application/save_app_draft', {
+				let data = {
 					jsonobj: JSON.stringify(updatedFormData),
+				};
+
+				if (draftId) data['sys_id'] = draftId;
+				console.log('Sending data: ', data);
+				const saveDraftResponse = await axios.post(
+					'/api/x_g_nci_app_tracke/application/save_app_draft',
+					data
+				);
+
+				message.info({
+					successKey,
+					content: [
+						'Application successfully saved ',
+						saveLink,
+						<Button
+							key='saveButton'
+							className='save-X-button'
+							onClick={() => message.destroy()}
+						>
+							x
+						</Button>,
+					],
+					className: 'save-message',
+					duration: 3,
 				});
+
+				if (!draftId && saveDraftResponse.data.result.draft_id)
+					setDraftId(saveDraftResponse.data.result.draft_id);
 			} catch (error) {
-				message.error('There was an error saving');
+				message.error('Sorry!  There was an error saving.');
 			}
 		}
 	};
@@ -322,6 +359,7 @@ const Apply = () => {
 				visible={submitModalVisible}
 				onCancel={handleSubmitModalCancel}
 				data={formData}
+				draftId={draftId}
 			/>
 		</>
 	);

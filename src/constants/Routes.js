@@ -1,4 +1,5 @@
 const MANAGE_APPLICATION = '/manage/application/';
+const EDIT_APPLICATION = '/apply/edit/';
 const MANAGE_VACANCY = '/manage/vacancy/';
 const CREATE_VACANCY = '/create-vacancy/';
 const EDIT_VACANCY = '/manage/vacancy/edit/';
@@ -21,4 +22,5 @@ export {
 	REGISTER_OKTA,
 	EDIT_VACANCY,
 	EDIT_DRAFT,
+	EDIT_APPLICATION,
 };

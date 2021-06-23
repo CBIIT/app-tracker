@@ -18,6 +18,9 @@ const submitModal = (props) => {
 
 		try {
 			const dataToSend = transformJsonToBackend(props.data);
+
+			if (props.draftId) dataToSend['draft_id'] = props.draftId;
+
 			const response = await axios.post(
 				'/api/x_g_nci_app_tracke/application/submit_app',
 				dataToSend

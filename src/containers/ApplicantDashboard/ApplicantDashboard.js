@@ -5,6 +5,7 @@ import {
 	REMOVE_USER_APPLICATION_DRAFT,
 	WITHDRAW_USER_APPLICATION,
 } from '../../constants/ApiEndpoints';
+import { EDIT_APPLICATION } from '../../constants/Routes';
 import {
 	Table,
 	ConfigProvider,
@@ -175,7 +176,14 @@ const applicantDashboard = () => {
 				} else {
 					return (
 						<Space size='middle'>
-							<Button type='text'>
+							<Button
+								type='text'
+								onClick={() => {
+									history.push(
+										EDIT_APPLICATION + 'draft/' + application.draft_id
+									);
+								}}
+							>
 								<EditOutlined /> edit
 							</Button>
 							<Divider type='vertical' />
