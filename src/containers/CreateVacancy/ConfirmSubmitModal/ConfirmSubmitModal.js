@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, Steps } from 'antd';
 import { useHistory } from 'react-router-dom';
+import { VACANCY_DASHBOARD } from '../../../constants/Routes';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
 import axios from 'axios';
@@ -46,7 +47,7 @@ const confirmSubmitModal = (props) => {
 	};
 
 	const handleClose = () => {
-		history.push('/vacancy-dashboard');
+		history.push(VACANCY_DASHBOARD);
 	};
 
 	const stepper = (

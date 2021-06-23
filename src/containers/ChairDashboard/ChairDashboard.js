@@ -38,6 +38,7 @@ const chairDashboard = () => {
 					rowKey={(record) => record.vacancy_id}
 					dataSource={data}
 					columns={chairColumns}
+					scroll={{ x: 'true' }}
 					loading={
 						isLoading
 							? { indicator: <LoadingOutlined style={{ fontSize: 24 }} spin /> }
@@ -61,7 +62,7 @@ const chairColumns = [
 		},
 		defaultSortOrder: 'ascend',
 		render: (title, record) => (
-			<Link to={'/manage/vacancy/' + record.vacancy_id}>{title}</Link>
+			<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
 		),
 	},
 	{

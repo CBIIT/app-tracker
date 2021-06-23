@@ -13,6 +13,11 @@ import NextStepModal from './NextStepModal/NextStepModal';
 import FileUploadAndDisplay from '../../components/UI/FileUploadAndDisplay/FileUploadAndDisplay';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
+	VACANCY_DASHBOARD,
+	CHAIR_DASHBOARD,
+	COMMITTEE_DASHBOARD,
+} from '../../constants/Routes';
+import {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
 	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
@@ -122,6 +127,8 @@ const manageDashboard = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [vacancy, setVacancy] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
+	const [isChair, setIsChair] = useState([]);
+	const [isManager, setIsManager] = useState([]);
 	const [nextStep, setNextStep] = useState();
 	const [isNextButtonLoading, setIsNextButtonLoading] = useState(false);
 	const [state, setState] = useState([]);
@@ -144,6 +151,9 @@ const manageDashboard = () => {
 			axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
 			axios.get(CHECK_AUTH),
 		]);
+
+		setIsChair(checkAuthResponse.data.result.is_chair);
+		setIsManager(checkAuthResponse.data.result.is_manager);
 
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
@@ -205,7 +215,13 @@ const manageDashboard = () => {
 					<Button
 						type='link'
 						onClick={() => {
-							history.push('/vacancy-dashboard');
+							if (isManager == true) {
+								history.push(VACANCY_DASHBOARD);
+							} else if (isChair == true) {
+								history.push(CHAIR_DASHBOARD);
+							} else {
+								history.push(COMMITTEE_DASHBOARD);
+							}
 						}}
 					>
 						Return to Dashboard

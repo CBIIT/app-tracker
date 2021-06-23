@@ -3,7 +3,7 @@ import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow
 import LabelValuePair from '../../../components/UI/LabelValuePair/LabelValuePair';
 import ScoringWidgetSlider from './ScoringWidgetSlider/ScoringWidgetSlider';
 
-import { Input, Radio, Button } from 'antd';
+import { Input, Radio, Button, Form } from 'antd';
 
 import './ScoringWidget.css';
 
@@ -17,57 +17,70 @@ const { Group } = Radio;
 const scoringWidget = (props) => {
 	return (
 		<div style={props.style}>
-			<InfoCard title={props.title}>
-				<InfoCardRow>
-					<LabelValuePair
-						value={props.description}
-						valueStyle={{ marginBottom: '0px' }}
-					/>
-				</InfoCardRow>
-				<div className='ScoringWidgetContent'>
-					{props.categories.map((category) => (
-						<ScoringWidgetSlider
-							key={category.key}
-							title={category.title}
-							sliderMarks={sliderMarks}
-							sliderMin={sliderMin}
-							sliderMax={sliderMax}
-							value={props.scores[category.key]}
-							onChange={(value) =>
-								props.scoreChangeHandler(value, category.key)
-							}
+			<Form onFinish={props.onSaveClick} name='Committee-Scoring'>
+				<InfoCard title={props.title}>
+					<InfoCardRow>
+						<LabelValuePair
+							value={props.description}
+							valueStyle={{ marginBottom: '0px' }}
 						/>
-					))}
-					<h2 style={{ marginBottom: '6px' }}>Overall Score Comments</h2>
-					<TextArea
-						rows={3}
-						style={{ marginBottom: '16px' }}
-						onChange={props.onScoreCommentsChange}
-						defaultValue={props.triageComments}
-					/>
-					<LabelValuePair
-						label='Interview Recommendation'
-						labelStyle={{ marginBottom: '0px' }}
-						value='Do you recommend this candidate for an interview?'
-						valueStyle={{ fontSize: '12px', marginBottom: '8px' }}
-					/>
-					<Group
-						options={props.triageOptions}
-						optionType='button'
-						buttonStyle='solid'
-						onChange={props.onTriageSelect}
-						value={props.triageChoice}
-					/>
-				</div>
-				<InfoCardRow
-					style={{ display: 'flex', justifyContent: 'space-between' }}
-				>
-					<Button onClick={props.onCancelClick}>cancel</Button>
-					<Button onClick={props.onSaveClick} type='primary'>
-						save score
-					</Button>
-				</InfoCardRow>
-			</InfoCard>
+					</InfoCardRow>
+					<div className='ScoringWidgetContent'>
+						{props.categories.map((category) => (
+							<ScoringWidgetSlider
+								key={category.key}
+								title={category.title}
+								sliderMarks={sliderMarks}
+								sliderMin={sliderMin}
+								sliderMax={sliderMax}
+								value={props.scores[category.key]}
+								onChange={(value) =>
+									props.scoreChangeHandler(value, category.key)
+								}
+							/>
+						))}
+						<h2 style={{ marginBottom: '6px' }}>Overall Score Comments</h2>
+						<TextArea
+							rows={3}
+							style={{ marginBottom: '16px' }}
+							onChange={props.onScoreCommentsChange}
+							defaultValue={props.triageComments}
+						/>
+						<LabelValuePair
+							label='Interview Recommendation'
+							labelStyle={{ marginBottom: '0px' }}
+							value='Do you recommend this candidate for an interview?'
+							valueStyle={{ fontSize: '12px', marginBottom: '8px' }}
+						/>
+						<Form.Item
+							name='Recommendation'
+							rules={[
+								{ required: true, message: 'Please enter a recommendation' },
+							]}
+						>
+							<Group
+								options={props.triageOptions}
+								optionType='button'
+								buttonStyle='solid'
+								onChange={props.onTriageSelect}
+								value={props.triageChoice}
+							/>
+						</Form.Item>
+					</div>
+					<InfoCardRow
+						style={{ display: 'flex', justifyContent: 'space-between' }}
+					>
+						<Form.Item>
+							<Button onClick={props.onCancelClick}>cancel</Button>
+						</Form.Item>
+						<Form.Item>
+							<Button type='primary' htmlType='submit'>
+								save score
+							</Button>
+						</Form.Item>
+					</InfoCardRow>
+				</InfoCard>
+			</Form>
 		</div>
 	);
 };
