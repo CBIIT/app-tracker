@@ -9,6 +9,7 @@ import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import { CHECK_AUTH } from '../../../constants/ApiEndpoints';
 
 import './Login.css';
+import { REGISTER_OKTA, VACANCY_DASHBOARD } from '../../../constants/Routes';
 
 const login = () => {
 	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
@@ -35,7 +36,7 @@ const login = () => {
 			case 'itrust':
 				location.href =
 					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-scss.do#/vacancy-dashboard') +
+					encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
 					'&glide_sso_id=' +
 					iTrustGlideSsoId;
 				break;
@@ -47,7 +48,7 @@ const login = () => {
 					oktaGlideSsoId;
 				break;
 			case 'register-okta':
-				history.push('/register-okta');
+				history.push(REGISTER_OKTA);
 				break;
 			case 'logout':
 				location.href = '/logout.do';

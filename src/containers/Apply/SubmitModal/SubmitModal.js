@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
 import './SubmitModal.css';
+import { SUBMIT_APPLICATION } from '../../../constants/ApiEndpoints';
 
 const submitModal = (props) => {
 	const [confirmLoading, setConfirmLoading] = useState(false);
@@ -21,10 +22,7 @@ const submitModal = (props) => {
 
 			if (props.draftId) dataToSend['draft_id'] = props.draftId;
 
-			const response = await axios.post(
-				'/api/x_g_nci_app_tracke/application/submit_app',
-				dataToSend
-			);
+			const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 
 			const requests = [];
 			const documents = response.data.result.vacancy_documents;
@@ -59,8 +57,9 @@ const submitModal = (props) => {
 			setSubmitted(true);
 		} catch (error) {
 			setConfirmLoading(false);
-			// eslint-disable-next-line no-console
-			console.log('[ConfirmSubmitModal] error:' + error);
+			message.error(
+				'Sorry!  There was an error when attempting to submit your application.'
+			);
 		}
 	};
 
