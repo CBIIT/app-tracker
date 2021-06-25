@@ -15,15 +15,15 @@ const registerOkta = () => {
 
 	const history = useHistory();
 
+	const emailNotMatchError = 'Emails do not match.';
+
 	useEffect(() => {
-		async () => {
+		(async () => {
 			setIsLoading(true);
-			console.log('Loading...');
 			const response = await axios.get(CHECK_AUTH);
-			console.log('Response: ', response);
 			setOktaGlideSsoId(response.data.result.okta_idp);
 			setIsLoading(false);
-		};
+		})();
 	}, []);
 
 	const onSubmit = async (values) => {
@@ -61,6 +61,43 @@ const registerOkta = () => {
 		history.goBack();
 	};
 
+	const validateEmails = async () => {
+		const email = formInstance.getFieldValue('email');
+		const confirmEmail = formInstance.getFieldValue('confirmEmail');
+
+		if (email && confirmEmail && email !== confirmEmail)
+			throw new Error(emailNotMatchError);
+
+		const emailErrors = formInstance.getFieldError('email');
+		const confirmEmailErrors = formInstance.getFieldError('confirmEmail');
+
+		const matchEmailErrorIndex = emailErrors.indexOf(emailNotMatchError);
+		if (matchEmailErrorIndex !== -1)
+			emailErrors.splice(matchEmailErrorIndex, 1);
+
+		const matchConformEmailErrorIndex =
+			confirmEmailErrors.indexOf(emailNotMatchError);
+		if (matchConformEmailErrorIndex !== -1)
+			confirmEmailErrors.splice(matchConformEmailErrorIndex, 1);
+
+		formInstance.setFields([
+			{
+				name: 'email',
+				errors: emailErrors,
+			},
+			{
+				name: 'confirmEmail',
+				errors: confirmEmailErrors,
+			},
+		]);
+	};
+
+	const validatePhoneNumber = async (_, phoneNumber) => {
+		const phoneRegEx = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+		if (phoneNumber && !phoneNumber.match(phoneRegEx))
+			throw new Error('Please enter a valid phone number.');
+	};
+
 	return !isLoading ? (
 		<div className='OktaOuterContainer'>
 			<div className='OktaRegistration'>
@@ -68,7 +105,7 @@ const registerOkta = () => {
 					<p>{message}</p>
 				) : (
 					<>
-						<h1>Create your NCI account to access myRAS</h1>
+						<h1>Create your NCI account to access SCSS</h1>
 						<h2>
 							Already have an account?{' '}
 							<Button
@@ -142,21 +179,22 @@ const registerOkta = () => {
 										rules={[
 											{ required: true, message: 'Please enter your email' },
 											{ type: 'email', message: 'Please enter a valid email' },
+											{ validator: validateEmails },
 										]}
 									>
-										<Input placeholder='Please enter' />
+										<Input placeholder='example@email.com' />
 									</Form.Item>
 								</Col>
 								<Col span={12}>
 									<Form.Item
 										label='Confirm email'
-										name='email'
+										name='confirmEmail'
 										rules={[
 											{ required: true, message: 'Please confirm your email' },
-											{ type: 'email', message: 'Please enter a valid email' },
+											{ validator: validateEmails },
 										]}
 									>
-										<Input placeholder='Please enter' />
+										<Input placeholder='example@email.com' />
 									</Form.Item>
 								</Col>
 							</Row>
@@ -170,9 +208,10 @@ const registerOkta = () => {
 												required: true,
 												message: 'Please enter your phone number',
 											},
+											{ validator: validatePhoneNumber },
 										]}
 									>
-										<Input placeholder='Please enter' />
+										<Input type='tel' placeholder='(123) 456-7890' />
 									</Form.Item>
 								</Col>
 							</Row>

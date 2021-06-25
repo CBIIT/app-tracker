@@ -42,14 +42,12 @@ const app = () => {
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	useEffect(() => {
-		async () => {
+		(async () => {
 			setIsLoading(true);
-			console.log('Checking auth...');
 			const response = await axios.get(CHECK_AUTH);
-			console.log('Done...');
 			setIsUserLoggedIn(response.data.result.logged_in);
 			setIsLoading(false);
-		};
+		})();
 	}, []);
 
 	let routes = [];
