@@ -35,6 +35,9 @@ import {
 	CHAIR_TRIAGE,
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
+	VOTING_COMPLETE,
+	LIVE,
+	FINAL,
 } from '../../constants/VacancyStates';
 import './ManageDashboard.css';
 
@@ -212,6 +215,12 @@ const manageDashboard = () => {
 	};
 
 	const displayNextButton = (vacancyState) => {
+		if (
+			vacancyState === VOTING_COMPLETE ||
+			vacancyState === LIVE ||
+			vacancyState === FINAL
+		)
+			return false;
 		if (
 			userRoles.includes(OWM_TEAM) ||
 			(userCommitteeRole === COMMITTEE_CHAIR && vacancyState === CHAIR_TRIAGE)
