@@ -461,7 +461,7 @@ const application = () => {
 						) : null}
 						{isUserAllowedToScore() ? (
 							<ScoringWidget
-								title='Committee Member Feedback and Notes'
+								title='Committee Member Rating and Feedback'
 								description={
 									<>
 										Please score the applicant on a scale of 0 - 3 below and
