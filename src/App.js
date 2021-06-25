@@ -41,58 +41,92 @@ const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-	useEffect(async () => {
-		setIsLoading(true);
-		const response = await axios.get(CHECK_AUTH);
-		setIsUserLoggedIn(response.data.result.logged_in);
-		setIsLoading(false);
+	useEffect(() => {
+		(async () => {
+			setIsLoading(true);
+			const response = await axios.get(CHECK_AUTH);
+			setIsUserLoggedIn(response.data.result.logged_in);
+			setIsLoading(false);
+		})();
 	}, []);
 
 	let routes = [];
 
 	if (isUserLoggedIn)
 		routes.push(
-			<Route path={MANAGE_APPLICATION + ':sysId'} component={Application} />,
+			<Route
+				key='manage-application'
+				path={MANAGE_APPLICATION + ':sysId'}
+				component={Application}
+			/>,
 
 			<Route
+				key='edit-application'
 				path={EDIT_APPLICATION + ':draft?/:appSysId'}
 				component={EditApplication}
 			/>,
-			<Route path={CHAIR_DASHBOARD} component={ChairDashboard} />,
-			<Route path={CREATE_VACANCY} component={CreateVacancy} />,
-			<Route path={VACANCY_DASHBOARD} exact component={VacancyDashboard} />,
-			<Route path={EDIT_VACANCY + ':sysId'} component={EditVacancy} exact />,
 			<Route
+				key='chair-dashboard'
+				path={CHAIR_DASHBOARD}
+				component={ChairDashboard}
+			/>,
+			<Route
+				key='create-vacancy'
+				path={CREATE_VACANCY}
+				component={CreateVacancy}
+			/>,
+			<Route
+				key='vacancy-dashboard'
+				path={VACANCY_DASHBOARD}
+				exact
+				component={VacancyDashboard}
+			/>,
+			<Route
+				key='edit-vacancy'
+				path={EDIT_VACANCY + ':sysId'}
+				component={EditVacancy}
+				exact
+			/>,
+			<Route
+				key='manage-vacancy'
 				path={MANAGE_VACANCY + ':sysId/:tab?'}
 				component={ManageDashboard}
 				exact
 			/>,
-			<Route path={EDIT_DRAFT + ':sysId'} component={EditDraft} />,
-			<Route path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />,
+			<Route
+				key='edit-draft'
+				path={EDIT_DRAFT + ':sysId'}
+				component={EditDraft}
+			/>,
+			<Route
+				key='committee-dashboard'
+				path={COMMITTEE_DASHBOARD}
+				component={CommitteeDashboard}
+			/>,
 
-			<Route path={APPLICANT_DASHBOARD} component={ApplicantDashboard} />,
-			<Route path={APPLY + ':sysId'} component={Apply} />
+			<Route
+				key='applicant-dashboard'
+				path={APPLICANT_DASHBOARD}
+				component={ApplicantDashboard}
+			/>,
+			<Route key='apply' path={APPLY + ':sysId'} component={Apply} />
 		);
 
 	routes.push(
-		<Route path={VIEW_VACANCY + ':sysId'} component={ViewVacancyDetails} />,
-		<Route path={REGISTER_OKTA} component={RegisterOkta} />,
-		<Route path='/' exact component={Home} />,
-		<Route>
+		<Route
+			key='view-vacancy'
+			path={VIEW_VACANCY + ':sysId'}
+			component={ViewVacancyDetails}
+		/>,
+		<Route key='register-okta' path={REGISTER_OKTA} component={RegisterOkta} />,
+		<Route key='home' path='/' exact component={Home} />,
+		<Route key='404'>
 			<Redirect to='/' />
 		</Route>
 	);
 
 	return (
-		<Layout>
-			{!isLoading ? (
-				<Route>
-					<Switch>{routes}</Switch>
-				</Route>
-			) : (
-				<Loading />
-			)}
-		</Layout>
+		<Layout>{!isLoading ? <Switch>{routes}</Switch> : <Loading />}</Layout>
 	);
 };
 
