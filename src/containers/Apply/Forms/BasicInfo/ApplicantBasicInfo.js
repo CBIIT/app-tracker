@@ -124,6 +124,7 @@ const ApplicantBasicInfo = () => {
 						type='tel'
 						addonBefore={phonePrefixSelector}
 						placeholder='(123) 456-7890'
+						maxLength={16}
 					/>
 				</Form.Item>
 				<Form.Item
@@ -150,6 +151,7 @@ const ApplicantBasicInfo = () => {
 						type='tel'
 						addonBefore={businessPhonePrefixSelector}
 						placeholder='(123) 456-7890'
+						maxLength={16}
 					/>
 				</Form.Item>
 			</div>

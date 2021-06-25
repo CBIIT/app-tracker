@@ -34,10 +34,10 @@ const ApplicantAddress = () => {
 							},
 						]}
 					>
-						<Input placeholder='Please Enter' />
+						<Input placeholder='Please Enter' maxLength={100} />
 					</Form.Item>
 					<Form.Item name='address2' label='Address Line Two'>
-						<Input placeholder='Please Enter' />
+						<Input placeholder='Please Enter' maxLength={100} />
 					</Form.Item>
 				</div>
 				<div className='flex-container'>
@@ -51,10 +51,10 @@ const ApplicantAddress = () => {
 							},
 						]}
 					>
-						<Input placeholder='Please Enter' />
+						<Input placeholder='Please Enter' maxLength={50} />
 					</Form.Item>
 					<Form.Item name='stateProvince' label='State/Province'>
-						<Input placeholder='Please Enter' />
+						<Input placeholder='Please Enter' maxLength={40} />
 					</Form.Item>
 				</div>
 				<div className='flex-container'>
@@ -68,7 +68,7 @@ const ApplicantAddress = () => {
 							},
 						]}
 					>
-						<Input placeholder='Please Enter' />
+						<Input placeholder='Please Enter' maxLength={70} />
 					</Form.Item>
 					<Form.Item
 						name='zip'
@@ -80,7 +80,7 @@ const ApplicantAddress = () => {
 							},
 						]}
 					>
-						<Input placeholder='Please Enter' />
+						<Input placeholder='Please Enter' maxLength={10} />
 					</Form.Item>
 					{/* <Form.Item
 				name={['user', 'zip']}
