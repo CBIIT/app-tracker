@@ -15,17 +15,16 @@ const registerOkta = () => {
 
 	const history = useHistory();
 
-	useEffect(
-		() => async () => {
+	useEffect(() => {
+		async () => {
 			setIsLoading(true);
 			console.log('Loading...');
 			const response = await axios.get(CHECK_AUTH);
 			console.log('Response: ', response);
 			setOktaGlideSsoId(response.data.result.okta_idp);
 			setIsLoading(false);
-		},
-		[]
-	);
+		};
+	}, []);
 
 	const onSubmit = async (values) => {
 		setIsLoading(true);
