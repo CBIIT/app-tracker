@@ -1,6 +1,30 @@
 .OktaRegistration {
 	padding-top: 20px;
 	padding-bottom: 20px;
-	padding-inline: 10px;
+	padding-inline: 20px;
 	text-align: center;
+	max-width: 720px;
+	margin-inline: auto;
+	border: 1px solid #d3d3d3;
+	background-color: white;
+}
+.OktaRegistration p {
+	text-align: left;
+	color: rgba(0, 0, 0, 0.65);
+}
+
+.OktaRegistration input {
+	height: 40px;
+	font-size: 14px;
+}
+
+.OktaRegistrationLoginButton {
+	padding: 0;
+}
+
+.OktaOuterContainer {
+	padding-top: 50px;
+	padding-bottom: 50px;
+	width: 100%;
+	background-color: var(--secondary-bg-color);
 }

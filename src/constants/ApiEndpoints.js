@@ -54,6 +54,7 @@ const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
 const EDIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/edit';
 const SUBMIT_APPLICATION = '/api/x_g_nci_app_tracke/application/submit_app';
+const CREATE_OKTA_USER = '/api/x_g_nci_app_tracke/login/create_okta_user';
 
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
@@ -83,4 +84,5 @@ export {
 	EDIT_VACANCY,
 	GET_APPLICATION_DRAFT,
 	SUBMIT_APPLICATION,
+	CREATE_OKTA_USER,
 };
