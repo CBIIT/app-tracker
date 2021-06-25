@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Row, Col } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import './RegisterOkta.css';
-import { CHECK_AUTH, CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
-import { useHistory } from 'react-router-dom';
 
+import Loading from '../../components/Loading/Loading';
+import { CHECK_AUTH, CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
+import './RegisterOkta.css';
 const registerOkta = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [message, setMessage] = useState();
@@ -245,7 +246,7 @@ const registerOkta = () => {
 			</div>
 		</div>
 	) : (
-		<></>
+		<Loading />
 	);
 };
 
