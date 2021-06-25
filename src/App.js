@@ -34,14 +34,18 @@ import Apply from './containers/Apply/Apply';
 import Application from './containers/Application/Application';
 import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
+import Loading from './components/Loading/Loading';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 
 const app = () => {
+	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	useEffect(async () => {
+		setIsLoading(true);
 		const response = await axios.get(CHECK_AUTH);
 		setIsUserLoggedIn(response.data.result.logged_in);
+		setIsLoading(false);
 	}, []);
 
 	let routes = [];
@@ -80,11 +84,15 @@ const app = () => {
 	);
 
 	return (
-		<Route>
-			<Layout>
-				<Switch>{routes}</Switch>
-			</Layout>
-		</Route>
+		<Layout>
+			{!isLoading ? (
+				<Route>
+					<Switch>{routes}</Switch>
+				</Route>
+			) : (
+				<Loading />
+			)}
+		</Layout>
 	);
 };
 
