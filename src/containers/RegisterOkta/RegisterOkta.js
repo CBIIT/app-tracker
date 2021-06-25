@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Form, Input, Button, Row, Col, Result } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -10,6 +10,7 @@ import './RegisterOkta.css';
 const registerOkta = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [message, setMessage] = useState();
+	const [error, setError] = useState(false);
 	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
 
 	const [formInstance] = Form.useForm();
@@ -32,9 +33,30 @@ const registerOkta = () => {
 
 		try {
 			const response = await axios.post(CREATE_OKTA_USER, values);
-			setMessage(response.data.result);
+			const result = response.data.result;
+			if (
+				result.includes(
+					'An object with this field already exists in the current organization'
+				)
+			) {
+				setMessage('This account already exists.  Please try logging in.');
+				setError(true);
+			} else if (result.includes('errorCode')) {
+				setMessage(
+					'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact 1-800-518-8474 or supportemail@mail.nih.gov'
+				);
+				setError(true);
+			} else {
+				setMessage(
+					'User account created, please check your email for a message from Okta to activate your account'
+				);
+				setError(false);
+			}
 		} catch (error) {
-			setMessage('There was an error creating your Okta account.');
+			setMessage(
+				'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact 1-800-518-8474 or supportemail@mail.nih.gov'
+			);
+			setError(true);
 		}
 
 		setIsLoading(false);
@@ -103,7 +125,7 @@ const registerOkta = () => {
 		<div className='OktaOuterContainer'>
 			<div className='OktaRegistration'>
 				{message ? (
-					<p>{message}</p>
+					<Result status={error ? 'warning' : 'success'} subTitle={message} />
 				) : (
 					<>
 						<h1>Create your NCI account to access SCSS</h1>
