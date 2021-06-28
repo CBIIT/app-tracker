@@ -49,15 +49,5 @@ export const initialValues = {
 			active: true,
 			text: "<p><span>Dear Dr. #APP_LAST_NAME#,</span></p><p><span>Good news! Your application for the position of #POSITION# at the ***DOC*** National Cancer Institute's (NCI) </span><strong>has been submitted.</strong></p><p><span>You may view the status of your application at any time by following #APP_URL#.</span></p><p><span>If you should have any questions, please contact ____. Thank you for your interest in the National Cancer Institute.</span></p>",
 		},
-		{
-			type: 'Not referred to interview',
-			active: true,
-			text: '<p><span>Dear Dr. #APP_LAST_NAME#</span></p><p><span>Thank you for your interest in the position of #POSITION# at the ***DOC***, National Cancer Institute (NCI).&nbsp;</span></p><p><span>We wanted to let you know how much we appreciated the opportunity to review your application.&nbsp;While we will no longer be considering you for this position, we encourage you to continue to apply for other positions at the NIH in areas that you have interest.</span></p><p><span>&nbsp;</span></p><p><span>Best wishes in your future career endeavors.</span></p>',
-		},
-		{
-			type: 'Invitation to interview',
-			active: true,
-			text: '<p><span>Dear Dr. #APP_LAST_NAME#</span></p><p><span>Thank you for your interest in the position of #POSITION# at the ***DOC***, National Cancer Institute (NCI).&nbsp;</span></p><p><span>We wanted to let you know how much we appreciated the opportunity to review your application and we invite you to interview with our search committee regarding the #POSITION# at the ***DOC***, National Cancer Institute (NCI).&nbsp;</span></p><p><span>***ENTER EXECUTIVE SECRETARY NAME HERE*** will be in touch to schedule the day and time with you.&nbsp;</span></p><p><span>We look forward to meeting with you.</span></p>',
-		},
 	],
 };

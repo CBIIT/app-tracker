@@ -40,13 +40,18 @@ const triageWidget = (props) => (
 			</InfoCardRow>
 			<InfoCardRow>
 				{props.readOnly ? (
-					<LabelValuePair label='Comments' value={props.triageComments} />
+					<LabelValuePair
+						label='Comments'
+						value={props.triageComments}
+						valueStyle={{ overflowWrap: 'break-word' }}
+					/>
 				) : (
 					<TextArea
 						rows={4}
 						onChange={props.onTriageCommentsChange}
 						defaultValue={props.triageComments}
 						placeholder={props.triageCommentsPlaceholder}
+						maxLength={props.maxCommentLength}
 					/>
 				)}
 			</InfoCardRow>
