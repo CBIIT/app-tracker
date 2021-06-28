@@ -253,6 +253,7 @@ const individualScoringTable = (props) => {
 					rows={4}
 					defaultValue={committeeComments}
 					onChange={onTextAreaChangeHandler}
+					maxLength={10000}
 				/>
 			</Modal>
 		</>

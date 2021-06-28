@@ -62,10 +62,10 @@ const ApplicantBasicInfo = () => {
 						},
 					]}
 				>
-					<Input placeholder='Please Enter' />
+					<Input placeholder='Please Enter' maxLength={100} />
 				</Form.Item>
 				<Form.Item name='middleName' label='Middle Name'>
-					<Input placeholder='Please Enter' />
+					<Input placeholder='Please Enter' maxLength={100} />
 				</Form.Item>
 				<Form.Item
 					name='lastName'
@@ -77,7 +77,7 @@ const ApplicantBasicInfo = () => {
 						},
 					]}
 				>
-					<Input placeholder='Please Enter' />
+					<Input placeholder='Please Enter' maxLength={100} />
 				</Form.Item>
 			</div>
 			<div className='emailDiv'>
@@ -92,7 +92,7 @@ const ApplicantBasicInfo = () => {
 						},
 					]}
 				>
-					<Input type='email' placeholder='Please Enter' />
+					<Input type='email' placeholder='Please Enter' maxLength={100} />
 				</Form.Item>
 			</div>
 			<div className='phones'>

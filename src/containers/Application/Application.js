@@ -437,6 +437,7 @@ const application = () => {
 								initiallyHideContent={
 									vacancyState === OWM_TRIAGE ? false : true
 								}
+								maxCommentLength={10000}
 							/>
 						) : null}
 
@@ -457,6 +458,7 @@ const application = () => {
 								initiallyHideContent={
 									vacancyState === CHAIR_TRIAGE ? false : true
 								}
+								maxCommentLength={10000}
 							/>
 						) : null}
 						{isUserAllowedToScore() ? (
