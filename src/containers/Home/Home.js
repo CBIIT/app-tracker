@@ -58,7 +58,7 @@ const home = () => {
 	return (
 		<>
 			<div className='HomeLogo'>
-				<img src={homeLogo}></img>
+				<img src={homeLogo} alt='Senior Scientific Careers at NCI'></img>
 			</div>
 			<div className='HomeContent'>
 				<p>
