@@ -107,8 +107,7 @@ const vacancyDashboard = () => {
 		if (e.target.value == 'all') {
 			setData(filteredData.data.result);
 		} else if (
-			(url =
-				'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed')
+			url == '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed'
 		) {
 			setData(
 				filteredData.data.result.filter((res) => {
