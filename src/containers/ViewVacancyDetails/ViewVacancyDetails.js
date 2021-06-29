@@ -11,7 +11,7 @@ import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
 
-const numberToWordMap = { 1: 'One', 2: 'Two', 3: 'Three' };
+const numberToWordMap = { 0: 'Zero', 1: 'One', 2: 'Two', 3: 'Three' };
 
 const viewVacancyDetails = () => {
 	const [vacancyDetails, setVacancyDetails] = useState({});
@@ -62,7 +62,8 @@ const viewVacancyDetails = () => {
 								' (' +
 								vacancyDetails.basic_info.number_of_recommendation.value +
 								') Letter' +
-								(vacancyDetails.basic_info.number_of_recommendation.value > 1
+								(vacancyDetails.basic_info.number_of_recommendation.value > 1 ||
+								vacancyDetails.basic_info.number_of_recommendation.value == 0
 									? 's'
 									: '') +
 								' of Recommendation'}

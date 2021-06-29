@@ -13,6 +13,7 @@ const basicInformation = (props) => {
 	const initialValues = props.initialValues;
 
 	const sliderMarks = {
+		0: '0',
 		1: '1',
 		2: '2',
 		3: '3',
@@ -125,7 +126,7 @@ const basicInformation = (props) => {
 				</p>
 
 				<Form.Item name='numberOfRecommendations'>
-					<Slider className='Slider' min={1} max={3} dots marks={sliderMarks} />
+					<Slider className='Slider' min={0} max={3} dots marks={sliderMarks} />
 				</Form.Item>
 			</Form.Item>
 		</Form>
