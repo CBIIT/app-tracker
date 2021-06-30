@@ -68,6 +68,7 @@ const applicantList = (props) => {
 			<Table
 				dataSource={applicants}
 				columns={applicantColumns}
+				scroll={{ x: 'true' }}
 				key='applicants'
 			></Table>
 		</div>

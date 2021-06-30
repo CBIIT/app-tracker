@@ -78,6 +78,7 @@ const expandedRowRender = (scores) => {
 		<Table
 			rowKey='sys_id'
 			columns={columns}
+			scroll={{ x: 'true' }}
 			dataSource={scores}
 			pagination={false}
 		/>
