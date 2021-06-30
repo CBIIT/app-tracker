@@ -76,6 +76,7 @@ const home = () => {
 					<Table
 						columns={columns}
 						dataSource={data}
+						scroll={{ x: 'true' }}
 						pagination={{ hideOnSinglePage: true }}
 						locale={{
 							emptyText:
