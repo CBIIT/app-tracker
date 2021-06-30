@@ -81,21 +81,25 @@ const review = (props) => {
 					<LabelValuePair label='Post Code' value={formData.address.zip} />
 				</div>
 			</div>
-			<SectionHeader
-				title='References'
-				onClick={() => props.onEditButtonClick(2)}
-			/>
-			<div className='SectionContent'>
-				<Table
-					key='email'
-					pagination={{ hideOnSinglePage: true }}
-					locale={{
-						emptyText: 'No references.',
-					}}
-					dataSource={references}
-					columns={referencesColumns}
-				/>
-			</div>
+			{formData.references.length > 0 ? (
+				<>
+					<SectionHeader
+						title='References'
+						onClick={() => props.onEditButtonClick(2)}
+					/>
+					<div className='SectionContent'>
+						<Table
+							key='email'
+							pagination={{ hideOnSinglePage: true }}
+							locale={{
+								emptyText: 'No references.',
+							}}
+							dataSource={references}
+							columns={referencesColumns}
+						/>
+					</div>
+				</>
+			) : null}
 			<SectionHeader
 				title='Application Documents'
 				onClick={() => props.onEditButtonClick(3)}

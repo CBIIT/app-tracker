@@ -123,7 +123,7 @@ const Apply = (props) => {
 		setFormData(newFormData);
 	};
 
-	const steps = [
+	let steps = [
 		{
 			key: 'basicInfo',
 			title: 'Basic Information',
@@ -138,14 +138,6 @@ const Apply = (props) => {
 			content: <ApplicantAddress />,
 			description: 'Mailing address',
 			longDescription: 'Please provide your mailing address.',
-		},
-		{
-			key: 'references',
-			title: 'References',
-			content: <ApplicantReferences />,
-			description: 'References to support the application',
-			longDescription:
-				'Please provide references that can submit a recommendation on your behalf.',
 		},
 		{
 			key: 'applicantDocuments',
@@ -163,6 +155,16 @@ const Apply = (props) => {
 			longDescription: 'Please review key information entered in each section.',
 		},
 	];
+
+	if (formData.references.length > 0)
+		steps.splice(2, 0, {
+			key: 'references',
+			title: 'References',
+			content: <ApplicantReferences />,
+			description: 'References to support the application',
+			longDescription:
+				'Please provide references that can submit a recommendation on your behalf.',
+		});
 
 	const onEditButtonClick = (step) => {
 		setCurrentStep(step);
@@ -252,7 +254,6 @@ const Apply = (props) => {
 				};
 
 				if (draftId) data['sys_id'] = draftId;
-				console.log('Sending data: ', data);
 				const saveDraftResponse = await axios.post(
 					'/api/x_g_nci_app_tracke/application/save_app_draft',
 					data
