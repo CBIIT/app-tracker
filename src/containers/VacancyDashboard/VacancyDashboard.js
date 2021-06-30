@@ -105,6 +105,39 @@ const vacancyDashboard = () => {
 		const filteredData = await axios.get(url);
 		if (e.target.value == 'all') {
 			setData(filteredData.data.result);
+		} else if (url == urls.closed) {
+			setData(
+				filteredData.data.result.filter((res) => {
+					let newState = '';
+					switch (res.state) {
+						case 'closed':
+							newState = 'closed';
+							break;
+						case 'owm_triage':
+							newState = 'triaged';
+							break;
+						case 'chair_triage':
+							newState = 'triaged';
+							break;
+						case 'individual_scoring_in_progress':
+							newState = 'individual_scored';
+							break;
+						case 'individual_scoring_complete':
+							newState = 'individual_scored';
+							break;
+						case 'committee_review_in_progress':
+							newState = 'committee_review';
+							break;
+						case 'committee_review_complete':
+							newState = 'committee_review';
+							break;
+						case 'voting_complete':
+							newState = 'voting_complete';
+							break;
+					}
+					return newState == newFilter;
+				})
+			);
 		} else if (e.target.value == 'extended') {
 			setData(filteredData.data.result.filter((res) => res.extended == 1));
 		} else {
@@ -521,10 +554,14 @@ const vacancyDashboard = () => {
 									<Radio.Button value='closed'>Closed</Radio.Button>
 									<Radio.Button value='triaged'>Triaged</Radio.Button>
 									<Radio.Button value='individual_scored'>
-										Individually Scored
+										Individual Scored
 									</Radio.Button>
-									<Radio.Button value='scored'>Scored</Radio.Button>
-									<Radio.Button value='archived'>Archived</Radio.Button>
+									<Radio.Button value='committee_review'>
+										Committee Review
+									</Radio.Button>
+									<Radio.Button value='voting_complete'>
+										Voting Complete
+									</Radio.Button>
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
