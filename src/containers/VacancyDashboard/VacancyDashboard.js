@@ -11,6 +11,7 @@ import {
 	Modal,
 	Empty,
 	ConfigProvider,
+	Tooltip,
 } from 'antd';
 import {
 	DeleteOutlined,
@@ -289,12 +290,15 @@ const vacancyDashboard = () => {
 				if (record.extended == '1') {
 					return (
 						<>
-							<FieldTimeOutlined
-								style={{
-									fontSize: '20px',
-									color: 'rgb(191,191,191)',
-								}}
-							/>
+							<Tooltip title='Extended'>
+								<FieldTimeOutlined
+									alt='Extended Icon'
+									style={{
+										fontSize: '20px',
+										color: 'rgb(191,191,191)',
+									}}
+								/>
+							</Tooltip>
 						</>
 					);
 				} else {
