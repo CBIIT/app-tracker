@@ -102,15 +102,13 @@ const vacancyDashboard = () => {
 
 	const filterChangeHandler = async (e) => {
 		const newFilter = e.target.value;
-		let newState = '';
 		const filteredData = await axios.get(url);
 		if (e.target.value == 'all') {
 			setData(filteredData.data.result);
-		} else if (
-			url == '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed'
-		) {
+		} else if (url == urls.closed) {
 			setData(
 				filteredData.data.result.filter((res) => {
+					let newState = '';
 					switch (res.state) {
 						case 'closed':
 							newState = 'closed';
