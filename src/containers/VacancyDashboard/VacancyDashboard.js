@@ -292,6 +292,7 @@ const vacancyDashboard = () => {
 						<>
 							<Tooltip title='Extended'>
 								<FieldTimeOutlined
+									alt='Extended Icon'
 									style={{
 										fontSize: '20px',
 										color: 'rgb(191,191,191)',
