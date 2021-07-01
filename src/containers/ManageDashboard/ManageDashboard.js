@@ -255,8 +255,8 @@ const manageDashboard = () => {
 				</div>
 			</div>
 			<VacancyStatus state={state} />
-			<div className='manage-tabs'>
-				{displayNextButton(vacancy.state) ? (
+			{displayNextButton(vacancy.state) ? (
+				<div className='AdvanceButtonDiv'>
 					<Tooltip
 						placement='top'
 						title={
@@ -274,7 +274,9 @@ const manageDashboard = () => {
 							{nextButtonLabel} <DoubleRightOutlined />
 						</Button>
 					</Tooltip>
-				) : null}
+				</div>
+			) : null}
+			<div className='manage-tabs'>
 				<Tabs
 					activeKey={currentTab}
 					defaultActiveKey='details'
@@ -289,7 +291,13 @@ const manageDashboard = () => {
 							/>
 
 							{userRoles.includes(OWM_TEAM) ? (
-								<div style={{ paddingLeft: '16px', paddingBottom: '16px' }}>
+								<div
+									className='RatingPlanDiv'
+									style={{
+										paddingLeft: '16px',
+										paddingBottom: '16px',
+									}}
+								>
 									<h2>Rating Plan</h2>
 									<FileUploadAndDisplay
 										buttonText='Upload Rating Plan'
