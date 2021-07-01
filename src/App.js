@@ -34,17 +34,22 @@ import Apply from './containers/Apply/Apply';
 import Application from './containers/Application/Application';
 import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Loading from './components/Loading/Loading';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
+	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
 			const response = await axios.get(CHECK_AUTH);
+			setItrustGlideSsoId(response.data.result.itrust_idp);
+			setOktaGlideSsoId(response.data.result.okta_idp);
 			setIsUserLoggedIn(response.data.result.logged_in);
 			setIsLoading(false);
 		})();
@@ -59,7 +64,12 @@ const app = () => {
 				path={MANAGE_APPLICATION + ':sysId'}
 				component={Application}
 			/>,
-
+			<Route
+				key='vacancy-dashboard'
+				path={VACANCY_DASHBOARD}
+				exact
+				component={VacancyDashboard}
+			/>,
 			<Route
 				key='edit-application'
 				path={EDIT_APPLICATION + ':draft?/:appSysId'}
@@ -74,12 +84,6 @@ const app = () => {
 				key='create-vacancy'
 				path={CREATE_VACANCY}
 				component={CreateVacancy}
-			/>,
-			<Route
-				key='vacancy-dashboard'
-				path={VACANCY_DASHBOARD}
-				exact
-				component={VacancyDashboard}
 			/>,
 			<Route
 				key='edit-vacancy'
@@ -113,6 +117,15 @@ const app = () => {
 		);
 
 	routes.push(
+		<ProtectedRoute
+			path='/test/vacancy/dashboard'
+			key='vacancy-dashboard'
+			exact
+			component={VacancyDashboard}
+			isUserLoggedIn={isUserLoggedIn}
+			iTrustGlideSsoId={iTrustGlideSsoId}
+			oktaGlideSsoId={oktaGlideSsoId}
+		/>,
 		<Route
 			key='view-vacancy'
 			path={VIEW_VACANCY + ':sysId'}
