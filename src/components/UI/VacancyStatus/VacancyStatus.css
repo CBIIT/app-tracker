@@ -51,3 +51,18 @@
 	.ant-steps-icon-dot {
 	background-color: rgb(69 69 69);
 }
+
+@media (max-width: 575px) {
+	.vacancy-status .ant-steps-item-title {
+		bottom: 4px;
+	}
+
+	.AdvanceButton {
+		margin-bottom: 20px;
+	}
+
+	.SectionHeader {
+		background-color: white;
+		padding-top: 10px;
+	}
+}

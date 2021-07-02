@@ -32,16 +32,19 @@ const VacancyStatus = (props) => {
 
 	return (
 		<>
-			<Steps
-				current={currentStatus}
-				className='vacancy-status'
-				progressDot={customDot}
-			>
-				<Steps.Step title='Triage' />
-				<Steps.Step title='Individual Scoring' />
-				<Steps.Step title='Committee Review' />
-				<Steps.Step title='Voting Complete' />
-			</Steps>
+			<div className='VacancyStepStatus'>
+				<Steps
+					current={currentStatus}
+					className='vacancy-status'
+					progressDot={customDot}
+					responsive='true'
+				>
+					<Steps.Step title='Triage' />
+					<Steps.Step title='Individual Scoring' />
+					<Steps.Step title='Committee Review' />
+					<Steps.Step title='Voting Complete' />
+				</Steps>
+			</div>
 		</>
 	);
 };
