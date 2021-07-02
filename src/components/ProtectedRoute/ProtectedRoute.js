@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, useLocation } from 'react-router-dom';
 
 const protectedRoute = ({
 	component: Component,
@@ -7,7 +7,10 @@ const protectedRoute = ({
 	iTrustGlideSsoId,
 	...rest
 }) => {
-	const redirectAfterLoginUrl = encodeURIComponent(window.location.href);
+	const location = useLocation();
+	const redirectAfterLoginUrl = encodeURIComponent(
+		'/nci-scss.do#' + location.pathname
+	);
 
 	useEffect(() => {
 		const pushUrl =
