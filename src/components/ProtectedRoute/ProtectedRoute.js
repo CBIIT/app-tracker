@@ -7,9 +7,9 @@ const protectedRoute = ({
 	iTrustGlideSsoId,
 	...rest
 }) => {
-	const location = useLocation();
+	const routeLocation = useLocation();
 	const redirectAfterLoginUrl = encodeURIComponent(
-		'/nci-scss.do#' + location.pathname
+		'/nci-scss.do#' + routeLocation.pathname
 	);
 
 	useEffect(() => {
