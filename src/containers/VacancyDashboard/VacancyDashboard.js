@@ -218,9 +218,7 @@ const vacancyDashboard = () => {
 		{
 			title: 'Open Date',
 			dataIndex: 'open_date',
-			render: (date) => {
-				transformDateToDisplay(date);
-			},
+			render: (date) => transformDateToDisplay(date),
 			sorter: {
 				compare: (a, b) => {
 					const dateA = a.open_date;
