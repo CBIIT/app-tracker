@@ -103,7 +103,7 @@ const applicantDashboard = () => {
 			dataIndex: 'vacancy',
 			key: 'title',
 			sorter: {
-				compare: (a, b) => a.vacancy_title - b.vacancy_title,
+				compare: (a, b) => a.vacancy.localeCompare(b.vacancy),
 				multiple: 1,
 			},
 			defaultSortOrder: 'ascend',
