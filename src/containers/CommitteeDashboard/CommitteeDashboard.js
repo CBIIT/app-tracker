@@ -78,7 +78,7 @@ const committeeColumns = [
 		dataIndex: 'vacancy_title',
 		key: 'title',
 		sorter: {
-			compare: (a, b) => a.vacancy_title - b.vacancy_title,
+			compare: (a, b) => a.vacancy_title.localeCompare(b.vacancy_title),
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
@@ -109,7 +109,7 @@ const committeeColumns = [
 		dataIndex: 'status',
 		key: 'status',
 		sorter: {
-			compare: (a, b) => a.status - b.status,
+			compare: (a, b) => a.status.localeCompare(b.status),
 			multiple: 2,
 		},
 		defaultSortOrder: 'ascend',
