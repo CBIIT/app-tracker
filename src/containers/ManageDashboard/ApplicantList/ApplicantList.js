@@ -17,6 +17,7 @@ import {
 	COMMITTEE_MEMBER_VOTING,
 	COMMITTEE_MEMBER_NON_VOTING,
 } from '../../../constants/Roles';
+import { transformDateToDisplay } from '../../../components/Util/Date/Date';
 import './ApplicantList.css';
 
 const renderDecision = (text) =>
@@ -57,9 +58,7 @@ const applicantColumns = [
 		title: 'Submitted',
 		dataIndex: 'submitted',
 		key: 'submitted',
-		// render: (text) => {
-		// 	return <span>{text.split(' ')[0]}</span>;
-		// },
+		render: (date) => transformDateToDisplay(date),
 	},
 	{
 		title: 'OWM Triage Decision',

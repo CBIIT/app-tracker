@@ -98,7 +98,11 @@ const basicInformation = (props) => {
 						{ validator: validateDates },
 					]}
 				>
-					<DatePicker className='DatePicker' disabledDate={disabledDate} />
+					<DatePicker
+						className='DatePicker'
+						disabledDate={disabledDate}
+						format='MM/DD/YYYY'
+					/>
 				</Form.Item>
 
 				<Form.Item
@@ -112,7 +116,11 @@ const basicInformation = (props) => {
 						{ validator: validateDates },
 					]}
 				>
-					<DatePicker className='DatePicker' disabledDate={disabledDate} />
+					<DatePicker
+						className='DatePicker'
+						disabledDate={disabledDate}
+						format='MM/DD/YYYY'
+					/>
 				</Form.Item>
 			</div>
 
