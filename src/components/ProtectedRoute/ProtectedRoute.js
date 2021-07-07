@@ -5,6 +5,8 @@ const protectedRoute = ({
 	component: Component,
 	isUserLoggedIn,
 	iTrustGlideSsoId,
+	oktaGlideSsoId,
+	useOktaAuth,
 	...rest
 }) => {
 	const routeLocation = useLocation();
@@ -13,13 +15,16 @@ const protectedRoute = ({
 	);
 
 	useEffect(() => {
-		const pushUrl =
-			'/nav_to.do?uri=' +
-			redirectAfterLoginUrl +
-			'&glide_sso_id=' +
-			iTrustGlideSsoId;
+		if (!isUserLoggedIn) {
+			let pushUrl =
+				'/nav_to.do?uri=' + redirectAfterLoginUrl + '&glide_sso_id=';
 
-		if (!isUserLoggedIn) location.href = pushUrl;
+			useOktaAuth
+				? (pushUrl = pushUrl.concat(oktaGlideSsoId))
+				: (pushUrl = pushUrl.concat(iTrustGlideSsoId));
+
+			location.href = pushUrl;
+		}
 	}, []);
 
 	return isUserLoggedIn ? (

@@ -37,12 +37,14 @@ import EditApplication from './containers/Apply/EditApplication';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Loading from './components/Loading/Loading';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
+import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
 	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
+	const [user, setUser] = useState({});
 
 	useEffect(() => {
 		(async () => {
@@ -50,6 +52,7 @@ const app = () => {
 			const response = await axios.get(CHECK_AUTH);
 			setItrustGlideSsoId(response.data.result.itrust_idp);
 			setOktaGlideSsoId(response.data.result.okta_idp);
+			setUser(response.data.result);
 			setIsUserLoggedIn(response.data.result.logged_in);
 			setIsLoading(false);
 		})();
@@ -57,74 +60,224 @@ const app = () => {
 
 	let routes = [];
 
-	if (isUserLoggedIn)
+	if (isUserLoggedIn) {
+		if (user.is_chair) {
+			routes.push(
+				<ProtectedRoute
+					key='chair-dashboard'
+					path={CHAIR_DASHBOARD}
+					component={ChairDashboard}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>
+			);
+		}
+
+		if (user.is_manager) {
+			routes.push(
+				<ProtectedRoute
+					key='vacancy-dashboard'
+					path={VACANCY_DASHBOARD}
+					exact
+					component={VacancyDashboard}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>,
+				<ProtectedRoute
+					key='create-vacancy'
+					path={CREATE_VACANCY}
+					component={CreateVacancy}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>,
+				<ProtectedRoute
+					key='edit-vacancy'
+					path={EDIT_VACANCY + ':sysId'}
+					component={EditVacancy}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+					exact
+				/>,
+
+				<ProtectedRoute
+					key='edit-draft'
+					path={EDIT_DRAFT + ':sysId'}
+					component={EditDraft}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>
+			);
+		}
+
+		if (user.user.roles.includes(COMMITTEE_MEMBER_ROLE))
+			routes.push(
+				<ProtectedRoute
+					key='committee-dashboard'
+					path={COMMITTEE_DASHBOARD}
+					component={CommitteeDashboard}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>
+			);
+
+		if (user.user.roles.includes(COMMITTEE_MEMBER_ROLE))
+			<ProtectedRoute
+				key='committee-dashboard'
+				path={COMMITTEE_DASHBOARD}
+				component={CommitteeDashboard}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
+			/>;
+
+		if (
+			user.is_chair ||
+			user.is_manager ||
+			user.user.roles.includes(COMMITTEE_MEMBER_ROLE)
+		) {
+			routes.push(
+				<ProtectedRoute
+					key='manage-application'
+					path={MANAGE_APPLICATION + ':sysId'}
+					component={Application}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>,
+				<ProtectedRoute
+					key='manage-vacancy'
+					path={MANAGE_VACANCY + ':sysId/:tab?'}
+					component={ManageDashboard}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+					exact
+				/>
+			);
+		}
+
+		if (user.user.has_applications)
+			routes.push(
+				<ProtectedRoute
+					key='applicant-dashboard'
+					path={APPLICANT_DASHBOARD}
+					component={ApplicantDashboard}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>,
+				<ProtectedRoute
+					key='edit-application'
+					path={EDIT_APPLICATION + ':draft?/:appSysId'}
+					component={EditApplication}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>
+			);
+	} else {
 		routes.push(
-			<Route
+			<ProtectedRoute
 				key='manage-application'
 				path={MANAGE_APPLICATION + ':sysId'}
 				component={Application}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-			<Route
+			<ProtectedRoute
 				key='vacancy-dashboard'
 				path={VACANCY_DASHBOARD}
 				exact
 				component={VacancyDashboard}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-			<Route
+			<ProtectedRoute
 				key='edit-application'
 				path={EDIT_APPLICATION + ':draft?/:appSysId'}
 				component={EditApplication}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-			<Route
+			<ProtectedRoute
 				key='chair-dashboard'
 				path={CHAIR_DASHBOARD}
 				component={ChairDashboard}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-			<Route
+			<ProtectedRoute
 				key='create-vacancy'
 				path={CREATE_VACANCY}
 				component={CreateVacancy}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-			<Route
+			<ProtectedRoute
 				key='edit-vacancy'
 				path={EDIT_VACANCY + ':sysId'}
 				component={EditVacancy}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 				exact
 			/>,
-			<Route
+			<ProtectedRoute
 				key='manage-vacancy'
 				path={MANAGE_VACANCY + ':sysId/:tab?'}
 				component={ManageDashboard}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 				exact
 			/>,
-			<Route
+			<ProtectedRoute
 				key='edit-draft'
 				path={EDIT_DRAFT + ':sysId'}
 				component={EditDraft}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-			<Route
+			<ProtectedRoute
 				key='committee-dashboard'
 				path={COMMITTEE_DASHBOARD}
 				component={CommitteeDashboard}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
 			/>,
-
-			<Route
+			<ProtectedRoute
 				key='applicant-dashboard'
 				path={APPLICANT_DASHBOARD}
 				component={ApplicantDashboard}
-			/>,
-			<Route key='apply' path={APPLY + ':sysId'} component={Apply} />
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
+			/>
 		);
+	}
 
 	routes.push(
 		<ProtectedRoute
-			path='/test/vacancy/dashboard'
-			key='vacancy-dashboard'
-			exact
-			component={VacancyDashboard}
+			key='apply'
+			path={APPLY + ':sysId'}
+			component={Apply}
 			isUserLoggedIn={isUserLoggedIn}
 			iTrustGlideSsoId={iTrustGlideSsoId}
 			oktaGlideSsoId={oktaGlideSsoId}
+			useOktaAuth={true}
 		/>,
 		<Route
 			key='view-vacancy'

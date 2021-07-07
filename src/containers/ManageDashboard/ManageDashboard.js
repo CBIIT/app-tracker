@@ -321,11 +321,6 @@ const manageDashboard = () => {
 							reloadVacancy={loadLatestVacancyInfo}
 						/>
 					</Tabs.TabPane>
-					<Tabs.TabPane
-						tab='Review Summaries'
-						key='review'
-						disabled
-					></Tabs.TabPane>
 				</Tabs>
 			</div>
 			<NextStepModal
