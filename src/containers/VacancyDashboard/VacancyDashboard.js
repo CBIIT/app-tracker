@@ -555,7 +555,6 @@ const vacancyDashboard = () => {
 									onChange={filterChangeHandler}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
-									<Radio.Button value='closed'>Closed</Radio.Button>
 									<Radio.Button value='triaged'>Triaged</Radio.Button>
 									<Radio.Button value='individual_scored'>
 										Individual Scored
