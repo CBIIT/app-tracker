@@ -265,6 +265,7 @@ const app = () => {
 				isUserLoggedIn={isUserLoggedIn}
 				iTrustGlideSsoId={iTrustGlideSsoId}
 				oktaGlideSsoId={oktaGlideSsoId}
+				useOktaAuth={true}
 			/>
 		);
 	}
