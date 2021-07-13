@@ -51,8 +51,9 @@
 }
 
 .ExternalNavTrademark {
-	font-family: 'SourceSansPro', Helvetica, Arial, sans-serif;
-	font-size: 16px;
+	font-family: 'Noto Sans Regular', 'SourceSansPro', Helvetica, Arial,
+		sans-serif;
+	font-size: 14px;
 	color: white;
 	justify-content: center;
 	text-align: center;
