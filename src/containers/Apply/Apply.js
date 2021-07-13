@@ -140,14 +140,6 @@ const Apply = (props) => {
 			longDescription: 'Please provide your mailing address.',
 		},
 		{
-			key: 'applicantDocuments',
-			title: 'Application Documents',
-			content: <ApplicantDocuments />,
-			description: 'CV, cover letter, and statement of research interests',
-			longDescription:
-				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
-		},
-		{
 			key: 'review',
 			title: 'Review',
 			content: <Review onEditButtonClick={(step) => onEditButtonClick(step)} />,
@@ -155,6 +147,16 @@ const Apply = (props) => {
 			longDescription: 'Please review key information entered in each section.',
 		},
 	];
+
+	if (formData.applicantDocuments.length > 0)
+		steps.splice(2, 0, {
+			key: 'applicantDocuments',
+			title: 'Application Documents',
+			content: <ApplicantDocuments />,
+			description: 'CV, cover letter, and statement of research interests',
+			longDescription:
+				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
+		});
 
 	if (formData.references.length > 0)
 		steps.splice(2, 0, {
@@ -167,7 +169,8 @@ const Apply = (props) => {
 		});
 
 	const onEditButtonClick = (step) => {
-		setCurrentStep(step);
+		const index = steps.findIndex((item) => item.key === step);
+		setCurrentStep(index);
 	};
 
 	const saveCurrentForm = async (result) => {
