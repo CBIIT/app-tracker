@@ -1,6 +1,10 @@
+import moment from 'moment';
+
 const transformDateToDisplay = (date) => {
 	const newDate = new Date(date);
-	return isValidDate(newDate) ? newDate.toLocaleDateString('en-US') : '';
+	return isValidDate(newDate)
+		? moment(date.toString()).format('MM/DD/YYYY')
+		: '';
 };
 
 const isValidDate = (date) => {
