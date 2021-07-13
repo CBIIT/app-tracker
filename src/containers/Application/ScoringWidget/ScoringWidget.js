@@ -57,6 +57,7 @@ const scoringWidget = (props) => {
 							rules={[
 								{ required: true, message: 'Please enter a recommendation' },
 							]}
+							initialValue={props.triageChoice}
 						>
 							<Group
 								options={props.triageOptions}
