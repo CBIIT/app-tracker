@@ -100,7 +100,7 @@ const navBar = () => {
 					</div>
 				</>
 			);
-		} else {
+		} else if (authResponse.user.has_applications === true) {
 			return (
 				<>
 					<div className='OuterDiv'>
@@ -111,6 +111,20 @@ const navBar = () => {
 								</Menu.Item>
 								<Menu.Item key='your-applications'>
 									<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
+								</Menu.Item>
+							</Menu>
+						</div>
+					</div>
+				</>
+			);
+		} else {
+			return (
+				<>
+					<div className='OuterDiv'>
+						<div className='NavBar'>
+							<Menu mode='horizontal'>
+								<Menu.Item key='home'>
+									<Link to='/'>Home</Link>
 								</Menu.Item>
 							</Menu>
 						</div>
