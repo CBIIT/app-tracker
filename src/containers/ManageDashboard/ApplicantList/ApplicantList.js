@@ -81,7 +81,7 @@ const applicantList = (props) => {
 
 	useEffect(() => {
 		loadApplicants();
-	}, []);
+	}, [props.vacancyState]);
 
 	const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
 		if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
