@@ -83,6 +83,7 @@ const basicInformation = (props) => {
 
 			<Form.Item
 				label='Vacancy Description'
+				className='VacancyDescription'
 				name='description'
 				rules={[{ validator: validateDescription }]}
 			>
