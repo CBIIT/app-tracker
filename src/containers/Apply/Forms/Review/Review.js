@@ -26,7 +26,7 @@ const review = (props) => {
 		<div>
 			<SectionHeader
 				title='Basic Information'
-				onClick={() => props.onEditButtonClick(0)}
+				onClick={() => props.onEditButtonClick('basicInfo')}
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
@@ -59,7 +59,7 @@ const review = (props) => {
 			</div>
 			<SectionHeader
 				title='Address'
-				onClick={() => props.onEditButtonClick(1)}
+				onClick={() => props.onEditButtonClick('address')}
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
@@ -85,7 +85,7 @@ const review = (props) => {
 				<>
 					<SectionHeader
 						title='References'
-						onClick={() => props.onEditButtonClick(2)}
+						onClick={() => props.onEditButtonClick('references')}
 					/>
 					<div className='SectionContent'>
 						<Table
@@ -100,23 +100,28 @@ const review = (props) => {
 					</div>
 				</>
 			) : null}
-			<SectionHeader
-				title='Application Documents'
-				onClick={() => props.onEditButtonClick(3)}
-			/>
-			<div className='SectionContent'>
-				{formData.applicantDocuments.map((document, index) => (
-					<div key={index}>
-						{document.file.fileList.length > 0 ? '✓ ' : '× '}
-						{document.title.value}
-						{document.file.fileList.map((file, index) => (
-							<div className='FileListRow' key={index}>
-								<FileTextOutlined /> {file.name}
+
+			{formData.applicantDocuments.length > 0 ? (
+				<>
+					<SectionHeader
+						title='Application Documents'
+						onClick={() => props.onEditButtonClick('applicantDocuments')}
+					/>
+					<div className='SectionContent'>
+						{formData.applicantDocuments.map((document, index) => (
+							<div key={index}>
+								{document.file.fileList.length > 0 ? '✓ ' : '× '}
+								{document.title.value}
+								{document.file.fileList.map((file, index) => (
+									<div className='FileListRow' key={index}>
+										<FileTextOutlined /> {file.name}
+									</div>
+								))}
 							</div>
 						))}
 					</div>
-				))}
-			</div>
+				</>
+			) : null}
 		</div>
 	);
 };
