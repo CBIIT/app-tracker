@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const transformJsonToBackend = (sourceJson) => {
 	const targetJson = {
 		basic_info: transformBasicInfo(
@@ -40,7 +42,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 };
 
 const getDateFromDateTime = (dateTime) => {
-	return new Date(dateTime).toISOString().slice(0, 10);
+	return moment(dateTime.toString()).format('YYYY-MM-DD');
 };
 
 const transformEmails = (emails) => {
