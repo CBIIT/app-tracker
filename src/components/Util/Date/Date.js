@@ -4,7 +4,7 @@ const transformDateToDisplay = (date) => {
 	if (date) {
 		const newDate = new Date(date);
 		return isValidDate(newDate)
-			? moment(date.toString()).format('MM/DD/YYYY')
+			? moment.utc(date.toString()).format('MM/DD/YYYY')
 			: '';
 	} else {
 		return '';
