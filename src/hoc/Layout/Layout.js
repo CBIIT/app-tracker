@@ -2,7 +2,11 @@ import { useLocation } from 'react-router-dom';
 
 import './Layout.css';
 import { routeTitles } from './RouteTitles';
-import { EDIT_VACANCY, EDIT_DRAFT } from '../../constants/Routes';
+import {
+	EDIT_VACANCY,
+	EDIT_DRAFT,
+	VACANCY_DASHBOARD,
+} from '../../constants/Routes';
 import Header from '../../components/Header/Header';
 import NavBar from '../../components/NavBar/NavBar.js';
 import Footer from '../../components/Footer/Footer';
@@ -18,6 +22,8 @@ const layout = (props) => {
 	const getRouteTitleWithParams = () => {
 		if (location.pathname.includes(EDIT_DRAFT)) return 'Edit Draft Vacancy';
 		else if (location.pathname.includes(EDIT_VACANCY)) return 'Edit Vacancy';
+		else if (location.pathname.includes(VACANCY_DASHBOARD))
+			return 'Vacancy Dashboard';
 	};
 
 	return (
