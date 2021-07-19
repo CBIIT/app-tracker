@@ -78,7 +78,7 @@ const app = () => {
 			routes.push(
 				<ProtectedRoute
 					key='vacancy-dashboard'
-					path={VACANCY_DASHBOARD}
+					path={VACANCY_DASHBOARD + '/:tab?'}
 					exact
 					component={VacancyDashboard}
 					isUserLoggedIn={isUserLoggedIn}
@@ -193,7 +193,7 @@ const app = () => {
 			/>,
 			<ProtectedRoute
 				key='vacancy-dashboard'
-				path={VACANCY_DASHBOARD}
+				path={VACANCY_DASHBOARD + '/:tab?'}
 				exact
 				component={VacancyDashboard}
 				isUserLoggedIn={isUserLoggedIn}

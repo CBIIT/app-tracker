@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import {
 	Table,
 	Button,
@@ -33,6 +33,7 @@ import {
 	EDIT_VACANCY,
 	MANAGE_VACANCY,
 	CREATE_VACANCY,
+	VACANCY_DASHBOARD,
 } from '../../constants/Routes';
 import './VacancyDashboard.css';
 import axios from 'axios';
@@ -40,7 +41,7 @@ import axios from 'axios';
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
 	const history = useHistory();
-	let [url, setURL] = useState(
+	const [url, setURL] = useState(
 		'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight'
 	);
 	const [preFlightCount, setPreFlightCount] = useState([]);
@@ -49,12 +50,22 @@ const vacancyDashboard = () => {
 	const [currentVacancy, setCurrentVacancy] = useState([]);
 	const [extendModalVisible, setExtendModalVisible] = useState(false);
 	const [removeModalVisible, setRemoveModalVisible] = useState(false);
+	const [activeTab, setActiveTab] = useState();
+	const [isLoading, setIsLoading] = useState(true);
 	const urls = {
 		preflight:
 			'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight',
 		live: '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/live',
 		closed: '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed',
 	};
+
+	const tabs = {
+		PREFLIGHT: 'preflight',
+		LIVE: 'live',
+		CLOSED: 'closed',
+	};
+
+	const { tab } = useParams();
 
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
@@ -66,18 +77,26 @@ const vacancyDashboard = () => {
 	);
 
 	const tabChangeHandler = async (selectedTab) => {
-		url = urls[selectedTab];
+		setIsLoading(true);
+		history.push(VACANCY_DASHBOARD + '/' + selectedTab);
+		const url = urls[selectedTab];
 		try {
+			setActiveTab(selectedTab);
 			const newData = await axios.get(url);
 			setData(newData.data.result);
 			setURL(url);
 		} catch (err) {
-			console.warn(err);
+			message.error('Sorry!  An error occurred while loading.');
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
 		(async () => {
+			setIsLoading(true);
+			let dataUrl = urls.preflight;
+			if (tab) dataUrl = urls[tab];
+
 			try {
 				const [
 					currentData,
@@ -85,19 +104,21 @@ const vacancyDashboard = () => {
 					currentLiveCount,
 					currentClosedCount,
 				] = await Promise.all([
-					axios.get(url),
+					axios.get(dataUrl),
 					axios.get(urls.preflight),
 					axios.get(urls.live),
 					axios.get(urls.closed),
 				]);
 
 				setData(currentData.data.result);
+				setActiveTab(tab);
 				setPreFlightCount(currentPreCount.data.result.length);
 				setLiveCount(currentLiveCount.data.result.length);
 				setClosedCount(currentClosedCount.data.result.length);
 			} catch (err) {
-				console.warn(err);
+				message.error('Sorry!  An error occurred while loading.');
 			}
+			setIsLoading(false);
 		})();
 	}, []);
 
@@ -460,7 +481,8 @@ const vacancyDashboard = () => {
 						className='vacancy-tabs'
 						size={'large'}
 						onChange={tabChangeHandler}
-						defaultActiveKey='preflight'
+						activeKey={activeTab}
+						defaultActiveKey={tabs.PREFLIGHT}
 					>
 						<Tabs.TabPane
 							tab={
@@ -469,7 +491,7 @@ const vacancyDashboard = () => {
 									<p className='vacancy-desc'>pre-flight vacancies</p>
 								</span>
 							}
-							key='preflight'
+							key={tabs.PREFLIGHT}
 						>
 							<div className='tabs-div'>
 								<p style={{ display: 'inline-block' }}>Filter Vacancies: </p>
@@ -496,6 +518,7 @@ const vacancyDashboard = () => {
 											paddingLeft: '20px',
 											paddingRight: '20px',
 										}}
+										loading={isLoading}
 									/>
 								</ConfigProvider>
 							</div>
@@ -507,7 +530,7 @@ const vacancyDashboard = () => {
 									<p className='vacancy-desc'>live vacancies</p>
 								</span>
 							}
-							key='live'
+							key={tabs.LIVE}
 						>
 							<div className='tabs-div'>
 								<p style={{ display: 'inline-block' }}>Filter Vacancies: </p>
@@ -534,6 +557,7 @@ const vacancyDashboard = () => {
 											paddingLeft: '20px',
 											paddingRight: '20px',
 										}}
+										loading={isLoading}
 									/>
 								</ConfigProvider>
 							</div>
@@ -545,7 +569,7 @@ const vacancyDashboard = () => {
 									<p className='vacancy-desc'>closed vacancies</p>
 								</span>
 							}
-							key='closed'
+							key={tabs.CLOSED}
 						>
 							<div className='tabs-div'>
 								<p style={{ display: 'inline-block' }}>Filter Vacancies: </p>
@@ -580,6 +604,7 @@ const vacancyDashboard = () => {
 											paddingLeft: '20px',
 											paddingRight: '20px',
 										}}
+										loading={isLoading}
 									/>
 								</ConfigProvider>
 							</div>
