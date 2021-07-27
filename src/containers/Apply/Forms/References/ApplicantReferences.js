@@ -1,9 +1,10 @@
 import { useContext, useEffect } from 'react';
 import FormContext from '../../Context';
-import { Form, Input, Collapse } from 'antd';
+import { Form, Input, Collapse, Select } from 'antd';
 import './ApplicantReferences.css';
 
 const { Panel } = Collapse;
+const { Option } = Select;
 
 const applicantReferences = () => {
 	const [formInstance] = Form.useForm();
@@ -119,10 +120,49 @@ const applicantReferences = () => {
 											/>
 										</Form.Item>
 									</div>
+									<div className='relationshipTitleDiv'>
+										<Form.Item
+											name={[index, 'relationship']}
+											key={field.key + 'relationship'}
+											label='Relationship'
+											labelAlign='left'
+											colon={false}
+										>
+											<Select placeholder='Please Select'>
+												<Option value='supervisor'>Supervisor/Manager</Option>
+												<Option value='coworker'>Co-worker</Option>
+												<Option value='colleague'>Colleague</Option>
+												<Option value='peer'>Peer</Option>
+											</Select>
+										</Form.Item>
+										<Form.Item
+											name={[index, 'title']}
+											key={field.key + 'title'}
+											label='Title'
+											labelAlign='left'
+											colon={false}
+										>
+											<Input
+												placeholder='Please Enter'
+												key={field.key + 'titleInput'}
+											/>
+										</Form.Item>
+									</div>
+									<Form.Item
+										name={[index, 'organization']}
+										key={field.key + 'organization'}
+										label='Organization'
+										labelAlign='left'
+										colon={false}
+									>
+										<Input
+											placeholder='Please Enter'
+											key={field.key + 'organizationInput'}
+										/>
+									</Form.Item>
 								</Panel>
 							))}
 						</Collapse>
-
 					);
 				}}
 			</Form.List>
