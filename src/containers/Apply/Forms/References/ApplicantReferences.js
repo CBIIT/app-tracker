@@ -129,10 +129,12 @@ const applicantReferences = () => {
 											colon={false}
 										>
 											<Select placeholder='Please Select'>
-												<Option value='supervisor'>Supervisor/Manager</Option>
-												<Option value='coworker'>Co-worker</Option>
-												<Option value='colleague'>Colleague</Option>
-												<Option value='peer'>Peer</Option>
+												<Option value='Supervisor/Manager'>
+													Supervisor/Manager
+												</Option>
+												<Option value='Co-worker'>Co-worker</Option>
+												<Option value='Colleague'>Colleague</Option>
+												<Option value='Peer'>Peer</Option>
 											</Select>
 										</Form.Item>
 										<Form.Item

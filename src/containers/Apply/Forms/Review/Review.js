@@ -15,6 +15,9 @@ const review = (props) => {
 		{ title: 'Name', dataIndex: 'firstName' },
 		{ title: 'Email', dataIndex: 'email' },
 		{ title: 'Phone', dataIndex: 'phoneNumber' },
+		{ title: 'Relationship', dataIndex: 'relationship' },
+		{ title: 'Title', dataIndex: 'title' },
+		{ title: 'Organization', dataIndex: 'organization' },
 	];
 
 	const references = formData.references.map((reference, index) => ({
@@ -96,6 +99,7 @@ const review = (props) => {
 							}}
 							dataSource={references}
 							columns={referencesColumns}
+							scroll={{ x: 'true' }}
 						/>
 					</div>
 				</>
