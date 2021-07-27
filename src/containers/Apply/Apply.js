@@ -165,7 +165,7 @@ const Apply = (props) => {
 			content: <ApplicantReferences />,
 			description: 'References to support the application',
 			longDescription:
-				'Please provide references that can submit a recommendation on your behalf.',
+				'Please provide professional references that can submit a recommendation on your behalf.',
 		});
 
 	const onEditButtonClick = (step) => {
