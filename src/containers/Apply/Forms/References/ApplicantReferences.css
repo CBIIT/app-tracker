@@ -5,6 +5,12 @@
 	max-width: 770px;
 }
 
+@media (max-width: 535px) {
+	.names {
+		display: block;
+	}
+}
+
 .names > * {
 	flex-grow: 1;
 	max-width: 250px;

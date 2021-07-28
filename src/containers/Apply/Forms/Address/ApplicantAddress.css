@@ -9,3 +9,9 @@
 	flex-grow: 1;
 	max-width: 375px;
 }
+
+@media (max-width: 535px) {
+	.flex-container {
+		display: block;
+	}
+}
