@@ -12,12 +12,27 @@ const review = (props) => {
 	const { formData } = contextValue;
 
 	const referencesColumns = [
-		{ title: 'Name', dataIndex: 'firstName' },
+		{
+			title: 'Name',
+			render: (text, record) => {
+				return <span>{record.firstName + ' ' + record.lastName}</span>;
+			},
+		},
 		{ title: 'Email', dataIndex: 'email' },
 		{ title: 'Phone', dataIndex: 'phoneNumber' },
 		{ title: 'Relationship', dataIndex: 'relationship' },
 		{ title: 'Title', dataIndex: 'title' },
 		{ title: 'Organization', dataIndex: 'organization' },
+		{
+			title: 'Contact',
+			render: (record) => {
+				return (
+					<span>
+						{record.contact[0].toUpperCase() + record.contact.slice(1)}
+					</span>
+				);
+			},
+		},
 	];
 
 	const references = formData.references.map((reference, index) => ({
@@ -92,7 +107,7 @@ const review = (props) => {
 					/>
 					<div className='SectionContent'>
 						<Table
-							key='email'
+							key='references'
 							pagination={{ hideOnSinglePage: true }}
 							locale={{
 								emptyText: 'No references.',

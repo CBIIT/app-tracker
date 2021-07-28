@@ -37,5 +37,9 @@ const transformReferences = (references) => {
 		last_name: reference.lastName,
 		email: reference.email,
 		phone: reference.phoneNumber,
+		contact_allowed: reference.contact,
+		organization: reference.organization,
+		title: reference.title,
+		relationship: reference.relationship,
 	}));
 };

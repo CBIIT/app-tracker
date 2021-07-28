@@ -150,18 +150,38 @@ const applicantReferences = () => {
 											/>
 										</Form.Item>
 									</div>
-									<Form.Item
-										name={[index, 'organization']}
-										key={field.key + 'organization'}
-										label='Organization'
-										labelAlign='left'
-										colon={false}
-									>
-										<Input
-											placeholder='Please Enter'
-											key={field.key + 'organizationInput'}
-										/>
-									</Form.Item>
+									<div>
+										<Form.Item
+											name={[index, 'organization']}
+											key={field.key + 'organization'}
+											label='Organization'
+											labelAlign='left'
+											colon={false}
+										>
+											<Input
+												placeholder='Please Enter'
+												key={field.key + 'organizationInput'}
+											/>
+										</Form.Item>
+									</div>
+									<div>
+										<Form.Item
+											name={[index, 'contact']}
+											key={field.key + 'contact'}
+											label='Is it okay for the Hiring Team to contact the reference
+											directly?'
+											labelAlign='left'
+											colon={false}
+											rules={[
+												{ required: true, message: 'Please select an answer' },
+											]}
+										>
+											<Select placeholder='Please Select'>
+												<Option value='yes'>Yes</Option>
+												<Option value='no'>No</Option>
+											</Select>
+										</Form.Item>
+									</div>
 								</Panel>
 							))}
 						</Collapse>
