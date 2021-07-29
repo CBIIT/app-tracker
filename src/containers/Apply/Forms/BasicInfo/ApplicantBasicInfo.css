@@ -51,6 +51,12 @@
 	justify-content: space-between;
 }
 
+@media (max-width: 535px) {
+	.phones {
+		display: block;
+	}
+}
+
 .phones > * {
 	flex-grow: 1;
 	flex-wrap: wrap;

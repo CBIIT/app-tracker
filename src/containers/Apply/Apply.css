@@ -45,6 +45,17 @@
 	justify-content: space-between;
 }
 
+@media (max-width: 535px) {
+	.steps-action {
+		display: inline-block;
+		margin-left: 25%;
+	}
+
+	.steps-action > * {
+		margin-top: 15px;
+	}
+}
+
 .save-message > * {
 	background-color: rgb(238, 240, 244);
 	border: 1px solid rgb(36, 94, 157);

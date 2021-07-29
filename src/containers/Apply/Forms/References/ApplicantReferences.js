@@ -1,9 +1,10 @@
 import { useContext, useEffect } from 'react';
 import FormContext from '../../Context';
-import { Form, Input, Collapse } from 'antd';
+import { Form, Input, Collapse, Select } from 'antd';
 import './ApplicantReferences.css';
 
 const { Panel } = Collapse;
+const { Option } = Select;
 
 const applicantReferences = () => {
 	const [formInstance] = Form.useForm();
@@ -119,10 +120,71 @@ const applicantReferences = () => {
 											/>
 										</Form.Item>
 									</div>
+									<div className='relationshipTitleDiv'>
+										<Form.Item
+											name={[index, 'relationship']}
+											key={field.key + 'relationship'}
+											label='Relationship'
+											labelAlign='left'
+											colon={false}
+										>
+											<Select placeholder='Please Select'>
+												<Option value='Supervisor/Manager'>
+													Supervisor/Manager
+												</Option>
+												<Option value='Co-worker'>Co-worker</Option>
+												<Option value='Colleague'>Colleague</Option>
+												<Option value='Peer'>Peer</Option>
+											</Select>
+										</Form.Item>
+										<Form.Item
+											name={[index, 'title']}
+											key={field.key + 'title'}
+											label='Title'
+											labelAlign='left'
+											colon={false}
+										>
+											<Input
+												placeholder='Please Enter'
+												key={field.key + 'titleInput'}
+											/>
+										</Form.Item>
+									</div>
+									<div>
+										<Form.Item
+											name={[index, 'organization']}
+											key={field.key + 'organization'}
+											label='Organization'
+											labelAlign='left'
+											colon={false}
+										>
+											<Input
+												placeholder='Please Enter'
+												key={field.key + 'organizationInput'}
+											/>
+										</Form.Item>
+									</div>
+									<div>
+										<Form.Item
+											name={[index, 'contact']}
+											key={field.key + 'contact'}
+											label='Is it okay for the Hiring Team to contact the reference
+											directly?'
+											labelAlign='left'
+											colon={false}
+											rules={[
+												{ required: true, message: 'Please select an answer' },
+											]}
+										>
+											<Select placeholder='Please Select'>
+												<Option value='yes'>Yes</Option>
+												<Option value='no'>No</Option>
+											</Select>
+										</Form.Item>
+									</div>
 								</Panel>
 							))}
 						</Collapse>
-
 					);
 				}}
 			</Form.List>

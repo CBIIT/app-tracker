@@ -332,28 +332,36 @@ const Apply = (props) => {
 
 						{!formIsFinished && (
 							<div className='steps-action'>
-								<Button
-									onClick={prev}
-									type='primary'
-									ghost
-									className='wider-button'
-								>
-									{currentStep === 0 ? 'cancel' : 'back'}
-								</Button>
-
-								<Button
-									className='wider-button'
-									style={{ border: 'none', color: '#015EA2' }}
-									onClick={save}
-								>
-									<SaveOutlined /> save application
-								</Button>
-
-								<Button type='primary' onClick={next} className='wider-button'>
-									{currentStep == steps.length - 1
-										? 'submit application'
-										: 'next'}
-								</Button>
+								<div>
+									<Button
+										onClick={prev}
+										type='primary'
+										ghost
+										className='wider-button'
+									>
+										{currentStep === 0 ? 'cancel' : 'back'}
+									</Button>
+								</div>
+								<div>
+									<Button
+										className='wider-button'
+										style={{ border: 'none', color: '#015EA2' }}
+										onClick={save}
+									>
+										<SaveOutlined /> save application
+									</Button>
+								</div>
+								<div>
+									<Button
+										type='primary'
+										onClick={next}
+										className='wider-button'
+									>
+										{currentStep == steps.length - 1
+											? 'submit application'
+											: 'next'}
+									</Button>
+								</div>
 							</div>
 						)}
 					</div>
