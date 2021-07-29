@@ -14,7 +14,7 @@ const review = (props) => {
 	const referencesColumns = [
 		{
 			title: 'Name',
-			render: (text, record) => {
+			render: (record) => {
 				return <span>{record.firstName + ' ' + record.lastName}</span>;
 			},
 		},
