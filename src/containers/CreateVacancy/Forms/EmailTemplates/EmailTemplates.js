@@ -17,7 +17,7 @@ const emailTemplates = (props) => {
 
 		if (validEmailTemplates.length < 1)
 			throw new Error(
-				'Atleast one email template must be active and have content.'
+				'At least one email template must be active and have content.'
 			);
 	};
 
