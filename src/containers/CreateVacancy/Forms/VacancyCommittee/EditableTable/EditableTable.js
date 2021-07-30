@@ -42,10 +42,7 @@ const editableTable = (props) => {
 			if (member.role === COMMITTEE_CHAIR)
 				numberOfChairMembers = numberOfChairMembers + 1;
 
-			if (
-				member.role === 'Executive Secretary' ||
-				member.role === COMMITTEE_EXEC_SEC
-			)
+			if (member.role === COMMITTEE_EXEC_SEC)
 				numberOfExecutiveSecretaries = numberOfExecutiveSecretaries + 1;
 		});
 
