@@ -1,5 +1,11 @@
 import { useState } from 'react';
 
+import {
+	COMMITTEE_CHAIR,
+	COMMITTEE_EXEC_SEC,
+	COMMITTEE_MEMBER_VOTING,
+} from '../../../../../constants/Roles';
+
 import { Form, Table, Button } from 'antd';
 import {
 	PlusOutlined,
@@ -33,10 +39,13 @@ const editableTable = (props) => {
 		let numberOfExecutiveSecretaries = 0;
 
 		data.forEach((member) => {
-			if (member.role === 'Chair')
+			if (member.role === COMMITTEE_CHAIR)
 				numberOfChairMembers = numberOfChairMembers + 1;
 
-			if (member.role === 'Executive Secretary')
+			if (
+				member.role === 'Executive Secretary' ||
+				member.role === COMMITTEE_EXEC_SEC
+			)
 				numberOfExecutiveSecretaries = numberOfExecutiveSecretaries + 1;
 		});
 
@@ -49,12 +58,12 @@ const editableTable = (props) => {
 
 		if (numberOfChairMembers < 1)
 			errorMessages.push(
-				"Atleast one committee member must be of the role 'Chair'"
+				"At least one committee member must be of the role 'Chair'"
 			);
 
 		if (numberOfExecutiveSecretaries < 1)
 			errorMessages.push(
-				"Atleast one committee member must be of the role 'Executive Secretary'"
+				"At least one committee member must be of the role 'Executive Secretary'"
 			);
 
 		if (errorMessages.length > 0) throw new Error(errorMessages.join('\r\n'));
@@ -81,7 +90,7 @@ const editableTable = (props) => {
 		const newData = {
 			key: newIndex,
 			user: null,
-			role: newIndex === 0 ? 'Chair' : 'Member (voting)',
+			role: newIndex === 0 ? COMMITTEE_CHAIR : COMMITTEE_MEMBER_VOTING,
 		};
 
 		form.setFieldsValue({

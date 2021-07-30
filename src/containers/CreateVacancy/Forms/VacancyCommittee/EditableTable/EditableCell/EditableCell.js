@@ -1,5 +1,13 @@
 import { Form, Select, Input } from 'antd';
 import UserPicker from '../../../../../../components/UI/UserPicker/UserPicker';
+import {
+	COMMITTEE_CHAIR,
+	COMMITTEE_MEMBER_VOTING,
+	COMMITTEE_MEMBER_NON_VOTING,
+	COMMITTEE_HR_SPECIALIST,
+	COMMITTEE_EDI_REPRESENTATIVE,
+	COMMITTEE_EXEC_SEC,
+} from '../../../../../../constants/Roles';
 
 const editableCell = ({
 	editing,
@@ -15,12 +23,20 @@ const editableCell = ({
 			case 'dropdown':
 				return (
 					<Select>
-						<Option value='Chair'>Chair</Option>
-						<Option value='Member (voting)'>Member (voting)</Option>
-						<Option value='Member (non-voting)'>Member (non-voting)</Option>
-						<Option value='HR Specialist'>HR Specialist</Option>
-						<Option value='EDI Representative'>EDI Representative</Option>
-						<Option value='Executive Secretary'>Executive Secretary</Option>
+						<Option value={COMMITTEE_CHAIR}>Chair</Option>
+						<Option value={COMMITTEE_MEMBER_VOTING}>Member (voting)</Option>
+						<Option value={COMMITTEE_MEMBER_NON_VOTING}>
+							Member (non-voting)
+						</Option>
+						<Option value={COMMITTEE_HR_SPECIALIST}>
+							HR Specialist (non-voting)
+						</Option>
+						<Option value={COMMITTEE_EDI_REPRESENTATIVE}>
+							EDI Representative (non-voting)
+						</Option>
+						<Option value={COMMITTEE_EXEC_SEC}>
+							Executive Secretary (non-voting)
+						</Option>
 					</Select>
 				);
 			case 'name':
