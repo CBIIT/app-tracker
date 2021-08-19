@@ -1,7 +1,9 @@
 import { Table } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
+
+import './ApplicantList.css';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -13,6 +15,8 @@ const renderDecision = (text) =>
 	);
 
 const applicantList = (props) => {
+	const history = useHistory();
+
 	const applicants = props.applicants;
 	applicants.map((applicant, index) => {
 		applicant.key = index;
@@ -66,10 +70,16 @@ const applicantList = (props) => {
 	return (
 		<div className='applicant-table'>
 			<Table
+				className='applicantTable'
 				dataSource={applicants}
 				columns={applicantColumns}
 				scroll={{ x: 'true' }}
 				key='applicants'
+				onRow={(record) => ({
+					onClick: () => {
+						history.push(MANAGE_APPLICATION + record.sys_id);
+					},
+				})}
 			></Table>
 		</div>
 	);
