@@ -1,0 +1,4 @@
+.applicantTable tr.ant-table-row:hover > td {
+	background-color: #f2f4f7 !important;
+	cursor: pointer;
+}
