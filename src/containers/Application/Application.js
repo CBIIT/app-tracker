@@ -352,6 +352,7 @@ const application = () => {
 					: 0,
 			};
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
+			history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
