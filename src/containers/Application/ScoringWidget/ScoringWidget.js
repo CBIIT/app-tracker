@@ -15,6 +15,9 @@ const { TextArea } = Input;
 const { Group } = Radio;
 
 const scoringWidget = (props) => {
+	let totalScores = Object.values(props.scores).map((score) => parseInt(score));
+	totalScores = totalScores.reduce((a, b) => a + b);
+
 	return (
 		<div style={props.style}>
 			<Form onFinish={props.onSaveClick} name='Committee-Scoring'>
@@ -39,6 +42,10 @@ const scoringWidget = (props) => {
 								}
 							/>
 						))}
+						<div className='totalScoreDiv'>
+							<h2 style={{ display: 'inline-block' }}>Total Score: </h2>{' '}
+							<p style={{ display: 'inline-block' }}>{totalScores}</p>
+						</div>
 						<h2 style={{ marginBottom: '6px' }}>Overall Score Comments</h2>
 						<TextArea
 							rows={3}
