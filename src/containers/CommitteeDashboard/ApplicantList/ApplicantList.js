@@ -1,5 +1,6 @@
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
+import { CheckCircleTwoTone } from '@ant-design/icons';
 
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
@@ -23,6 +24,16 @@ const applicantList = (props) => {
 	});
 
 	const applicantColumns = [
+		{
+			key: 'average_score',
+			render: (record) => {
+				return record.average_score != undefined ? (
+					<Tooltip title='Scoring Completed'>
+						<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
+					</Tooltip>
+				) : null;
+			},
+		},
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_last_name',
