@@ -444,23 +444,46 @@ const application = () => {
 
 						{userVacancyCommitteeRole === COMMITTEE_CHAIR ||
 						userRoles.includes(OWM_TEAM) ? (
-							<TriageWidget
-								title='Committee Chair Feedback and Notes'
-								style={{ backgroundColor: 'white' }}
-								triageOptions={chairTriageOptions}
-								onTriageSelect={onChairTriageSelect}
-								onTriageCommentsChange={onChairCommentsChange}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onTriageWidgetSaveClick}
-								triageChoice={chairTriageChoice}
-								triageComments={chairTriageComments}
-								triageCommentsPlaceholder={'Add notes (optional)'}
-								readOnly={userVacancyCommitteeRole !== COMMITTEE_CHAIR}
-								initiallyHideContent={
-									vacancyState === CHAIR_TRIAGE ? false : true
-								}
-								maxCommentLength={10000}
-							/>
+							<>
+								<TriageWidget
+									title='Committee Chair Feedback and Notes'
+									style={{ backgroundColor: 'white' }}
+									triageOptions={chairTriageOptions}
+									onTriageSelect={onChairTriageSelect}
+									onTriageCommentsChange={onChairCommentsChange}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={onTriageWidgetSaveClick}
+									triageChoice={chairTriageChoice}
+									triageComments={chairTriageComments}
+									triageCommentsPlaceholder={'Add notes (optional)'}
+									readOnly={userVacancyCommitteeRole !== COMMITTEE_CHAIR}
+									initiallyHideContent={
+										vacancyState === CHAIR_TRIAGE ? false : true
+									}
+									maxCommentLength={10000}
+								/>
+								<ScoringWidget
+									title='Committee Chair Rating and Feedback'
+									description={
+										<>
+											Please score the applicant on a scale of 0 - 3 below and
+											leave detailed notes in the comments box below.{' '}
+											<a href={ratingPlanDownloadLink}>See Rating Plan.</a>
+										</>
+									}
+									style={{ backgroundColor: 'white' }}
+									scoreChangeHandler={individualScoreSlideChangeHandler}
+									onScoreCommentsChange={onScoreCommentsChange}
+									triageOptions={committeeMemberTriageOptions}
+									triageChoice={individualTriageChoice}
+									triageComments={individualScoresComments}
+									onTriageSelect={onIndividualTriageSelect}
+									categories={individualScoreCategories}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={onIndividualScoreSaveClick}
+									scores={individualScores}
+								/>
+							</>
 						) : null}
 						{isUserAllowedToScore() ? (
 							<ScoringWidget

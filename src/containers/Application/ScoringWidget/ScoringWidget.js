@@ -16,12 +16,17 @@ const { Group } = Radio;
 
 const scoringWidget = (props) => {
 	const scores = Object.values(props.scores).map((score) => parseInt(score));
-	const total = scores.reduce((a, b) => a + b);
+	let total = '';
+	if (scores.length == 0) {
+		total = '';
+	} else {
+		total = scores.reduce((a, b) => a + b);
+	}
 
 	return (
 		<div style={props.style}>
 			<Form onFinish={props.onSaveClick} name='Committee-Scoring'>
-				<InfoCard title={props.title}>
+				<InfoCard title={props.title} allowToggle={true}>
 					<InfoCardRow>
 						<LabelValuePair
 							value={props.description}
