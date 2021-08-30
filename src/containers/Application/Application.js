@@ -35,6 +35,8 @@ import {
 } from '../../constants/Roles';
 
 import {
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+	INDIVIDUAL_SCORING_COMPLETE,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	COMMITTEE_REVIEW_COMPLETE,
 	VOTING_COMPLETE,
@@ -482,6 +484,15 @@ const application = () => {
 									onCancelClick={onTriageWidgetCancelClick}
 									onSaveClick={onIndividualScoreSaveClick}
 									scores={individualScores}
+									initiallyHideContent={
+										vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
+										vacancyState === INDIVIDUAL_SCORING_COMPLETE ||
+										vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
+										vacancyState === COMMITTEE_REVIEW_COMPLETE ||
+										vacancyState === VOTING_COMPLETE
+											? true
+											: false
+									}
 								/>
 							</>
 						) : null}
