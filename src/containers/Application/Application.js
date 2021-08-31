@@ -363,6 +363,19 @@ const application = () => {
 		}
 	};
 
+	const isChair = () => {
+		return userVacancyCommitteeRole === COMMITTEE_CHAIR;
+	};
+
+	const isChairAllowedScore = () => {
+		return (
+			vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
+			vacancyState === INDIVIDUAL_SCORING_COMPLETE ||
+			vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
+			vacancyState === COMMITTEE_REVIEW_COMPLETE
+		);
+	};
+
 	const isUserAllowedToScore = () => {
 		return (
 			userVacancyCommitteeRole === COMMITTEE_MEMBER_VOTING ||
@@ -468,7 +481,7 @@ const application = () => {
 						{isUserAllowedToScore() ? (
 							<ScoringWidget
 								title={
-									userVacancyCommitteeRole === COMMITTEE_CHAIR
+									isChair()
 										? 'Committee Chair Rating and Feedback'
 										: 'Committee Member Rating and Feedback'
 								}
@@ -492,18 +505,8 @@ const application = () => {
 								scores={individualScores}
 								userVacancyCommitteeRole={userVacancyCommitteeRole}
 								initiallyHideContent={
-									(userVacancyCommitteeRole === COMMITTEE_CHAIR &&
-										vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS) ||
-									(userVacancyCommitteeRole === COMMITTEE_CHAIR &&
-										vacancyState === INDIVIDUAL_SCORING_COMPLETE) ||
-									(userVacancyCommitteeRole === COMMITTEE_CHAIR &&
-										vacancyState === COMMITTEE_REVIEW_IN_PROGRESS) ||
-									(userVacancyCommitteeRole === COMMITTEE_CHAIR &&
-										vacancyState === COMMITTEE_REVIEW_COMPLETE) ||
-									(userVacancyCommitteeRole === COMMITTEE_CHAIR &&
-										vacancyState === VOTING_COMPLETE) ||
-									userVacancyCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
-									userVacancyCommitteeRole === COMMITTEE_MEMBER_VOTING
+									(isChair() && isChairAllowedScore()) ||
+									(isUserAllowedToScore() && !isChair())
 										? true
 										: false
 								}
