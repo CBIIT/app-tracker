@@ -1,15 +1,16 @@
 .referencePanel .ant-collapse-header {
 	font-weight: bold;
+	font-family: var(--ff-heading);
+}
+
+.LineItemItem {
+	font-family: var(--ff-primary);
 }
 
 .infoCardTitle {
 	background-color: white;
 	padding-bottom: 20px;
 	padding-right: 16px;
-}
-
-.infoCardTitle > h3 {
-	padding-left: -6px !important;
 }
 
 .referenceCard {
