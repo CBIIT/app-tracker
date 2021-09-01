@@ -1,0 +1,17 @@
+.referencePanel .ant-collapse-header {
+	font-weight: bold;
+}
+
+.infoCardTitle {
+	background-color: white;
+	padding-bottom: 20px;
+	padding-right: 16px;
+}
+
+.infoCardTitle > h3 {
+	padding-left: -6px !important;
+}
+
+.referenceCard {
+	margin-left: 16px;
+}
