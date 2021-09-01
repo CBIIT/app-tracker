@@ -35,6 +35,8 @@ import {
 } from '../../constants/Roles';
 
 import {
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+	INDIVIDUAL_SCORING_COMPLETE,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	COMMITTEE_REVIEW_COMPLETE,
 	VOTING_COMPLETE,
@@ -361,10 +363,24 @@ const application = () => {
 		}
 	};
 
+	const isChair = () => {
+		return userVacancyCommitteeRole === COMMITTEE_CHAIR;
+	};
+
+	const isChairAllowedScore = () => {
+		return (
+			vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
+			vacancyState === INDIVIDUAL_SCORING_COMPLETE ||
+			vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
+			vacancyState === COMMITTEE_REVIEW_COMPLETE
+		);
+	};
+
 	const isUserAllowedToScore = () => {
 		return (
 			userVacancyCommitteeRole === COMMITTEE_MEMBER_VOTING ||
-			userVacancyCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
+			userVacancyCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
+			userVacancyCommitteeRole === COMMITTEE_CHAIR
 		);
 	};
 
@@ -421,8 +437,7 @@ const application = () => {
 						className='ApplicationContentColumn'
 						style={{ maxWidth: '480px' }}
 					>
-						{userRoles.includes(OWM_TEAM) ||
-						userVacancyCommitteeRole === COMMITTEE_CHAIR ? (
+						{userRoles.includes(OWM_TEAM) || isChair() ? (
 							<TriageWidget
 								title='OWM Team Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
@@ -442,8 +457,7 @@ const application = () => {
 							/>
 						) : null}
 
-						{userVacancyCommitteeRole === COMMITTEE_CHAIR ||
-						userRoles.includes(OWM_TEAM) ? (
+						{isChair() || userRoles.includes(OWM_TEAM) ? (
 							<TriageWidget
 								title='Committee Chair Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
@@ -462,9 +476,14 @@ const application = () => {
 								maxCommentLength={10000}
 							/>
 						) : null}
-						{isUserAllowedToScore() ? (
+						{(isUserAllowedToScore() && !isChair()) ||
+						(isChair() && isChairAllowedScore()) ? (
 							<ScoringWidget
-								title='Committee Member Rating and Feedback'
+								title={
+									isChair()
+										? 'Committee Chair Rating and Feedback'
+										: 'Committee Member Rating and Feedback'
+								}
 								description={
 									<>
 										Please score the applicant on a scale of 0 - 3 below and
@@ -483,11 +502,11 @@ const application = () => {
 								onCancelClick={onTriageWidgetCancelClick}
 								onSaveClick={onIndividualScoreSaveClick}
 								scores={individualScores}
+								userVacancyCommitteeRole={userVacancyCommitteeRole}
 							/>
 						) : null}
 
-						{(userVacancyCommitteeRole === COMMITTEE_CHAIR ||
-							userRoles.includes(OWM_TEAM)) &&
+						{(isChair() || userRoles.includes(OWM_TEAM)) &&
 						displayCommitteeReview(vacancyState) ? (
 							<InfoCard
 								title='Committee Review'
