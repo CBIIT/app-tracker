@@ -437,8 +437,7 @@ const application = () => {
 						className='ApplicationContentColumn'
 						style={{ maxWidth: '480px' }}
 					>
-						{userRoles.includes(OWM_TEAM) ||
-						userVacancyCommitteeRole === COMMITTEE_CHAIR ? (
+						{userRoles.includes(OWM_TEAM) || isChair() ? (
 							<TriageWidget
 								title='OWM Team Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
@@ -458,8 +457,7 @@ const application = () => {
 							/>
 						) : null}
 
-						{userVacancyCommitteeRole === COMMITTEE_CHAIR ||
-						userRoles.includes(OWM_TEAM) ? (
+						{isChair() || userRoles.includes(OWM_TEAM) ? (
 							<TriageWidget
 								title='Committee Chair Feedback and Notes'
 								style={{ backgroundColor: 'white' }}
@@ -478,7 +476,8 @@ const application = () => {
 								maxCommentLength={10000}
 							/>
 						) : null}
-						{isUserAllowedToScore() ? (
+						{(isUserAllowedToScore() && !isChair()) ||
+						(isChair() && isChairAllowedScore()) ? (
 							<ScoringWidget
 								title={
 									isChair()
@@ -504,17 +503,10 @@ const application = () => {
 								onSaveClick={onIndividualScoreSaveClick}
 								scores={individualScores}
 								userVacancyCommitteeRole={userVacancyCommitteeRole}
-								initiallyHideContent={
-									(isChair() && isChairAllowedScore()) ||
-									(isUserAllowedToScore() && !isChair())
-										? true
-										: false
-								}
 							/>
 						) : null}
 
-						{(userVacancyCommitteeRole === COMMITTEE_CHAIR ||
-							userRoles.includes(OWM_TEAM)) &&
+						{(isChair() || userRoles.includes(OWM_TEAM)) &&
 						displayCommitteeReview(vacancyState) ? (
 							<InfoCard
 								title='Committee Review'
