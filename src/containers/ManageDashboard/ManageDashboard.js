@@ -48,7 +48,7 @@ const getNextStepButtonLabel = (currentStep) => {
 		case CHAIR_TRIAGE:
 			return 'Request Individual Scoring';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
-			return 'Advance to Committee Scoring';
+			return 'Advance to Committee Review';
 		case COMMITTEE_REVIEW_IN_PROGRESS:
 			return 'Mark Voting Complete';
 		default:
