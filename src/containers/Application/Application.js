@@ -291,17 +291,22 @@ const application = () => {
 
 	const onTriageWidgetSaveClick = async () => {
 		try {
-			const triage = {
-				app_sys_id: application.appSysId,
-				triage:
-					userVacancyCommitteeRole === COMMITTEE_CHAIR
-						? chairTriageChoice
-						: triageChoice,
-				triage_comments:
-					userVacancyCommitteeRole === COMMITTEE_CHAIR
-						? chairTriageComments
-						: triageComments,
-			};
+			let triage = {};
+			if (userVacancyCommitteeRole === COMMITTEE_CHAIR) {
+				triage = {
+					app_sys_id: application.appSysId,
+					chair_triage: chairTriageChoice,
+					chair_triage_comments: chairTriageComments,
+				};
+			} else {
+				triage = {
+					app_sys_id: application.appSysId,
+					OWM_triage: triageChoice,
+					OWM_triage_comments: triageComments,
+					chair_triage: chairTriageChoice,
+					chair_triage_comments: chairTriageComments,
+				};
+			}
 
 			await axios.post(SUBMIT_TRIAGE, triage);
 			message.success('Feedback and notes saved.');
@@ -469,7 +474,6 @@ const application = () => {
 								triageChoice={chairTriageChoice}
 								triageComments={chairTriageComments}
 								triageCommentsPlaceholder={'Add notes (optional)'}
-								readOnly={userVacancyCommitteeRole !== COMMITTEE_CHAIR}
 								initiallyHideContent={
 									vacancyState === CHAIR_TRIAGE ? false : true
 								}
