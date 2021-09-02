@@ -30,12 +30,20 @@ const getDocuments = (backendAppDocuments) =>
 	}));
 
 const getReferences = (backendReferences) =>
-	backendReferences.map((reference) => ({
-		name: reference.name,
-		document: {
-			downloadLink: reference.attachment_dl,
-			filename: reference.file_name,
-			referenceSysId: reference.ref_sys_id,
-			attachmentSysId: reference.attach_sys_id,
-		},
-	}));
+	backendReferences.map((reference) => {
+		return {
+			name: reference.name,
+			document: {
+				downloadLink: reference.attachment_dl,
+				filename: reference.file_name,
+				referenceSysId: reference.ref_sys_id,
+				attachmentSysId: reference.attach_sys_id,
+			},
+			contact_allowed: reference.contact_allowed,
+			email: reference.email,
+			organization: reference.organization,
+			phone: reference.phone,
+			relationship: reference.relationship,
+			title: reference.title,
+		};
+	});
