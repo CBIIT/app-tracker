@@ -289,10 +289,10 @@ const application = () => {
 		});
 	};
 
-	const onTriageWidgetSaveClick = async () => {
+	const onTriageWidgetSaveClick = async (string) => {
+		let triage = {};
 		try {
-			let triage = {};
-			if (userVacancyCommitteeRole === COMMITTEE_CHAIR) {
+			if (string === 'chairWidget') {
 				triage = {
 					app_sys_id: application.appSysId,
 					chair_triage: chairTriageChoice,
@@ -303,8 +303,6 @@ const application = () => {
 					app_sys_id: application.appSysId,
 					OWM_triage: triageChoice,
 					OWM_triage_comments: triageComments,
-					chair_triage: chairTriageChoice,
-					chair_triage_comments: chairTriageComments,
 				};
 			}
 
@@ -443,43 +441,43 @@ const application = () => {
 						style={{ maxWidth: '480px' }}
 					>
 						{userRoles.includes(OWM_TEAM) || isChair() ? (
-							<TriageWidget
-								title='OWM Team Feedback and Notes'
-								style={{ backgroundColor: 'white' }}
-								triageOptions={owmTriageOptions}
-								onTriageSelect={onTriageSelect}
-								onTriageCommentsChange={onTriageCommentsChange}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onTriageWidgetSaveClick}
-								triageChoice={triageChoice}
-								triageComments={triageComments}
-								triageCommentsPlaceholder={'Add notes (optional)'}
-								readOnly={!userRoles.includes(OWM_TEAM)}
-								initiallyHideContent={
-									vacancyState === OWM_TRIAGE ? false : true
-								}
-								maxCommentLength={10000}
-							/>
+							<>
+								<TriageWidget
+									title='OWM Team Feedback and Notes'
+									style={{ backgroundColor: 'white' }}
+									triageOptions={owmTriageOptions}
+									onTriageSelect={onTriageSelect}
+									onTriageCommentsChange={onTriageCommentsChange}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={onTriageWidgetSaveClick}
+									triageChoice={triageChoice}
+									triageComments={triageComments}
+									triageCommentsPlaceholder={'Add notes (optional)'}
+									readOnly={!userRoles.includes(OWM_TEAM)}
+									initiallyHideContent={
+										vacancyState === OWM_TRIAGE ? false : true
+									}
+									maxCommentLength={10000}
+								/>
+								<TriageWidget
+									title='Committee Chair Feedback and Notes'
+									style={{ backgroundColor: 'white' }}
+									triageOptions={chairTriageOptions}
+									onTriageSelect={onChairTriageSelect}
+									onTriageCommentsChange={onChairCommentsChange}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={() => onTriageWidgetSaveClick('chairWidget')}
+									triageChoice={chairTriageChoice}
+									triageComments={chairTriageComments}
+									triageCommentsPlaceholder={'Add notes (optional)'}
+									initiallyHideContent={
+										vacancyState === CHAIR_TRIAGE ? false : true
+									}
+									maxCommentLength={10000}
+								/>
+							</>
 						) : null}
 
-						{isChair() || userRoles.includes(OWM_TEAM) ? (
-							<TriageWidget
-								title='Committee Chair Feedback and Notes'
-								style={{ backgroundColor: 'white' }}
-								triageOptions={chairTriageOptions}
-								onTriageSelect={onChairTriageSelect}
-								onTriageCommentsChange={onChairCommentsChange}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onTriageWidgetSaveClick}
-								triageChoice={chairTriageChoice}
-								triageComments={chairTriageComments}
-								triageCommentsPlaceholder={'Add notes (optional)'}
-								initiallyHideContent={
-									vacancyState === CHAIR_TRIAGE ? false : true
-								}
-								maxCommentLength={10000}
-							/>
-						) : null}
 						{(isUserAllowedToScore() && !isChair()) ||
 						(isChair() && isChairAllowedScore()) ? (
 							<ScoringWidget
