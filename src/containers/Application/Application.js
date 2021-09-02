@@ -289,10 +289,10 @@ const application = () => {
 		});
 	};
 
-	const onTriageWidgetSaveClick = async (string) => {
+	const onTriageWidgetSaveClick = async (widget) => {
 		let triage = {};
 		try {
-			if (string === 'chairWidget') {
+			if (widget === 'chairWidget') {
 				triage = {
 					app_sys_id: application.appSysId,
 					chair_triage: chairTriageChoice,
