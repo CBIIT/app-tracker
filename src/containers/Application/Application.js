@@ -50,10 +50,10 @@ import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 const { confirm } = Modal;
 
 const individualScoreCategories = [
-	{ key: 'knowledge', title: 'Knowledge and Experience' },
-	{ key: 'leadership', title: 'Leadership Skills' },
-	{ key: 'management', title: 'Management and Supervision' },
-	{ key: 'communication', title: 'Communication and Collaboration Skills' },
+	{ key: 'category1', title: 'Category 1' },
+	{ key: 'category2', title: 'Category 2' },
+	{ key: 'category3', title: 'Category 3' },
+	{ key: 'category4', title: 'Category 4' },
 ];
 
 const chairTriageOptions = [
@@ -239,11 +239,10 @@ const application = () => {
 					applicationResponse.data.result.individual_scoring;
 
 				setIndividualScores({
-					knowledge: individualScores.knowledge_experience.value,
-					leadership:
-						individualScores.development_implementation_coordination.value,
-					management: individualScores.management_leadership_supervision.value,
-					communication: individualScores.communication_skill.value,
+					category1: individualScores.category_1.value,
+					category2: individualScores.category_2.value,
+					category3: individualScores.category_3.value,
+					category4: individualScores.category_4.value,
 				});
 
 				setIndividualScoresComments(individualScores.comments.value);
@@ -343,18 +342,10 @@ const application = () => {
 				app_sys_id: application.appSysId,
 				recommend: individualTriageChoice,
 				comments: individualScoresComments,
-				knowledge_experience: individualScores.knowledge
-					? individualScores.knowledge
-					: 0,
-				development_implementation_coordination: individualScores.leadership
-					? individualScores.leadership
-					: 0,
-				management_leadership_supervision: individualScores.management
-					? individualScores.management
-					: 0,
-				communication_skill: individualScores.communication
-					? individualScores.communication
-					: 0,
+				category_1: individualScores.category1 ? individualScores.category1 : 0,
+				category_2: individualScores.category2 ? individualScores.category2 : 0,
+				category_3: individualScores.category3 ? individualScores.category3 : 0,
+				category_4: individualScores.category4 ? individualScores.category4 : 0,
 			};
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
 			history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
