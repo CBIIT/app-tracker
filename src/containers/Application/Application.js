@@ -289,19 +289,22 @@ const application = () => {
 		});
 	};
 
-	const onTriageWidgetSaveClick = async () => {
+	const onTriageWidgetSaveClick = async (widget) => {
+		let triage = {};
 		try {
-			const triage = {
-				app_sys_id: application.appSysId,
-				triage:
-					userVacancyCommitteeRole === COMMITTEE_CHAIR
-						? chairTriageChoice
-						: triageChoice,
-				triage_comments:
-					userVacancyCommitteeRole === COMMITTEE_CHAIR
-						? chairTriageComments
-						: triageComments,
-			};
+			if (widget === 'chairWidget') {
+				triage = {
+					app_sys_id: application.appSysId,
+					chair_triage: chairTriageChoice,
+					chair_triage_comments: chairTriageComments,
+				};
+			} else {
+				triage = {
+					app_sys_id: application.appSysId,
+					OWM_triage: triageChoice,
+					OWM_triage_comments: triageComments,
+				};
+			}
 
 			await axios.post(SUBMIT_TRIAGE, triage);
 			message.success('Feedback and notes saved.');
@@ -438,44 +441,43 @@ const application = () => {
 						style={{ maxWidth: '480px' }}
 					>
 						{userRoles.includes(OWM_TEAM) || isChair() ? (
-							<TriageWidget
-								title='OWM Team Feedback and Notes'
-								style={{ backgroundColor: 'white' }}
-								triageOptions={owmTriageOptions}
-								onTriageSelect={onTriageSelect}
-								onTriageCommentsChange={onTriageCommentsChange}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onTriageWidgetSaveClick}
-								triageChoice={triageChoice}
-								triageComments={triageComments}
-								triageCommentsPlaceholder={'Add notes (optional)'}
-								readOnly={!userRoles.includes(OWM_TEAM)}
-								initiallyHideContent={
-									vacancyState === OWM_TRIAGE ? false : true
-								}
-								maxCommentLength={10000}
-							/>
+							<>
+								<TriageWidget
+									title='OWM Team Feedback and Notes'
+									style={{ backgroundColor: 'white' }}
+									triageOptions={owmTriageOptions}
+									onTriageSelect={onTriageSelect}
+									onTriageCommentsChange={onTriageCommentsChange}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={onTriageWidgetSaveClick}
+									triageChoice={triageChoice}
+									triageComments={triageComments}
+									triageCommentsPlaceholder={'Add notes (optional)'}
+									readOnly={!userRoles.includes(OWM_TEAM)}
+									initiallyHideContent={
+										vacancyState === OWM_TRIAGE ? false : true
+									}
+									maxCommentLength={10000}
+								/>
+								<TriageWidget
+									title='Committee Chair Feedback and Notes'
+									style={{ backgroundColor: 'white' }}
+									triageOptions={chairTriageOptions}
+									onTriageSelect={onChairTriageSelect}
+									onTriageCommentsChange={onChairCommentsChange}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={() => onTriageWidgetSaveClick('chairWidget')}
+									triageChoice={chairTriageChoice}
+									triageComments={chairTriageComments}
+									triageCommentsPlaceholder={'Add notes (optional)'}
+									initiallyHideContent={
+										vacancyState === CHAIR_TRIAGE ? false : true
+									}
+									maxCommentLength={10000}
+								/>
+							</>
 						) : null}
 
-						{isChair() || userRoles.includes(OWM_TEAM) ? (
-							<TriageWidget
-								title='Committee Chair Feedback and Notes'
-								style={{ backgroundColor: 'white' }}
-								triageOptions={chairTriageOptions}
-								onTriageSelect={onChairTriageSelect}
-								onTriageCommentsChange={onChairCommentsChange}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onTriageWidgetSaveClick}
-								triageChoice={chairTriageChoice}
-								triageComments={chairTriageComments}
-								triageCommentsPlaceholder={'Add notes (optional)'}
-								readOnly={userVacancyCommitteeRole !== COMMITTEE_CHAIR}
-								initiallyHideContent={
-									vacancyState === CHAIR_TRIAGE ? false : true
-								}
-								maxCommentLength={10000}
-							/>
-						) : null}
 						{(isUserAllowedToScore() && !isChair()) ||
 						(isChair() && isChairAllowedScore()) ? (
 							<ScoringWidget
