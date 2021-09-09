@@ -13,6 +13,12 @@ const GET_APPLICATION_TRIAGE_INFO =
 const GET_USER_APPLICATIONS =
 	'/api/x_g_nci_app_tracke/application/get_user_apps';
 
+const GET_APPLICANT_LIST =
+	'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/';
+
+const GET_APPLICATION_SCORES =
+	'/api/x_g_nci_app_tracke/application/get_scores/';
+
 const REMOVE_USER_APPLICATION_DRAFT =
 	'/api/x_g_nci_app_tracke/application/remove/';
 const WITHDRAW_USER_APPLICATION =
@@ -85,4 +91,6 @@ export {
 	GET_APPLICATION_DRAFT,
 	SUBMIT_APPLICATION,
 	CREATE_OKTA_USER,
+	GET_APPLICANT_LIST,
+	GET_APPLICATION_SCORES,
 };

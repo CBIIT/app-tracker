@@ -3,9 +3,10 @@ import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow
 import LabelValuePair from '../../../components/UI/LabelValuePair/LabelValuePair';
 import ScoringWidgetSlider from './ScoringWidgetSlider/ScoringWidgetSlider';
 
-import { Input, Radio, Button, Form } from 'antd';
+import { Input, Radio, Button, Form, Select } from 'antd';
 
 import './ScoringWidget.css';
+import { useEffect } from 'react';
 
 const sliderMarks = [0, 1, 2, 3];
 const sliderMin = 0;
@@ -13,20 +14,63 @@ const sliderMax = 3;
 
 const { TextArea } = Input;
 const { Group } = Radio;
+const { Option } = Select;
 
 const scoringWidget = (props) => {
-	const scores = Object.values(props.scores).map((score) => parseInt(score));
+	const [formInstance] = Form.useForm();
+
+	useEffect(() => {
+		formInstance.resetFields();
+	}, [props]);
+
 	let total = '';
-	if (scores.length == 0) {
+	if (props.scores.length === 0) {
 		total = '';
 	} else {
-		total = scores.reduce((a, b) => a + b);
+		total = 0;
+		for (var key of Object.keys(props.scores)) {
+			total += +props.scores[key];
+		}
+	}
+
+	let menu = {};
+	if (props.committeeMemberDropdownChoices) {
+		menu = (
+			<Select
+				style={{ width: '100%' }}
+				defaultValue={0}
+				onChange={props.committeeMemberDropdownOnClick}
+			>
+				{props.committeeMemberDropdownChoices.map((choice, index) => {
+					return (
+						<Option key={index} value={index}>
+							{choice}
+						</Option>
+					);
+				})}
+			</Select>
+		);
 	}
 
 	return (
 		<div style={props.style}>
-			<Form onFinish={props.onSaveClick} name='Committee-Scoring'>
-				<InfoCard title={props.title} allowToggle={true}>
+			<Form
+				onFinish={props.onSaveClick}
+				name='Committee-Scoring'
+				form={formInstance}
+				initialValues={{ recommendation: props.triageChoice }}
+			>
+				<InfoCard
+					title={props.title}
+					allowToggle={true}
+					initiallyHideContent={props.initiallyHideContent}
+				>
+					{props.enableCommitteeMemberDropdown ? (
+						<div className='ScoringWidgetMemberPicker'>
+							<h2>Score and notes for: </h2>
+							{menu}
+						</div>
+					) : null}
 					<InfoCardRow>
 						<LabelValuePair
 							value={props.description}
@@ -56,7 +100,7 @@ const scoringWidget = (props) => {
 							rows={3}
 							style={{ marginBottom: '16px' }}
 							onChange={props.onScoreCommentsChange}
-							defaultValue={props.triageComments}
+							value={props.triageComments}
 						/>
 						<LabelValuePair
 							label='Interview Recommendation'
@@ -65,18 +109,16 @@ const scoringWidget = (props) => {
 							valueStyle={{ fontSize: '12px', marginBottom: '8px' }}
 						/>
 						<Form.Item
-							name='Recommendation'
+							name='recommendation'
 							rules={[
 								{ required: true, message: 'Please enter a recommendation' },
 							]}
-							initialValue={props.triageChoice}
 						>
 							<Group
 								options={props.triageOptions}
 								optionType='button'
 								buttonStyle='solid'
 								onChange={props.onTriageSelect}
-								value={props.triageChoice}
 							/>
 						</Form.Item>
 					</div>

@@ -18,6 +18,7 @@ import Documents from './Documents/Documents';
 import References from './References/References';
 import TriageWidget from './TriageWidget/TriageWidget';
 import ScoringWidget from './ScoringWidget/ScoringWidget';
+import AdminScoringWidget from './AdminScoringWidget/AdminScoringWidget';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 import {
 	GET_APPLICATION,
@@ -495,7 +496,20 @@ const application = () => {
 								onCancelClick={onTriageWidgetCancelClick}
 								onSaveClick={onIndividualScoreSaveClick}
 								scores={individualScores}
-								userVacancyCommitteeRole={userVacancyCommitteeRole}
+							/>
+						) : null}
+
+						{userRoles.includes(OWM_TEAM) ? (
+							<AdminScoringWidget
+								applicationId={sysId}
+								ratingPlanDownloadLink={ratingPlanDownloadLink}
+								style={{ backgroundColor: 'white' }}
+								triageOptions={committeeMemberTriageOptions}
+								categories={individualScoreCategories}
+								onCancelClick={onTriageWidgetCancelClick}
+								initiallyHideContent={
+									vacancyState !== INDIVIDUAL_SCORING_IN_PROGRESS
+								}
 							/>
 						) : null}
 
