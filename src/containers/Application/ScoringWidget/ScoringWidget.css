@@ -11,3 +11,12 @@
 	font-family: var(--ff-primary);
 	font-size: 14px;
 }
+
+.ScoringWidgetMemberPicker {
+	padding-inline: 16px;
+	margin-bottom: 16px;
+}
+
+.ScoringWidgetMemberPicker h2 {
+	margin-bottom: 5px;
+}

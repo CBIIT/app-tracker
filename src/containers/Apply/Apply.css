@@ -15,7 +15,8 @@
 }
 
 .StepContentContainer {
-	flex: 2 2 768px;
+	max-width: 866px;
+	flex: 2 2 866px;
 	padding-inline: 29px;
 	padding-bottom: 40px;
 	padding-top: 20px;
