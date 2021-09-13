@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { message, Table } from 'antd';
+import { message, Table, Collapse } from 'antd';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -19,6 +19,8 @@ import {
 } from '../../../constants/Roles';
 import { transformDateToDisplay } from '../../../components/Util/Date/Date';
 import './ApplicantList.css';
+
+const { Panel } = Collapse;
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -53,6 +55,7 @@ const applicantColumns = [
 		title: 'Email',
 		dataIndex: 'applicant_email',
 		key: 'email',
+		width: 400,
 	},
 	{
 		title: 'Submitted',
@@ -84,7 +87,57 @@ const applicantList = (props) => {
 	}, [props.vacancyState]);
 
 	const getTable = (vacancyState, applicants, userRoles, userCommitteeRole) => {
-		if (userRoles.includes(OWM_TEAM) || userCommitteeRole === COMMITTEE_CHAIR) {
+		const recommendedApplicants = applicants.filter(
+			(applicant) => applicant.chair_triage_status === 'yes'
+		);
+		const nonRecommendedApplicants = applicants.filter(
+			(applicant) => applicant.chair_triage_status !== 'yes'
+		);
+
+		if (userRoles.includes(OWM_TEAM)) {
+			switch (vacancyState) {
+				case INDIVIDUAL_SCORING_IN_PROGRESS:
+					return (
+						<Collapse defaultActiveKey={['0']} ghost>
+							<Panel header='Recommended Applicants'>
+								<IndividualScoringTable applicants={recommendedApplicants} />
+							</Panel>
+							<Panel header='Non-Recommended Applicants'>
+								<IndividualScoringTable applicants={nonRecommendedApplicants} />
+							</Panel>
+						</Collapse>
+					);
+				case VOTING_COMPLETE:
+				case COMMITTEE_REVIEW_IN_PROGRESS:
+					return (
+						<Collapse defaultActiveKey={['0']} ghost>
+							<Panel header='Recommended Applicants'>
+								<IndividualScoringTable
+									applicants={recommendedApplicants}
+									committeeVoting={true}
+									postChangeHandler={loadVacancyAndApplicants}
+								/>
+							</Panel>
+							<Panel header='Non-Recommended Applicants'>
+								<IndividualScoringTable
+									applicants={nonRecommendedApplicants}
+									committeeVoting={true}
+									postChangeHandler={loadVacancyAndApplicants}
+								/>
+							</Panel>
+						</Collapse>
+					);
+				default:
+					return (
+						<Table
+							dataSource={applicants}
+							columns={applicantColumns}
+							scroll={{ x: 'true' }}
+							rowKey='sys_id'
+						></Table>
+					);
+			}
+		} else if (userCommitteeRole === COMMITTEE_CHAIR) {
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
 					return <IndividualScoringTable applicants={applicants} />;

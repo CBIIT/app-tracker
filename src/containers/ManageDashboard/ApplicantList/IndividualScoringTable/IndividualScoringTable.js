@@ -140,15 +140,18 @@ const individualScoringTable = (props) => {
 					multiple: 1,
 				},
 				defaultSortOrder: 'ascend',
+				width: 200,
 			},
 			{
 				title: 'Email',
 				dataIndex: 'applicant_email',
 				key: 'email',
+				width: 200,
 			},
 			{
-				title: 'Average Member Score',
+				title: 'Average Score',
 				dataIndex: 'average_member_score',
+				width: 50,
 				sorter: {
 					compare: (a, b) => a.average_member_score - b.average_member_score,
 					multiple: 2,
@@ -212,10 +215,11 @@ const individualScoringTable = (props) => {
 			);
 		else
 			columns.push(
-				{ title: 'Scoring Status', dataIndex: 'scoring_status' },
+				{ title: 'Scoring Status', dataIndex: 'scoring_status', width: 125 },
 				{
 					title: 'Interview Recommendation',
 					dataIndex: 'interview_recommendation',
+					width: 100,
 					render: (value) =>
 						value.Yes +
 						' Yes • ' +
@@ -234,6 +238,7 @@ const individualScoringTable = (props) => {
 	return (
 		<>
 			<Table
+				pagination={{ hideOnSinglePage: true }}
 				dataSource={props.applicants}
 				scroll={{ x: 'true' }}
 				columns={columns}

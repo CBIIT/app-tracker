@@ -81,6 +81,7 @@ const applicantList = (props) => {
 	return (
 		<div className='applicant-table'>
 			<Table
+				pagination={{ hideOnSinglePage: true }}
 				className='applicantTable'
 				dataSource={applicants}
 				columns={applicantColumns}
