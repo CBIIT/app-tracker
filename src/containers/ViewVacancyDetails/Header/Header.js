@@ -20,9 +20,15 @@ const header = (props) => {
 
 	const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 	const [userAlreadyApplied, setUserAlreadyApplied] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+
 	useEffect(() => {
-		checkUserAuthentication();
-		checkUserAlreadyApplied();
+		(async () => {
+			setIsLoading(true);
+			await checkUserAuthentication();
+			await checkUserAlreadyApplied();
+			setIsLoading(false);
+		})();
 	}, []);
 
 	const checkUserAuthentication = async () => {
@@ -67,20 +73,22 @@ const header = (props) => {
 					</div>
 				</div>
 			</div>
-			<div className='ButtonContainer'>
-				{isUserAuthenticated ? (
-					<Button
-						onClick={() => onButtonClick(APPLY + props.sysId)}
-						type='primary'
-					>
-						Apply
-					</Button>
-				) : (
-					<Button onClick={() => onButtonClick(REGISTER_OKTA)} type='primary'>
-						Sign In and Apply
-					</Button>
-				)}
-			</div>
+			{!isLoading ? (
+				<div className='ButtonContainer'>
+					{isUserAuthenticated ? (
+						<Button
+							onClick={() => onButtonClick(APPLY + props.sysId)}
+							type='primary'
+						>
+							Apply
+						</Button>
+					) : (
+						<Button onClick={() => onButtonClick(REGISTER_OKTA)} type='primary'>
+							Sign In and Apply
+						</Button>
+					)}
+				</div>
+			) : null}
 		</div>
 	);
 };
