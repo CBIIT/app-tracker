@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { CHECK_AUTH } from '../../../constants/ApiEndpoints';
-import { APPLY, REGISTER_OKTA } from '../../../constants/Routes';
+import {
+	CHECK_AUTH,
+	CHECK_USER_ALREADY_APPLIED,
+} from '../../../constants/ApiEndpoints';
+import {
+	APPLICANT_DASHBOARD,
+	APPLY,
+	REGISTER_OKTA,
+} from '../../../constants/Routes';
 
 import './Header.css';
 
@@ -12,8 +19,10 @@ const header = (props) => {
 	const history = useHistory();
 
 	const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+	const [userAlreadyApplied, setUserAlreadyApplied] = useState(false);
 	useEffect(() => {
 		checkUserAuthentication();
+		checkUserAlreadyApplied();
 	}, []);
 
 	const checkUserAuthentication = async () => {
@@ -25,8 +34,22 @@ const header = (props) => {
 		}
 	};
 
+	const checkUserAlreadyApplied = async () => {
+		try {
+			const response = await axios.get(
+				CHECK_USER_ALREADY_APPLIED + props.sysId
+			);
+			setUserAlreadyApplied(response.data.result.exists);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const onButtonClick = (link) => {
-		history.push(link);
+		if (userAlreadyApplied) {
+			history.push(APPLICANT_DASHBOARD);
+			message.info('You have already applied for this position.');
+		} else history.push(link);
 	};
 
 	return (
