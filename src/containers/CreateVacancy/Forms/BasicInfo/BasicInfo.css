@@ -54,3 +54,10 @@
 		margin-bottom: 40px;
 	}
 }
+
+.BasicInfo .ql-disabled .ql-editor {
+	color: rgba(0, 0, 0, 0.25);
+	background-color: #f5f5f5;
+	cursor: not-allowed;
+	opacity: 1;
+}

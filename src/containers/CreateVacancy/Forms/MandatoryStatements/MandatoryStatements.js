@@ -9,6 +9,7 @@ import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValid
 const mandatoryStatements = (props) => {
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
+	const readOnly = props.readOnly;
 
 	const validateMandatoryStatements = async () => {
 		if (
@@ -58,6 +59,7 @@ const mandatoryStatements = (props) => {
 				onBlur={() => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
+				readOnly={readOnly}
 			/>
 			<SwitchFormItemEditor
 				name='standardsOfConduct'
@@ -69,6 +71,7 @@ const mandatoryStatements = (props) => {
 				onBlur={() => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
+				readOnly={readOnly}
 			/>
 			<SwitchFormItemEditor
 				name='foreignEducation'
@@ -80,6 +83,7 @@ const mandatoryStatements = (props) => {
 				onBlur={() => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
+				readOnly={readOnly}
 			/>
 			<SwitchFormItemEditor
 				name='reasonableAccomodation'
@@ -91,6 +95,7 @@ const mandatoryStatements = (props) => {
 				onBlur={() => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
+				readOnly={readOnly}
 			/>
 			<Form.Item
 				name='mandatoryStatements'

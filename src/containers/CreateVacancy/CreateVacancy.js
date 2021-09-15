@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
-import { Steps, Button, Form, message } from 'antd';
+import { Steps, Button, Form, message, Tooltip } from 'antd';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
@@ -49,6 +49,8 @@ const createVacancy = (props) => {
 	const [vacancyCommitteeForm] = Form.useForm();
 	const [emailTemplatesForm] = Form.useForm();
 
+	const restrictedEditMode = props.restrictedEditMode;
+
 	const validateAllFormsAndDisplayModal = async () => {
 		const errorForms = [];
 		try {
@@ -94,6 +96,7 @@ const createVacancy = (props) => {
 				<BasicInfo
 					initialValues={allForms.basicInfo}
 					formInstance={basicInfoForm}
+					readOnly={restrictedEditMode}
 				/>
 			),
 		},
@@ -107,6 +110,7 @@ const createVacancy = (props) => {
 				<MandatoryStatements
 					initialValues={allForms.mandatoryStatements}
 					formInstance={mandatoryStatementsForm}
+					readOnly={restrictedEditMode}
 				/>
 			),
 		},
@@ -209,6 +213,8 @@ const createVacancy = (props) => {
 	};
 
 	const save = async (data) => {
+		if (!isCurrentStepEditable()) return true;
+
 		if (!data.basicInfo.title || data.basicInfo.title == '') {
 			message.error('A vacancy title is required.');
 			return false;
@@ -258,6 +264,12 @@ const createVacancy = (props) => {
 		}
 	};
 
+	const isCurrentStepEditable = () => {
+		if (restrictedEditMode) {
+			return isEditableInRestrictedEditMode(steps[currentStep].key);
+		} else return true;
+	};
+
 	const isCurrentStepFinalize = () =>
 		steps[currentStep].key === 'reviewAndFinalize';
 
@@ -284,6 +296,10 @@ const createVacancy = (props) => {
 				setCurrentStep(currentStep - 1);
 			}
 		}
+	};
+
+	const isEditableInRestrictedEditMode = (stepKey) => {
+		return stepKey === 'emailTemplates' || stepKey === 'vacancyCommittee';
 	};
 
 	const currentStepObject = steps[currentStep] || {};
@@ -360,9 +376,23 @@ const createVacancy = (props) => {
 								{currentStep === 0 ? 'cancel' : 'back'}
 							</Button>
 
-							<Button type='primary' onClick={next} className='wider-button'>
-								{isCurrentStepFinalize() ? 'save and finalize' : 'save'}
-							</Button>
+							<Tooltip
+								placement='top'
+								title={
+									!isCurrentStepEditable()
+										? 'Cannot save or edit this section for closed vacancy.'
+										: ''
+								}
+							>
+								<Button
+									type='primary'
+									onClick={next}
+									className='wider-button'
+									disabled={!isCurrentStepEditable()}
+								>
+									{isCurrentStepFinalize() ? 'save and finalize' : 'save'}
+								</Button>
+							</Tooltip>
 						</div>
 						<div
 							className='ErrorPanel'

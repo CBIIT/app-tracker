@@ -7,6 +7,7 @@ import './SwitchFormItemEditor.css';
 import { useState } from 'react';
 
 const switchFormItemEditor = (props) => {
+	const readOnly = props.readOnly;
 	const [showEditor, setShowEditor] = useState(
 		props.showEditor
 			? props.showEditor
@@ -19,12 +20,13 @@ const switchFormItemEditor = (props) => {
 	};
 
 	return (
-		<div>
+		<div className='SwitchFormItemEditor'>
 			<SwitchFormItem
 				name={props.name}
 				label={props.label}
 				onChangeHandler={onChangeHandler}
 				rules={props.rules}
+				readOnly={readOnly}
 			/>
 			<Form.Item
 				name={props.textName ? props.textName : props.name + 'Text'}
@@ -34,6 +36,7 @@ const switchFormItemEditor = (props) => {
 				<ReactQuill
 					className='SwitchFormItemTextEditor'
 					onBlur={props.onBlur}
+					readOnly={readOnly}
 				/>
 			</Form.Item>
 		</div>
