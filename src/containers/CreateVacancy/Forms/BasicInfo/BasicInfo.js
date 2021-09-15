@@ -11,6 +11,7 @@ import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValid
 const basicInformation = (props) => {
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
+	const readOnly = props.readOnly;
 
 	const sliderMarks = {
 		0: '0',
@@ -72,13 +73,14 @@ const basicInformation = (props) => {
 			name='BasicInfo'
 			form={formInstance}
 			initialValues={initialValues}
+			className='BasicInfo'
 		>
 			<Form.Item
 				label='Vacancy Title'
 				name='title'
 				rules={[{ required: true, message: 'Please enter a title' }]}
 			>
-				<Input placeholder='Please enter' />
+				<Input placeholder='Please enter' disabled={readOnly} />
 			</Form.Item>
 
 			<Form.Item
@@ -87,7 +89,7 @@ const basicInformation = (props) => {
 				name='description'
 				rules={[{ validator: validateDescription }]}
 			>
-				<ReactQuill className='QuillEditor' />
+				<ReactQuill className='QuillEditor' readOnly={readOnly} />
 			</Form.Item>
 
 			<div className='DatePickerContainer'>
@@ -103,6 +105,7 @@ const basicInformation = (props) => {
 						className='DatePicker'
 						disabledDate={disabledDate}
 						format='MM/DD/YYYY'
+						disabled={readOnly}
 					/>
 				</Form.Item>
 
@@ -121,12 +124,13 @@ const basicInformation = (props) => {
 						className='DatePicker'
 						disabledDate={disabledDate}
 						format='MM/DD/YYYY'
+						disabled={readOnly}
 					/>
 				</Form.Item>
 			</div>
 
 			<Form.Item label='Application Documents' name='applicationDocuments'>
-				<RequiredDocsList name='applicationDocuments' />
+				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
 
 			<Form.Item label='Letters of Recommendation'>
@@ -135,7 +139,14 @@ const basicInformation = (props) => {
 				</p>
 
 				<Form.Item name='numberOfRecommendations'>
-					<Slider className='Slider' min={0} max={3} dots marks={sliderMarks} />
+					<Slider
+						className='Slider'
+						min={0}
+						max={3}
+						dots
+						marks={sliderMarks}
+						disabled={readOnly}
+					/>
 				</Form.Item>
 			</Form.Item>
 		</Form>

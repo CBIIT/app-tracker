@@ -4,6 +4,8 @@ import { Form, Button } from 'antd';
 import InputWithCheckbox from '../../../../../components/UI/InputWithCheckbox/InputWithCheckbox';
 
 const requiredDocsList = (props) => {
+	const readOnly = props.readOnly;
+
 	return (
 		<Form.List name={props.name}>
 			{(fields, { add, remove }) => {
@@ -23,13 +25,16 @@ const requiredDocsList = (props) => {
 											},
 										]}
 										onInnerButtonClick={() => remove(field.name)}
+										readOnly={readOnly}
 									/>
 								</Form.Item>
 							</div>
 						))}
-						<Button type='secondary' onClick={() => add()}>
-							<PlusOutlined /> add more
-						</Button>
+						{!readOnly ? (
+							<Button type='secondary' onClick={() => add()}>
+								<PlusOutlined /> add more
+							</Button>
+						) : null}
 					</div>
 				);
 			}}

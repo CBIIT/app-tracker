@@ -432,8 +432,19 @@ const vacancyDashboard = () => {
 		{
 			title: 'Actions',
 			key: 'action',
-			render: (vacancy) => (
-				<Space size='middle'>
+			width: '5px',
+			render: (vacancy, record) => (
+				<Space size={0}>
+					<Button
+						type='text'
+						style={{ padding: '0px' }}
+						onClick={() => {
+							handleEditButtonClick(record);
+						}}
+					>
+						<EditOutlined /> edit
+					</Button>
+					<Divider type='vertical' />
 					<Button
 						type='text'
 						onClick={() => {

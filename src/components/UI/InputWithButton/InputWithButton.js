@@ -4,6 +4,7 @@ import { Button, Input, Form } from 'antd';
 import './InputWithButton.css';
 
 const inputWithButton = (props) => {
+	const readOnly = props.readOnly;
 	return (
 		<div className='InputWithButtonContainer ant-input'>
 			<Form.Item
@@ -12,14 +13,16 @@ const inputWithButton = (props) => {
 				className='Input'
 				noStyle
 			>
-				<Input className='Input' />
+				<Input className='Input' disabled={readOnly} />
 			</Form.Item>
-			<Button
-				className='BorderlessButton'
-				type='Link'
-				icon={props.buttonIcon}
-				onClick={props.onInnerButtonClick}
-			/>
+			{!readOnly ? (
+				<Button
+					className='BorderlessButton'
+					type='Link'
+					icon={props.buttonIcon}
+					onClick={props.onInnerButtonClick}
+				/>
+			) : null}
 		</div>
 	);
 };

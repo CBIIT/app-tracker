@@ -6,6 +6,7 @@ import './InputWithCheckbox.css';
 import InputWithButton from '../InputWithButton/InputWithButton';
 
 const inputWithCheckbox = (props) => {
+	const readOnly = props.readOnly;
 	return (
 		<div className='InputWithCheckboxContainer'>
 			<InputWithButton
@@ -14,10 +15,11 @@ const inputWithCheckbox = (props) => {
 				onInnerButtonClick={props.onInnerButtonClick}
 				className='InputField'
 				buttonIcon={<DeleteOutlined />}
+				readOnly={readOnly}
 			/>
 			<div className='Checkbox'>
 				<Form.Item name={props.checkboxName} noStyle valuePropName='checked'>
-					<Checkbox>optional</Checkbox>
+					<Checkbox disabled={readOnly}>optional</Checkbox>
 				</Form.Item>
 			</div>
 		</div>
