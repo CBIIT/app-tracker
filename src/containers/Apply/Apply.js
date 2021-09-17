@@ -156,6 +156,8 @@ const Apply = (props) => {
 			description: 'CV, cover letter, and statement of research interests',
 			longDescription:
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
+			strongContent:
+				'Please ensure each of your documents are unique files.  \nApplication documents will not be saved unless your application is submitted/finalized on the next section.',
 		});
 
 	if (formData.references.length > 0)
@@ -318,6 +320,9 @@ const Apply = (props) => {
 						<div className='StepContent'>
 							<h3>{currentStepObj.title}</h3>
 							<p>{currentStepObj.longDescription}</p>
+							<span style={{ marginBottom: '0px', whiteSpace: 'pre-wrap' }}>
+								<strong>{currentStepObj.strongContent}</strong>
+							</span>
 							<div>
 								{!isLoading ? currentStepObj.content : null}
 								{formIsFinished && (

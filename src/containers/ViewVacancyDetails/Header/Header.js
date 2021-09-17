@@ -69,7 +69,7 @@ const header = (props) => {
 					</div>
 					<div className='DateItem'>
 						<label>Close Date</label>
-						<span>{props.closeDate}</span>
+						<span>{props.closeDate + ' 11:59PM ET'}</span>
 					</div>
 				</div>
 			</div>
