@@ -71,7 +71,10 @@ const home = () => {
 					contribute to the Institute’s cancer mission.
 				</p>
 				<p>To learn more about NCI, please visit http://www.cancer.gov</p>
-				<h2>Open Vacancies</h2>
+				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
+				<p>
+					Application period for all vacancies ends at 11:59PM ET on final day.
+				</p>
 				{!isLoading ? (
 					<Table
 						columns={columns}
