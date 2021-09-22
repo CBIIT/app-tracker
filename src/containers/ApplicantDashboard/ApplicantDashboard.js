@@ -5,7 +5,7 @@ import {
 	REMOVE_USER_APPLICATION_DRAFT,
 	WITHDRAW_USER_APPLICATION,
 } from '../../constants/ApiEndpoints';
-import { EDIT_APPLICATION } from '../../constants/Routes';
+import { EDIT_APPLICATION, VIEW_APPLICATION } from '../../constants/Routes';
 import {
 	Table,
 	ConfigProvider,
@@ -107,9 +107,11 @@ const applicantDashboard = () => {
 				multiple: 1,
 			},
 			defaultSortOrder: 'ascend',
-			render: (title, record) => (
-				<Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>
-			),
+			render: (title, record) => {
+				if (record.state === 'submitted') {
+					return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
+				} else return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
+			},
 		},
 		{
 			title: 'State',

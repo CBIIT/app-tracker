@@ -3,7 +3,8 @@ import InfoCard from '../../../components/UI/InfoCard/InfoCard';
 import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 
 const address = (props) => {
-	const { address1, address2, city, stateProvince, postalCode } = props.address;
+	const { address1, address2, city, stateProvince, postalCode, country } =
+		props.address;
 
 	return (
 		<InfoCard title='Address' style={props.style}>
@@ -16,6 +17,11 @@ const address = (props) => {
 				<LabelValuePair label='State' value={stateProvince} />
 				<LabelValuePair label='Postal Code' value={postalCode} />
 			</InfoCardRow>
+			{country ? (
+				<InfoCardRow>
+					<LabelValuePair label='Country' value={country} />
+				</InfoCardRow>
+			) : null}
 		</InfoCard>
 	);
 };

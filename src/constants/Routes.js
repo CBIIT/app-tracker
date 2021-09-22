@@ -8,6 +8,7 @@ const VACANCY_DASHBOARD = '/vacancy-dashboard';
 const COMMITTEE_DASHBOARD = '/committee-dashboard/';
 const APPLICANT_DASHBOARD = '/applicant-dashboard/';
 const APPLY = '/apply/';
+const VIEW_APPLICATION = '/apply/view/';
 const REGISTER_OKTA = '/register-okta';
 const EDIT_DRAFT = '/manage/edit/draft/';
 const VIEW_VACANCY = '/vacancy/';
@@ -25,4 +26,5 @@ export {
 	EDIT_DRAFT,
 	EDIT_APPLICATION,
 	VIEW_VACANCY,
+	VIEW_APPLICATION,
 };
