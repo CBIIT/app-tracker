@@ -68,10 +68,23 @@ const review = (props) => {
 					/>
 				</div>
 				<div className='SectionContentRow'>
-					<LabelValuePair label='Phone' value={formData.basicInfo.phone} />
+					<LabelValuePair
+						label='Phone'
+						value={
+							formData.basicInfo.phone
+								? formData.basicInfo.phonePrefix.toString() +
+								  formData.basicInfo.phone.toString()
+								: ''
+						}
+					/>
 					<LabelValuePair
 						label='Business Phone'
-						value={formData.basicInfo.businessPhone}
+						value={
+							formData.basicInfo.businessPhone
+								? formData.basicInfo.businessPhonePrefix.toString() +
+								  formData.basicInfo.businessPhone.toString()
+								: ''
+						}
 					/>
 				</div>
 			</div>

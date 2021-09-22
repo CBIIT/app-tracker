@@ -107,6 +107,13 @@ const applicantApplicationView = (props) => {
 						value={application.basicInfo.businessPhone}
 					/>
 				</InfoCardRow>
+				<InfoCardRow>
+					{/* As of now, an applicant can only ever submit an app by answering yes */}
+					<LabelValuePair
+						label='Do you possess a doctoral degree?'
+						value='yes'
+					/>
+				</InfoCardRow>
 			</InfoCard>
 			<Address address={application.address} />
 			<InfoCard title='References'>
