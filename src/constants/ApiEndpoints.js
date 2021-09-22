@@ -65,6 +65,9 @@ const CREATE_OKTA_USER = '/api/x_g_nci_app_tracke/login/create_okta_user';
 const CHECK_USER_ALREADY_APPLIED =
 	'/api/x_g_nci_app_tracke/application/check_existing/';
 
+const APPLICANT_GET_APPLICATION =
+	'/api/x_g_nci_app_tracke/application/get_application_applicant/';
+
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	GET_APPLICATION,
@@ -97,4 +100,5 @@ export {
 	GET_APPLICANT_LIST,
 	GET_APPLICATION_SCORES,
 	CHECK_USER_ALREADY_APPLIED,
+	APPLICANT_GET_APPLICATION,
 };

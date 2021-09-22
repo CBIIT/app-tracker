@@ -20,7 +20,9 @@ import {
 	EDIT_APPLICATION,
 	CREATE_VACANCY,
 	VIEW_VACANCY,
+	VIEW_APPLICATION,
 } from './constants/Routes';
+import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
@@ -176,6 +178,14 @@ const app = () => {
 					key='edit-application'
 					path={EDIT_APPLICATION + ':draft?/:appSysId'}
 					component={EditApplication}
+					isUserLoggedIn={isUserLoggedIn}
+					iTrustGlideSsoId={iTrustGlideSsoId}
+					oktaGlideSsoId={oktaGlideSsoId}
+				/>,
+				<ProtectedRoute
+					key='view-application'
+					path={VIEW_APPLICATION + ':appSysId'}
+					component={ApplicantApplicationView}
 					isUserLoggedIn={isUserLoggedIn}
 					iTrustGlideSsoId={iTrustGlideSsoId}
 					oktaGlideSsoId={oktaGlideSsoId}
