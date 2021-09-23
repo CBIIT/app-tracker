@@ -212,31 +212,41 @@ const applicantDashboard = () => {
 			<div className='HeaderTitle'>
 				<h1>Your Applications</h1>
 			</div>
-			<div className='ApplicantDashboard'>
-				<ConfigProvider renderEmpty={customizeRenderEmpty}>
-					<Table
-						className='ApplicantTable'
-						rowKey={(record) => {
-							if (record.app_id != undefined) {
-								return record.app_id;
-							} else if (record.draft_id != undefined) {
-								return record.draft_id;
-							}
-						}}
-						dataSource={data}
-						columns={applicationColumns}
-						scroll={{ x: 'true' }}
-						key='Applications'
-						style={{
-							width: '1170px',
-							display: 'block',
-							paddingLeft: '20px',
-							paddingRight: '20px',
-							paddingTop: '20px',
-						}}
-					></Table>
-				</ConfigProvider>
-			</div>
+			{data.length > 0 ? (
+				<div className='ApplicantDashboard'>
+					<ConfigProvider renderEmpty={customizeRenderEmpty}>
+						<Table
+							className='ApplicantTable'
+							rowKey={(record) => {
+								if (record.app_id != undefined) {
+									return record.app_id;
+								} else if (record.draft_id != undefined) {
+									return record.draft_id;
+								}
+							}}
+							dataSource={data}
+							columns={applicationColumns}
+							scroll={{ x: 'true' }}
+							key='Applications'
+							style={{
+								width: '1170px',
+								display: 'block',
+								paddingLeft: '20px',
+								paddingRight: '20px',
+								paddingTop: '20px',
+							}}
+						></Table>
+					</ConfigProvider>
+				</div>
+			) : (
+				<div className='ApplicantDashboardNoApplications'>
+					<p>
+						You do not have any active applications.{'  '}
+						<Link to='/'>View all open positions↗</Link>
+					</p>
+				</div>
+			)}
+
 			<Modal
 				visible={removeDraftModalVisible}
 				onOk={removeDraft}

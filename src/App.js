@@ -164,33 +164,32 @@ const app = () => {
 			);
 		}
 
-		if (user.user.has_applications)
-			routes.push(
-				<ProtectedRoute
-					key='applicant-dashboard'
-					path={APPLICANT_DASHBOARD}
-					component={ApplicantDashboard}
-					isUserLoggedIn={isUserLoggedIn}
-					iTrustGlideSsoId={iTrustGlideSsoId}
-					oktaGlideSsoId={oktaGlideSsoId}
-				/>,
-				<ProtectedRoute
-					key='edit-application'
-					path={EDIT_APPLICATION + ':draft?/:appSysId'}
-					component={EditApplication}
-					isUserLoggedIn={isUserLoggedIn}
-					iTrustGlideSsoId={iTrustGlideSsoId}
-					oktaGlideSsoId={oktaGlideSsoId}
-				/>,
-				<ProtectedRoute
-					key='view-application'
-					path={VIEW_APPLICATION + ':appSysId'}
-					component={ApplicantApplicationView}
-					isUserLoggedIn={isUserLoggedIn}
-					iTrustGlideSsoId={iTrustGlideSsoId}
-					oktaGlideSsoId={oktaGlideSsoId}
-				/>
-			);
+		routes.push(
+			<ProtectedRoute
+				key='applicant-dashboard'
+				path={APPLICANT_DASHBOARD}
+				component={ApplicantDashboard}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
+			/>,
+			<ProtectedRoute
+				key='edit-application'
+				path={EDIT_APPLICATION + ':draft?/:appSysId'}
+				component={EditApplication}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
+			/>,
+			<ProtectedRoute
+				key='view-application'
+				path={VIEW_APPLICATION + ':appSysId'}
+				component={ApplicantApplicationView}
+				isUserLoggedIn={isUserLoggedIn}
+				iTrustGlideSsoId={iTrustGlideSsoId}
+				oktaGlideSsoId={oktaGlideSsoId}
+			/>
+		);
 	} else {
 		routes.push(
 			<ProtectedRoute

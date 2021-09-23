@@ -126,6 +126,9 @@ const navBar = () => {
 								<Menu.Item key='home'>
 									<Link to='/'>Home</Link>
 								</Menu.Item>
+								<Menu.Item key='your-applications'>
+									<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
+								</Menu.Item>
 							</Menu>
 						</div>
 					</div>
