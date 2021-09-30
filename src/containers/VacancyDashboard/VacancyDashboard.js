@@ -334,7 +334,6 @@ const vacancyDashboard = () => {
 				compare: (a, b) => a.applicants - b.applicants,
 				multiple: 1,
 			},
-			defaultSortOrder: 'ascend',
 		},
 		{
 			title: 'Open Date',
@@ -352,7 +351,9 @@ const vacancyDashboard = () => {
 			sorter: {
 				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 				multiple: 3,
+				defaultSortOrder: 'descend',
 			},
+			defaultSortOrder: 'descend',
 		},
 		{
 			title: 'Actions',
@@ -416,9 +417,7 @@ const vacancyDashboard = () => {
 			dataIndex: 'applicants',
 			sorter: {
 				compare: (a, b) => a.applicants - b.applicants,
-				multiple: 1,
 			},
-			defaultSortOrder: 'ascend',
 		},
 		{
 			title: 'Close Date',
@@ -426,8 +425,10 @@ const vacancyDashboard = () => {
 			render: (date) => transformDateToDisplay(date),
 			sorter: {
 				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
-				multiple: 2,
+				multiple: 1,
+				defaultSortOrder: 'descend',
 			},
+			defaultSortOrder: 'descend',
 		},
 		{
 			title: 'Actions',
