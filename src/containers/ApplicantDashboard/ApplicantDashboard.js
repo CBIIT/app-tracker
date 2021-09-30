@@ -110,6 +110,12 @@ const applicantDashboard = () => {
 			render: (title, record) => {
 				if (record.state === 'submitted') {
 					return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
+				} else if (record.state === 'draft') {
+					return (
+						<Link to={EDIT_APPLICATION + 'draft/' + record.draft_id}>
+							{title}
+						</Link>
+					);
 				} else return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
 			},
 		},
