@@ -59,6 +59,7 @@ const Apply = (props) => {
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState(props.draftId);
+	const [vacancyId, setVacancyId] = useState();
 
 	const history = useHistory();
 	const { sysId, appSysId } = useParams();
@@ -81,6 +82,7 @@ const Apply = (props) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + props.initialValues.sysId
 		);
+		setVacancyId(props.initialValues.sysId);
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setDraftId(appSysId);
 
@@ -98,6 +100,7 @@ const Apply = (props) => {
 	const instantiateNewApplication = async () => {
 		const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
+		setVacancyId(sysId);
 
 		const references = [];
 
@@ -300,7 +303,7 @@ const Apply = (props) => {
 		<>
 			<HeaderWithLink
 				title={vacancyTitle}
-				route={'/vacancy/' + sysId}
+				route={'/vacancy/' + vacancyId}
 				routeTitle='View Vacancy Details↗'
 			/>
 			<FormContext.Provider value={formContext}>

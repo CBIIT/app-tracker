@@ -538,7 +538,12 @@ const application = () => {
 
 						<Button>
 							<a
-								href={'/exportAttachmentsToZip.do?sysparm_sys_id=' + appDocIds}
+								href={
+									'/exportAttachmentsToZip.do?sysparm_sys_id=' +
+									appDocIds +
+									'&sysparm_ck=' +
+									window.servicenowUserToken
+								}
 							>
 								Download Application Documents {<DownloadOutlined />}
 							</a>
