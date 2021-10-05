@@ -111,7 +111,7 @@ const vacancyDashboard = () => {
 				]);
 
 				setData(currentData.data.result);
-				setActiveTab(tab);
+				setActiveTab(tab || tabs.PREFLIGHT);
 				setPreFlightCount(currentPreCount.data.result.length);
 				setLiveCount(currentLiveCount.data.result.length);
 				setClosedCount(currentClosedCount.data.result.length);
@@ -120,9 +120,10 @@ const vacancyDashboard = () => {
 			}
 			setIsLoading(false);
 		})();
-	}, []);
+	}, [tab]);
 
 	const filterChangeHandler = async (e) => {
+		setIsLoading(true);
 		const newFilter = e.target.value;
 		const filteredData = await axios.get(url);
 		if (e.target.value == 'all') {
@@ -165,6 +166,7 @@ const vacancyDashboard = () => {
 		} else {
 			setData(filteredData.data.result.filter((res) => res.state == newFilter));
 		}
+		setIsLoading(false);
 	};
 
 	const extendVacancy = async () => {
