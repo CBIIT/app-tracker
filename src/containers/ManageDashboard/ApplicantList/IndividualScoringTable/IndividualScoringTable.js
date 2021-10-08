@@ -179,7 +179,7 @@ const individualScoringTable = (props) => {
 					render: (value, record) => (
 						<>
 							<Select
-								style={{ width: 120 }}
+								style={{ width: 135 }}
 								placeholder='--'
 								value={value}
 								allowClear

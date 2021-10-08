@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Tooltip } from 'antd';
 import {
 	LikeOutlined,
 	DislikeOutlined,
@@ -152,7 +152,7 @@ const application = () => {
 	const [committeeDecision, setCommitteeDecision] = useState();
 	const [committeeComments, setCommitteeComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
-	const [appDocIds, setAppDocIds] = useState();
+	const [appDocIds, setAppDocIds] = useState([]);
 	const [userRoles, setUserRoles] = useState([]);
 	const [userVacancyCommitteeRole, setUserVacancyCommitteeRole] = useState();
 	const [individualTriageChoice, setIndividualTriageChoice] = useState();
@@ -307,6 +307,9 @@ const application = () => {
 			}
 
 			await axios.post(SUBMIT_TRIAGE, triage);
+			if (widget === 'chairWidget') {
+				history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+			}
 			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
@@ -535,19 +538,27 @@ const application = () => {
 								</InfoCardRow>
 							</InfoCard>
 						) : null}
-
-						<Button>
-							<a
-								href={
-									'/exportAttachmentsToZip.do?sysparm_sys_id=' +
-									appDocIds +
-									'&sysparm_ck=' +
-									window.servicenowUserToken
-								}
-							>
-								Download Application Documents {<DownloadOutlined />}
-							</a>
-						</Button>
+						<Tooltip
+							placement='top'
+							title={
+								appDocIds.length === 0
+									? 'There are no application documents.'
+									: ''
+							}
+						>
+							<Button disabled={appDocIds.length === 0}>
+								<a
+									href={
+										'/exportAttachmentsToZip.do?sysparm_sys_id=' +
+										appDocIds +
+										'&sysparm_ck=' +
+										window.servicenowUserToken
+									}
+								>
+									Download Application Documents {<DownloadOutlined />}
+								</a>
+							</Button>
+						</Tooltip>
 						<Button style={{ marginTop: '10px' }}>
 							<a
 								href={
