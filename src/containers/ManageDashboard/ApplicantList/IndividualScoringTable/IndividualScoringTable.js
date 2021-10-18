@@ -174,7 +174,7 @@ const individualScoringTable = (props) => {
 		if (isCommitteeVoting)
 			columns.push(
 				{
-					title: 'Committee Vote',
+					title: 'Status',
 					dataIndex: 'committee_decision',
 					render: (value, record) => (
 						<>
@@ -191,8 +191,8 @@ const individualScoringTable = (props) => {
 									)
 								}
 							>
-								<Option value='selected'>Selected</Option>
-								<Option value='non-selected'>Non-Selected</Option>
+								<Option value='selected'>Interviewed</Option>
+								<Option value='non-selected'>Not Interviewed</Option>
 							</Select>
 						</>
 					),
