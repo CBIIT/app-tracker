@@ -191,8 +191,9 @@ const individualScoringTable = (props) => {
 									)
 								}
 							>
-								<Option value='selected'>Interviewed</Option>
-								<Option value='non-selected'>Not Interviewed</Option>
+								<Option value='interviewed'>Interviewed</Option>
+								<Option value='not_interviewed'>Not Interviewed</Option>
+								<Option value='selected'>Selected</Option>
 							</Select>
 						</>
 					),
