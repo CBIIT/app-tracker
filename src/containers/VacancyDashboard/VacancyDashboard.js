@@ -110,6 +110,7 @@ const vacancyDashboard = () => {
 					axios.get(urls.closed),
 				]);
 
+				setURL(dataUrl);
 				setData(currentData.data.result);
 				setActiveTab(tab || tabs.PREFLIGHT);
 				setPreFlightCount(currentPreCount.data.result.length);
