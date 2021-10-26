@@ -40,11 +40,6 @@ export const initialValues = {
 			text: '<p>Dear Dr. #APP_LAST_NAME#,</p><p>Thank you for your application for the position of #POSITION# at the ***DOC*** National Cancer Institute (NCI).</p><p>Your application has been saved and is available at #APP_URL#.&nbsp;</p><p>Please ensure that all application materials are submitted by the review date/application deadline. Incomplete applications will not be considered. You may view the status of your application materials -- If you should have any questions, please contact ______. Thank you for your interest in the National Cancer Institute.</p>',
 		},
 		{
-			type: 'Application is inactive',
-			active: true,
-			text: "<p>Dear Dr. #APP_LAST_NAME#,</p><p>This is a courtesy notification regarding your saved application for the position of #POSITION# at the Center for Cancer Research (CCR), National Cancer Institute's (NCI).</p><p>Your application has not been updated within the past month and is scheduled for automatic removal on #POSITION_CLOSE_DATE#. If you are still interested in applying, please visit #APP_URL# to update your application.</p><p>If you are no longer interested in applying for #POSITION#, you may disregard this message.</p>",
-		},
-		{
 			type: 'Application submitted confirmation',
 			active: true,
 			text: "<p><span>Dear Dr. #APP_LAST_NAME#,</span></p><p><span>Good news! Your application for the position of #POSITION# at the ***DOC*** National Cancer Institute's (NCI) </span><strong>has been submitted.</strong></p><p><span>You may view the status of your application at any time by following #APP_URL#.</span></p><p><span>If you should have any questions, please contact ____. Thank you for your interest in the National Cancer Institute.</span></p>",
