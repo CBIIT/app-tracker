@@ -89,7 +89,10 @@ const individualScoringTable = (props) => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [committeeComments, setCommitteeComments] = useState('');
 	const [applicantSysId, setAppicantSysId] = useState();
-
+	const [isOtherCommentsModalVisible, setIsOtherCommentsModalVisible] =
+		useState(false);
+	const [triageComments, setTriageComments] = useState('');
+	const [chairComments, setChairComments] = useState('');
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
 		setCommitteeComments(comment);
@@ -119,6 +122,12 @@ const individualScoringTable = (props) => {
 				'Sorry!  An issue occurred while trying to save.  Please reload and try again.'
 			);
 		}
+	};
+
+	const onOtherCommentsButtonClick = (triageComments, chairComments) => {
+		setTriageComments(triageComments);
+		setChairComments(chairComments);
+		setIsOtherCommentsModalVisible(true);
 	};
 
 	const getColumns = (isCommitteeVoting) => {
@@ -171,50 +180,70 @@ const individualScoringTable = (props) => {
 			},
 		];
 
-		if (isCommitteeVoting)
-			columns.push(
-				{
-					title: 'Status',
-					dataIndex: 'committee_decision',
-					render: (value, record) => (
-						<>
-							<Select
-								style={{ width: 148 }}
-								placeholder='--'
-								value={value}
-								allowClear
-								onChange={(value) =>
-									committeeVoteChangeHandler(
-										value,
-										record.sys_id,
-										props.postChangeHandler
-									)
-								}
-							>
-								<Option value='interviewed'>Interviewed</Option>
-								<Option value='not_interviewed'>Not Interviewed</Option>
-								<Option value='selected'>Selected</Option>
-							</Select>
-						</>
-					),
-				},
-				{
-					title: 'Committee Comments',
-					dataIndex: 'committee_comments',
-					key: 'committee_comments',
+		if (isCommitteeVoting) {
+			columns.push({
+				title: 'Status',
+				dataIndex: 'committee_decision',
+				render: (value, record) => (
+					<>
+						<Select
+							style={{ width: 148 }}
+							placeholder='--'
+							value={value}
+							allowClear
+							onChange={(value) =>
+								committeeVoteChangeHandler(
+									value,
+									record.sys_id,
+									props.postChangeHandler
+								)
+							}
+						>
+							<Option value='interviewed'>Interviewed</Option>
+							<Option value='not_interviewed'>Not Interviewed</Option>
+							<Option value='selected'>Selected</Option>
+						</Select>
+					</>
+				),
+			});
+
+			if (props.displayAllComments) {
+				columns.push({
+					title: 'Other Comments',
 					align: 'center',
-					render: (comment, record) => (
+					render: (_, record) => (
 						<Button
 							type='text'
 							shape='circle'
-							onClick={() => onCommentButtonClick(comment, record.sys_id)}
+							onClick={() =>
+								onOtherCommentsButtonClick(
+									record.triage_comments,
+									record.chair_triage_comments
+								)
+							}
 						>
 							<CommentOutlined />
 						</Button>
 					),
-				}
-			);
-		else
+				});
+			}
+
+			columns.push({
+				title: 'Committee Comments',
+				dataIndex: 'committee_comments',
+				key: 'committee_comments',
+				align: 'center',
+				render: (comment, record) => (
+					<Button
+						type='text'
+						shape='circle'
+						onClick={() => onCommentButtonClick(comment, record.sys_id)}
+					>
+						<CommentOutlined />
+					</Button>
+				),
+			});
+		} else
 			columns.push(
 				{ title: 'Scoring Status', dataIndex: 'scoring_status', width: 125 },
 				{
@@ -232,6 +261,10 @@ const individualScoringTable = (props) => {
 			);
 
 		return columns;
+	};
+
+	const handleOtherCommentsModalClose = () => {
+		setIsOtherCommentsModalVisible(false);
 	};
 
 	const columns = getColumns(props.committeeVoting);
@@ -262,6 +295,20 @@ const individualScoringTable = (props) => {
 					onChange={onTextAreaChangeHandler}
 					maxLength={10000}
 				/>
+			</Modal>
+			<Modal
+				title='Other Comments'
+				visible={isOtherCommentsModalVisible}
+				closable={true}
+				destroyOnClose={true}
+				onCancel={handleOtherCommentsModalClose}
+				okButtonProps={{ style: { display: 'none' } }}
+				cancelButtonProps={{ style: { display: 'none' } }}
+			>
+				<>
+					<b>OWM Comments:</b> <p>{triageComments}</p>
+					<b>Chair Comments:</b> <p>{chairComments}</p>
+				</>
 			</Modal>
 		</>
 	);
