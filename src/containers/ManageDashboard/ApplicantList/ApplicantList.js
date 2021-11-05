@@ -116,6 +116,7 @@ const applicantList = (props) => {
 									applicants={recommendedApplicants}
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
+									displayAllComments={vacancyState === VOTING_COMPLETE}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -123,6 +124,7 @@ const applicantList = (props) => {
 									applicants={nonRecommendedApplicants}
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
+									displayAllComments={vacancyState === VOTING_COMPLETE}
 								/>
 							</Panel>
 						</Collapse>
@@ -148,6 +150,7 @@ const applicantList = (props) => {
 							applicants={applicants}
 							committeeVoting={true}
 							postChangeHandler={loadVacancyAndApplicants}
+							displayAllComments={vacancyState === VOTING_COMPLETE}
 						/>
 					);
 				default:
