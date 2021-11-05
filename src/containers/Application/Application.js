@@ -480,7 +480,7 @@ const application = () => {
 									triageComments={chairTriageComments}
 									triageCommentsPlaceholder={
 										'Add notes ' +
-										(chairTriageChoice === 'no' ? '(required)' : '(optional)')
+										(chairTriageChoice === 'no' ? '' : '(optional)')
 									}
 									initiallyHideContent={
 										vacancyState === CHAIR_TRIAGE ? false : true
