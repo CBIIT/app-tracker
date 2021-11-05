@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useHistory, Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { Button, message, Modal, Tooltip } from 'antd';
 import {
@@ -293,24 +293,29 @@ const application = () => {
 		let triage = {};
 		try {
 			if (widget === 'chairWidget') {
-				triage = {
-					app_sys_id: application.appSysId,
-					chair_triage: chairTriageChoice,
-					chair_triage_comments: chairTriageComments,
-				};
+				if (chairTriageChoice === 'no' && !chairTriageComments) {
+					message.error('Please provide a note for why "no" was selected.');
+				} else {
+					triage = {
+						app_sys_id: application.appSysId,
+						chair_triage: chairTriageChoice,
+						chair_triage_comments: chairTriageComments,
+					};
+
+					await axios.post(SUBMIT_TRIAGE, triage);
+					history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+					message.success('Feedback and notes saved.');
+				}
 			} else {
 				triage = {
 					app_sys_id: application.appSysId,
 					OWM_triage: triageChoice,
 					OWM_triage_comments: triageComments,
 				};
-			}
 
-			await axios.post(SUBMIT_TRIAGE, triage);
-			if (widget === 'chairWidget') {
-				history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+				await axios.post(SUBMIT_TRIAGE, triage);
+				message.success('Feedback and notes saved.');
 			}
-			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
 				'Sorry!  There was an error in saving.  Try reloading the page and saving again.'
@@ -382,6 +387,10 @@ const application = () => {
 		);
 	};
 
+	const onViewApplicantsListClick = () => {
+		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+	};
+
 	return !isLoading ? (
 		<>
 			<div className='ApplicationContainer'>
@@ -393,9 +402,14 @@ const application = () => {
 							' ' +
 							application.basicInfo.lastName}
 					</h2>
-					<Link to={MANAGE_VACANCY + application.vacancyId + '/applicants'}>
-						<Button type='link'>view applicants list</Button>
-					</Link>
+					<Button
+						onClick={onViewApplicantsListClick}
+						ghost
+						type='primary'
+						style={{ marginBottom: '8px' }}
+					>
+						view applicants list
+					</Button>
 				</div>
 				<div className='ApplicationContent'>
 					<div
@@ -464,7 +478,10 @@ const application = () => {
 									onSaveClick={() => onTriageWidgetSaveClick('chairWidget')}
 									triageChoice={chairTriageChoice}
 									triageComments={chairTriageComments}
-									triageCommentsPlaceholder={'Add notes (optional)'}
+									triageCommentsPlaceholder={
+										'Add notes ' +
+										(chairTriageChoice === 'no' ? '(required)' : '(optional)')
+									}
 									initiallyHideContent={
 										vacancyState === CHAIR_TRIAGE ? false : true
 									}

@@ -29,5 +29,6 @@
 	font-size: 18px;
 	font-weight: 600;
 	font-family: var(--ff-heading);
-	margin-bottom: 8px;
+	margin-top: auto;
+	margin-bottom: auto;
 }
