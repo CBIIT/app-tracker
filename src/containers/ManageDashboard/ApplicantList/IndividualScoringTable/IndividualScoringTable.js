@@ -193,7 +193,7 @@ const individualScoringTable = (props) => {
 				render: (value, record) => (
 					<>
 						<Select
-							style={{ width: 148 }}
+							style={{ width: 238 }}
 							placeholder='--'
 							value={value}
 							allowClear
@@ -205,8 +205,15 @@ const individualScoringTable = (props) => {
 								)
 							}
 						>
-							<Option value='interviewed'>Interviewed</Option>
 							<Option value='not_interviewed'>Not Interviewed</Option>
+							<Option value='interviewed_referred'>
+								Interviewed and Referred
+							</Option>
+							<Option value='interviewed_not_referred'>
+								Interviewed and Not Referred
+							</Option>
+							<Option value='declined_interview'>Declined Interview</Option>
+							<Option value='declined_position'>Declined Position</Option>
 							<Option value='selected'>Selected</Option>
 						</Select>
 					</>
