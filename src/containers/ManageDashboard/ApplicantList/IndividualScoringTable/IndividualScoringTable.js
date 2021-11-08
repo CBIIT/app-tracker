@@ -93,6 +93,7 @@ const individualScoringTable = (props) => {
 		useState(false);
 	const [triageComments, setTriageComments] = useState('');
 	const [chairComments, setChairComments] = useState('');
+	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
 		setCommitteeComments(comment);
@@ -124,9 +125,14 @@ const individualScoringTable = (props) => {
 		}
 	};
 
-	const onOtherCommentsButtonClick = (triageComments, chairComments) => {
+	const onOtherCommentsButtonClick = (
+		triageComments,
+		chairComments,
+		committeeMembersComments
+	) => {
 		setTriageComments(triageComments);
 		setChairComments(chairComments);
+		setCommitteeMembersComments(committeeMembersComments);
 		setIsOtherCommentsModalVisible(true);
 	};
 
@@ -218,7 +224,8 @@ const individualScoringTable = (props) => {
 							onClick={() =>
 								onOtherCommentsButtonClick(
 									record.triage_comments,
-									record.chair_triage_comments
+									record.chair_triage_comment,
+									record.scores
 								)
 							}
 						>
@@ -308,6 +315,16 @@ const individualScoringTable = (props) => {
 				<>
 					<b>OWM Comments:</b> <p>{triageComments}</p>
 					<b>Chair Comments:</b> <p>{chairComments}</p>
+					{committeeMembersComments.map((comment, index) => {
+						if (comment.average_score !== '--') {
+							return (
+								<div key={index}>
+									<b>{comment.name + "'s Comments:"}</b>
+									<p>{comment.comments}</p>
+								</div>
+							);
+						}
+					})}
 				</>
 			</Modal>
 		</>
