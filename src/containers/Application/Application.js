@@ -425,7 +425,7 @@ const application = () => {
 							style={{ backgroundColor: 'white' }}
 						/>
 
-						{!displayReferences && !userRoles.includes(OWM_TEAM) ? null : (
+						{references.length === 0 ? null : (
 							<References
 								references={references}
 								style={{ backgroundColor: 'white' }}
