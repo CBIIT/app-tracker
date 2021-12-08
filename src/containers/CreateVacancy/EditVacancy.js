@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import CreateVacancy from './CreateVacancy';
-import { LIVE } from '../../constants/VacancyStates';
+import { FINAL, LIVE } from '../../constants/VacancyStates';
 import { GET_VACANCY_MANAGER_VIEW } from '../../constants/ApiEndpoints';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 
@@ -31,7 +31,7 @@ const editVacancy = () => {
 			initialValues={data}
 			sysId={data.sysId}
 			editFinalizedVacancy={true}
-			restrictedEditMode={data.state !== LIVE}
+			restrictedEditMode={data.state !== LIVE && data.state !== FINAL}
 		/>
 	);
 };
