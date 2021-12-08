@@ -55,19 +55,23 @@ const viewVacancyDetails = () => {
 									</li>
 							  ))
 							: null}
-						<li>
-							{numberToWordMap[
-								vacancyDetails.basic_info.number_of_recommendation.value
-							] +
-								' (' +
-								vacancyDetails.basic_info.number_of_recommendation.value +
-								') Letter' +
-								(vacancyDetails.basic_info.number_of_recommendation.value > 1 ||
-								vacancyDetails.basic_info.number_of_recommendation.value == 0
-									? 's'
-									: '') +
-								' of Recommendation'}
-						</li>
+						{vacancyDetails.basic_info.number_of_recommendation.value ==
+						0 ? null : (
+							<li>
+								{numberToWordMap[
+									vacancyDetails.basic_info.number_of_recommendation.value
+								] +
+									' (' +
+									vacancyDetails.basic_info.number_of_recommendation.value +
+									') Letter' +
+									(vacancyDetails.basic_info.number_of_recommendation.value >
+										1 ||
+									vacancyDetails.basic_info.number_of_recommendation.value == 0
+										? 's'
+										: '') +
+									' of Recommendation'}
+							</li>
+						)}
 					</ul>
 				</div>
 			</div>

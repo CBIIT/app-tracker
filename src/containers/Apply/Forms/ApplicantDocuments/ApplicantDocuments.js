@@ -56,13 +56,6 @@ const ApplicantDocuments = () => {
 			throw new Error('Please upload a document.');
 	};
 
-	console.log(
-		'[ApplicantDocuments] applicantDocuments:',
-		applicantDocuments,
-		null,
-		2
-	);
-
 	return !isLoading && applicantDocuments && applicantDocuments.length !== 0 ? (
 		<Form form={formInstance} initialValues={formData} onChange={onChange}>
 			<div className='upload-documents'>
