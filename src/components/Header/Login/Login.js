@@ -60,24 +60,26 @@ const login = () => {
 
 	const loginMenu = (
 		<Menu className='LoginMenu' onClick={handleMenuClick}>
-			<Menu.Item
-				key='okta'
-				icon={<img className='CustomIcon' src={oktaIcon} />}
-			>
-				Login with Okta
-			</Menu.Item>
+			<span className='MenuTextSpan'>NIH Employee/NIH Contractor?</span>
 			<Menu.Item
 				key='itrust'
 				icon={<img className='CustomIcon' src={iTrustIcon} />}
 			>
-				Login with NIH iTrust
+				NIH Login
 			</Menu.Item>
-			<span className='NewUserSpan'>New user?</span>
+			<span className='MenuTextSpan'>Non-NIH Employee/Non-NIH Contractor?</span>
 			<Menu.Item
 				key='register-okta'
 				icon={<img className='CustomIcon' src={oktaIcon} />}
 			>
-				Register for Okta
+				Register here
+			</Menu.Item>
+			<span className='MenuTextSpan'>Already Registered?</span>
+			<Menu.Item
+				key='okta'
+				icon={<img className='CustomIcon' src={oktaIcon} />}
+			>
+				Non-NIH Login
 			</Menu.Item>
 		</Menu>
 	);
