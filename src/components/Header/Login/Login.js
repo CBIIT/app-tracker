@@ -65,7 +65,7 @@ const login = () => {
 				key='itrust'
 				icon={<img className='CustomIcon' src={iTrustIcon} />}
 			>
-				NIH Login
+				Login here
 			</Menu.Item>
 			<span className='MenuTextSpan'>Non-NIH Employee/Non-NIH Contractor?</span>
 			<Menu.Item
@@ -79,7 +79,7 @@ const login = () => {
 				key='okta'
 				icon={<img className='CustomIcon' src={oktaIcon} />}
 			>
-				Non-NIH Login
+				Login here
 			</Menu.Item>
 		</Menu>
 	);
