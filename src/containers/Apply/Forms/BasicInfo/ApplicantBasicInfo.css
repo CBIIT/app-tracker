@@ -66,3 +66,17 @@
 .degree {
 	max-width: 380px;
 }
+
+.ApplicantBasicInfoRow {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.ApplicantBasicInfoRowItem {
+	flex-basis: 50%;
+	padding-right: 7.5px;
+}
+
+.ApplicantBasicInfoRowItem:not(:first-child) {
+	padding-left: 7.5px;
+}

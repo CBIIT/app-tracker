@@ -133,7 +133,7 @@ const ApplicantBasicInfo = () => {
 					rules={[
 						() => ({
 							validator(_, value) {
-								let regEx = new RegExp(
+								const regEx = new RegExp(
 									'^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$'
 								);
 
@@ -155,34 +155,42 @@ const ApplicantBasicInfo = () => {
 					/>
 				</Form.Item>
 			</div>
-			<div className='degree'>
-				<Form.Item
-					name='hasDegree'
-					label='Do you possess a Doctoral degree?'
-					rules={[
-						{
-							message: 'Please answer this question',
-							required: true,
-						},
-						() => ({
-							validator(_, value) {
-								if (!value || value == 'Yes') {
-									return Promise.resolve();
-								}
-								return Promise.reject(
-									new Error(
-										'A Doctoral degree is minimally required to apply to this vacancy. Please click cancel to go back'
-									)
-								);
+			<div className='ApplicantBasicInfoRow'>
+				<div className='ApplicantBasicInfoRowItem'>
+					<Form.Item
+						name='highestLevelEducation'
+						label='Highest Level of Education'
+						rules={[
+							{
+								message: 'Please select an option',
+								required: true,
 							},
-						}),
-					]}
-				>
-					<Radio.Group>
-						<Radio value='Yes'>Yes</Radio>
-						<Radio value='No'>No</Radio>
-					</Radio.Group>
-				</Form.Item>
+						]}
+					>
+						<Select>
+							<Option value='Doctorate'>Doctorate</Option>
+							<Option value='Masters'>Masters</Option>
+							<Option value='Bachelors'>Bachelors</Option>
+						</Select>
+					</Form.Item>
+				</div>
+				<div className='ApplicantBasicInfoRowItem'>
+					<Form.Item
+						name='isUsCitizen'
+						label='Are you a US Citizen?'
+						rules={[
+							{
+								message: 'Please select an option',
+								required: true,
+							},
+						]}
+					>
+						<Radio.Group>
+							<Radio value='true'>Yes</Radio>
+							<Radio value='false'>No</Radio>
+						</Radio.Group>
+					</Form.Item>
+				</div>
 			</div>
 		</Form>
 	);
