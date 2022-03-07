@@ -15,6 +15,8 @@ export const transformJsonToBackend = (sourceJson) => {
 				? sourceJson.basicInfo.businessPhonePrefix +
 				  sourceJson.basicInfo.businessPhone.toString()
 				: '',
+			highest_level_of_education: sourceJson.basicInfo.highestLevelEducation,
+			us_citizen: sourceJson.basicInfo.isUsCitizen,
 			address: sourceJson.address.address,
 			address_2: sourceJson.address.address2,
 			city: sourceJson.address.city,
