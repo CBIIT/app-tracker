@@ -38,7 +38,7 @@ const applicantInfo = (props) => {
 					{typeof basicInfo.isUsCitizen !== 'undefined' ? (
 						<LabelValuePair
 							label='US Citizen'
-							value={basicInfo.isUsCitizen ? 'Yes' : 'No'}
+							value={basicInfo.isUsCitizen === '1' ? 'Yes' : 'No'}
 						/>
 					) : null}
 				</InfoCardRow>
