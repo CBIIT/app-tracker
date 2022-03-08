@@ -9,6 +9,9 @@ export const transformJsonFromBackend = (backendJson) => {
 			email: backendJson.basic_info.email.value,
 			phone: backendJson.basic_info.phone.value,
 			businessPhone: backendJson.basic_info.business_phone.value,
+			highestLevelEducation:
+				backendJson.basic_info?.highest_level_of_education?.value,
+			isUsCitizen: backendJson.basic_info?.us_citizen?.value,
 		},
 		address: {
 			address1: backendJson.basic_info.address.value,
