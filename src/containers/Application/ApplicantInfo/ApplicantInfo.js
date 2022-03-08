@@ -24,6 +24,25 @@ const applicantInfo = (props) => {
 					value={basicInfo.businessPhone}
 				/>
 			</InfoCardRow>
+			{typeof basicInfo.highestLevelEducation !== 'undefined' ||
+			typeof basicInfo.isUsCitizen !== 'undefined' ? (
+				<InfoCardRow>
+					{typeof basicInfo.highestLevelEducation !== 'undefined' ? (
+						<LabelValuePair
+							containerStyle={{ width: '100%', maxWidth: '320px' }}
+							label='Highest Level of Education'
+							value={basicInfo.highestLevelEducation}
+						/>
+					) : null}
+
+					{typeof basicInfo.isUsCitizen !== 'undefined' ? (
+						<LabelValuePair
+							label='US Citizen'
+							value={basicInfo.isUsCitizen ? 'Yes' : 'No'}
+						/>
+					) : null}
+				</InfoCardRow>
+			) : null}
 		</InfoCard>
 	);
 };
