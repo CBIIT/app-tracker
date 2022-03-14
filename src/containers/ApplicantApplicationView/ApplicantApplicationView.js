@@ -12,7 +12,7 @@ import { APPLICANT_GET_APPLICATION } from '../../constants/ApiEndpoints';
 
 const applicantApplicationView = (props) => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [application, setApplication] = useState({ basic_info: {} });
+	const [application, setApplication] = useState({ basicInfo: {} });
 	const { appSysId } = useParams();
 
 	useEffect(() => {
@@ -20,6 +20,17 @@ const applicantApplicationView = (props) => {
 			await getApplicationInfo();
 		})();
 	}, []);
+
+	const getIsUsCitizenDisplayValue = (value) => {
+		switch (value) {
+			case '1':
+				return 'Yes';
+			case '0':
+				return 'No';
+			default:
+				return '';
+		}
+	};
 
 	const getApplicationInfo = async () => {
 		try {
@@ -43,6 +54,8 @@ const applicantApplicationView = (props) => {
 				email: sourceJson.basic_info.email,
 				phone: sourceJson.basic_info.phone,
 				businessPhone: sourceJson.basic_info.business_phone,
+				highestLevelEducation: sourceJson.basic_info.highest_level_of_education,
+				isUsCitizen: sourceJson.basic_info.us_citizen,
 			},
 			address: {
 				address1: sourceJson.basic_info.address,
@@ -108,10 +121,15 @@ const applicantApplicationView = (props) => {
 					/>
 				</InfoCardRow>
 				<InfoCardRow>
-					{/* As of now, an applicant can only ever submit an app by answering yes */}
 					<LabelValuePair
-						label='Do you possess a doctoral degree?'
-						value='yes'
+						label='Highest Level of Education'
+						value={application.basicInfo.highestLevelEducation}
+					/>
+					<LabelValuePair
+						label='US Citizen'
+						value={getIsUsCitizenDisplayValue(
+							application.basicInfo.isUsCitizen
+						)}
 					/>
 				</InfoCardRow>
 			</InfoCard>
