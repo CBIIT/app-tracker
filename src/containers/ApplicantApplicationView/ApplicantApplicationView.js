@@ -122,6 +122,7 @@ const applicantApplicationView = (props) => {
 				</InfoCardRow>
 				<InfoCardRow>
 					<LabelValuePair
+						containerStyle={{ width: '100%', maxWidth: '320px' }}
 						label='Highest Level of Education'
 						value={application.basicInfo.highestLevelEducation}
 					/>
