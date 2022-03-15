@@ -7,6 +7,17 @@ import './ApplicantInfo.css';
 const applicantInfo = (props) => {
 	const basicInfo = props.basicInfo;
 
+	const getIsUsCitizenDisplayValue = (value) => {
+		switch (value) {
+			case '1':
+				return 'Yes';
+			case '0':
+				return 'No';
+			default:
+				return '';
+		}
+	};
+
 	return (
 		<InfoCard title='Applicant Information' style={props.style}>
 			<InfoCardRow>
@@ -24,25 +35,22 @@ const applicantInfo = (props) => {
 					value={basicInfo.businessPhone}
 				/>
 			</InfoCardRow>
-			{typeof basicInfo.highestLevelEducation !== 'undefined' ||
-			typeof basicInfo.isUsCitizen !== 'undefined' ? (
-				<InfoCardRow>
-					{typeof basicInfo.highestLevelEducation !== 'undefined' ? (
-						<LabelValuePair
-							containerStyle={{ width: '100%', maxWidth: '320px' }}
-							label='Highest Level of Education'
-							value={basicInfo.highestLevelEducation}
-						/>
-					) : null}
+			<InfoCardRow>
+				{typeof basicInfo.highestLevelEducation !== 'undefined' ? (
+					<LabelValuePair
+						containerStyle={{ width: '100%', maxWidth: '320px' }}
+						label='Highest Level of Education'
+						value={basicInfo.highestLevelEducation}
+					/>
+				) : null}
 
-					{typeof basicInfo.isUsCitizen !== 'undefined' ? (
-						<LabelValuePair
-							label='US Citizen'
-							value={basicInfo.isUsCitizen === '1' ? 'Yes' : 'No'}
-						/>
-					) : null}
-				</InfoCardRow>
-			) : null}
+				{typeof basicInfo.isUsCitizen !== 'undefined' ? (
+					<LabelValuePair
+						label='US Citizen'
+						value={getIsUsCitizenDisplayValue(basicInfo.isUsCitizen)}
+					/>
+				) : null}
+			</InfoCardRow>
 		</InfoCard>
 	);
 };
