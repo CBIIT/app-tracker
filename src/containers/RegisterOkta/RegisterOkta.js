@@ -11,7 +11,9 @@ const registerOkta = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [message, setMessage] = useState();
 	const [error, setError] = useState(false);
+	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
 	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
+	const [isEmailNih, setIsEmailNih] = useState(false);
 
 	const [formInstance] = Form.useForm();
 
@@ -23,10 +25,18 @@ const registerOkta = () => {
 		(async () => {
 			setIsLoading(true);
 			const response = await axios.get(CHECK_AUTH);
+			setItrustGlideSsoId(response.data.result.itrust_idp);
 			setOktaGlideSsoId(response.data.result.okta_idp);
 			setIsLoading(false);
 		})();
 	}, []);
+
+	const checkIfNihEmail = (email) => {
+		email.target.value.endsWith('@nih.gov') ||
+		email.target.value.endsWith('@mail.nih.gov')
+			? setIsEmailNih(true)
+			: setIsEmailNih(false);
+	};
 
 	const onSubmit = async (values) => {
 		setIsLoading(true);
@@ -205,12 +215,35 @@ const registerOkta = () => {
 											{ validator: validateEmails },
 										]}
 									>
-										<Input placeholder='example@email.com' />
+										<Input
+											onChange={checkIfNihEmail}
+											placeholder='example@email.com'
+										/>
 									</Form.Item>
+									<p
+										style={{
+											backgroundColor: '#fffec8',
+											marginBottom: '5px',
+											display: isEmailNih === false ? 'none' : '',
+										}}
+									>
+										You have entered an NIH email. Please use{' '}
+										<a
+											href={
+												'/nav_to.do?uri=' +
+												encodeURIComponent('/nci-scss.do') +
+												'&glide_sso_id=' +
+												iTrustGlideSsoId
+											}
+										>
+											NIH Login
+										</a>{' '}
+										to sign in to SCSS.
+									</p>
 								</Col>
 								<Col span={12}>
 									<Form.Item
-										label='Confirm email'
+										label='Confirm Email'
 										name='confirmEmail'
 										rules={[
 											{ required: true, message: 'Please confirm your email' },
@@ -252,6 +285,7 @@ const registerOkta = () => {
 								<Col span={12} style={{ textAlign: 'left' }}>
 									<Form.Item>
 										<Button
+											disabled={isEmailNih}
 											type='primary'
 											htmlType='submit'
 											size='large'
