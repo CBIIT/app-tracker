@@ -87,6 +87,17 @@ const review = (props) => {
 						}
 					/>
 				</div>
+				<div className='SectionContentRow'>
+					<LabelValuePair
+						containerStyle={{ width: '100%', maxWidth: '320px' }}
+						label='Highest Level of Education'
+						value={formData.basicInfo.highestLevelEducation}
+					/>
+					<LabelValuePair
+						label='Are you a US citizen?'
+						value={formData.basicInfo.isUsCitizen === 'true' ? 'Yes' : 'No'}
+					/>
+				</div>
 			</div>
 			<SectionHeader
 				title='Address'

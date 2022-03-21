@@ -177,7 +177,7 @@ const ApplicantBasicInfo = () => {
 				<div className='ApplicantBasicInfoRowItem'>
 					<Form.Item
 						name='isUsCitizen'
-						label='Are you a US Citizen?'
+						label='Are you a US citizen?'
 						rules={[
 							{
 								message: 'Please select an option',
