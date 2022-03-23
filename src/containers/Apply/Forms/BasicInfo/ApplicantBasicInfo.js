@@ -186,8 +186,8 @@ const ApplicantBasicInfo = () => {
 						]}
 					>
 						<Radio.Group>
-							<Radio value='true'>Yes</Radio>
-							<Radio value='false'>No</Radio>
+							<Radio value='1'>Yes</Radio>
+							<Radio value='0'>No</Radio>
 						</Radio.Group>
 					</Form.Item>
 				</div>
