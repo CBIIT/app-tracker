@@ -95,7 +95,7 @@ const review = (props) => {
 					/>
 					<LabelValuePair
 						label='Are you a US citizen?'
-						value={formData.basicInfo.isUsCitizen === 'true' ? 'Yes' : 'No'}
+						value={formData.basicInfo.isUsCitizen === '1' ? 'Yes' : 'No'}
 					/>
 				</div>
 			</div>

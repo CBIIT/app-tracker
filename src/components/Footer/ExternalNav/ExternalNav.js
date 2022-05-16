@@ -27,6 +27,11 @@ const externalNav = () => (
 					<li>
 						<a href='https://www.cancer.gov/global/web/policies/foia'>FOIA</a>
 					</li>
+					<li>
+						<a href='https://www.hhs.gov/vulnerability-disclosure-policy/index.html'>
+							HHS Vulnerability Disclosure
+						</a>
+					</li>
 				</ul>
 				<ul>
 					<li>
