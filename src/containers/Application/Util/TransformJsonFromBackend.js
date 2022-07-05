@@ -36,12 +36,14 @@ const getReferences = (backendReferences) =>
 	backendReferences.map((reference) => {
 		return {
 			name: reference.name,
-			document: {
-				downloadLink: reference.attachment_dl,
-				filename: reference.file_name,
-				referenceSysId: reference.ref_sys_id,
-				attachmentSysId: reference.attach_sys_id,
-			},
+			referenceSysId: reference.ref_sys_id,
+			documents: reference.documents.map((document) => {
+				return {
+					downloadLink: document.attachment_dl,
+					filename: document.file_name,
+					attachmentSysId: document.attach_sys_id,
+				};
+			}),
 			contact_allowed: reference.contact_allowed,
 			email: reference.email,
 			organization: reference.organization,

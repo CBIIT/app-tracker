@@ -17,6 +17,11 @@ const columns = [
 		sortDirections: ['descend'],
 	},
 	{
+		title: 'Office',
+		dataIndex: 'office',
+		sorter: (a, b) => a.tenant.length - b.tenant.length,
+	},
+	{
 		title: 'Application Period',
 		dataIndex: 'applicationPeriod',
 		sorter: (a, b) => {
@@ -32,6 +37,7 @@ const transformData = (data) => {
 	return data.map((item) => ({
 		key: item.sys_id,
 		vacancyTitle: item.title,
+		office: item.tenant,
 		applicationPeriod:
 			transformDate(item.open_date) + ' - ' + transformDate(item.close_date),
 	}));
