@@ -167,12 +167,14 @@ const applicantApplicationView = (props) => {
 									value={reference.positionTitle}
 								/>
 							</InfoCardRow>
-							<InfoCardRow>
-								<LabelValuePair
-									label='Is it okay for the Hiring Team to contact the reference directly?'
-									value={reference.contactAllowed}
-								/>
-							</InfoCardRow>
+							{reference.contactAllowed ? (
+								<InfoCardRow>
+									<LabelValuePair
+										label='Is it okay for the Hiring Team to contact the reference directly?'
+										value={reference.contactAllowed}
+									/>
+								</InfoCardRow>
+							) : null}
 						</div>
 					);
 				})}

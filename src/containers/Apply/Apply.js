@@ -60,6 +60,7 @@ const Apply = (props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState(props.draftId);
 	const [vacancyId, setVacancyId] = useState();
+	const [vacancyTenantType, setVacancyTenantType] = useState();
 
 	const history = useHistory();
 	const { sysId, appSysId } = useParams();
@@ -84,6 +85,7 @@ const Apply = (props) => {
 		);
 		setVacancyId(props.initialValues.sysId);
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
+		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 		setDraftId(appSysId);
 
 		const formData = {
@@ -101,6 +103,7 @@ const Apply = (props) => {
 		const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyId(sysId);
+		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 
 		const references = [];
 
@@ -145,7 +148,12 @@ const Apply = (props) => {
 		{
 			key: 'review',
 			title: 'Review',
-			content: <Review onEditButtonClick={(step) => onEditButtonClick(step)} />,
+			content: (
+				<Review
+					vacancyTenantType={vacancyTenantType}
+					onEditButtonClick={(step) => onEditButtonClick(step)}
+				/>
+			),
 			description: 'Review before submitting',
 			longDescription: 'Please review key information entered in each section.',
 		},
@@ -167,7 +175,7 @@ const Apply = (props) => {
 		steps.splice(2, 0, {
 			key: 'references',
 			title: 'References',
-			content: <ApplicantReferences />,
+			content: <ApplicantReferences vacancyTenantType={vacancyTenantType} />,
 			description: 'References to support the application',
 			longDescription:
 				'Please provide professional references that can submit a recommendation on your behalf.',

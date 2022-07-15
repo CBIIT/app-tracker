@@ -68,61 +68,66 @@ const references = (props) => {
 								className='referencePanel'
 								header={reference.name !== null ? reference.name : ''}
 							>
-								<ul className='ApplicantDocumentList'>
+								<ul className='ReferenceDocumentList'>
 									<li>
 										<div className='LineItemItem'>{reference.name}</div>
 										<div className='LineItemItem'>
-											{reference.documents.length > 0 ? (
-												reference.documents.map((document) => {
-													return props.allowUploadOrDelete ? (
-														<FileUploadAndDisplay
-															buttonText='Upload'
-															sysId={document.referenceSysId}
-															url={SERVICE_NOW_FILE_ATTACHMENT}
-															table={referenceTable}
-															afterUploadSuccess={props.afterUploadOrDelete}
-															downloadLink={document.downloadLink}
-															fileName={document.filename}
-															deleteUrl={
-																SERVICE_NOW_ATTACHMENT +
-																document.attachmentSysId
-															}
-															onDeleteSuccess={props.afterUploadOrDelete}
-															deleteConfirmTitle='Delete the attached reference document?'
-															deleteConfirmText='This action cannot be undone, but you will be able to upload a new document afterwards.'
-															uploadSuccessMessage={'Document uploaded.'}
-															deleteSuccessMessage={'Document deleted.'}
-															key={index}
-														/>
-													) : (
-														<a href={document.downloadLink}>
-															{document.filename}
-														</a>
+											<ul>
+												{reference.documents.map((document, index) => {
+													return (
+														<li key={index}>
+															{props.allowUploadOrDelete ? (
+																<FileUploadAndDisplay
+																	buttonText='Upload'
+																	sysId={document.referenceSysId}
+																	url={SERVICE_NOW_FILE_ATTACHMENT}
+																	table={referenceTable}
+																	afterUploadSuccess={props.afterUploadOrDelete}
+																	downloadLink={document.downloadLink}
+																	fileName={document.filename}
+																	deleteUrl={
+																		SERVICE_NOW_ATTACHMENT +
+																		document.attachmentSysId
+																	}
+																	onDeleteSuccess={props.afterUploadOrDelete}
+																	deleteConfirmTitle='Delete the attached reference document?'
+																	deleteConfirmText='This action cannot be undone, but you will be able to upload a new document afterwards.'
+																	uploadSuccessMessage={'Document uploaded.'}
+																	deleteSuccessMessage={'Document deleted.'}
+																	key={index}
+																/>
+															) : (
+																<a href={document.downloadLink}>
+																	{document.filename}
+																</a>
+															)}
+														</li>
 													);
-												})
-											) : (
-												<Upload
-													maxCount={1}
-													showUploadList={false}
-													customRequest={({
-														file,
-														onSuccess,
-														onError,
-														onProgress,
-													}) =>
-														uploadFile(
-															{ file, onSuccess, onError, onProgress },
-															reference.referenceSysId,
-															SERVICE_NOW_FILE_ATTACHMENT,
-															referenceTable,
-															props.afterUploadOrDelete,
-															'Document uploaded.'
-														)
-													}
-												>
-													<Button icon={<UploadOutlined />}>Upload</Button>
-												</Upload>
-											)}
+												})}
+												<li>
+													<Upload
+														maxCount={1}
+														showUploadList={false}
+														customRequest={({
+															file,
+															onSuccess,
+															onError,
+															onProgress,
+														}) =>
+															uploadFile(
+																{ file, onSuccess, onError, onProgress },
+																reference.referenceSysId,
+																SERVICE_NOW_FILE_ATTACHMENT,
+																referenceTable,
+																props.afterUploadOrDelete,
+																'Document uploaded.'
+															)
+														}
+													>
+														<Button icon={<UploadOutlined />}>Upload</Button>
+													</Upload>
+												</li>
+											</ul>
 										</div>
 									</li>
 									<li>
@@ -139,9 +144,11 @@ const references = (props) => {
 										<div className='LineItemItem'>
 											Organization: {reference.organization}
 										</div>
-										<div className='LineItemItem'>
-											Contact Allowed: {reference.contact_allowed}
-										</div>
+										{props.displayContactQuestion === true ? (
+											<div className='LineItemItem'>
+												Contact Allowed: {reference.contact_allowed}
+											</div>
+										) : null}
 									</li>
 								</ul>
 							</Panel>

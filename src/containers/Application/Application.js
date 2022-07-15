@@ -47,6 +47,7 @@ import {
 
 import './Application.css';
 import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
+import { displayReferenceContactQuestion } from '../../components/Util/Application/Application';
 
 const { confirm } = Modal;
 
@@ -161,6 +162,7 @@ const application = () => {
 	const [ratingPlanDownloadLink, setRatingPlanDownloadLink] = useState();
 	const [references, setReferences] = useState([]);
 	const [vacancyState, setVacancyState] = useState();
+	const [vacancyTenantType, setVacancyTenantType] = useState();
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -221,6 +223,7 @@ const application = () => {
 			setApplication(application);
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
 			setVacancyState(vacancy.data.result.basic_info.state.value);
+			setVacancyTenantType(vacancy.data.result.basic_info.tenant.label);
 			setTriageChoice(applicationResponse.data.result.basic_info.triage.value);
 			setTriageComments(
 				applicationResponse.data.result.basic_info.triage_comments.value
@@ -437,6 +440,9 @@ const application = () => {
 								}
 								allowUploadOrDelete={userRoles.includes(OWM_TEAM)}
 								afterUploadOrDelete={reloadReferences}
+								displayContactQuestion={displayReferenceContactQuestion(
+									vacancyTenantType
+								)}
 							/>
 						)}
 
