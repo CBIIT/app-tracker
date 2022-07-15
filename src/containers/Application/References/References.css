@@ -16,3 +16,23 @@
 .referenceCard {
 	margin-left: 16px;
 }
+
+.ReferenceDocumentList li {
+	list-style: none;
+	padding-inline: 16px;
+	padding-bottom: 9px;
+	margin-bottom: 9px;
+	border-bottom: 1px solid var(--secondary-bg-color);
+	display: flex;
+	justify-content: space-between;
+}
+
+.ReferenceDocumentList li:last-child {
+	border-bottom: none;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+
+.ReferenceDocumentList .LineItemItem {
+	width: 50%;
+}

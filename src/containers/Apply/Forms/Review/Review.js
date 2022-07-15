@@ -1,6 +1,8 @@
 import { useContext } from 'react';
 import { Table } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
+
+import { displayReferenceContactQuestion } from '../../../../components/Util/Application/Application';
 import FormContext from '../../Context';
 import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewSectionHeader';
 import LabelValuePair from '../../../../components/UI/LabelValuePair/LabelValuePair';
@@ -23,7 +25,10 @@ const review = (props) => {
 		{ title: 'Relationship', dataIndex: 'relationship' },
 		{ title: 'Title', dataIndex: 'title' },
 		{ title: 'Organization', dataIndex: 'organization' },
-		{
+	];
+
+	if (displayReferenceContactQuestion(props.vacancyTenantType))
+		referencesColumns.push({
 			title: 'Contact',
 			render: (record) => {
 				return (
@@ -32,8 +37,7 @@ const review = (props) => {
 					</span>
 				);
 			},
-		},
-	];
+		});
 
 	const references = formData.references.map((reference, index) => ({
 		key: index,
