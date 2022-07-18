@@ -19,7 +19,7 @@ const columns = [
 	{
 		title: 'Institute/Office/Program',
 		dataIndex: 'office',
-		sorter: (a, b) => a.tenant.length - b.tenant.length,
+		sorter: (a, b) => a.office.length - b.office.length,
 	},
 	{
 		title: 'Application Period',
