@@ -458,7 +458,7 @@ const application = () => {
 						{userRoles.includes(OWM_TEAM) || isChair() ? (
 							<>
 								<TriageWidget
-									title='OWM Team Feedback and Notes'
+									title='Vacancy Manager Team Feedback'
 									style={{ backgroundColor: 'white' }}
 									triageOptions={owmTriageOptions}
 									onTriageSelect={onTriageSelect}
