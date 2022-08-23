@@ -48,14 +48,14 @@ const applicantColumns = [
 				a.applicant_last_name.localeCompare(b.applicant_last_name),
 			multiple: 1,
 		},
-		width: 400,
+		width: 250,
 		defaultSortOrder: 'ascend',
 	},
 	{
 		title: 'Email',
 		dataIndex: 'applicant_email',
 		key: 'email',
-		width: 400,
+		maxWidth: 250,
 	},
 	{
 		title: 'Submitted',
@@ -64,7 +64,7 @@ const applicantColumns = [
 		render: (date) => transformDateToDisplay(date),
 	},
 	{
-		title: 'OWM Triage Decision',
+		title: 'Vacancy Manager Triage Decision',
 		dataIndex: 'owm_triage_status',
 		key: 'OWMStatus',
 		render: (text) => renderDecision(text),
