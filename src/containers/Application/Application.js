@@ -163,6 +163,7 @@ const application = () => {
 	const [references, setReferences] = useState([]);
 	const [vacancyState, setVacancyState] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
+	const [additionalDocumentLinks, setAdditionalDocumentLinks] = useState([]);
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -224,6 +225,9 @@ const application = () => {
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
 			setVacancyState(vacancy.data.result.basic_info.state.value);
 			setVacancyTenantType(vacancy.data.result.basic_info.tenant.label);
+
+			if (vacancy.data.result.additional_documents)
+				setAdditionalDocumentLinks(vacancy.data.result.additional_documents);
 			setTriageChoice(applicationResponse.data.result.basic_info.triage.value);
 			setTriageComments(
 				applicationResponse.data.result.basic_info.triage_comments.value
@@ -255,7 +259,7 @@ const application = () => {
 
 			setIsLoading(false);
 		} catch (error) {
-			console.log('[Application] error: ', error);
+			message.error('Sorry, an error occurred while loading.');
 		}
 	};
 
@@ -393,6 +397,11 @@ const application = () => {
 	const onViewApplicantsListClick = () => {
 		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
+
+	console.log(
+		'[Application] additionalDocumentLinks:',
+		additionalDocumentLinks
+	);
 
 	return !isLoading ? (
 		<>
@@ -561,37 +570,62 @@ const application = () => {
 								</InfoCardRow>
 							</InfoCard>
 						) : null}
-						<Tooltip
-							placement='top'
-							title={
-								appDocIds.length === 0
-									? 'There are no application documents.'
-									: ''
-							}
-						>
-							<Button disabled={appDocIds.length === 0}>
-								<a
-									href={
-										'/exportAttachmentsToZip.do?sysparm_sys_id=' +
-										appDocIds +
-										'&sysparm_ck=' +
-										window.servicenowUserToken
-									}
-								>
-									Download Application Documents {<DownloadOutlined />}
-								</a>
-							</Button>
-						</Tooltip>
-						<Button style={{ marginTop: '10px' }}>
-							<a
-								href={
-									'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
-									application.appSysId
+
+						<div className='ApplicationContainerDownloadButtonGroup'>
+							<Tooltip
+								placement='top'
+								title={
+									appDocIds.length === 0
+										? 'There are no application documents.'
+										: ''
 								}
 							>
-								Download Applicant Info {<DownloadOutlined />}
-							</a>
-						</Button>
+								<Button disabled={appDocIds.length === 0}>
+									<a
+										href={
+											'/exportAttachmentsToZip.do?sysparm_sys_id=' +
+											appDocIds +
+											'&sysparm_ck=' +
+											window.servicenowUserToken
+										}
+									>
+										Download Application Documents {<DownloadOutlined />}
+									</a>
+								</Button>
+							</Tooltip>
+							<Button>
+								<a
+									href={
+										'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
+										application.appSysId
+									}
+								>
+									Download Applicant Info {<DownloadOutlined />}
+								</a>
+							</Button>
+							<Tooltip
+								title={
+									ratingPlanDownloadLink
+										? ''
+										: 'A rating plan for this vacancy has not been uploaded yet.'
+								}
+							>
+								<Button disabled={!ratingPlanDownloadLink}>
+									<a href={ratingPlanDownloadLink}>
+										Download Rating Plan {<DownloadOutlined />}
+									</a>
+								</Button>
+							</Tooltip>
+							{additionalDocumentLinks.map((document, index) => {
+								return (
+									<Button key={index}>
+										<a href={document.link}>
+											{'Download ' + document.filename} <DownloadOutlined />{' '}
+										</a>
+									</Button>
+								);
+							})}
+						</div>
 					</div>
 				</div>
 			</div>
