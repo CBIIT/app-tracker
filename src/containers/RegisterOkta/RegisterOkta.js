@@ -138,7 +138,7 @@ const registerOkta = () => {
 					<Result status={error ? 'warning' : 'success'} subTitle={message} />
 				) : (
 					<>
-						<h1>Create your NCI account to access SCSS</h1>
+						<h1>Create your NIH account to access SCSS</h1>
 						<h2>
 							Already have an account?{' '}
 							<Button
