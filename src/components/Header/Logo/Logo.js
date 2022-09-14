@@ -1,12 +1,14 @@
 import React from 'react';
 
 import './Logo.css';
-import nciLogo from '../../../assets/images/nci-logo.png';
+import nihLogo from '../../../assets/images/nih-logo.png';
 
 const logo = () => (
-    <div className='Logo'>
-        <img src={nciLogo} alt="NCI" />
-    </div>
+	<div className='Logo'>
+		<a href='https://www.nih.gov'>
+			<img src={nihLogo} alt='NIH' />
+		</a>
+	</div>
 );
 
 export default logo;
