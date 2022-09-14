@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import axios from 'axios';
 
 import './Home.css';
-import homeLogo from '../../assets/images/home-logo.png';
+import homeLogo from '../../assets/images/landing-page-image.png';
 
 const columns = [
 	{
@@ -64,19 +64,23 @@ const home = () => {
 	return (
 		<>
 			<div className='HomeLogo'>
-				<img src={homeLogo} alt='Senior Scientific Careers at NCI'></img>
+				<img
+					src={homeLogo}
+					alt='Specialized Scientific Jobs'
+					style={{ maxHeight: '400px', width: '100%' }}
+				></img>
 			</div>
 			<div className='HomeContent'>
 				<p>
-					The largest of the institutes and centers that make up the National
-					Institutes of Health, the National Cancer Institute (NCI) is a premier
-					research center that offers research, programmatic support, and
-					training opportunities at its laboratories and offices in Maryland.
-					NCI is deeply committed to the core values of equity, diversity, and
-					inclusion that allow all staff to reach their potential and fully
-					contribute to the Institute’s cancer mission.
+					The National Institutes of Health (NIH), a part of the U.S. Department
+					of Health and Human Services, is the nation{"'"}s medical research
+					agency &#8212; making important discoveries that improve health and
+					save lives. To learn more about NIH, please visit{' '}
+					<a href='https://www.nih.gov/about-nih/who-we-are'>
+						https://www.nih.gov/about-nih/who-we-are
+					</a>
 				</p>
-				<p>To learn more about NCI, please visit http://www.cancer.gov</p>
+
 				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
 				<p>
 					Application period for all vacancies ends at 11:59PM ET on final day.

@@ -1,9 +1,15 @@
 import React from 'react';
 import './LegalStatement.css';
 
+const ombNumber = '0925-0761';
+
 const legalStatement = () => (
 	<div className='LegalStatement'>
 		<div className='LegalStatementContent Content'>
+			<p style={{ textAlign: 'right' }}>
+				OMB No. {ombNumber} <br />
+				Expiration Date: 07/31/2025
+			</p>
 			<p>
 				Collection of this information is authorized by The Public Health
 				Service Act, Section 411 (42 USC 285a). Rights of participants are
@@ -17,7 +23,7 @@ const legalStatement = () => (
 				kept private to the extent provided by law. Names and other identifiers
 				will not appear in any report. Information provided will be combined for
 				all participants and reported as summaries. You are being contacted
-				on-line to complete this instrument so that NCI can evaluate its
+				on-line to complete this instrument so that NIH can evaluate its
 				advertisement strategies and make necessary improvements to the
 				application website.
 			</p>
@@ -32,7 +38,7 @@ const legalStatement = () => (
 				estimate or any other aspect of this collection of information,
 				including suggestions for reducing this burden to: NIH, Project
 				Clearance Branch, 6705 Rockledge Drive, MSC 7974, Bethesda, MD
-				20892-7974, ATTN: PRA (0925-0046). Do not return the completed form to
+				20892-7974, ATTN: PRA ({ombNumber}). Do not return the completed form to
 				this address
 			</p>
 		</div>

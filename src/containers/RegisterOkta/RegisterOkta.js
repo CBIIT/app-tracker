@@ -151,8 +151,8 @@ const registerOkta = () => {
 							</Button>
 						</h2>
 						<p>
-							To access the Applicant Portal at NCI, you will need to create an
-							NCI account.
+							To access the Applicant Portal at NIH, you will need to create an
+							NIH account.
 						</p>
 						<p>
 							After you fill out the information below, you will receive an
@@ -160,7 +160,7 @@ const registerOkta = () => {
 							authenticate your account.
 						</p>
 						<p>
-							Okta is the platform that manages and provides security for NCI
+							Okta is the platform that manages and provides security for NIH
 							Accounts. If you do not receive an email from Okta within 24
 							hours, please contact us at 1-800-518-8474 or{' '}
 							<a href='mailto:supportemail@mail.nih.gov'>
