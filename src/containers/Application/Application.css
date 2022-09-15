@@ -10,6 +10,10 @@
 	background-color: var(--secondary-bg-color);
 }
 
+.ApplicationContainerDownloadButtonGroup button {
+	display: block;
+}
+
 .ApplicationContainer h1 {
 	padding-top: 16px;
 	padding-bottom: 16px;
