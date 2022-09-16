@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import axios from 'axios';
 
 import './Home.css';
-import homeLogo from '../../assets/images/landing-page-image.png';
+import homeLogo from '../../assets/images/landing-page-image.jpg';
 
 const columns = [
 	{
