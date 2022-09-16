@@ -29,7 +29,7 @@ const legalStatement = () => (
 			</p>
 			<p>
 				Public reporting burden for this collection of information is estimated
-				to average two minutes per response, including the time for reviewing
+				to average 30 minutes per response, including the time for reviewing
 				instructions, searching existing data sources, gathering and maintaining
 				the data needed, and completing and reviewing the collection of
 				information. An agency may not conduct or sponsor, and a person is not
