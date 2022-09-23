@@ -13,6 +13,10 @@ import {
 	REGISTER_OKTA,
 } from '../../../constants/Routes';
 
+import { LIVE } from '../../../constants/VacancyStates';
+
+import { transformDateToDisplay } from '../../../components/Util/Date/Date';
+
 import './Header.css';
 
 const header = (props) => {
@@ -36,7 +40,7 @@ const header = (props) => {
 			const response = await axios.get(CHECK_AUTH);
 			setIsUserAuthenticated(response.data.result.logged_in);
 		} catch (error) {
-			console.log(error);
+			message.error('Sorry!  An error occurred while loading.');
 		}
 	};
 
@@ -47,7 +51,7 @@ const header = (props) => {
 			);
 			setUserAlreadyApplied(response.data.result.exists);
 		} catch (error) {
-			console.log(error);
+			message.error('Sorry!  An error occurred while loading.');
 		}
 	};
 
@@ -58,6 +62,10 @@ const header = (props) => {
 		} else history.push(link);
 	};
 
+	const isVacancyClosed = () => {
+		return props.vacancyState !== LIVE;
+	};
+
 	return (
 		<div className='HeaderContainer'>
 			<div className='TitleAndDateContainer'>
@@ -65,17 +73,19 @@ const header = (props) => {
 				<div className='DateContainer'>
 					<div className='DateItem'>
 						<label>Open Date</label>
-						<span>{props.openDate}</span>
+						<span>{transformDateToDisplay(props.openDate)}</span>
 					</div>
 					<div className='DateItem'>
 						<label>Close Date</label>
-						<span>{props.closeDate + ' 11:59PM ET'}</span>
+						<span>
+							{transformDateToDisplay(props.closeDate) + ' 11:59PM ET'}
+						</span>
 					</div>
 				</div>
 			</div>
 			{!isLoading ? (
 				<div className='ButtonContainer'>
-					{isUserAuthenticated ? (
+					{isVacancyClosed() ? null : isUserAuthenticated ? (
 						<Button
 							onClick={() => onButtonClick(APPLY + props.sysId)}
 							type='primary'

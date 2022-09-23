@@ -8,7 +8,7 @@ import {
 	VACANCY_DASHBOARD,
 } from '../../constants/Routes';
 import Header from '../../components/Header/Header';
-import NavBar from '../../components/NavBar/NavBar.js';
+import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
 
 const layout = (props) => {

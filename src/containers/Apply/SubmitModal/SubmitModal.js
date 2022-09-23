@@ -58,7 +58,7 @@ const submitModal = (props) => {
 		} catch (error) {
 			setConfirmLoading(false);
 			message.error(
-				'Sorry!  There was an error when attempting to submit your application.'
+				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
 			);
 		}
 	};
