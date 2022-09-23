@@ -28,137 +28,123 @@ const navBar = () => {
 	if (authResponse.logged_in == true) {
 		if (authResponse.is_manager == true && authResponse.is_exec_sec == true) {
 			return (
-				<>
-					<div className='OuterDiv'>
-						<div className='NavBar'>
-							<Menu mode='horizontal'>
-								<Menu.Item key='home'>
-									<Link to='/'>Home</Link>
-								</Menu.Item>
-								<Menu.Item key='vacancy-dashboard'>
-									<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
-								</Menu.Item>
-								<Menu.Item key='your-vacancies'>
-									<Link to={COMMITTEE_DASHBOARD}>Your Vacancies</Link>
-								</Menu.Item>
-							</Menu>
-						</div>
-					</div>
-				</>
-			);
-		} else if (authResponse.is_manager == true) {
-			return (
-				<>
-					<div className='OuterDiv'>
-						<div className='NavBar'>
-							<Menu mode='horizontal'>
-								<Menu.Item key='home'>
-									<Link to='/'>Home</Link>
-								</Menu.Item>
-								<Menu.Item key='vacancy-dashboard'>
-									<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
-								</Menu.Item>
-							</Menu>
-						</div>
-					</div>
-				</>
-			);
-		} else if (authResponse.is_chair == true) {
-			return (
-				<>
-					<div className='OuterDiv'>
-						<div className='NavBar'>
-							<Menu mode='horizontal'>
-								<Menu.Item key='home'>
-									<Link to='/'>Home</Link>
-								</Menu.Item>
-								<Menu.Item key='your-vacancies'>
-									<Link to={CHAIR_DASHBOARD}>Your Vacancies</Link>
-								</Menu.Item>
-							</Menu>
-						</div>
-					</div>
-				</>
-			);
-		} else if (
-			authResponse.user.roles.includes('x_g_nci_app_tracke.committee_member') ==
-			true
-		) {
-			return (
-				<>
-					<div className='OuterDiv'>
-						<div className='NavBar'>
-							<Menu mode='horizontal'>
-								<Menu.Item key='home'>
-									<Link to='/'>Home</Link>
-								</Menu.Item>
-								<Menu.Item key='your-vacancies'>
-									<Link to={COMMITTEE_DASHBOARD}>Your Vacancies</Link>
-								</Menu.Item>
-							</Menu>
-						</div>
-					</div>
-				</>
-			);
-		} else if (authResponse.user.has_applications === true) {
-			return (
-				<>
-					<div className='OuterDiv'>
-						<div className='NavBar'>
-							<Menu mode='horizontal'>
-								<Menu.Item key='home'>
-									<Link to='/'>Home</Link>
-								</Menu.Item>
-								<Menu.Item key='your-applications'>
-									<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
-								</Menu.Item>
-							</Menu>
-						</div>
-					</div>
-				</>
-			);
-		} else {
-			return (
-				<>
-					<div className='OuterDiv'>
-						<div className='NavBar'>
-							<Menu mode='horizontal'>
-								<Menu.Item key='home'>
-									<Link to='/'>Home</Link>
-								</Menu.Item>
-								<Menu.Item key='your-applications'>
-									<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
-								</Menu.Item>
-							</Menu>
-						</div>
-					</div>
-				</>
-			);
-		}
-	} else {
-		return (
-			<>
 				<div className='OuterDiv'>
 					<div className='NavBar'>
 						<Menu mode='horizontal'>
 							<Menu.Item key='home'>
 								<Link to='/'>Home</Link>
 							</Menu.Item>
-							<Menu.Item
-								key='hiring'
-								onClick={() =>
-									window.open(
-										'https://hr.nih.gov/jobs/executive/recruit/nih-executive-experience',
-										'_blank'
-									)
-								}
-							>
-								The NIH Hiring Experience
+							<Menu.Item key='vacancy-dashboard'>
+								<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
+							</Menu.Item>
+							<Menu.Item key='your-vacancies'>
+								<Link to={COMMITTEE_DASHBOARD}>Your Vacancies</Link>
 							</Menu.Item>
 						</Menu>
 					</div>
 				</div>
-			</>
+			);
+		} else if (authResponse.is_manager == true) {
+			return (
+				<div className='OuterDiv'>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='vacancy-dashboard'>
+								<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</div>
+			);
+		} else if (authResponse.is_chair == true) {
+			return (
+				<div className='OuterDiv'>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-vacancies'>
+								<Link to={CHAIR_DASHBOARD}>Your Vacancies</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</div>
+			);
+		} else if (
+			authResponse.user.roles.includes('x_g_nci_app_tracke.committee_member') ==
+			true
+		) {
+			return (
+				<div className='OuterDiv'>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-vacancies'>
+								<Link to={COMMITTEE_DASHBOARD}>Your Vacancies</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</div>
+			);
+		} else if (authResponse.user.has_applications === true) {
+			return (
+				<div className='OuterDiv'>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-applications'>
+								<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</div>
+			);
+		} else {
+			return (
+				<div className='OuterDiv'>
+					<div className='NavBar'>
+						<Menu mode='horizontal'>
+							<Menu.Item key='home'>
+								<Link to='/'>Home</Link>
+							</Menu.Item>
+							<Menu.Item key='your-applications'>
+								<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
+							</Menu.Item>
+						</Menu>
+					</div>
+				</div>
+			);
+		}
+	} else {
+		return (
+			<div className='OuterDiv'>
+				<div className='NavBar'>
+					<Menu mode='horizontal'>
+						<Menu.Item key='home'>
+							<Link to='/'>Home</Link>
+						</Menu.Item>
+						<Menu.Item
+							key='hiring'
+							onClick={() =>
+								window.open(
+									'https://hr.nih.gov/jobs/executive/recruit/nih-executive-experience',
+									'_blank'
+								)
+							}
+						>
+							The NIH Hiring Experience
+						</Menu.Item>
+					</Menu>
+				</div>
+			</div>
 		);
 	}
 };

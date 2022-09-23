@@ -34,6 +34,7 @@ const viewVacancyDetails = () => {
 				title={vacancyDetails.basic_info.vacancy_title.value}
 				openDate={vacancyDetails.basic_info.open_date.value}
 				closeDate={vacancyDetails.basic_info.close_date.value}
+				vacancyState={vacancyDetails.basic_info.state.value}
 				sysId={sysId}
 			/>
 			<div className='Content'>
