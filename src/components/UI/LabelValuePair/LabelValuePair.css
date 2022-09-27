@@ -11,7 +11,7 @@
 	margin-bottom: 4px;
 }
 
-.LabelValuePairContainer span {
+.LabelValuePairContainer > span {
 	margin-bottom: 16px;
 	color: var(--text-light);
 }

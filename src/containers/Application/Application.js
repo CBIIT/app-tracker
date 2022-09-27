@@ -8,6 +8,7 @@ import {
 	QuestionCircleOutlined,
 	ExclamationCircleOutlined,
 	DownloadOutlined,
+	ExclamationCircleFilled,
 } from '@ant-design/icons';
 
 import InfoCard from '../../components/UI/InfoCard/InfoCard';
@@ -26,6 +27,7 @@ import {
 	DISPLAY_REFERENCES,
 	GET_VACANCY_MANAGER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
+	RECUSE,
 } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY } from '../../constants/Routes';
 import {
@@ -164,6 +166,9 @@ const application = () => {
 	const [vacancyState, setVacancyState] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [additionalDocumentLinks, setAdditionalDocumentLinks] = useState([]);
+	const [showRecuseModal, setShowRecuseModal] = useState(false);
+	const [confirmLoading, setConfirmLoading] = useState(false);
+	const [recused, setRecused] = useState(false);
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -171,6 +176,53 @@ const application = () => {
 	useEffect(() => {
 		loadApplication();
 	}, []);
+
+	const openRecuseModal = (e) => {
+		e.preventDefault();
+		setShowRecuseModal(true);
+	};
+
+	const closeRecuseModal = () => {
+		setShowRecuseModal(false);
+	};
+
+	const unrecuseSelf = async () => {
+		try {
+			const recuseData = { applicationId: sysId, recuse: false };
+			const response = await axios.put(RECUSE, recuseData);
+
+			setRecused(response.data.result.recused);
+			message.success(
+				'You have successfully unrecused yourself for the scoring of this applicant.'
+			);
+		} catch (error) {
+			message.error(
+				'Sorry, something went wrong!  Try refreshing the page and trying again.'
+			);
+		}
+	};
+
+	const recuseSelf = async () => {
+		setConfirmLoading(true);
+		try {
+			setConfirmLoading(true);
+			const recuseData = { applicationId: sysId, recuse: true };
+			const response = await axios.put(RECUSE, recuseData);
+
+			closeRecuseModal();
+			setRecused(response.data.result.recused);
+
+			message.success(
+				'You have successfully recused yourself for the scoring of this applicant.'
+			);
+		} catch (error) {
+			message.error(
+				'Sorry, something went wrong!  Try refreshing the page and trying again.'
+			);
+		}
+
+		setConfirmLoading(false);
+	};
 
 	const reloadReferences = async () => {
 		const applicationResponse = await axios.get(GET_APPLICATION + sysId);
@@ -253,6 +305,7 @@ const application = () => {
 					category4: individualScores.category_4.value,
 				});
 
+				setRecused(individualScores.recused.value == '1' ? 1 : 0);
 				setIndividualScoresComments(individualScores.comments.value);
 				setIndividualTriageChoice(individualScores.recommend.value);
 			}
@@ -398,11 +451,6 @@ const application = () => {
 		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
 
-	console.log(
-		'[Application] additionalDocumentLinks:',
-		additionalDocumentLinks
-	);
-
 	return !isLoading ? (
 		<>
 			<div className='ApplicationContainer'>
@@ -514,13 +562,51 @@ const application = () => {
 										: 'Committee Member Rating and Feedback'
 								}
 								description={
-									<>
-										Please score the applicant on a scale of 0 - 3 below and
-										leave detailed notes in the comments box below.{' '}
-										<a href={ratingPlanDownloadLink}>See Rating Plan.</a>
-									</>
+									recused == 0 ? (
+										<>
+											Please score the applicant on a scale of 0 - 3 below and
+											leave detailed notes in the comments box below.{' '}
+											{ratingPlanDownloadLink ? (
+												<>
+													<a href={ratingPlanDownloadLink}>See Rating Plan</a>
+													{'.'}
+												</>
+											) : null}
+											<br /> <br />
+											Need to recuse yourself for this applicant?{' '}
+											<a onClick={openRecuseModal}>Recuse self</a>.
+										</>
+									) : (
+										<div
+											style={{
+												display: 'flex',
+												flexDirection: 'row',
+												alignItems: 'center',
+												justifyContent: 'center',
+											}}
+										>
+											<div style={{ display: 'flex', alignItems: 'center' }}>
+												<ExclamationCircleFilled
+													style={{
+														color: '#faad14',
+														height: '50px',
+														width: '50px',
+														fontSize: '30px',
+														paddingTop: '16px',
+														paddingBottom: '16px',
+													}}
+												/>
+											</div>
+											<div>
+												You are currently recused from scoring this applicant.{' '}
+												<br />
+												Need to unrecuse yourself for this applicant? <br />
+												<a onClick={unrecuseSelf}>Unrecuse self</a>.{' '}
+											</div>
+										</div>
+									)
 								}
-								style={{ backgroundColor: 'white' }}
+								style={{ backgroundColor: recused == 0 ? 'white' : '#E8E8E8' }}
 								scoreChangeHandler={individualScoreSlideChangeHandler}
 								onScoreCommentsChange={onScoreCommentsChange}
 								triageOptions={committeeMemberTriageOptions}
@@ -531,6 +617,7 @@ const application = () => {
 								onCancelClick={onTriageWidgetCancelClick}
 								onSaveClick={onIndividualScoreSaveClick}
 								scores={individualScores}
+								disabled={recused == 1}
 							/>
 						) : null}
 
@@ -629,6 +716,28 @@ const application = () => {
 					</div>
 				</div>
 			</div>
+			<Modal
+				visible={showRecuseModal}
+				onOk={recuseSelf}
+				onCancel={closeRecuseModal}
+				okText='Confirm'
+				cancelText='Cancel'
+				confirmLoading={confirmLoading}
+			>
+				<div>
+					<ExclamationCircleFilled
+						style={{ color: '#faad14', fontSize: '24px' }}
+					/>
+					<h2 style={{ display: 'inline-block', paddingLeft: '10px' }}>
+						Confirm recusing youself?
+					</h2>
+					<p>
+						You are about to recuse yourself from scoring this applicant. Click
+						confirm to proceed. Your scores will not count towards the scoring
+						of the applicant moving forward.
+					</p>
+				</div>
+			</Modal>
 		</>
 	) : null;
 };

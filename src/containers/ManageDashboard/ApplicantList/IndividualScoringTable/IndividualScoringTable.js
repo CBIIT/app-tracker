@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, Tooltip, Select, Modal, Input, Button, message } from 'antd';
-import { CommentOutlined } from '@ant-design/icons';
+import { CommentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import {
@@ -30,7 +30,22 @@ const committeeVoteChangeHandler = async (vote, sysId, postChangeHandler) => {
 
 const expandedRowRender = (scores) => {
 	const columns = [
-		{ title: 'Committee Member', dataIndex: 'name', key: 'name' },
+		{
+			title: 'Committee Member',
+			dataIndex: 'name',
+			key: 'name',
+			render: (text, record) =>
+				record.recused ? (
+					<>
+						{text}{' '}
+						<Tooltip title='Recused'>
+							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+						</Tooltip>
+					</>
+				) : (
+					text
+				),
+		},
 		{ title: 'Raw Score', dataIndex: 'raw_score', key: 'raw_score' },
 		{
 			title: 'Avg Score',
@@ -94,6 +109,7 @@ const individualScoringTable = (props) => {
 	const [triageComments, setTriageComments] = useState('');
 	const [chairComments, setChairComments] = useState('');
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
+
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
 		setCommitteeComments(comment);
@@ -294,6 +310,7 @@ const individualScoringTable = (props) => {
 				expandable={{
 					expandedRowRender: (record) => expandedRowRender(record.scores),
 				}}
+				loading={props.isLoading}
 			/>
 			<Modal
 				title='Voting Comments'

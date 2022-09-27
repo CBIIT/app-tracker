@@ -12,6 +12,7 @@ const scoringWidgetSlider = (props) => (
 				onChange={props.onChange}
 				value={props.value}
 				defaultValue={0}
+				disabled={props.disabled}
 			/>
 		</div>
 	</div>
