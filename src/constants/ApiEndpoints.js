@@ -68,6 +68,8 @@ const CHECK_USER_ALREADY_APPLIED =
 const APPLICANT_GET_APPLICATION =
 	'/api/x_g_nci_app_tracke/application/get_application_applicant/';
 
+const RECUSE = '/api/x_g_nci_app_tracke/scoring/recuse';
+
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	GET_APPLICATION,
@@ -101,4 +103,5 @@ export {
 	GET_APPLICATION_SCORES,
 	CHECK_USER_ALREADY_APPLIED,
 	APPLICANT_GET_APPLICATION,
+	RECUSE,
 };

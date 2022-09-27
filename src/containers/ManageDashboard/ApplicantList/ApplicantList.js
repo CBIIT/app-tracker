@@ -81,6 +81,7 @@ const applicantColumns = [
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		loadApplicants();
@@ -100,10 +101,16 @@ const applicantList = (props) => {
 					return (
 						<Collapse defaultActiveKey={['0']} ghost>
 							<Panel header='Recommended Applicants'>
-								<IndividualScoringTable applicants={recommendedApplicants} />
+								<IndividualScoringTable
+									isLoading={isLoading}
+									applicants={recommendedApplicants}
+								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
-								<IndividualScoringTable applicants={nonRecommendedApplicants} />
+								<IndividualScoringTable
+									isLoading={isLoading}
+									applicants={nonRecommendedApplicants}
+								/>
 							</Panel>
 						</Collapse>
 					);
@@ -117,6 +124,7 @@ const applicantList = (props) => {
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
 									displayAllComments={vacancyState === VOTING_COMPLETE}
+									isLoading={isLoading}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -125,6 +133,7 @@ const applicantList = (props) => {
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
 									displayAllComments={vacancyState === VOTING_COMPLETE}
+									isLoading={isLoading}
 								/>
 							</Panel>
 						</Collapse>
@@ -142,7 +151,12 @@ const applicantList = (props) => {
 		} else if (userCommitteeRole === COMMITTEE_CHAIR) {
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
-					return <IndividualScoringTable applicants={applicants} />;
+					return (
+						<IndividualScoringTable
+							applicants={applicants}
+							isLoading={isLoading}
+						/>
+					);
 				case VOTING_COMPLETE:
 				case COMMITTEE_REVIEW_IN_PROGRESS:
 					return (
@@ -151,6 +165,7 @@ const applicantList = (props) => {
 							committeeVoting={true}
 							postChangeHandler={loadVacancyAndApplicants}
 							displayAllComments={vacancyState === VOTING_COMPLETE}
+							isLoading={isLoading}
 						/>
 					);
 				default:
@@ -181,6 +196,7 @@ const applicantList = (props) => {
 	};
 
 	const loadApplicants = async () => {
+		setIsLoading(true);
 		try {
 			const response = await axios.get(
 				'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/' + sysId
@@ -191,6 +207,7 @@ const applicantList = (props) => {
 				'Sorry!  An error occurred while loading the page.  Try reloading.'
 			);
 		}
+		setIsLoading(false);
 	};
 
 	const loadVacancyAndApplicants = () => {
