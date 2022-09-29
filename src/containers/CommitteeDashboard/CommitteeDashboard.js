@@ -136,6 +136,11 @@ const committeeColumns = [
 		},
 	},
 	{
+		title: 'Scoring Due By',
+		dataIndex: 'scoring_due_by_date',
+		key: 'scoringDueByDate',
+	},
+	{
 		title: 'Your Scoring',
 		dataIndex: 'your_scoring',
 		key: 'scoring',

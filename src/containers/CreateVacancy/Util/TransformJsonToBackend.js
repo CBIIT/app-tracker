@@ -23,6 +23,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		vacancy_description: basicInfo.description,
 		open_date: getDateFromDateTime(basicInfo.openDate),
 		close_date: getDateFromDateTime(basicInfo.closeDate),
+		scoring_due_by_date: getDateFromDateTime(basicInfo.scoringDueByDate),
 		number_of_recommendation: basicInfo.numberOfRecommendations,
 		equal_opportunity_employment_statement:
 			mandatoryStatements.equalOpportunityEmployerText,
@@ -42,7 +43,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 };
 
 const getDateFromDateTime = (dateTime) => {
-	return moment(dateTime.toString()).format('YYYY-MM-DD');
+	return dateTime ? moment(dateTime.toString()).format('YYYY-MM-DD') : null;
 };
 
 const transformEmails = (emails) => {
