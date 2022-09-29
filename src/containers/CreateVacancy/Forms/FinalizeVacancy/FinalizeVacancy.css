@@ -63,6 +63,7 @@
 	flex-direction: row;
 	max-width: 206px;
 	justify-content: space-between;
+	min-height: 70px;
 }
 
 .TwoColumnCheckList {

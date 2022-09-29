@@ -129,6 +129,12 @@ const basicInformation = (props) => {
 				</Form.Item>
 			</div>
 
+			<div className='DatePickerContainer'>
+				<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
+					<DatePicker className='DatePicker' format='MM/DD/YYYY' />
+				</Form.Item>
+			</div>
+
 			<Form.Item label='Application Documents' name='applicationDocuments'>
 				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
