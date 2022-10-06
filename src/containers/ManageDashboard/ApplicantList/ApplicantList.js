@@ -48,6 +48,7 @@ const applicantColumns = [
 		},
 		width: 250,
 		defaultSortOrder: defaultApplicantSort,
+		sorter: true,
 	},
 	{
 		title: 'Email',
@@ -188,6 +189,13 @@ const applicantList = (props) => {
 				rowKey='sys_id'
 				pagination={tablePagination}
 				loading={tableLoading}
+				onChange={(pagination, _, sorter) => {
+					loadAllApplicants(
+						pagination.current,
+						pagination.pageSize,
+						sorter.order
+					);
+				}}
 			></Table>
 		);
 
