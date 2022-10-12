@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
-import { Table, ConfigProvider, Empty } from 'antd';
+import { Table, ConfigProvider, Empty, message } from 'antd';
 import './CommitteeDashboard.css';
 import axios from 'axios';
 
@@ -35,7 +35,7 @@ const committeeDashboard = () => {
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
 				setData(currentData.data.result);
 			} catch (err) {
-				console.warn(err);
+				message.error('Sorry!  An error occurred.');
 			}
 
 			setIsLoading(false);
@@ -53,6 +53,7 @@ const committeeDashboard = () => {
 				<ConfigProvider renderEmpty={customizeRenderEmpty}>
 					<Table
 						className='CommitteeTable'
+						pagination={{ hideOnSinglePage: true }}
 						rowKey={(record) => record.vacancy_id}
 						dataSource={data}
 						columns={committeeColumns}
@@ -133,6 +134,11 @@ const committeeColumns = [
 				}
 			}
 		},
+	},
+	{
+		title: 'Scoring Due By',
+		dataIndex: 'scoring_due_by_date',
+		key: 'scoringDueByDate',
 	},
 	{
 		title: 'Your Scoring',

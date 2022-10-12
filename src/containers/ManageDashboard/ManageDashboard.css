@@ -40,3 +40,16 @@
 		padding-top: 50px;
 	}
 }
+
+.ManageDashboardEditButton {
+	float: right;
+	margin-right: 10px;
+}
+
+@media (min-width: 350px) {
+	.ManageDashboardEditButton {
+		position: absolute;
+		top: 70px;
+		right: 20px;
+	}
+}

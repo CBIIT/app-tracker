@@ -16,6 +16,7 @@ const adminScoringWidget = (props) => {
 		scores: {},
 		comments: '',
 		triageChoice: '',
+		recused: '',
 	});
 
 	useEffect(() => {
@@ -113,6 +114,7 @@ const adminScoringWidget = (props) => {
 			},
 			comments: committeeMember.comments ? committeeMember.comments : '',
 			triageChoice: committeeMember.recommend,
+			recused: committeeMember.recused,
 		};
 
 		setSelectedCommitteeMember(newSelection);
@@ -129,6 +131,7 @@ const adminScoringWidget = (props) => {
 						<a href={props.ratingPlanDownloadLink}>See Rating Plan.</a>
 					</>
 				}
+				enableRecuseToggle={true}
 				enableCommitteeMemberDropdown={true}
 				committeeMemberDropdownChoices={committeeMemberDropdownChoices}
 				committeeMemberDropdownOnClick={committeeMemberDropdownOnClick}
@@ -137,6 +140,8 @@ const adminScoringWidget = (props) => {
 				onScoreCommentsChange={onSelectedScoreCommentsChange}
 				triageComments={selectedCommitteeMember.comments}
 				triageChoice={selectedCommitteeMember.triageChoice}
+				recused={selectedCommitteeMember.recused}
+				committeeMemberId={selectedCommitteeMember.sysId}
 				triageOptions={props.triageOptions}
 				categories={props.categories}
 				onTriageSelect={onTriageSelect}
@@ -144,6 +149,7 @@ const adminScoringWidget = (props) => {
 				onSaveClick={onSaveClick}
 				scores={selectedCommitteeMember.scores}
 				initiallyHideContent={props.initiallyHideContent}
+				applicationId={props.applicationId}
 			/>
 		</>
 	);

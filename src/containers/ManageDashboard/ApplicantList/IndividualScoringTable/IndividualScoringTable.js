@@ -42,6 +42,7 @@ const individualScoringTable = (props) => {
 	const [triageComments, setTriageComments] = useState('');
 	const [chairComments, setChairComments] = useState('');
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
+
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
 		setCommitteeComments(comment);

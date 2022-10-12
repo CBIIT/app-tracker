@@ -16,6 +16,7 @@ import {
 	VACANCY_DASHBOARD,
 	CHAIR_DASHBOARD,
 	COMMITTEE_DASHBOARD,
+	EDIT_VACANCY,
 } from '../../constants/Routes';
 import {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
@@ -285,6 +286,17 @@ const manageDashboard = () => {
 				>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
 						<>
+							{userRoles.includes(OWM_TEAM) ? (
+								<div className='ManageDashboardEditButton'>
+									<Button
+										type='primary'
+										ghost
+										onClick={() => history.push(EDIT_VACANCY + sysId)}
+									>
+										Edit
+									</Button>
+								</div>
+							) : null}
 							<ViewVacancyDetails
 								allForms={vacancy}
 								hideCommitteeSection={isUserAllowedToScore()}

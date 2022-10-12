@@ -261,6 +261,7 @@ const applicantList = (props) => {
 							applicants={applicants}
 							pagination={tablePagination}
 							onTableChange={loadAllApplicants}
+							loading={tableLoading}
 						/>
 					);
 				case VOTING_COMPLETE:
@@ -273,6 +274,7 @@ const applicantList = (props) => {
 							committeeVoting={true}
 							postChangeHandler={loadVacancyAndApplicants}
 							displayAllComments={vacancyState === VOTING_COMPLETE}
+							loading={tableLoading}
 						/>
 					);
 				default:
@@ -287,6 +289,7 @@ const applicantList = (props) => {
 					applicants={applicants}
 					pagination={tablePagination}
 					onTableChange={loadAllApplicants}
+					loading={tableLoading}
 				/>
 			);
 		} else {

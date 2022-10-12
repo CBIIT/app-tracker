@@ -2,11 +2,13 @@ import InfoCard from '../../../components/UI/InfoCard/InfoCard';
 import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 import LabelValuePair from '../../../components/UI/LabelValuePair/LabelValuePair';
 import ScoringWidgetSlider from './ScoringWidgetSlider/ScoringWidgetSlider';
+import { RECUSE } from '../../../constants/ApiEndpoints';
 
-import { Input, Radio, Button, Form, Select } from 'antd';
+import { Input, Radio, Button, Form, Select, Switch, message } from 'antd';
 
 import './ScoringWidget.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const sliderMarks = [0, 1, 2, 3];
 const sliderMin = 0;
@@ -18,6 +20,30 @@ const { Option } = Select;
 
 const scoringWidget = (props) => {
 	const [formInstance] = Form.useForm();
+
+	const [recused, setRecused] = useState(props.recused);
+
+	const onSwitchChange = async (value) => {
+		const recuseData = {
+			applicationId: props.applicationId,
+			userId: props.committeeMemberId,
+			recuse: value,
+		};
+
+		try {
+			const response = await axios.put(RECUSE, recuseData);
+			const newRecuse = response.data.result.recused;
+			const committeeMember = response.data.result.committeeMember;
+			setRecused(newRecuse);
+			message.success(
+				'Successfully ' + (newRecuse ? '' : 'un') + 'recused ' + committeeMember
+			);
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred.  Try refreshing the page and trying again.'
+			);
+		}
+	};
 
 	useEffect(() => {
 		formInstance.resetFields();
@@ -71,6 +97,21 @@ const scoringWidget = (props) => {
 							{menu}
 						</div>
 					) : null}
+					{props.enableRecuseToggle ? (
+						<InfoCardRow>
+							<LabelValuePair
+								label='Recused'
+								value={
+									<Switch
+										checked={recused}
+										onChange={onSwitchChange}
+										checkedChildren='Yes'
+										unCheckedChildren='No'
+									/>
+								}
+							/>
+						</InfoCardRow>
+					) : null}
 					<InfoCardRow>
 						<LabelValuePair
 							value={props.description}
@@ -89,6 +130,7 @@ const scoringWidget = (props) => {
 								onChange={(value) =>
 									props.scoreChangeHandler(value, category.key)
 								}
+								disabled={props.disabled}
 							/>
 						))}
 						<div className='totalScoreDiv'>
@@ -101,6 +143,7 @@ const scoringWidget = (props) => {
 							style={{ marginBottom: '16px' }}
 							onChange={props.onScoreCommentsChange}
 							value={props.triageComments}
+							disabled={props.disabled}
 						/>
 						<LabelValuePair
 							label='Interview Recommendation'
@@ -119,6 +162,7 @@ const scoringWidget = (props) => {
 								optionType='button'
 								buttonStyle='solid'
 								onChange={props.onTriageSelect}
+								disabled={props.disabled}
 							/>
 						</Form.Item>
 					</div>
@@ -126,10 +170,16 @@ const scoringWidget = (props) => {
 						style={{ display: 'flex', justifyContent: 'space-between' }}
 					>
 						<Form.Item>
-							<Button onClick={props.onCancelClick}>cancel</Button>
+							<Button onClick={props.onCancelClick} disabled={props.disabled}>
+								cancel
+							</Button>
 						</Form.Item>
 						<Form.Item>
-							<Button type='primary' htmlType='submit'>
+							<Button
+								type='primary'
+								htmlType='submit'
+								disabled={props.disabled}
+							>
 								save score
 							</Button>
 						</Form.Item>

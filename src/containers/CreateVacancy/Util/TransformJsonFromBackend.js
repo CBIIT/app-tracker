@@ -7,6 +7,9 @@ export const transformJsonFromBackend = (sourceJson) => {
 			sys_id: sourceJson.basic_info.sys_id.value,
 			openDate: moment(sourceJson.basic_info.open_date.value),
 			closeDate: moment(sourceJson.basic_info.close_date.value),
+			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.value
+				? moment(sourceJson.basic_info.scoring_due_by_date.value)
+				: null,
 			title: sourceJson.basic_info.vacancy_title.value,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({

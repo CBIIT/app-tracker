@@ -5,6 +5,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 		basicInfo: {
 			openDate: sourceJson.basic_info.open_date.label,
 			closeDate: sourceJson.basic_info.close_date.label,
+			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({

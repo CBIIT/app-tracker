@@ -55,6 +55,18 @@ const finalizeVacancy = (props) => {
 						</p>
 					</div>
 				</div>
+				<div className='DateSection'>
+					<div className='DateCard'>
+						<h2>Scoring Due By Date</h2>
+						<p>
+							{basicInfo.scoringDueByDate
+								? new Date(basicInfo.scoringDueByDate)
+										.toLocaleString('en-us')
+										.split(',')[0]
+								: ''}
+						</p>
+					</div>
+				</div>
 				<h2>Application Documents</h2>
 				<ul>
 					{basicInfo.applicationDocuments.map((element, index) => (

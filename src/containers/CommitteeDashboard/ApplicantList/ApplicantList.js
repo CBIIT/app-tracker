@@ -1,6 +1,9 @@
 import { Table, Tooltip } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
-import { CheckCircleTwoTone } from '@ant-design/icons';
+import {
+	CheckCircleTwoTone,
+	ExclamationCircleOutlined,
+} from '@ant-design/icons';
 
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
@@ -27,11 +30,18 @@ const applicantList = (props) => {
 		{
 			key: 'average_score',
 			render: (record) => {
-				return record.average_score != undefined ? (
-					<Tooltip title='Scoring Completed'>
-						<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
-					</Tooltip>
-				) : null;
+				if (record.recused == 1)
+					return (
+						<Tooltip title='Recused'>
+							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+						</Tooltip>
+					);
+				else
+					return record.average_score != undefined ? (
+						<Tooltip title='Scoring Completed'>
+							<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
+						</Tooltip>
+					) : null;
 			},
 		},
 		{
@@ -58,19 +68,21 @@ const applicantList = (props) => {
 			title: 'Raw Score',
 			dataIndex: 'raw_score',
 			key: 'rawscore',
+			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 
 		{
 			title: 'Average Score',
 			dataIndex: 'average_score',
 			key: 'averagescore',
-			render: (text) => renderDecision(text),
+			render: (text, record) =>
+				record.recused == 1 ? 'n/a' : renderDecision(text),
 		},
 		{
 			title: 'Recommend Interview?',
 			dataIndex: 'recommend',
 			key: 'recommend',
-			render: (text) => renderDecision(text),
+			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 	];
 
@@ -95,6 +107,7 @@ const applicantList = (props) => {
 						sorter.order
 					);
 				}}
+				loading={props.loading}
 			></Table>
 		</div>
 	);
