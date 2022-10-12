@@ -55,11 +55,7 @@ const applicantList = (props) => {
 					</Link>
 				);
 			},
-			sorter: {
-				compare: (a, b) =>
-					a.applicant_last_name.localeCompare(b.applicant_last_name),
-				multiple: 1,
-			},
+			sorter: true,
 			width: 400,
 			defaultSortOrder: 'ascend',
 		},
@@ -93,7 +89,7 @@ const applicantList = (props) => {
 	return (
 		<div className='applicant-table'>
 			<Table
-				pagination={{ hideOnSinglePage: true }}
+				pagination={props.pagination}
 				className='applicantTable'
 				dataSource={applicants}
 				columns={applicantColumns}
@@ -104,6 +100,14 @@ const applicantList = (props) => {
 						history.push(MANAGE_APPLICATION + record.sys_id);
 					},
 				})}
+				onChange={(pagination, _, sorter) => {
+					props.onTableChange(
+						pagination.current,
+						pagination.pageSize,
+						sorter.order
+					);
+				}}
+				loading={props.loading}
 			></Table>
 		</div>
 	);

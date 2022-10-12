@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Tooltip, Select, Modal, Input, Button, message } from 'antd';
-import { CommentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-
+import { Table, Select, Modal, Input, Button, message } from 'antd';
+import { CommentOutlined } from '@ant-design/icons';
 import axios from 'axios';
+
+import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import {
 	SUBMIT_COMMITTEE_DECISION,
 	SUBMIT_COMMITTEE_COMMENTS,
@@ -28,77 +29,9 @@ const committeeVoteChangeHandler = async (vote, sysId, postChangeHandler) => {
 	}
 };
 
-const expandedRowRender = (scores) => {
-	const columns = [
-		{
-			title: 'Committee Member',
-			dataIndex: 'name',
-			key: 'name',
-			render: (text, record) =>
-				record.recused ? (
-					<>
-						{text}{' '}
-						<Tooltip title='Recused'>
-							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
-						</Tooltip>
-					</>
-				) : (
-					text
-				),
-		},
-		{ title: 'Raw Score', dataIndex: 'raw_score', key: 'raw_score' },
-		{
-			title: 'Avg Score',
-			dataIndex: 'average_score',
-			key: 'average_score',
-		},
-		{
-			title: 'Category 1',
-			dataIndex: 'category_1',
-			key: 'category_1',
-		},
-		{
-			title: 'Category 2',
-			dataIndex: 'category_2',
-			key: 'category_2',
-		},
-		{
-			title: 'Category 3',
-			dataIndex: 'category_3',
-			key: 'category_3',
-		},
-		{
-			title: 'Category 4',
-			dataIndex: 'category_4',
-			key: 'category_4',
-		},
-		{
-			title: 'Recommend?',
-			dataIndex: 'recommend',
-			key: 'recommend',
-		},
-		{
-			title: 'Comments',
-			dataIndex: 'comments',
-			key: 'comments',
-			render: (comment) => (
-				<Tooltip title={comment} trigger='click'>
-					<CommentOutlined />
-				</Tooltip>
-			),
-		},
-	];
-
-	return (
-		<Table
-			rowKey='sys_id'
-			columns={columns}
-			scroll={{ x: 'true' }}
-			dataSource={scores}
-			pagination={false}
-		/>
-	);
-};
+const expandedRowRender = (applicationSysId) => (
+	<InnerScoresTable applicationSysId={applicationSysId} />
+);
 
 const individualScoringTable = (props) => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -158,17 +91,13 @@ const individualScoringTable = (props) => {
 				title: 'Applicant',
 				dataIndex: 'applicant_last_name',
 				key: 'name',
+				sorter: true,
 				render: (text, record) => {
 					return (
 						<Link to={MANAGE_APPLICATION + record.sys_id}>
 							{text}, {record.applicant_first_name}
 						</Link>
 					);
-				},
-				sorter: {
-					compare: (a, b) =>
-						a.applicant_last_name.localeCompare(b.applicant_last_name),
-					multiple: 1,
 				},
 				defaultSortOrder: 'ascend',
 				width: 200,
@@ -183,11 +112,6 @@ const individualScoringTable = (props) => {
 				title: 'Average Score',
 				dataIndex: 'average_member_score',
 				width: 50,
-				sorter: {
-					compare: (a, b) => a.average_member_score - b.average_member_score,
-					multiple: 2,
-				},
-				defaultSortOrder: 'descend',
 				render: (text) => {
 					if (text == 'NaN') {
 						return (
@@ -302,15 +226,22 @@ const individualScoringTable = (props) => {
 	return (
 		<>
 			<Table
-				pagination={{ hideOnSinglePage: true }}
+				pagination={props.pagination}
 				dataSource={props.applicants}
+				loading={props.loading}
+				onChange={(pagination, _, sorter) => {
+					props.onTableChange(
+						pagination.current,
+						pagination.pageSize,
+						sorter.order
+					);
+				}}
 				scroll={{ x: 'true' }}
 				columns={columns}
 				rowKey='sys_id'
 				expandable={{
-					expandedRowRender: (record) => expandedRowRender(record.scores),
+					expandedRowRender: (record) => expandedRowRender(record.sys_id),
 				}}
-				loading={props.isLoading}
 			/>
 			<Modal
 				title='Voting Comments'
@@ -337,7 +268,7 @@ const individualScoringTable = (props) => {
 				cancelButtonProps={{ style: { display: 'none' } }}
 			>
 				<>
-					<b>OWM Comments:</b> <p>{triageComments}</p>
+					<b>Vacancy Manager Comments:</b> <p>{triageComments}</p>
 					<b>Chair Comments:</b> <p>{chairComments}</p>
 					{committeeMembersComments.map((comment, index) => {
 						if (comment.average_score !== '--') {

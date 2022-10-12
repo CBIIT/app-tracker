@@ -40,6 +40,7 @@ import {
 	LIVE,
 	FINAL,
 } from '../../constants/VacancyStates';
+import Loading from '../../components/Loading/Loading';
 import './ManageDashboard.css';
 
 const getNextStepButtonLabel = (currentStep) => {
@@ -231,7 +232,7 @@ const manageDashboard = () => {
 	};
 
 	return isLoading ? (
-		<> </>
+		<Loading />
 	) : (
 		<>
 			<div className='ManageHeader'>
