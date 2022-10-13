@@ -23,7 +23,7 @@ const adminScoringWidget = (props) => {
 		(async () => {
 			loadScores();
 		})();
-	}, []);
+	}, [selectedCommitteeMember]);
 
 	const loadScores = async () => {
 		const response = await axios.get(
@@ -93,8 +93,6 @@ const adminScoringWidget = (props) => {
 				'Sorry!  An error occurred.  Save unsuccessful.  Try reloading the page and trying again.'
 			);
 		}
-
-		loadScores();
 	};
 
 	const committeeMemberDropdownOnClick = (value) => {

@@ -46,6 +46,7 @@ const scoringWidget = (props) => {
 	};
 
 	useEffect(() => {
+		setRecused(props.recused);
 		formInstance.resetFields();
 	}, [props]);
 
