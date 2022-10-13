@@ -299,7 +299,11 @@ const createVacancy = (props) => {
 	};
 
 	const isEditableInRestrictedEditMode = (stepKey) => {
-		return stepKey === 'emailTemplates' || stepKey === 'vacancyCommittee';
+		return (
+			stepKey === 'basicInfo' ||
+			stepKey === 'emailTemplates' ||
+			stepKey === 'vacancyCommittee'
+		);
 	};
 
 	const currentStepObject = steps[currentStep] || {};
