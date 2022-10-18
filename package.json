@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "webpack-dev-server --config=./webpack/webpack.dev.config.js",
 		"build": "node node_modules/webpack/bin/webpack.js --progress --config webpack/webpack.prod.config.js --bail",
-		"postbuild": "node webpack/servicenow.postbuild.js && zsh webpack/add-extensions.sh"
+		"postbuild": "node webpack/servicenow.postbuild.js"
 	},
 	"author": "",
 	"license": "ISC",
