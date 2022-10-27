@@ -11,6 +11,10 @@ export const transformJsonFromBackend = (sourceJson) => {
 				? moment(sourceJson.basic_info.scoring_due_by_date.value)
 				: null,
 			title: sourceJson.basic_info.vacancy_title.value,
+			allowHrSpecialistTriage:
+				sourceJson.basic_info.allow_hr_specialist_triage.value == '1'
+					? true
+					: false,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({
 				sys_id: doc.sys_id.value,

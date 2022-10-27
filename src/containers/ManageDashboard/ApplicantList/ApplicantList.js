@@ -282,7 +282,7 @@ const applicantList = (props) => {
 			}
 		} else if (
 			userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
-			COMMITTEE_MEMBER_NON_VOTING
+			userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
 		) {
 			return (
 				<ApplicantList

@@ -50,6 +50,8 @@ import {
 import './Application.css';
 import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import { displayReferenceContactQuestion } from '../../components/Util/Application/Application';
+import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
+import Loading from '../../components/Loading/Loading';
 
 const { confirm } = Modal;
 
@@ -145,6 +147,7 @@ const displayCommitteeReview = (vacancyState) => {
 };
 
 const application = () => {
+	const [vacancyData, setVacancyData] = useState();
 	const [application, setApplication] = useState();
 	const [vacancyTitle, setVacancyTitle] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
@@ -157,7 +160,6 @@ const application = () => {
 	const [displayReferences, setDisplayReferences] = useState();
 	const [appDocIds, setAppDocIds] = useState([]);
 	const [userRoles, setUserRoles] = useState([]);
-	const [userVacancyCommitteeRole, setUserVacancyCommitteeRole] = useState();
 	const [individualTriageChoice, setIndividualTriageChoice] = useState();
 	const [individualScores, setIndividualScores] = useState({});
 	const [individualScoresComments, setIndividualScoresComments] = useState();
@@ -253,19 +255,15 @@ const application = () => {
 			const vacancySysId =
 				applicationResponse.data.result.basic_info.vacancy.value;
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + vacancySysId);
+			setVacancyData(vacancy.data.result);
 
 			const roles = vacancy.data.result.user.roles;
 			setUserRoles(roles);
-
-			const vacancyCommitteeRole =
-				vacancy.data.result.user.committee_role_of_current_vacancy;
 
 			if (vacancy.data.result.rating_plan)
 				setRatingPlanDownloadLink(
 					vacancy.data.result.rating_plan.attachment_dl
 				);
-
-			setUserVacancyCommitteeRole(vacancyCommitteeRole);
 
 			const appDocs = applicationResponse.data.result.app_documents;
 			const filteredAppDocs = appDocs
@@ -313,6 +311,7 @@ const application = () => {
 			setIsLoading(false);
 		} catch (error) {
 			message.error('Sorry, an error occurred while loading.');
+			throw error;
 		}
 	};
 
@@ -426,7 +425,7 @@ const application = () => {
 		}
 	};
 
-	const isChair = () => {
+	const isChair = (userVacancyCommitteeRole) => {
 		return userVacancyCommitteeRole === COMMITTEE_CHAIR;
 	};
 
@@ -439,7 +438,7 @@ const application = () => {
 		);
 	};
 
-	const isUserAllowedToScore = () => {
+	const isUserAllowedToScore = (userVacancyCommitteeRole) => {
 		return (
 			userVacancyCommitteeRole === COMMITTEE_MEMBER_VOTING ||
 			userVacancyCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
@@ -451,295 +450,331 @@ const application = () => {
 		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
 
-	return !isLoading ? (
-		<>
-			<div className='ApplicationContainer'>
-				<h1>{vacancyTitle}</h1>
-				<div className='ApplicationHeaderBar'>
-					<h2>
-						Applicant:{' '}
-						{application.basicInfo.firstName +
-							' ' +
-							application.basicInfo.lastName}
-					</h2>
-					<Button
-						onClick={onViewApplicantsListClick}
-						ghost
-						type='primary'
-						style={{ marginBottom: '8px' }}
-					>
-						view applicants list
-					</Button>
-				</div>
-				<div className='ApplicationContent'>
-					<div
-						className='ApplicationContentColumn'
-						style={{ maxWidth: '675px' }}
-					>
-						<ApplicantInfo
-							basicInfo={application.basicInfo}
-							style={{ backgroundColor: 'white' }}
-						/>
-						<Address
-							address={application.address}
-							style={{ backgroundColor: 'white' }}
-						/>
+	if (isLoading) {
+		return <Loading />;
+	} else {
+		const allowHrSpecialistTriage =
+			vacancyData?.basic_info?.allow_hr_specialist_triage;
 
-						{references.length === 0 ? null : (
-							<References
-								references={references}
-								style={{ backgroundColor: 'white' }}
-								switchInitialValue={displayReferences}
-								handleToggle={
-									userRoles.includes(OWM_TEAM)
-										? handleDisplayReferenceToggle
-										: null
-								}
-								allowUploadOrDelete={userRoles.includes(OWM_TEAM)}
-								afterUploadOrDelete={reloadReferences}
-								displayContactQuestion={displayReferenceContactQuestion(
-									vacancyTenantType
-								)}
-							/>
-						)}
+		const userVacancyCommitteeRole =
+			vacancyData?.user?.committee_role_of_current_vacancy;
+		const userConsolidatedRoles = [...userRoles, userVacancyCommitteeRole];
 
-						<Documents
-							documents={application.documents}
-							style={{ backgroundColor: 'white' }}
-						/>
+		return (
+			<>
+				<div className='ApplicationContainer'>
+					<h1>{vacancyTitle}</h1>
+					<div className='ApplicationHeaderBar'>
+						<h2>
+							Applicant:{' '}
+							{application.basicInfo.firstName +
+								' ' +
+								application.basicInfo.lastName}
+						</h2>
+						<Button
+							onClick={onViewApplicantsListClick}
+							ghost
+							type='primary'
+							style={{ marginBottom: '8px' }}
+						>
+							view applicants list
+						</Button>
 					</div>
-					<div
-						className='ApplicationContentColumn'
-						style={{ maxWidth: '480px' }}
-					>
-						{userRoles.includes(OWM_TEAM) || isChair() ? (
-							<>
-								<TriageWidget
-									title='Vacancy Manager Team Feedback'
-									style={{ backgroundColor: 'white' }}
-									triageOptions={owmTriageOptions}
-									onTriageSelect={onTriageSelect}
-									onTriageCommentsChange={onTriageCommentsChange}
-									onCancelClick={onTriageWidgetCancelClick}
-									onSaveClick={onTriageWidgetSaveClick}
-									triageChoice={triageChoice}
-									triageComments={triageComments}
-									triageCommentsPlaceholder={'Add notes (optional)'}
-									readOnly={!userRoles.includes(OWM_TEAM)}
-									initiallyHideContent={
-										vacancyState === OWM_TRIAGE ? false : true
-									}
-									maxCommentLength={10000}
-								/>
-								<TriageWidget
-									title='Committee Chair Feedback and Notes'
-									style={{ backgroundColor: 'white' }}
-									triageOptions={chairTriageOptions}
-									onTriageSelect={onChairTriageSelect}
-									onTriageCommentsChange={onChairCommentsChange}
-									onCancelClick={onTriageWidgetCancelClick}
-									onSaveClick={() => onTriageWidgetSaveClick('chairWidget')}
-									triageChoice={chairTriageChoice}
-									triageComments={chairTriageComments}
-									triageCommentsPlaceholder={
-										'Add notes ' +
-										(chairTriageChoice === 'no' ? '' : '(optional)')
-									}
-									initiallyHideContent={
-										vacancyState === CHAIR_TRIAGE ? false : true
-									}
-									maxCommentLength={10000}
-								/>
-							</>
-						) : null}
-
-						{(isUserAllowedToScore() && !isChair()) ||
-						(isChair() && isChairAllowedScore()) ? (
-							<ScoringWidget
-								title={
-									isChair()
-										? 'Committee Chair Rating and Feedback'
-										: 'Committee Member Rating and Feedback'
-								}
-								description={
-									recused == 0 ? (
-										<>
-											Please score the applicant on a scale of 0 - 3 below and
-											leave detailed notes in the comments box below.{' '}
-											{ratingPlanDownloadLink ? (
-												<>
-													<a href={ratingPlanDownloadLink}>See Rating Plan</a>
-													{'.'}
-												</>
-											) : null}
-											<br /> <br />
-											Need to recuse yourself for this applicant?{' '}
-											<a onClick={openRecuseModal}>Recuse self</a>.
-										</>
-									) : (
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'row',
-												alignItems: 'center',
-												justifyContent: 'center',
-											}}
-										>
-											<div style={{ display: 'flex', alignItems: 'center' }}>
-												<ExclamationCircleFilled
-													style={{
-														color: '#faad14',
-														height: '50px',
-														width: '50px',
-														fontSize: '30px',
-														paddingTop: '16px',
-														paddingBottom: '16px',
-													}}
-												/>
-											</div>
-											<div>
-												You are currently recused from scoring this applicant.{' '}
-												<br />
-												Need to unrecuse yourself for this applicant? <br />
-												<a onClick={unrecuseSelf}>Unrecuse self</a>.{' '}
-											</div>
-										</div>
-									)
-								}
-								style={{ backgroundColor: recused == 0 ? 'white' : '#E8E8E8' }}
-								scoreChangeHandler={individualScoreSlideChangeHandler}
-								onScoreCommentsChange={onScoreCommentsChange}
-								triageOptions={committeeMemberTriageOptions}
-								triageChoice={individualTriageChoice}
-								triageComments={individualScoresComments}
-								onTriageSelect={onIndividualTriageSelect}
-								categories={individualScoreCategories}
-								onCancelClick={onTriageWidgetCancelClick}
-								onSaveClick={onIndividualScoreSaveClick}
-								scores={individualScores}
-								disabled={recused == 1}
+					<div className='ApplicationContent'>
+						<div
+							className='ApplicationContentColumn'
+							style={{ flexBasis: '670px' }}
+						>
+							<ApplicantInfo
+								basicInfo={application.basicInfo}
+								style={{
+									backgroundColor: 'white',
+									minHeight: '334px',
+									marginBottom: '0px',
+								}}
 							/>
-						) : null}
-
-						{userRoles.includes(OWM_TEAM) ? (
-							<AdminScoringWidget
-								applicationId={sysId}
-								ratingPlanDownloadLink={ratingPlanDownloadLink}
-								style={{ backgroundColor: 'white' }}
-								triageOptions={committeeMemberTriageOptions}
-								categories={individualScoreCategories}
-								onCancelClick={onTriageWidgetCancelClick}
-								initiallyHideContent={
-									vacancyState !== INDIVIDUAL_SCORING_IN_PROGRESS
-								}
+							<Address
+								address={application.address}
+								style={{ backgroundColor: 'white', marginBottom: '0px' }}
 							/>
-						) : null}
 
-						{(isChair() || userRoles.includes(OWM_TEAM)) &&
-						displayCommitteeReview(vacancyState) ? (
-							<InfoCard
-								title='Committee Review'
+							{references.length === 0 ? null : (
+								<References
+									references={references}
+									style={{ backgroundColor: 'white' }}
+									switchInitialValue={displayReferences}
+									handleToggle={
+										userRoles.includes(OWM_TEAM)
+											? handleDisplayReferenceToggle
+											: null
+									}
+									allowUploadOrDelete={userRoles.includes(OWM_TEAM)}
+									afterUploadOrDelete={reloadReferences}
+									displayContactQuestion={displayReferenceContactQuestion(
+										vacancyTenantType
+									)}
+								/>
+							)}
+
+							<Documents
+								documents={application.documents}
 								style={{ backgroundColor: 'white' }}
-								allowToggle={true}
-								initiallyHideContent={false}
-							>
-								<InfoCardRow>
-									<LabelValuePair
-										label='Committee Vote'
-										value={committeeDecision}
-									/>
-								</InfoCardRow>
-								<InfoCardRow>
-									<LabelValuePair
-										label='Committee Comments'
-										value={committeeComments}
-									/>
-								</InfoCardRow>
-							</InfoCard>
-						) : null}
-
-						<div className='ApplicationContainerDownloadButtonGroup'>
-							<Tooltip
-								placement='top'
-								title={
-									appDocIds.length === 0
-										? 'There are no application documents.'
-										: ''
-								}
-							>
-								<Button disabled={appDocIds.length === 0}>
-									<a
-										href={
-											'/exportAttachmentsToZip.do?sysparm_sys_id=' +
-											appDocIds +
-											'&sysparm_ck=' +
-											window.servicenowUserToken
+							/>
+						</div>
+						<div
+							className='ApplicationContentColumn'
+							style={{ flexBasis: '475px' }}
+						>
+							{isAllowedToVacancyManagerTriage(
+								userConsolidatedRoles,
+								allowHrSpecialistTriage
+							) || isChair(userVacancyCommitteeRole) ? (
+								<>
+									<TriageWidget
+										title='Vacancy Manager Team Feedback'
+										style={{
+											backgroundColor: 'white',
+											marginBottom: '0px',
+										}}
+										triageOptions={owmTriageOptions}
+										onTriageSelect={onTriageSelect}
+										onTriageCommentsChange={onTriageCommentsChange}
+										onCancelClick={onTriageWidgetCancelClick}
+										onSaveClick={onTriageWidgetSaveClick}
+										triageChoice={triageChoice}
+										triageComments={triageComments}
+										triageCommentsPlaceholder={'Add notes (optional)'}
+										readOnly={
+											!isAllowedToVacancyManagerTriage(
+												userConsolidatedRoles,
+												allowHrSpecialistTriage
+											)
 										}
-									>
-										Download Application Documents {<DownloadOutlined />}
-									</a>
-								</Button>
-							</Tooltip>
-							<Button>
-								<a
-									href={
-										'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
-										application.appSysId
+										initiallyHideContent={
+											vacancyState === OWM_TRIAGE ? false : true
+										}
+										maxCommentLength={10000}
+									/>
+									<TriageWidget
+										title='Committee Chair Feedback and Notes'
+										style={{ backgroundColor: 'white', marginBottom: '0px' }}
+										triageOptions={chairTriageOptions}
+										onTriageSelect={onChairTriageSelect}
+										onTriageCommentsChange={onChairCommentsChange}
+										onCancelClick={onTriageWidgetCancelClick}
+										onSaveClick={() => onTriageWidgetSaveClick('chairWidget')}
+										triageChoice={chairTriageChoice}
+										triageComments={chairTriageComments}
+										triageCommentsPlaceholder={
+											'Add notes ' +
+											(chairTriageChoice === 'no' ? '' : '(optional)')
+										}
+										initiallyHideContent={
+											vacancyState === CHAIR_TRIAGE ? false : true
+										}
+										maxCommentLength={10000}
+										readOnly={
+											!(
+												userRoles.includes(OWM_TEAM) ||
+												isChair(userVacancyCommitteeRole)
+											)
+										}
+									/>
+								</>
+							) : null}
+
+							{(isUserAllowedToScore(userVacancyCommitteeRole) &&
+								!isChair(userVacancyCommitteeRole)) ||
+							(isChair(userVacancyCommitteeRole) && isChairAllowedScore()) ? (
+								<ScoringWidget
+									title={
+										isChair(userVacancyCommitteeRole)
+											? 'Committee Chair Rating and Feedback'
+											: 'Committee Member Rating and Feedback'
+									}
+									description={
+										recused == 0 ? (
+											<>
+												Please score the applicant on a scale of 0 - 3 below and
+												leave detailed notes in the comments box below.{' '}
+												{ratingPlanDownloadLink ? (
+													<>
+														<a href={ratingPlanDownloadLink}>See Rating Plan</a>
+														{'.'}
+													</>
+												) : null}
+												<br /> <br />
+												Need to recuse yourself for this applicant?{' '}
+												<a onClick={openRecuseModal}>Recuse self</a>.
+											</>
+										) : (
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'row',
+													alignItems: 'center',
+													justifyContent: 'center',
+												}}
+											>
+												<div style={{ display: 'flex', alignItems: 'center' }}>
+													<ExclamationCircleFilled
+														style={{
+															color: '#faad14',
+															height: '50px',
+															width: '50px',
+															fontSize: '30px',
+															paddingTop: '16px',
+															paddingBottom: '16px',
+														}}
+													/>
+												</div>
+												<div>
+													You are currently recused from scoring this applicant.{' '}
+													<br />
+													Need to unrecuse yourself for this applicant? <br />
+													<a onClick={unrecuseSelf}>Unrecuse self</a>.{' '}
+												</div>
+											</div>
+										)
+									}
+									style={{
+										backgroundColor: recused == 0 ? 'white' : '#E8E8E8',
+									}}
+									scoreChangeHandler={individualScoreSlideChangeHandler}
+									onScoreCommentsChange={onScoreCommentsChange}
+									triageOptions={committeeMemberTriageOptions}
+									triageChoice={individualTriageChoice}
+									triageComments={individualScoresComments}
+									onTriageSelect={onIndividualTriageSelect}
+									categories={individualScoreCategories}
+									onCancelClick={onTriageWidgetCancelClick}
+									onSaveClick={onIndividualScoreSaveClick}
+									scores={individualScores}
+									disabled={recused == 1}
+								/>
+							) : null}
+
+							{userRoles.includes(OWM_TEAM) ? (
+								<AdminScoringWidget
+									applicationId={sysId}
+									ratingPlanDownloadLink={ratingPlanDownloadLink}
+									style={{ backgroundColor: 'white' }}
+									triageOptions={committeeMemberTriageOptions}
+									categories={individualScoreCategories}
+									onCancelClick={onTriageWidgetCancelClick}
+									initiallyHideContent={
+										vacancyState !== INDIVIDUAL_SCORING_IN_PROGRESS
+									}
+								/>
+							) : null}
+
+							{(isChair(userVacancyCommitteeRole) ||
+								userRoles.includes(OWM_TEAM)) &&
+							displayCommitteeReview(vacancyState) ? (
+								<InfoCard
+									title='Committee Review'
+									style={{ backgroundColor: 'white' }}
+									allowToggle={true}
+									initiallyHideContent={false}
+								>
+									<InfoCardRow>
+										<LabelValuePair
+											label='Committee Vote'
+											value={committeeDecision}
+										/>
+									</InfoCardRow>
+									<InfoCardRow>
+										<LabelValuePair
+											label='Committee Comments'
+											value={committeeComments}
+										/>
+									</InfoCardRow>
+								</InfoCard>
+							) : null}
+
+							<div className='ApplicationContainerDownloadButtonGroup'>
+								<Tooltip
+									placement='top'
+									title={
+										appDocIds.length === 0
+											? 'There are no application documents.'
+											: ''
 									}
 								>
-									Download Applicant Info {<DownloadOutlined />}
-								</a>
-							</Button>
-							<Tooltip
-								title={
-									ratingPlanDownloadLink
-										? ''
-										: 'A rating plan for this vacancy has not been uploaded yet.'
-								}
-							>
-								<Button disabled={!ratingPlanDownloadLink}>
-									<a href={ratingPlanDownloadLink}>
-										Download Rating Plan {<DownloadOutlined />}
-									</a>
-								</Button>
-							</Tooltip>
-							{additionalDocumentLinks.map((document, index) => {
-								return (
-									<Button key={index}>
-										<a href={document.link}>
-											{'Download ' + document.filename} <DownloadOutlined />{' '}
+									<Button disabled={appDocIds.length === 0}>
+										<a
+											href={
+												'/exportAttachmentsToZip.do?sysparm_sys_id=' +
+												appDocIds +
+												'&sysparm_ck=' +
+												window.servicenowUserToken
+											}
+										>
+											Download Application Documents {<DownloadOutlined />}
 										</a>
 									</Button>
-								);
-							})}
+								</Tooltip>
+								<Button>
+									<a
+										href={
+											'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
+											application.appSysId
+										}
+									>
+										Download Applicant Info {<DownloadOutlined />}
+									</a>
+								</Button>
+								<Tooltip
+									title={
+										ratingPlanDownloadLink
+											? ''
+											: 'A rating plan for this vacancy has not been uploaded yet.'
+									}
+								>
+									<Button disabled={!ratingPlanDownloadLink}>
+										<a href={ratingPlanDownloadLink}>
+											Download Rating Plan {<DownloadOutlined />}
+										</a>
+									</Button>
+								</Tooltip>
+								{additionalDocumentLinks.map((document, index) => {
+									return (
+										<Button key={index}>
+											<a href={document.link}>
+												{'Download ' + document.filename} <DownloadOutlined />{' '}
+											</a>
+										</Button>
+									);
+								})}
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<Modal
-				visible={showRecuseModal}
-				onOk={recuseSelf}
-				onCancel={closeRecuseModal}
-				okText='Confirm'
-				cancelText='Cancel'
-				confirmLoading={confirmLoading}
-			>
-				<div>
-					<ExclamationCircleFilled
-						style={{ color: '#faad14', fontSize: '24px' }}
-					/>
-					<h2 style={{ display: 'inline-block', paddingLeft: '10px' }}>
-						Confirm recusing youself?
-					</h2>
-					<p>
-						You are about to recuse yourself from scoring this applicant. Click
-						confirm to proceed. Your scores will not count towards the scoring
-						of the applicant moving forward.
-					</p>
-				</div>
-			</Modal>
-		</>
-	) : null;
+				<Modal
+					visible={showRecuseModal}
+					onOk={recuseSelf}
+					onCancel={closeRecuseModal}
+					okText='Confirm'
+					cancelText='Cancel'
+					confirmLoading={confirmLoading}
+				>
+					<div>
+						<ExclamationCircleFilled
+							style={{ color: '#faad14', fontSize: '24px' }}
+						/>
+						<h2 style={{ display: 'inline-block', paddingLeft: '10px' }}>
+							Confirm recusing youself?
+						</h2>
+						<p>
+							You are about to recuse yourself from scoring this applicant.
+							Click confirm to proceed. Your scores will not count towards the
+							scoring of the applicant moving forward.
+						</p>
+					</div>
+				</Modal>
+			</>
+		);
+	}
 };
 
 export default application;

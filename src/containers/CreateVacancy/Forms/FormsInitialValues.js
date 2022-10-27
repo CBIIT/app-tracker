@@ -2,6 +2,7 @@ export const initialValues = {
 	basicInfo: {
 		numberOfRecommendations: 3,
 		description: '',
+		allowHrSpecialistTriage: false,
 		applicationDocuments: [
 			{
 				document: 'Curriculum Vitae (CV)',

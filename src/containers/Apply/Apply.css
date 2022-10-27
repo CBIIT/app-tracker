@@ -48,8 +48,8 @@
 
 @media (max-width: 535px) {
 	.steps-action {
-		display: inline-block;
-		margin-left: 25%;
+		display: flex;
+		flex-wrap: wrap-reverse;
 	}
 
 	.steps-action > * {
