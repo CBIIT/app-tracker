@@ -1,15 +1,25 @@
+.BasicInfoFlexWrap {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.BasicInfoHRCheckbox .ant-checkbox + span {
+	padding-left: 0px;
+}
+
 .DatePickerContainer {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: space-between;
+	gap: 10px;
 }
 
 .DatePicker {
-	flex-shrink: 0;
+	flex-shrink: 1;
 	flex-grow: 1;
-	width: 320px;
+	max-width: 320px;
 }
 
 .Slider {

@@ -1,4 +1,4 @@
-import { Form, Input, Slider, DatePicker } from 'antd';
+import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -75,13 +75,34 @@ const basicInformation = (props) => {
 			initialValues={initialValues}
 			className='BasicInfo'
 		>
-			<Form.Item
-				label='Vacancy Title'
-				name='title'
-				rules={[{ required: true, message: 'Please enter a title' }]}
-			>
-				<Input placeholder='Please enter' disabled={readOnly} />
-			</Form.Item>
+			<div className='BasicInfoFlexWrap'>
+				<div style={{ flex: '3 1 480px' }}>
+					<Form.Item
+						label='Vacancy Title'
+						name='title'
+						rules={[{ required: true, message: 'Please enter a title' }]}
+					>
+						<Input placeholder='Please enter' disabled={readOnly} />
+					</Form.Item>
+				</div>
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						flex: '1 0 240px',
+					}}
+				>
+					<Tooltip title='Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage'>
+						<Form.Item
+							name='allowHrSpecialistTriage'
+							valuePropName='checked'
+							style={{ margin: '0px', paddingLeft: '10px' }}
+						>
+							<Checkbox>Allow HR Specialist to Triage</Checkbox>
+						</Form.Item>
+					</Tooltip>
+				</div>
+			</div>
 
 			<Form.Item
 				label='Vacancy Description'
@@ -93,46 +114,52 @@ const basicInformation = (props) => {
 			</Form.Item>
 
 			<div className='DatePickerContainer'>
-				<Form.Item
-					label='Open Date'
-					name='openDate'
-					rules={[
-						{ required: true, message: 'Please select an open date' },
-						{ validator: validateDates },
-					]}
-				>
-					<DatePicker
-						className='DatePicker'
-						disabledDate={disabledDate}
-						format='MM/DD/YYYY'
-						disabled={readOnly}
-					/>
-				</Form.Item>
-
-				<Form.Item
-					label='Close Date'
-					name='closeDate'
-					rules={[
-						{
-							required: true,
-							message: 'Please select a close date',
-						},
-						{ validator: validateDates },
-					]}
-				>
-					<DatePicker
-						className='DatePicker'
-						disabledDate={disabledDate}
-						format='MM/DD/YYYY'
-						disabled={readOnly}
-					/>
-				</Form.Item>
+				<div className='DatePicker'>
+					<Form.Item
+						label='Open Date'
+						name='openDate'
+						rules={[
+							{ required: true, message: 'Please select an open date' },
+							{ validator: validateDates },
+						]}
+					>
+						<DatePicker
+							disabledDate={disabledDate}
+							format='MM/DD/YYYY'
+							disabled={readOnly}
+							style={{ width: '100%' }}
+						/>
+					</Form.Item>
+				</div>
+				<div className='DatePicker'>
+					<Form.Item
+						label='Close Date'
+						name='closeDate'
+						rules={[
+							{
+								required: true,
+								message: 'Please select a close date',
+							},
+							{ validator: validateDates },
+						]}
+					>
+						<DatePicker
+							className='DatePickerInput'
+							disabledDate={disabledDate}
+							format='MM/DD/YYYY'
+							disabled={readOnly}
+							style={{ width: '100%' }}
+						/>
+					</Form.Item>
+				</div>
 			</div>
 
 			<div className='DatePickerContainer'>
-				<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
-					<DatePicker className='DatePicker' format='MM/DD/YYYY' />
-				</Form.Item>
+				<div className='DatePicker'>
+					<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
+						<DatePicker format='MM/DD/YYYY' style={{ width: '100%' }} />
+					</Form.Item>
+				</div>
 			</div>
 
 			<Form.Item label='Application Documents' name='applicationDocuments'>

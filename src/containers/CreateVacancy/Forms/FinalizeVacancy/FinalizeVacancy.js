@@ -24,8 +24,16 @@ const finalizeVacancy = (props) => {
 				showButton={props.showButton}
 			/>
 			<div className='SectionContent' style={props.sectionContentStyle}>
-				<h2>Vacancy Title</h2>
-				<p>{basicInfo.title}</p>
+				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
+					<div>
+						<h2>Vacancy Title</h2>
+						<p>{basicInfo.title}</p>
+					</div>
+					<div>
+						<h2>Allow HR Specialist to Triage</h2>
+						<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
+					</div>
+				</div>
 				<h2>Vacancy Description</h2>
 				<ReactQuill
 					className='RichTextDisplay'
