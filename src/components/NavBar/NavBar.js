@@ -55,6 +55,11 @@ const navBar = () => {
 							<Menu.Item key='vacancy-dashboard'>
 								<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
 							</Menu.Item>
+							<Menu.Item key='reports'>
+								<a href='/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D0b282cf21b225110e541631ee54bcbd1'>
+									Reports
+								</a>
+							</Menu.Item>
 						</Menu>
 					</div>
 				</div>
