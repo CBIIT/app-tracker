@@ -22,11 +22,15 @@ import {
 	FileTextOutlined,
 	ExclamationCircleFilled,
 } from '@ant-design/icons';
+import axios from 'axios';
+
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import {
 	EXTEND_VACANCY,
 	REMOVE_VACANCY,
 	REMOVE_DRAFT_VACANCY,
+	VACANCY_COUNTS,
+	DASHBOARD_VACANCIES,
 } from '../../constants/ApiEndpoints';
 import {
 	EDIT_DRAFT,
@@ -35,29 +39,19 @@ import {
 	CREATE_VACANCY,
 	VACANCY_DASHBOARD,
 } from '../../constants/Routes';
+import CountTile from './CountTile/CountTile';
 import './VacancyDashboard.css';
-import axios from 'axios';
 
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
 	const history = useHistory();
-	const [url, setURL] = useState(
-		'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight'
-	);
-	const [preFlightCount, setPreFlightCount] = useState([]);
-	const [liveCount, setLiveCount] = useState([]);
-	const [closedCount, setClosedCount] = useState([]);
 	const [currentVacancy, setCurrentVacancy] = useState([]);
 	const [extendModalVisible, setExtendModalVisible] = useState(false);
 	const [removeModalVisible, setRemoveModalVisible] = useState(false);
+	const [modalLoading, setModalLoading] = useState(false);
 	const [activeTab, setActiveTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
-	const urls = {
-		preflight:
-			'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/preflight',
-		live: '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/live',
-		closed: '/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/closed',
-	};
+	const [filter, setFilter] = useState('all');
 
 	const tabs = {
 		PREFLIGHT: 'preflight',
@@ -77,111 +71,95 @@ const vacancyDashboard = () => {
 	);
 
 	const tabChangeHandler = async (selectedTab) => {
-		setIsLoading(true);
 		history.push(VACANCY_DASHBOARD + '/' + selectedTab);
-		const url = urls[selectedTab];
-		try {
-			setActiveTab(selectedTab);
-			const newData = await axios.get(url);
-			setData(newData.data.result);
-			setURL(url);
-		} catch (err) {
-			message.error('Sorry!  An error occurred while loading.');
-		}
-		setIsLoading(false);
 	};
+
+	const cancelToken = axios.CancelToken.source();
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			let dataUrl = urls.preflight;
-			if (tab) dataUrl = urls[tab];
+			let dataUrl = DASHBOARD_VACANCIES + tabs.PREFLIGHT;
+			if (tab) dataUrl = DASHBOARD_VACANCIES + tab;
+
+			setActiveTab(tab || tabs.PREFLIGHT);
+			setFilter('all');
 
 			try {
-				const [
-					currentData,
-					currentPreCount,
-					currentLiveCount,
-					currentClosedCount,
-				] = await Promise.all([
-					axios.get(dataUrl),
-					axios.get(urls.preflight),
-					axios.get(urls.live),
-					axios.get(urls.closed),
-				]);
+				const currentData = await axios.get(dataUrl, {
+					cancelToken: cancelToken.token,
+				});
 
-				setURL(dataUrl);
 				setData(currentData.data.result);
-				setActiveTab(tab || tabs.PREFLIGHT);
-				setPreFlightCount(currentPreCount.data.result.length);
-				setLiveCount(currentLiveCount.data.result.length);
-				setClosedCount(currentClosedCount.data.result.length);
 			} catch (err) {
-				message.error('Sorry!  An error occurred while loading.');
+				if (!axios.isCancel)
+					message.error('Sorry!  An error occurred while loading.');
 			}
 			setIsLoading(false);
 		})();
+
+		return () => {
+			cancelToken.cancel();
+		};
 	}, [tab]);
 
 	const filterChangeHandler = async (e) => {
-		setIsLoading(true);
-		const newFilter = e.target.value;
-		const filteredData = await axios.get(url);
-		if (e.target.value == 'all') {
-			setData(filteredData.data.result);
-		} else if (url == urls.closed) {
-			setData(
-				filteredData.data.result.filter((res) => {
-					let newState = '';
-					switch (res.state) {
-						case 'closed':
-							newState = 'closed';
-							break;
-						case 'owm_triage':
-							newState = 'triaged';
-							break;
-						case 'chair_triage':
-							newState = 'triaged';
-							break;
-						case 'individual_scoring_in_progress':
-							newState = 'individual_scored';
-							break;
-						case 'individual_scoring_complete':
-							newState = 'individual_scored';
-							break;
-						case 'committee_review_in_progress':
-							newState = 'committee_review';
-							break;
-						case 'committee_review_complete':
-							newState = 'committee_review';
-							break;
-						case 'voting_complete':
-							newState = 'voting_complete';
-							break;
-					}
-					return newState == newFilter;
-				})
-			);
-		} else if (e.target.value == 'extended') {
-			setData(filteredData.data.result.filter((res) => res.extended == 1));
+		setFilter(e.target.value);
+	};
+
+	const getFilteredData = (filter) => {
+		if (filter === 'all') {
+			return data;
+		} else if (tab === tabs.CLOSED) {
+			return data.filter((res) => {
+				let newState = '';
+				switch (res.state) {
+					case 'closed':
+						newState = 'closed';
+						break;
+					case 'owm_triage':
+						newState = 'triaged';
+						break;
+					case 'chair_triage':
+						newState = 'triaged';
+						break;
+					case 'individual_scoring_in_progress':
+						newState = 'individual_scored';
+						break;
+					case 'individual_scoring_complete':
+						newState = 'individual_scored';
+						break;
+					case 'committee_review_in_progress':
+						newState = 'committee_review';
+						break;
+					case 'committee_review_complete':
+						newState = 'committee_review';
+						break;
+					case 'voting_complete':
+						newState = 'voting_complete';
+						break;
+				}
+				return newState == filter;
+			});
+		} else if (filter === 'extended') {
+			return data.filter((res) => res.extended == 1);
 		} else {
-			setData(filteredData.data.result.filter((res) => res.state == newFilter));
+			return data.filter((res) => res.state == filter);
 		}
-		setIsLoading(false);
 	};
 
 	const extendVacancy = async () => {
+		setModalLoading(true);
 		try {
 			await axios.post(EXTEND_VACANCY + currentVacancy.sys_id);
-			const updatedExtendedData = await axios.get(url);
-			//Refresh data onClick of extend button
+			const updatedExtendedData = await axios.get(DASHBOARD_VACANCIES + tab);
 			setData(updatedExtendedData.data.result);
-			setExtendModalVisible(false);
 			message.success('Vacancy extended');
 		} catch (error) {
-			setExtendModalVisible(false);
 			message.error('Sorry, an error occurred while trying to extend vacancy');
 		}
+		setExtendModalVisible(false);
+		setModalLoading(false);
 	};
 
 	const handleExtendModalCancel = () => {
@@ -189,24 +167,23 @@ const vacancyDashboard = () => {
 	};
 
 	const removeVacancy = async () => {
+		setModalLoading(true);
 		try {
 			if (currentVacancy.state == 'draft') {
 				await axios.post(REMOVE_DRAFT_VACANCY + currentVacancy.sys_id);
 			} else if (currentVacancy.state == 'final') {
 				await axios.post(REMOVE_VACANCY + currentVacancy.sys_id);
 			}
-			const updatedRemovedData = await axios.get(url);
-			//Refresh data onClick of remove button
+			const updatedRemovedData = await axios.get(
+				DASHBOARD_VACANCIES + (tab || tabs.PREFLIGHT)
+			);
 			setData(updatedRemovedData.data.result);
-			const updatedPreFlightCount = await axios.get(urls.preflight);
-			//Refresh Pre-Flight Count onClick of remove button
-			setPreFlightCount(updatedPreFlightCount.data.result.length);
-			setRemoveModalVisible(false);
 			message.success('Removed vacancy');
 		} catch (error) {
-			setRemoveModalVisible(false);
 			message.error('Sorry, an error occurred while trying to remove vacancy');
 		}
+		setRemoveModalVisible(false);
+		setModalLoading(false);
 	};
 
 	const handleRemoveModalCancel = () => {
@@ -471,6 +448,8 @@ const vacancyDashboard = () => {
 		},
 	];
 
+	const filteredData = getFilteredData(filter);
+
 	return (
 		<>
 			<div style={{ backgroundColor: '#EDF1F4' }}>
@@ -501,10 +480,11 @@ const vacancyDashboard = () => {
 					>
 						<Tabs.TabPane
 							tab={
-								<span className='tab-letters'>
-									<p className='num-count'>{preFlightCount}</p>
-									<p className='vacancy-desc'>pre-flight vacancies</p>
-								</span>
+								<CountTile
+									title='pre-flight vacancies'
+									apiUrl={VACANCY_COUNTS + tabs.PREFLIGHT}
+									data={data}
+								/>
 							}
 							key={tabs.PREFLIGHT}
 						>
@@ -514,6 +494,7 @@ const vacancyDashboard = () => {
 									defaultValue='all'
 									style={{ display: 'inline-block', paddingLeft: '10px' }}
 									onChange={filterChangeHandler}
+									value={filter}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
 									<Radio.Button value='draft'>Draft</Radio.Button>
@@ -524,7 +505,7 @@ const vacancyDashboard = () => {
 								<ConfigProvider renderEmpty={customizeRenderEmpty}>
 									<Table
 										rowKey='sys_id'
-										dataSource={data}
+										dataSource={filteredData}
 										columns={preFlightColumns}
 										scroll={{ x: 'true' }}
 										style={{
@@ -540,10 +521,10 @@ const vacancyDashboard = () => {
 						</Tabs.TabPane>
 						<Tabs.TabPane
 							tab={
-								<span className='tab-letters'>
-									<p className='num-count'>{liveCount}</p>
-									<p className='vacancy-desc'>live vacancies</p>
-								</span>
+								<CountTile
+									title='live vacancies'
+									apiUrl={VACANCY_COUNTS + 'live'}
+								/>
 							}
 							key={tabs.LIVE}
 						>
@@ -553,6 +534,7 @@ const vacancyDashboard = () => {
 									defaultValue='all'
 									style={{ display: 'inline-block', paddingLeft: '10px' }}
 									onChange={filterChangeHandler}
+									value={filter}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
 									<Radio.Button value='live'>Live</Radio.Button>
@@ -563,7 +545,7 @@ const vacancyDashboard = () => {
 								<ConfigProvider renderEmpty={customizeRenderEmpty}>
 									<Table
 										rowKey='sys_id'
-										dataSource={data}
+										dataSource={filteredData}
 										columns={liveColumns}
 										scroll={{ x: 'true' }}
 										style={{
@@ -579,10 +561,10 @@ const vacancyDashboard = () => {
 						</Tabs.TabPane>
 						<Tabs.TabPane
 							tab={
-								<span className='tab-letters'>
-									<p className='num-count'>{closedCount}</p>
-									<p className='vacancy-desc'>closed vacancies</p>
-								</span>
+								<CountTile
+									title='closed vacancies'
+									apiUrl={VACANCY_COUNTS + 'closed'}
+								/>
 							}
 							key={tabs.CLOSED}
 						>
@@ -592,6 +574,7 @@ const vacancyDashboard = () => {
 									defaultValue='all'
 									style={{ display: 'inline-block', paddingLeft: '10px' }}
 									onChange={filterChangeHandler}
+									value={filter}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
 									<Radio.Button value='triaged'>Triage</Radio.Button>
@@ -610,7 +593,7 @@ const vacancyDashboard = () => {
 								<ConfigProvider renderEmpty={customizeRenderEmpty}>
 									<Table
 										rowKey='sys_id'
-										dataSource={data}
+										dataSource={filteredData}
 										columns={closedColumns}
 										scroll={{ x: 'true' }}
 										style={{
@@ -634,6 +617,7 @@ const vacancyDashboard = () => {
 				closable={false}
 				okText='Confirm'
 				cancelText='Cancel'
+				confirmLoading={modalLoading}
 			>
 				<div>
 					<ExclamationCircleFilled
@@ -664,6 +648,7 @@ const vacancyDashboard = () => {
 				closable={false}
 				okText='Confirm'
 				cancelText='Cancel'
+				confirmLoading={modalLoading}
 			>
 				<div>
 					<ExclamationCircleFilled

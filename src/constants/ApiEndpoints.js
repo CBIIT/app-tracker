@@ -70,6 +70,9 @@ const APPLICANT_GET_APPLICATION =
 
 const SCORES = '/api/x_g_nci_app_tracke/application/scores/';
 const RECUSE = '/api/x_g_nci_app_tracke/scoring/recuse';
+const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/counts/';
+const DASHBOARD_VACANCIES =
+	'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/';
 
 export {
 	VACANCY_DETAILS_FOR_APPLICANTS,
@@ -106,4 +109,6 @@ export {
 	APPLICANT_GET_APPLICATION,
 	SCORES,
 	RECUSE,
+	VACANCY_COUNTS,
+	DASHBOARD_VACANCIES,
 };
