@@ -4,13 +4,12 @@ import { Form, Input, Button, Row, Col, Result } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
-import Loading from '../../components/Loading/Loading';
 import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 
 import './RegisterOkta.css';
 const registerOkta = () => {
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [message, setMessage] = useState();
 	const [error, setError] = useState(false);
 	const [isEmailNih, setIsEmailNih] = useState(false);
@@ -125,7 +124,7 @@ const registerOkta = () => {
 			throw new Error('Please enter a valid phone number.');
 	};
 
-	return !isLoading ? (
+	return (
 		<div className='OktaOuterContainer'>
 			<div className='OktaRegistration'>
 				{message ? (
@@ -295,8 +294,6 @@ const registerOkta = () => {
 				)}
 			</div>
 		</div>
-	) : (
-		<Loading />
 	);
 };
 
