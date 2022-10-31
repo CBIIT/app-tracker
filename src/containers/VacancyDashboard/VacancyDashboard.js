@@ -80,9 +80,11 @@ const vacancyDashboard = () => {
 		(async () => {
 			setIsLoading(true);
 			let dataUrl = DASHBOARD_VACANCIES + tabs.PREFLIGHT;
-			if (tab) dataUrl = DASHBOARD_VACANCIES + tab;
+			if (tab) {
+				dataUrl = DASHBOARD_VACANCIES + tab;
+				setActiveTab(tab);
+			}
 
-			setActiveTab(tab || tabs.PREFLIGHT);
 			setFilter('all');
 
 			try {
@@ -523,7 +525,7 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='live vacancies'
-									apiUrl={VACANCY_COUNTS + 'live'}
+									apiUrl={VACANCY_COUNTS + tabs.LIVE}
 								/>
 							}
 							key={tabs.LIVE}
@@ -563,7 +565,7 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='closed vacancies'
-									apiUrl={VACANCY_COUNTS + 'closed'}
+									apiUrl={VACANCY_COUNTS + tabs.CLOSED}
 								/>
 							}
 							key={tabs.CLOSED}

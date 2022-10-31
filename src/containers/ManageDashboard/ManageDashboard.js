@@ -20,7 +20,6 @@ import {
 } from '../../constants/Routes';
 import {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
-	CHECK_AUTH,
 	GET_VACANCY_MANAGER_VIEW,
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
@@ -41,6 +40,8 @@ import {
 	FINAL,
 } from '../../constants/VacancyStates';
 import Loading from '../../components/Loading/Loading';
+import useAuth from '../../hooks/useAuth';
+
 import './ManageDashboard.css';
 
 const getNextStepButtonLabel = (currentStep) => {
@@ -137,16 +138,17 @@ const manageDashboard = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [vacancy, setVacancy] = useState([]);
 	const [vacancyTitle, setVacancyTitle] = useState([]);
-	const [isChair, setIsChair] = useState([]);
-	const [isManager, setIsManager] = useState([]);
 	const [nextStep, setNextStep] = useState();
 	const [isNextButtonLoading, setIsNextButtonLoading] = useState(false);
 	const [state, setState] = useState([]);
 	const [nextButtonLabel, setNextButtonLabel] = useState();
-	const [userRoles, setUserRoles] = useState([]);
 	const [userCommitteeRole, setUserCommitteeRole] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
+
 	const history = useHistory();
+	const {
+		auth: { user },
+	} = useAuth();
 
 	useEffect(() => {
 		loadLatestVacancyInfo();
@@ -168,14 +170,7 @@ const manageDashboard = () => {
 	};
 
 	const loadLatestVacancyInfo = async () => {
-		const [vacancyResponse, checkAuthResponse] = await Promise.all([
-			axios.get(GET_VACANCY_MANAGER_VIEW + sysId),
-			axios.get(CHECK_AUTH),
-		]);
-
-		setIsChair(checkAuthResponse.data.result.is_chair);
-		setIsManager(checkAuthResponse.data.result.is_manager);
-
+		const vacancyResponse = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);
@@ -190,7 +185,6 @@ const manageDashboard = () => {
 			getNextStepButtonLabel(vacancyResponse.data.result.basic_info.state.value)
 		);
 		setCurrentTab(tab);
-		setUserRoles(checkAuthResponse.data.result.user.roles);
 
 		setIsLoading(false);
 	};
@@ -224,7 +218,7 @@ const manageDashboard = () => {
 		)
 			return false;
 		if (
-			userRoles.includes(OWM_TEAM) ||
+			user.roles.includes(OWM_TEAM) ||
 			(userCommitteeRole === COMMITTEE_CHAIR && vacancyState === CHAIR_TRIAGE)
 		)
 			return true;
@@ -243,9 +237,9 @@ const manageDashboard = () => {
 					<Button
 						type='link'
 						onClick={() => {
-							if (isManager == true) {
+							if (user.isManager == true) {
 								history.push(VACANCY_DASHBOARD);
-							} else if (isChair == true) {
+							} else if (user.isChair == true) {
 								history.push(CHAIR_DASHBOARD);
 							} else {
 								history.push(COMMITTEE_DASHBOARD);
@@ -286,7 +280,7 @@ const manageDashboard = () => {
 				>
 					<Tabs.TabPane tab='Vacancy Details' key='details'>
 						<>
-							{userRoles.includes(OWM_TEAM) ? (
+							{user.roles.includes(OWM_TEAM) ? (
 								<div className='ManageDashboardEditButton'>
 									<Button
 										type='primary'
@@ -303,7 +297,7 @@ const manageDashboard = () => {
 								hideEmails={isUserChair() || isUserAllowedToScore()}
 							/>
 
-							{userRoles.includes(OWM_TEAM) ? (
+							{user.roles.includes(OWM_TEAM) ? (
 								<div
 									className='RatingPlanDiv'
 									style={{
@@ -337,7 +331,7 @@ const manageDashboard = () => {
 					<Tabs.TabPane tab='Applicants' key='applicants'>
 						<ApplicantList
 							vacancyState={vacancy.state}
-							userRoles={userRoles}
+							userRoles={user.roles}
 							userCommitteeRole={userCommitteeRole}
 							reloadVacancy={loadLatestVacancyInfo}
 						/>

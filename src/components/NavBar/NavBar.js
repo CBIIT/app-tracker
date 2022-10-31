@@ -1,32 +1,19 @@
 import { Menu } from 'antd';
-import { CHECK_AUTH } from '../../constants/ApiEndpoints';
+import { Link } from 'react-router-dom';
 import {
 	COMMITTEE_DASHBOARD,
 	VACANCY_DASHBOARD,
 	CHAIR_DASHBOARD,
 	APPLICANT_DASHBOARD,
 } from '../../constants/Routes';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 import './NavBar.css';
-
 const navBar = () => {
-	const [authResponse, setAuthResponse] = useState([]);
+	const { auth } = useAuth();
+	const { isUserLoggedIn, user } = auth;
 
-	useEffect(() => {
-		(async () => {
-			try {
-				const currentAuthResponse = await axios.get(CHECK_AUTH);
-				setAuthResponse(currentAuthResponse.data.result);
-			} catch (err) {
-				console.warn(err);
-			}
-		})();
-	}, []);
-
-	if (authResponse.logged_in == true) {
-		if (authResponse.is_manager == true && authResponse.is_exec_sec == true) {
+	if (isUserLoggedIn == true) {
+		if (user.isManager == true && user.isExecSec == true) {
 			return (
 				<div className='OuterDiv'>
 					<div className='NavBar'>
@@ -44,7 +31,7 @@ const navBar = () => {
 					</div>
 				</div>
 			);
-		} else if (authResponse.is_manager == true) {
+		} else if (user.isManager == true) {
 			return (
 				<div className='OuterDiv'>
 					<div className='NavBar'>
@@ -64,7 +51,7 @@ const navBar = () => {
 					</div>
 				</div>
 			);
-		} else if (authResponse.is_chair == true) {
+		} else if (user.isChair == true) {
 			return (
 				<div className='OuterDiv'>
 					<div className='NavBar'>
@@ -80,8 +67,7 @@ const navBar = () => {
 				</div>
 			);
 		} else if (
-			authResponse.user.roles.includes('x_g_nci_app_tracke.committee_member') ==
-			true
+			user.roles.includes('x_g_nci_app_tracke.committee_member') == true
 		) {
 			return (
 				<div className='OuterDiv'>
@@ -97,7 +83,7 @@ const navBar = () => {
 					</div>
 				</div>
 			);
-		} else if (authResponse.user.has_applications === true) {
+		} else if (user.hasApplications === true) {
 			return (
 				<div className='OuterDiv'>
 					<div className='NavBar'>

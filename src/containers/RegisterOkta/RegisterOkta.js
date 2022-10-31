@@ -1,35 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Row, Col, Result } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import Loading from '../../components/Loading/Loading';
-import { CHECK_AUTH, CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
+import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
+import useAuth from '../../hooks/useAuth';
+
 import './RegisterOkta.css';
 const registerOkta = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [message, setMessage] = useState();
 	const [error, setError] = useState(false);
-	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
-	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
 	const [isEmailNih, setIsEmailNih] = useState(false);
+
+	const {
+		auth: { iTrustGlideSsoId, oktaGlideSsoId },
+	} = useAuth();
 
 	const [formInstance] = Form.useForm();
 
 	const history = useHistory();
 
 	const emailNotMatchError = 'Emails do not match.';
-
-	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			const response = await axios.get(CHECK_AUTH);
-			setItrustGlideSsoId(response.data.result.itrust_idp);
-			setOktaGlideSsoId(response.data.result.okta_idp);
-			setIsLoading(false);
-		})();
-	}, []);
 
 	const checkIfNihEmail = (email) => {
 		email.target.value.endsWith('@nih.gov') ||
