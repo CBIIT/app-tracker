@@ -1,35 +1,21 @@
-import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Menu, Dropdown } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
-import axios from 'axios';
 
 import oktaIcon from '../../../assets/images/okta-login-icon.png';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
-import { CHECK_AUTH } from '../../../constants/ApiEndpoints';
+import useAuth from '../../../hooks/useAuth';
 
-import './Login.css';
 import { REGISTER_OKTA, VACANCY_DASHBOARD } from '../../../constants/Routes';
 
+import './Login.css';
+
 const login = () => {
-	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
-	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [userFirstName, setUserFirstName] = useState();
-	const [userLastInitial, setUserLastInitial] = useState();
+	const {
+		auth: { iTrustGlideSsoId, oktaGlideSsoId, isUserLoggedIn, user },
+	} = useAuth();
 
 	const history = useHistory();
-
-	useEffect(() => {
-		(async () => {
-			const response = await axios.get(CHECK_AUTH);
-			setItrustGlideSsoId(response.data.result.itrust_idp);
-			setOktaGlideSsoId(response.data.result.okta_idp);
-			setUserFirstName(response.data.result.user.first_name);
-			setUserLastInitial(response.data.result.user.last_initial);
-			setIsLoggedIn(response.data.result.logged_in);
-		})();
-	}, []);
 
 	const handleMenuClick = (e) => {
 		switch (e.key) {
@@ -90,11 +76,13 @@ const login = () => {
 		</Menu>
 	);
 
-	return isLoggedIn ? (
+	return isUserLoggedIn ? (
 		<Dropdown className='Login' overlay={logoutMenu}>
 			<Button type='link'>
 				<UserOutlined />
-				{userFirstName + ' ' + userLastInitial + '.'}
+				{user.firstName +
+					' ' +
+					(user.lastInitial ? user.lastInitial + '.' : '')}
 				<DownOutlined />
 			</Button>
 		</Dropdown>

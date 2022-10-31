@@ -3,46 +3,34 @@ import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import {
-	CHECK_AUTH,
-	CHECK_USER_ALREADY_APPLIED,
-} from '../../../constants/ApiEndpoints';
+import { CHECK_USER_ALREADY_APPLIED } from '../../../constants/ApiEndpoints';
 import {
 	APPLICANT_DASHBOARD,
 	APPLY,
 	REGISTER_OKTA,
 } from '../../../constants/Routes';
-
 import { LIVE } from '../../../constants/VacancyStates';
-
 import { transformDateToDisplay } from '../../../components/Util/Date/Date';
+import useAuth from '../../../hooks/useAuth';
 
 import './Header.css';
 
 const header = (props) => {
 	const history = useHistory();
 
-	const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 	const [userAlreadyApplied, setUserAlreadyApplied] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const {
+		auth: { isUserLoggedIn },
+	} = useAuth();
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			await checkUserAuthentication();
 			await checkUserAlreadyApplied();
 			setIsLoading(false);
 		})();
 	}, []);
-
-	const checkUserAuthentication = async () => {
-		try {
-			const response = await axios.get(CHECK_AUTH);
-			setIsUserAuthenticated(response.data.result.logged_in);
-		} catch (error) {
-			message.error('Sorry!  An error occurred while loading.');
-		}
-	};
 
 	const checkUserAlreadyApplied = async () => {
 		try {
@@ -85,7 +73,7 @@ const header = (props) => {
 			</div>
 			{!isLoading ? (
 				<div className='ButtonContainer'>
-					{isVacancyClosed() ? null : isUserAuthenticated ? (
+					{isVacancyClosed() ? null : isUserLoggedIn ? (
 						<Button
 							onClick={() => onButtonClick(APPLY + props.sysId)}
 							type='primary'

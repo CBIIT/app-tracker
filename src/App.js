@@ -37,33 +37,44 @@ import Application from './containers/Application/Application';
 import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import Loading from './components/Loading/Loading';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
+import useAuth from './hooks/useAuth';
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
-	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
-	const [user, setUser] = useState({});
+	const { auth, setAuth } = useAuth();
 
 	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			const response = await axios.get(CHECK_AUTH);
-			setItrustGlideSsoId(response.data.result.itrust_idp);
-			setOktaGlideSsoId(response.data.result.okta_idp);
-			setUser(response.data.result);
-			setIsUserLoggedIn(response.data.result.logged_in);
-			setIsLoading(false);
-		})();
+		if (!auth.isUserLoggedIn) checkAuth();
 	}, []);
 
+	const checkAuth = async () => {
+		setIsLoading(true);
+		const response = await axios.get(CHECK_AUTH);
+		const data = response.data.result;
+		setAuth({
+			isUserLoggedIn: data.logged_in,
+			iTrustGlideSsoId: data.itrust_idp,
+			oktaGlideSsoId: data.okta_idp,
+			user: {
+				firstName: data.user.first_name,
+				lastInitial: data.user.lastInitial,
+				isChair: data.is_chair,
+				isManager: data.is_manager,
+				isExecSec: data.is_exec_sec,
+				hasApplications: data.has_applications,
+				roles: data.user.roles,
+			},
+		});
+		setIsLoading(false);
+	};
+
 	let routes = [];
+	const { isUserLoggedIn, iTrustGlideSsoId, oktaGlideSsoId, user } = auth;
 
 	if (isUserLoggedIn) {
-		if (user.is_chair) {
+		if (user.isChair) {
 			routes.push(
 				<ProtectedRoute
 					key='chair-dashboard'
@@ -76,7 +87,7 @@ const app = () => {
 			);
 		}
 
-		if (user.is_manager) {
+		if (user.isManager) {
 			routes.push(
 				<ProtectedRoute
 					key='vacancy-dashboard'
@@ -116,7 +127,7 @@ const app = () => {
 			);
 		}
 
-		if (user.user.roles.includes(COMMITTEE_MEMBER_ROLE))
+		if (user.roles.includes(COMMITTEE_MEMBER_ROLE))
 			routes.push(
 				<ProtectedRoute
 					key='committee-dashboard'
@@ -128,20 +139,10 @@ const app = () => {
 				/>
 			);
 
-		if (user.user.roles.includes(COMMITTEE_MEMBER_ROLE))
-			<ProtectedRoute
-				key='committee-dashboard'
-				path={COMMITTEE_DASHBOARD}
-				component={CommitteeDashboard}
-				isUserLoggedIn={isUserLoggedIn}
-				iTrustGlideSsoId={iTrustGlideSsoId}
-				oktaGlideSsoId={oktaGlideSsoId}
-			/>;
-
 		if (
-			user.is_chair ||
-			user.is_manager ||
-			user.user.roles.includes(COMMITTEE_MEMBER_ROLE)
+			user.isChair ||
+			user.isManager ||
+			user.roles.includes(COMMITTEE_MEMBER_ROLE)
 		) {
 			routes.push(
 				<ProtectedRoute
@@ -301,9 +302,11 @@ const app = () => {
 		</Route>
 	);
 
-	return (
-		<Layout>{!isLoading ? <Switch>{routes}</Switch> : <Loading />}</Layout>
-	);
+	return !isLoading ? (
+		<Layout>
+			<Switch>{routes}</Switch>
+		</Layout>
+	) : null;
 };
 
 export default hot(module)(app);
