@@ -59,7 +59,7 @@ const app = () => {
 			oktaGlideSsoId: data.okta_idp,
 			user: {
 				firstName: data.user.first_name,
-				lastInitial: data.user.lastInitial,
+				lastInitial: data.user.last_initial,
 				isChair: data.is_chair,
 				isManager: data.is_manager,
 				isExecSec: data.is_exec_sec,
