@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Modal, message } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
 import './SubmitModal.css';
 import { SUBMIT_APPLICATION } from '../../../constants/ApiEndpoints';
+import { VIEW_APPLICATION } from '../../../constants/Routes';
 
-const submitModal = (props) => {
+const submitModal = ({ data, draftId, visible, onCancel }) => {
 	const [confirmLoading, setConfirmLoading] = useState(false);
-
+	const [appSysId, setAppSysId] = useState();
 	const [submitted, setSubmitted] = useState(false);
 
 	const history = useHistory();
@@ -18,14 +19,15 @@ const submitModal = (props) => {
 		setConfirmLoading(true);
 
 		try {
-			const dataToSend = transformJsonToBackend(props.data);
+			const dataToSend = transformJsonToBackend(data);
 
-			if (props.draftId) dataToSend['draft_id'] = props.draftId;
+			if (draftId) dataToSend['draft_id'] = draftId;
 
 			const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 
 			const requests = [];
 			const documents = response.data.result.vacancy_documents;
+			setAppSysId(response.data.result.application_sys_id);
 
 			const filesHashMap = new Map();
 			dataToSend.vacancy_documents.forEach((document) =>
@@ -69,10 +71,10 @@ const submitModal = (props) => {
 
 	return !submitted ? (
 		<Modal
-			visible={props.visible}
+			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
-			onCancel={props.onCancel}
+			onCancel={onCancel}
 			closable={false}
 			okText='ok'
 			cancelText='cancel'
@@ -87,12 +89,12 @@ const submitModal = (props) => {
 		</Modal>
 	) : (
 		<Modal
-			visible={props.visible}
+			visible={visible}
 			onOk={handleClose}
 			okButtonProps={{ ghost: true }}
 			confirmLoading={confirmLoading}
 			cancelButtonProps={{ style: { display: 'none' } }}
-			onCancel={props.onCancel}
+			onCancel={onCancel}
 			closable={false}
 			className='ModalConfirmed'
 			okText='done'
@@ -100,6 +102,9 @@ const submitModal = (props) => {
 			<div className='Confirmed'>
 				<CheckCircleFilled className='ConfirmedIcon' />
 				<h2>Application Submitted</h2>
+				<p>
+					View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
+				</p>
 			</div>
 		</Modal>
 	);
