@@ -85,18 +85,18 @@ const home = () => {
 				<p>
 					Application period for all vacancies ends at 11:59PM ET on final day.
 				</p>
-				{!isLoading ? (
-					<Table
-						columns={columns}
-						dataSource={data}
-						scroll={{ x: 'true' }}
-						pagination={{ hideOnSinglePage: true }}
-						locale={{
-							emptyText:
-								'There are currently no open vacancies.  Please check back later.',
-						}}
-					/>
-				) : null}
+
+				<Table
+					columns={columns}
+					dataSource={data}
+					scroll={{ x: 'true' }}
+					pagination={{ hideOnSinglePage: true }}
+					locale={{
+						emptyText:
+							'There are currently no open vacancies.  Please check back later.',
+					}}
+					loading={isLoading}
+				/>
 			</div>
 		</>
 	);

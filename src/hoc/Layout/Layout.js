@@ -1,49 +1,22 @@
-import { useLocation } from 'react-router-dom';
-
 import './Layout.css';
-import { routeTitles } from './RouteTitles';
-import {
-	EDIT_VACANCY,
-	EDIT_DRAFT,
-	VACANCY_DASHBOARD,
-} from '../../constants/Routes';
+
+import ContentTitle from './ContentTitle/ContentTitle';
 import Header from '../../components/Header/Header';
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
 
-const layout = (props) => {
-	const location = useLocation();
-
-	const getRouteTitle = () => {
-		const title = routeTitles[location.pathname];
-		return title ? title : getRouteTitleWithParams();
-	};
-
-	const getRouteTitleWithParams = () => {
-		if (location.pathname.includes(EDIT_DRAFT)) return 'Edit Draft Vacancy';
-		else if (location.pathname.includes(EDIT_VACANCY)) return 'Edit Vacancy';
-		else if (location.pathname.includes(VACANCY_DASHBOARD))
-			return 'Vacancy Dashboard';
-	};
-
-	return (
-		<>
-			<Header />
-			<NavBar />
-			<div className='OuterContainer'>
-				<div className='ContentContainer'>
-					<div
-						className='HeaderTitle'
-						style={getRouteTitle() ? null : { display: 'none' }}
-					>
-						<h1>{getRouteTitle()}</h1>
-					</div>
-					<div className='RouteContent'>{props.children}</div>
-				</div>
+const layout = ({ children }) => (
+	<>
+		<Header />
+		<NavBar />
+		<div className='OuterContainer'>
+			<div className='ContentContainer'>
+				<ContentTitle />
+				<div className='RouteContent'>{children}</div>
 			</div>
-			<Footer />
-		</>
-	);
-};
+		</div>
+		<Footer />
+	</>
+);
 
 export default layout;
