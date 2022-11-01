@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * This script runs automatically right after the npm `build` script.
  */
@@ -22,11 +23,11 @@ const renameExtensions = (dir) => {
 			if (error) throw error;
 			fileCount--;
 			if (fileCount === 0) {
-        renameJobs--;
-        if (renameJobs === 0) {
-          outputResults();
-        }
-      }
+				renameJobs--;
+				if (renameJobs === 0) {
+					outputResults();
+				}
+			}
 		});
 	});
 };
