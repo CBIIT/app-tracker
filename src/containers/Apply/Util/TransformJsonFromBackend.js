@@ -6,8 +6,14 @@ export const transformJsonFromBackend = (sourceJson) => {
 			middleName: sourceJson.basic_info.middle_name,
 			lastName: sourceJson.basic_info.last_name,
 			email: sourceJson.basic_info.email,
-			phone: sourceJson.basic_info.phone,
-			businessPhone: sourceJson.basic_info.business_phone,
+			phonePrefix: sourceJson.basic_info.phone.slice(0, 2),
+			phone: sourceJson.basic_info.phone.slice(2),
+			businessPhonePrefix: sourceJson.basic_info.business_phone
+				? sourceJson.basic_info.business_phone.slice(0, 2)
+				: '+1',
+			businessPhone: sourceJson.basic_info.business_phone
+				? sourceJson.basic_info.business_phone.slice(2)
+				: null,
 			highestLevelEducation: sourceJson.basic_info.highest_level_of_education,
 			isUsCitizen: sourceJson.basic_info.us_citizen,
 		},
@@ -16,30 +22,39 @@ export const transformJsonFromBackend = (sourceJson) => {
 			address2: sourceJson.basic_info.address_2,
 			city: sourceJson.basic_info.city,
 			stateProvince: sourceJson.basic_info.state_province,
-			postalCode: sourceJson.basic_info.zip_code,
+			zip: sourceJson.basic_info.zip_code,
 			country: sourceJson.basic_info.country,
 		},
 		references: sourceJson.references.map((reference) => {
 			return {
-				refSysId: reference.ref_sys_id,
+				ref_sys_id: reference.ref_sys_id,
 				firstName: reference.first_name,
 				middleName: reference.middle_name,
 				lastName: reference.last_name,
 				email: reference.email,
-				contactAllowed: reference.contact_allowed,
+				contact: reference.contact_allowed,
 				organization: reference.organization,
-				phone: reference.phone,
+				phoneNumber: reference.phone,
 				relationship: reference.relationship,
-				positionTitle: reference.title,
+				title: reference.title,
 			};
 		}),
 		applicantDocuments: sourceJson.app_documents.map((document) => {
-			return {
+			const applicantDocument = {
 				documentName: document.doc_name,
-				fileName: document.file_name,
-				downloadLink: document.attachment_dl,
-				attachSysId: document.attach_sys_id,
+				table_name: document.table_name,
+				table_sys_id: document.table_sys_id,
 			};
+
+			if (document.attach_sys_id)
+				applicantDocument['uploadedDocument'] = {
+					fileName: document.file_name,
+					downloadLink: document.attachment_dl,
+					attachSysId: document.attach_sys_id,
+					markedToDelete: false,
+				};
+
+			return applicantDocument;
 		}),
 	};
 };

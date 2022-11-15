@@ -1,7 +1,7 @@
 import FormContext from '../../Context';
 import { useState, useEffect, useContext } from 'react';
 import { Form, Upload, Button, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import './ApplicantDocuments.css';
 
 const ApplicantDocuments = () => {
@@ -51,9 +51,32 @@ const ApplicantDocuments = () => {
 		setApplicantDocuments(formInstance.getFieldValue('applicantDocuments'));
 	};
 
-	const validateFile = async (fileList, isOptional) => {
-		if (fileList.length === 0 && +isOptional !== 1)
+	const validateFile = async (fileList, isOptional, uploadedDocument) => {
+		if (
+			fileList.length === 0 &&
+			+isOptional !== 1 &&
+			(!uploadedDocument || uploadedDocument.markedToDelete === true)
+		)
 			throw new Error('Please upload a document.');
+	};
+
+	const markToDeleteOriginalDocument = (index) => {
+		setApplicantDocuments((current) => {
+			const newApplicantDocuments = [...current];
+			newApplicantDocuments[index] = {
+				...newApplicantDocuments[index],
+				uploadedDocument: {
+					...newApplicantDocuments[index].uploadedDocument,
+					markedToDelete: true,
+				},
+			};
+
+			formInstance.setFieldsValue({
+				applicantDocuments: newApplicantDocuments,
+			});
+
+			return newApplicantDocuments;
+		});
 	};
 
 	return !isLoading && applicantDocuments && applicantDocuments.length !== 0 ? (
@@ -85,29 +108,51 @@ const ApplicantDocuments = () => {
 														validator: () =>
 															validateFile(
 																applicantDocuments[index].file.fileList,
-																applicantDocuments[index].is_optional.value
+																applicantDocuments[index].is_optional.value,
+																applicantDocuments[index].uploadedDocument
 															),
 													},
 												]}
 											>
-												<Upload
-													fileList={applicantDocuments[index].file.fileList}
-													{...uploadProps}
-													onRemove={(file) => onRemove(file, index)}
-												>
-													<Button
-														disabled={
-															applicantDocuments[index].file.fileList.length >=
-															1
-														}
+												{applicantDocuments[index]?.uploadedDocument
+													?.markedToDelete === false ? (
+													<>
+														<a
+															href={
+																applicantDocuments[index].uploadedDocument
+																	.downloadLink
+															}
+															style={{ marginRight: '16px' }}
+														>
+															{
+																applicantDocuments[index].uploadedDocument
+																	.fileName
+															}
+														</a>
+														<Button
+															onClick={() =>
+																markToDeleteOriginalDocument(index)
+															}
+															icon={<DeleteOutlined />}
+														></Button>
+													</>
+												) : (
+													<Upload
+														fileList={applicantDocuments[index].file.fileList}
+														{...uploadProps}
+														onRemove={(file) => onRemove(file, index)}
 													>
-														<UploadOutlined /> Upload
-													</Button>
-												</Upload>
+														<Button
+															disabled={
+																applicantDocuments[index].file.fileList
+																	.length >= 1
+															}
+														>
+															<UploadOutlined /> Upload
+														</Button>
+													</Upload>
+												)}
 											</Form.Item>
-											<div className='doc-types'>
-												allowed: .doc, .docx, .pdf
-											</div>
 										</div>
 									</div>
 								))}

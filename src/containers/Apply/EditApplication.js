@@ -7,7 +7,7 @@ import {
 	APPLICANT_GET_APPLICATION,
 } from '../../constants/ApiEndpoints';
 import { useFetch } from '../../hooks/useFetch';
-import { transformJsonFromBackend } from '../ApplicantApplicationView/Util/transformJsonFromBackend';
+import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 
 const editApplication = () => {
 	const { draft, appSysId } = useParams();
@@ -25,7 +25,10 @@ const editApplication = () => {
 
 	return !isLoading ? (
 		!error ? (
-			<Apply initialValues={application} />
+			<Apply
+				initialValues={application}
+				editSubmitted={!draft ? true : false}
+			/>
 		) : (
 			<Error error={error} />
 		)

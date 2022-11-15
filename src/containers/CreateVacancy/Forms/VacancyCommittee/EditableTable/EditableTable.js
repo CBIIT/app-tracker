@@ -146,7 +146,7 @@ const editableTable = (props) => {
 			title: 'Committee Member',
 			dataIndex: 'user',
 			editable: true,
-			width: '50%',
+			width: '35%',
 			render: (_, record) => {
 				const editable = isEditing(record);
 				// return editable ? <></> : <div>{record.user.name.display_value}</div>;
@@ -157,7 +157,7 @@ const editableTable = (props) => {
 			title: 'Role',
 			dataIndex: 'role',
 			editable: true,
-			width: '25%',
+			width: '40%',
 		},
 		{
 			title: 'Action',
@@ -230,6 +230,7 @@ const editableTable = (props) => {
 	return (
 		<Form form={form} component={false} name={props.name}>
 			<Table
+				tableLayout='fixed'
 				locale={{
 					emptyText:
 						"Currently no committee members.  Click 'add member' to begin adding committee members.",

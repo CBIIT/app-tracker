@@ -63,7 +63,7 @@ const app = () => {
 				isChair: data.is_chair,
 				isManager: data.is_manager,
 				isExecSec: data.is_exec_sec,
-				hasApplications: data.has_applications,
+				hasApplications: data.user.has_applications,
 				roles: data.user.roles,
 			},
 		});
@@ -220,7 +220,7 @@ const app = () => {
 	routes.push(
 		<ProtectedRoute
 			key='apply'
-			path={APPLY + ':sysId'}
+			path={APPLY + ':vacancySysId'}
 			component={Apply}
 			useOktaAuth={true}
 		/>,

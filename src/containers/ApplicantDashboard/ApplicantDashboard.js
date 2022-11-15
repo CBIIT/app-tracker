@@ -152,8 +152,9 @@ const applicantDashboard = () => {
 			key: 'action',
 			render: (application) => {
 				if (application.state == 'submitted') {
-					return (
-						<Space size='middle'>
+					let buttons = [];
+					if (application.vacancy_state === 'live')
+						buttons.push(
 							<Button
 								type='text'
 								onClick={() => {
@@ -161,20 +162,22 @@ const applicantDashboard = () => {
 								}}
 							>
 								<EditOutlined /> edit
-							</Button>
+							</Button>,
 							<Divider type='vertical' />
-							<Button
-								type='text'
-								onClick={async () => {
-									setWithdrawAppModalVisible(true);
-									setCurrentApplication(application);
-								}}
-							>
-								<MinusCircleOutlined />
-								withdraw
-							</Button>
-						</Space>
+						);
+					buttons.push(
+						<Button
+							type='text'
+							onClick={async () => {
+								setWithdrawAppModalVisible(true);
+								setCurrentApplication(application);
+							}}
+						>
+							<MinusCircleOutlined />
+							withdraw
+						</Button>
 					);
+					return <Space size='middle'>{buttons}</Space>;
 				} else if (application.state == 'withdrawn') {
 					return (
 						<Button

@@ -7,7 +7,10 @@ import axios from 'axios';
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
 import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
-import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
+import {
+	VACANCY_DETAILS_FOR_APPLICANTS,
+	SAVE_APP_DRAFT,
+} from '../../constants/ApiEndpoints';
 
 import FormContext, { defaultFormData } from './Context';
 import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
@@ -49,28 +52,27 @@ const updateFormData = (currentForm, newValues, step) => {
 	}
 };
 
-const Apply = (props) => {
+const Apply = ({ initialValues, editSubmitted }) => {
 	const [formData, setFormData] = useState(
-		props.initialValues ? props.initialValues : defaultFormData
+		initialValues ? initialValues : defaultFormData
 	);
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [vacancyTitle, setVacancyTitle] = useState();
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [draftId, setDraftId] = useState(props.draftId);
-	const [vacancyId, setVacancyId] = useState();
+	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 
 	const history = useHistory();
-	const { sysId, appSysId } = useParams();
+	const { vacancySysId, appSysId } = useParams();
 
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			if (props.initialValues) {
+			if (initialValues) {
 				await loadExistingApplication();
 			} else {
 				await instantiateNewApplication();
@@ -81,28 +83,45 @@ const Apply = (props) => {
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + props.initialValues.sysId
+			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
 		);
-		setVacancyId(props.initialValues.sysId);
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		setDraftId(appSysId);
+		if (!editSubmitted) setDraftId(appSysId);
+
+		let applicantDocuments = {};
+
+		response.data.result.vacancy_documents.forEach((document) => {
+			applicantDocuments[document.title.value] = document.file
+				? document
+				: { ...document, file: { fileList: [] } };
+		});
+
+		if (
+			initialValues.applicantDocuments &&
+			initialValues.applicantDocuments.length > 0
+		) {
+			initialValues.applicantDocuments.forEach((applicantDocument) => {
+				applicantDocuments[applicantDocument.documentName] = {
+					...applicantDocuments[applicantDocument.documentName],
+					...applicantDocument,
+				};
+			});
+		}
 
 		const formData = {
-			...props.initialValues,
-			applicantDocuments: response.data.result.vacancy_documents.map(
-				(document) =>
-					document.file ? document : { ...document, file: { fileList: [] } }
-			),
+			...initialValues,
+			applicantDocuments: Object.values(applicantDocuments),
 		};
 
 		setFormData(formData);
 	};
 
 	const instantiateNewApplication = async () => {
-		const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
+		const response = await axios.get(
+			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
+		);
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyId(sysId);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 
 		const references = [];
@@ -118,7 +137,7 @@ const Apply = (props) => {
 
 		const newFormData = {
 			...formData,
-			sysId: sysId,
+			sysId: vacancySysId,
 			applicantDocuments: response.data.result.vacancy_documents.map(
 				(document) =>
 					document.file ? document : { ...document, file: { fileList: [] } }
@@ -270,10 +289,7 @@ const Apply = (props) => {
 				};
 
 				if (draftId) data['sys_id'] = draftId;
-				const saveDraftResponse = await axios.post(
-					'/api/x_g_nci_app_tracke/application/save_app_draft',
-					data
-				);
+				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
 				message.info({
 					successKey,
@@ -306,6 +322,7 @@ const Apply = (props) => {
 
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
+	const vacancyId = initialValues?.sysId || vacancySysId;
 
 	return (
 		<>
@@ -358,15 +375,17 @@ const Apply = (props) => {
 										{currentStep === 0 ? 'cancel' : 'back'}
 									</Button>
 								</div>
-								<div>
-									<Button
-										className='wider-button'
-										style={{ border: 'none', color: '#015EA2' }}
-										onClick={save}
-									>
-										<SaveOutlined /> save application
-									</Button>
-								</div>
+								{!editSubmitted ? (
+									<div>
+										<Button
+											className='wider-button'
+											style={{ border: 'none', color: '#015EA2' }}
+											onClick={save}
+										>
+											<SaveOutlined /> save application
+										</Button>
+									</div>
+								) : null}
 								<div>
 									<Button
 										type='primary'
@@ -388,6 +407,8 @@ const Apply = (props) => {
 				onCancel={handleSubmitModalCancel}
 				data={formData}
 				draftId={draftId}
+				editSubmitted={editSubmitted}
+				submittedAppSysId={appSysId}
 			/>
 		</>
 	);

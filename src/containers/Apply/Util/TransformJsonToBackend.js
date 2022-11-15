@@ -33,6 +33,7 @@ export const transformJsonToBackend = (sourceJson) => {
 
 const transformReferences = (references) => {
 	return references.map((reference) => ({
+		ref_sys_id: reference.ref_sys_id ? reference.ref_sys_id : null,
 		first_name: reference.firstName,
 		middle_name: reference.middleName,
 		last_name: reference.lastName,

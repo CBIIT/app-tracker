@@ -5,10 +5,22 @@ import { useHistory, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
 import './SubmitModal.css';
-import { SUBMIT_APPLICATION } from '../../../constants/ApiEndpoints';
+import {
+	SUBMIT_APPLICATION,
+	APPLICATION_SUBMISSION,
+	SERVICE_NOW_FILE_ATTACHMENT,
+	SERVICE_NOW_ATTACHMENT,
+} from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 
-const submitModal = ({ data, draftId, visible, onCancel }) => {
+const submitModal = ({
+	data,
+	draftId,
+	visible,
+	onCancel,
+	editSubmitted,
+	submittedAppSysId,
+}) => {
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
 	const [submitted, setSubmitted] = useState(false);
@@ -21,47 +33,88 @@ const submitModal = ({ data, draftId, visible, onCancel }) => {
 		try {
 			const dataToSend = transformJsonToBackend(data);
 
-			if (draftId) dataToSend['draft_id'] = draftId;
+			if (editSubmitted) {
+				dataToSend['app_sys_id'] = submittedAppSysId;
 
-			const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
+				await axios.put(APPLICATION_SUBMISSION, dataToSend);
 
-			const requests = [];
-			const documents = response.data.result.vacancy_documents;
-			setAppSysId(response.data.result.application_sys_id);
+				const documentsToDelete = dataToSend.vacancy_documents.map(
+					(document) => {
+						if (document?.uploadedDocument?.markedToDelete) {
+							return axios.delete(
+								SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
+							);
+						}
+					}
+				);
 
-			const filesHashMap = new Map();
-			dataToSend.vacancy_documents.forEach((document) =>
-				document.file.fileList.forEach((file) =>
-					filesHashMap.set(file.uid, file.originFileObj)
-				)
-			);
+				const documentsToUpload = dataToSend.vacancy_documents.map(
+					(document) => {
+						if (document.file.file) {
+							const file = document.file.file;
+							const options = {
+								params: {
+									file_name: document.file.file.name,
+									table_name: document.table_name,
+									table_sys_id: document.table_sys_id,
+								},
+								headers: {
+									'Content-Type': document.file.file.type,
+								},
+							};
 
-			documents.forEach((document) => {
-				if (document.uid) {
-					const file = filesHashMap.get(document.uid);
+							return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+						}
+					}
+				);
 
-					const options = {
-						params: {
-							file_name: document.file_name,
-							table_name: document.table_name,
-							table_sys_id: document.table_sys_id,
-						},
-						headers: {
-							'Content-Type': file.type,
-						},
-					};
-					requests.push(axios.post('/api/now/attachment/file', file, options));
-				}
-			});
+				await Promise.all([...documentsToDelete, ...documentsToUpload]);
+				setAppSysId(submittedAppSysId);
+			} else {
+				if (draftId) dataToSend['draft_id'] = draftId;
 
-			await Promise.all(requests);
-			setConfirmLoading(false);
+				const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
+
+				const requests = [];
+				const documents = response.data.result.vacancy_documents;
+				setAppSysId(response.data.result.application_sys_id);
+
+				const filesHashMap = new Map();
+				dataToSend.vacancy_documents.forEach((document) =>
+					document.file.fileList.forEach((file) =>
+						filesHashMap.set(file.uid, file.originFileObj)
+					)
+				);
+
+				documents.forEach((document) => {
+					if (document.uid) {
+						const file = filesHashMap.get(document.uid);
+
+						const options = {
+							params: {
+								file_name: document.file_name,
+								table_name: document.table_name,
+								table_sys_id: document.table_sys_id,
+							},
+							headers: {
+								'Content-Type': file.type,
+							},
+						};
+						requests.push(
+							axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+						);
+					}
+				});
+
+				await Promise.all(requests);
+			}
 			setSubmitted(true);
 		} catch (error) {
-			setConfirmLoading(false);
 			message.error(
 				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
 			);
+		} finally {
+			setConfirmLoading(false);
 		}
 	};
 

@@ -10,7 +10,7 @@ import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import Loading from '../../components/Loading/Loading';
 import Address from '../Application/Address/Address';
 import { APPLICANT_GET_APPLICATION } from '../../constants/ApiEndpoints';
-import { transformJsonFromBackend } from './Util/transformJsonFromBackend';
+import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 
 import './ApplicantApplicationView.css';
 
@@ -171,7 +171,7 @@ const applicantApplicationView = (props) => {
 					<div style={{ maxWidth: '500px' }}>
 						{
 							<ul className='ApplicantDocumentList'>
-								{application.documents.map((document, index) => (
+								{application.applicantDocuments.map((document, index) => (
 									<li key={index}>
 										<div className='LineItemItem'>{document.documentName}</div>
 										<div className='LineItemItem'>
