@@ -157,13 +157,29 @@ const review = (props) => {
 					<div className='SectionContent'>
 						{formData.applicantDocuments.map((document, index) => (
 							<div key={index}>
-								{document.file.fileList.length > 0 ? '✓ ' : '× '}
-								{document.title.value}
-								{document.file.fileList.map((file, index) => (
-									<div className='FileListRow' key={index}>
-										<FileTextOutlined /> {file.name}
-									</div>
-								))}
+								{document.uploadedDocument &&
+								document.uploadedDocument.markedToDelete === false ? (
+									<>
+										{'✓ '}
+										{document.title.value}
+										{
+											<div className='FileListRow' key={index}>
+												<FileTextOutlined />{' '}
+												{document.uploadedDocument.fileName}
+											</div>
+										}
+									</>
+								) : (
+									<>
+										{document.file.fileList.length > 0 ? '✓ ' : '× '}
+										{document.title.value}
+										{document.file.fileList.map((file, index) => (
+											<div className='FileListRow' key={index}>
+												<FileTextOutlined /> {file.name}
+											</div>
+										))}
+									</>
+								)}
 							</div>
 						))}
 					</div>

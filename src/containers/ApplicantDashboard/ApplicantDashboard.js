@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {
 	GET_USER_APPLICATIONS,
@@ -23,14 +23,15 @@ import {
 	ExclamationCircleFilled,
 	FileTextOutlined,
 } from '@ant-design/icons';
-import { transformDateToDisplay } from '../../components/Util/Date/Date';
-import './ApplicantDashboard.css';
 import axios from 'axios';
 
+import Error from '../../components/UI/Error/Error';
+import { transformDateToDisplay } from '../../components/Util/Date/Date';
+import { useFetch } from '../../hooks/useFetch';
+import './ApplicantDashboard.css';
+
 const applicantDashboard = () => {
-	const [data, setData] = useState([]);
 	const history = useHistory();
-	const [isLoading, setIsLoading] = useState(true);
 	const [removeDraftModalVisible, setRemoveDraftModalVisible] = useState(false);
 	const [withdrawAppModalVisible, setWithdrawAppModalVisible] = useState(false);
 	const [currentApplication, setCurrentApplication] = useState([]);
@@ -57,14 +58,17 @@ const applicantDashboard = () => {
 			await axios.post(
 				REMOVE_USER_APPLICATION_DRAFT + currentApplication.draft_id
 			);
-			const updatedRemovedData = await axios.get(GET_USER_APPLICATIONS);
-			// //Refresh data onClick of remove button
-			setData(updatedRemovedData.data.result);
-			setRemoveDraftModalVisible(false);
+
+			setData((currentData) =>
+				currentData.filter(
+					(data) => data.draft_id !== currentApplication.draft_id
+				)
+			);
 			message.success('Draft removed');
 		} catch (error) {
-			setRemoveDraftModalVisible(false);
 			message.error('Sorry, an error occurred while trying to remove draft');
+		} finally {
+			setRemoveDraftModalVisible(false);
 		}
 	};
 
@@ -83,19 +87,7 @@ const applicantDashboard = () => {
 		}
 	};
 
-	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			try {
-				const currentData = await axios.get(GET_USER_APPLICATIONS);
-				setData(currentData.data.result);
-			} catch (err) {
-				console.warn(err);
-			}
-
-			setIsLoading(false);
-		})();
-	}, []);
+	const { isLoading, data, error, setData } = useFetch(GET_USER_APPLICATIONS);
 
 	const applicationColumns = [
 		{
@@ -108,15 +100,18 @@ const applicantDashboard = () => {
 			},
 			defaultSortOrder: 'ascend',
 			render: (title, record) => {
-				if (record.state === 'submitted') {
-					return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
-				} else if (record.state === 'draft') {
-					return (
-						<Link to={EDIT_APPLICATION + 'draft/' + record.draft_id}>
-							{title}
-						</Link>
-					);
-				} else return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
+				switch (record.state) {
+					case 'submitted':
+						return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
+					case 'draft':
+						return (
+							<Link to={EDIT_APPLICATION + 'draft/' + record.draft_id}>
+								{title}
+							</Link>
+						);
+					default:
+						return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
+				}
 			},
 		},
 		{
@@ -157,7 +152,20 @@ const applicantDashboard = () => {
 			key: 'action',
 			render: (application) => {
 				if (application.state == 'submitted') {
-					return (
+					let buttons = [];
+					if (application.vacancy_state === 'live')
+						buttons.push(
+							<Button
+								type='text'
+								onClick={() => {
+									history.push(EDIT_APPLICATION + application.app_id);
+								}}
+							>
+								<EditOutlined /> edit
+							</Button>,
+							<Divider type='vertical' />
+						);
+					buttons.push(
 						<Button
 							type='text'
 							onClick={async () => {
@@ -169,6 +177,7 @@ const applicantDashboard = () => {
 							withdraw
 						</Button>
 					);
+					return <Space size='middle'>{buttons}</Space>;
 				} else if (application.state == 'withdrawn') {
 					return (
 						<Button
@@ -213,6 +222,8 @@ const applicantDashboard = () => {
 
 	return isLoading ? (
 		<> </>
+	) : error ? (
+		<Error error={error} />
 	) : (
 		<>
 			<div className='HeaderTitle'>

@@ -1,26 +1,40 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import Error from '../../components/UI/Error/Error';
+
 import Apply from './Apply';
-import { GET_APPLICATION_DRAFT } from '../../constants/ApiEndpoints';
+import {
+	GET_APPLICATION_DRAFT,
+	APPLICANT_GET_APPLICATION,
+} from '../../constants/ApiEndpoints';
+import { useFetch } from '../../hooks/useFetch';
+import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 
 const editApplication = () => {
 	const { draft, appSysId } = useParams();
-	const [application, setApplication] = useState();
-	const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {
-		if (draft) getDraftApplication();
-	}, []);
+	const {
+		isLoading,
+		error,
+		data: application,
+	} = useFetch(
+		(draft ? GET_APPLICATION_DRAFT : APPLICANT_GET_APPLICATION) + appSysId,
+		draft
+			? (response) => JSON.parse(response.jsonobj.value)
+			: (response) => transformJsonFromBackend(response)
+	);
 
-	const getDraftApplication = async () => {
-		setIsLoading(true);
-		const response = await axios.get(GET_APPLICATION_DRAFT + appSysId);
-		setApplication(JSON.parse(response.data.result.jsonobj.value));
-		setIsLoading(false);
-	};
-
-	return !isLoading ? <Apply initialValues={application} /> : <></>;
+	return !isLoading ? (
+		!error ? (
+			<Apply
+				initialValues={application}
+				editSubmitted={!draft ? true : false}
+			/>
+		) : (
+			<Error error={error} />
+		)
+	) : (
+		<></>
+	);
 };
 
 export default editApplication;
