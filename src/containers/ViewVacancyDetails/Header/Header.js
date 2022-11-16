@@ -34,10 +34,12 @@ const header = (props) => {
 
 	const checkUserAlreadyApplied = async () => {
 		try {
-			const response = await axios.get(
-				CHECK_USER_ALREADY_APPLIED + props.sysId
-			);
-			setUserAlreadyApplied(response.data.result.exists);
+			if (isUserLoggedIn) {
+				const response = await axios.get(
+					CHECK_USER_ALREADY_APPLIED + props.sysId
+				);
+				setUserAlreadyApplied(response.data.result.exists);
+			}
 		} catch (error) {
 			message.error('Sorry!  An error occurred while loading.');
 		}

@@ -137,7 +137,11 @@ const submitModal = ({
 					style={{ color: '#faad14', fontSize: '24px' }}
 				/>
 				<h2>Ready to submit application?</h2>
-				<p>Once the application is submitted it cannot be edited.</p>
+				<p>Please ensure that the correct documents have been submitted.</p>
+				<p>
+					Once the application is submitted, and the close date has been
+					reached, it cannot be edited.
+				</p>
 			</div>
 		</Modal>
 	) : (
