@@ -87,3 +87,10 @@ export const SAVE_APP_DRAFT =
 
 export const APPLICATION_SUBMISSION =
 	'/api/x_g_nci_app_tracke/application/submission';
+
+export const INTERVIEW = '/api/x_g_nci_app_tracke/application/interview';
+
+export const REFERRED_TO_SELECTING_OFFICIAL =
+	'/api/x_g_nci_app_tracke/application/selecting-official';
+
+export const SELECTED = '/api/x_g_nci_app_tracke/application/selected';

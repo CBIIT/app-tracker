@@ -235,6 +235,7 @@ const applicantList = (props) => {
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
 									displayAllComments={vacancyState === VOTING_COMPLETE}
+									vacancyState={vacancyState}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -246,6 +247,7 @@ const applicantList = (props) => {
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
 									displayAllComments={vacancyState === VOTING_COMPLETE}
+									vacancyState={vacancyState}
 								/>
 							</Panel>
 						</Collapse>

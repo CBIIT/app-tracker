@@ -6,20 +6,33 @@ import axios from 'axios';
 
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import {
-	SUBMIT_COMMITTEE_DECISION,
+	INTERVIEW,
+	SELECTED,
+	REFERRED_TO_SELECTING_OFFICIAL,
 	SUBMIT_COMMITTEE_COMMENTS,
 } from '../../../../constants/ApiEndpoints';
+import {
+	COMMITTEE_REVIEW_IN_PROGRESS,
+	VOTING_COMPLETE,
+} from '../../../../constants/VacancyStates';
 import { MANAGE_APPLICATION } from '../../../../constants/Routes';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-const committeeVoteChangeHandler = async (vote, sysId, postChangeHandler) => {
+const columnApiMap = {
+	referredToInterview: INTERVIEW,
+	referredToSelectingOfficial: REFERRED_TO_SELECTING_OFFICIAL,
+	selected: SELECTED,
+};
+
+const columnChangeHandler = async (column, value, sysId, postChangeHandler) => {
 	try {
-		await axios.post(SUBMIT_COMMITTEE_DECISION, {
-			app_sys_id: sysId,
-			committee_decision: vote ? vote : '',
-		});
+		const key = column;
+		const data = { appSysId: sysId };
+		data[key] = value ? value : '';
+
+		await axios.put(columnApiMap[column], data);
 		postChangeHandler();
 		message.success('Decision saved.');
 	} catch (error) {
@@ -85,7 +98,7 @@ const individualScoringTable = (props) => {
 		setIsOtherCommentsModalVisible(true);
 	};
 
-	const getColumns = (isCommitteeVoting) => {
+	const getColumns = () => {
 		const columns = [
 			{
 				title: 'Applicant',
@@ -126,39 +139,89 @@ const individualScoringTable = (props) => {
 			},
 		];
 
-		if (isCommitteeVoting) {
+		if (
+			props.vacancyState === VOTING_COMPLETE ||
+			props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS
+		) {
 			columns.push({
-				title: 'Status',
-				dataIndex: 'committee_decision',
+				title: 'Referred to Interview',
+				dataIndex: 'referred_to_interview',
 				render: (value, record) => (
 					<>
 						<Select
-							style={{ width: 238 }}
+							style={{ width: 100 }}
 							placeholder='--'
 							value={value}
 							allowClear
 							onChange={(value) =>
-								committeeVoteChangeHandler(
+								columnChangeHandler(
+									'referredToInterview',
 									value,
 									record.sys_id,
 									props.postChangeHandler
 								)
 							}
 						>
-							<Option value='not_interviewed'>Not Interviewed</Option>
-							<Option value='interviewed_referred'>
-								Interviewed and Referred
-							</Option>
-							<Option value='interviewed_not_referred'>
-								Interviewed and Not Referred
-							</Option>
-							<Option value='declined_interview'>Declined Interview</Option>
-							<Option value='declined_position'>Declined Position</Option>
-							<Option value='selected'>Selected</Option>
+							<Option value='yes'>Yes</Option>
+							<Option value='no'>No</Option>
 						</Select>
 					</>
 				),
 			});
+
+			if (props.vacancyState === VOTING_COMPLETE) {
+				columns.push({
+					title: 'Referred to Selecting Official',
+					dataIndex: 'referred_to_selecting_official',
+					render: (value, record) => (
+						<>
+							<Select
+								style={{ width: 100 }}
+								placeholder='--'
+								value={value}
+								allowClear
+								onChange={(value) =>
+									columnChangeHandler(
+										'referredToSelectingOfficial',
+										value,
+										record.sys_id,
+										props.postChangeHandler
+									)
+								}
+							>
+								<Option value='yes'>Yes</Option>
+								<Option value='no'>No</Option>
+							</Select>
+						</>
+					),
+				});
+
+				columns.push({
+					title: 'Selected',
+					dataIndex: 'selected',
+					render: (value, record) => (
+						<>
+							<Select
+								style={{ width: 100 }}
+								placeholder='--'
+								value={value}
+								allowClear
+								onChange={(value) =>
+									columnChangeHandler(
+										'selected',
+										value,
+										record.sys_id,
+										props.postChangeHandler
+									)
+								}
+							>
+								<Option value='yes'>Yes</Option>
+								<Option value='no'>No</Option>
+							</Select>
+						</>
+					),
+				});
+			}
 
 			if (props.displayAllComments) {
 				columns.push({
@@ -221,7 +284,7 @@ const individualScoringTable = (props) => {
 		setIsOtherCommentsModalVisible(false);
 	};
 
-	const columns = getColumns(props.committeeVoting);
+	const columns = getColumns();
 
 	return (
 		<>
