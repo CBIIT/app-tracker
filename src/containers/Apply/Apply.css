@@ -11,7 +11,8 @@
 
 .StepContent {
 	width: 100%;
-	min-height: 780px;
+	margin-bottom: 20px;
+	min-height: 0px;
 }
 
 .StepContentContainer {
