@@ -203,6 +203,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const onEditButtonClick = (step) => {
 		const index = steps.findIndex((item) => item.key === step);
 		setCurrentStep(index);
+		window.scrollTo(0, 0);
 	};
 
 	const saveCurrentForm = async (result) => {
