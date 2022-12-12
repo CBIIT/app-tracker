@@ -26,7 +26,6 @@ import axios from 'axios';
 
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import {
-	EXTEND_VACANCY,
 	REMOVE_VACANCY,
 	REMOVE_DRAFT_VACANCY,
 	VACANCY_COUNTS,
@@ -40,6 +39,7 @@ import {
 	VACANCY_DASHBOARD,
 } from '../../constants/Routes';
 import CountTile from './CountTile/CountTile';
+import ExtendModal from './ExtendModal/ExtendModal';
 import './VacancyDashboard.css';
 
 const vacancyDashboard = () => {
@@ -150,22 +150,12 @@ const vacancyDashboard = () => {
 		}
 	};
 
-	const extendVacancy = async () => {
-		setModalLoading(true);
-		try {
-			await axios.post(EXTEND_VACANCY + currentVacancy.sys_id);
-			const updatedExtendedData = await axios.get(DASHBOARD_VACANCIES + tab);
-			setData(updatedExtendedData.data.result);
-			message.success('Vacancy extended');
-		} catch (error) {
-			message.error('Sorry, an error occurred while trying to extend vacancy');
-		}
-		setExtendModalVisible(false);
-		setModalLoading(false);
-	};
-
-	const handleExtendModalCancel = () => {
-		setExtendModalVisible(false);
+	const handleExtendModalCancel = (sysId) => {
+		setExtendModalVisible((prev) => {
+			const newState = { ...prev };
+			newState[sysId] = false;
+			return newState;
+		});
 	};
 
 	const removeVacancy = async () => {
@@ -374,13 +364,26 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={async () => {
-							setExtendModalVisible(true);
 							setCurrentVacancy(vacancy);
+							setExtendModalVisible((prev) => {
+								const newState = { ...prev };
+								newState[vacancy.sys_id] = true;
+								return newState;
+							});
 						}}
 						style={{ padding: '0px' }}
 					>
 						<FieldTimeOutlined /> extend
 					</Button>
+					<ExtendModal
+						extendModalVisible={extendModalVisible[vacancy.sys_id]}
+						handleExtendModalCancel={() =>
+							handleExtendModalCancel(vacancy.sys_id)
+						}
+						currentVacancy={vacancy}
+						setData={setData}
+						tab={tab}
+					/>
 				</Space>
 			),
 		},
@@ -612,37 +615,7 @@ const vacancyDashboard = () => {
 					</Tabs>
 				</div>
 			</div>
-			<Modal
-				visible={extendModalVisible}
-				onOk={extendVacancy}
-				onCancel={handleExtendModalCancel}
-				closable={false}
-				okText='Confirm'
-				cancelText='Cancel'
-				confirmLoading={modalLoading}
-			>
-				<div>
-					<ExclamationCircleFilled
-						style={{
-							color: '#faad14',
-							fontSize: '24px',
-							display: 'inline-block',
-							marginRight: '15px',
-						}}
-					/>
-					<h2
-						style={{
-							display: 'inline-block',
-						}}
-					>
-						Are you sure you want to extend this vacancy?
-					</h2>
-					<p>
-						Please confirm you would like to extend this vacancy or click cancel
-						to return to the previous screen.
-					</p>
-				</div>
-			</Modal>
+
 			<Modal
 				visible={removeModalVisible}
 				onOk={removeVacancy}
