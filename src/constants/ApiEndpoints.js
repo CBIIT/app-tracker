@@ -57,7 +57,7 @@ export const REQUEST_CHAIR_TRIAGE =
 
 export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/check_auth';
 
-export const EXTEND_VACANCY = '/api/x_g_nci_app_tracke/vacancy/extend/';
+export const EXTEND_VACANCY = '/api/x_g_nci_app_tracke/vacancy/extend';
 export const REMOVE_VACANCY = '/api/x_g_nci_app_tracke/vacancy/remove/';
 export const REMOVE_DRAFT_VACANCY =
 	'/api/x_g_nci_app_tracke/vacancy/remove_draft/';
