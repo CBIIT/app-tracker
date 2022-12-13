@@ -156,6 +156,7 @@ const applicantDashboard = () => {
 					if (application.vacancy_state === 'live')
 						buttons.push(
 							<Button
+								key='edit'
 								type='text'
 								onClick={() => {
 									history.push(EDIT_APPLICATION + application.app_id);
@@ -163,10 +164,11 @@ const applicantDashboard = () => {
 							>
 								<EditOutlined /> edit
 							</Button>,
-							<Divider type='vertical' />
+							<Divider key='divider' type='vertical' />
 						);
 					buttons.push(
 						<Button
+							key='withdraw'
 							type='text'
 							onClick={async () => {
 								setWithdrawAppModalVisible(true);

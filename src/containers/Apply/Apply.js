@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Steps, Button, Result, message } from 'antd';
+import { Steps, Button, Result, Space, Alert, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -327,6 +327,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	return (
 		<>
+			{editSubmitted ? (
+				<Space
+					direction='vertical'
+					style={{
+						width: '100%',
+					}}
+				>
+					<Alert
+						message='You are editing a submitted application.  Changes are not saved until the application is submitted again.'
+						banner
+					/>
+				</Space>
+			) : null}
 			<HeaderWithLink
 				title={vacancyTitle}
 				route={'/vacancy/' + vacancyId}
