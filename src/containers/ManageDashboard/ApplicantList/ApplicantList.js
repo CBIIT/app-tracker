@@ -18,7 +18,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 } from '../../../constants/Roles';
 import { GET_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
-import { transformDateToDisplay } from '../../../components/Util/Date/Date';
+import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
 import './ApplicantList.css';
 
@@ -60,7 +60,7 @@ const applicantColumns = [
 		title: 'Submitted',
 		dataIndex: 'submitted',
 		key: 'submitted',
-		render: (date) => transformDateToDisplay(date),
+		render: (date) => transformDateTimeToDisplay(date),
 	},
 	{
 		title: 'Vacancy Manager Triage Decision',
