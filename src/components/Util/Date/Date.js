@@ -11,6 +11,17 @@ const transformDateToDisplay = (date) => {
 	}
 };
 
+const transformDateTimeToDisplay = (dateTime) => {
+	if (dateTime) {
+		const newDateTime = new Date(dateTime);
+		return isValidDate(newDateTime)
+			? moment(dateTime.toString()).format('MM/DD/YYYY h:mm a')
+			: '';
+	} else {
+		return '';
+	}
+};
+
 const isValidDate = (date) => {
 	return (
 		Object.prototype.toString.call(date) === '[object Date]' &&
@@ -18,4 +29,4 @@ const isValidDate = (date) => {
 	);
 };
 
-export { transformDateToDisplay };
+export { transformDateToDisplay, transformDateTimeToDisplay };
