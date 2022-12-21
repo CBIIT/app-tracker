@@ -12,7 +12,7 @@ import './Login.css';
 
 const login = () => {
 	const {
-		auth: { iTrustGlideSsoId, oktaGlideSsoId, isUserLoggedIn, user },
+		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
 	} = useAuth();
 
 	const history = useHistory();
@@ -27,11 +27,7 @@ const login = () => {
 					iTrustGlideSsoId;
 				break;
 			case 'okta':
-				location.href =
-					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-scss.do') +
-					'&glide_sso_id=' +
-					oktaGlideSsoId;
+				location.href = oktaLoginAndRedirectUrl;
 				break;
 			case 'register-okta':
 				history.push(REGISTER_OKTA);

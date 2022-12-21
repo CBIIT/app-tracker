@@ -66,6 +66,7 @@ const app = () => {
 				hasApplications: data.user.has_applications,
 				roles: data.user.roles,
 			},
+			oktaLoginAndRedirectUrl: data.okta_login_and_redirect_url,
 		});
 		setIsLoading(false);
 	};
