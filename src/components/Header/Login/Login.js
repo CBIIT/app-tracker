@@ -13,10 +13,10 @@ import { REGISTER_OKTA, VACANCY_DASHBOARD } from '../../../constants/Routes';
 
 const login = () => {
 	const [iTrustGlideSsoId, setItrustGlideSsoId] = useState();
-	const [oktaGlideSsoId, setOktaGlideSsoId] = useState();
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userFirstName, setUserFirstName] = useState();
 	const [userLastInitial, setUserLastInitial] = useState();
+	const [oktaRedirectLoginUrl, setOktaRedirectLoginUrl] = useState();
 
 	const history = useHistory();
 
@@ -24,10 +24,10 @@ const login = () => {
 		(async () => {
 			const response = await axios.get(CHECK_AUTH);
 			setItrustGlideSsoId(response.data.result.itrust_idp);
-			setOktaGlideSsoId(response.data.result.okta_idp);
 			setUserFirstName(response.data.result.user.first_name);
 			setUserLastInitial(response.data.result.user.last_initial);
 			setIsLoggedIn(response.data.result.logged_in);
+			setOktaRedirectLoginUrl(response.data.result.okta_login_and_redirect_url);
 		})();
 	}, []);
 
@@ -41,11 +41,7 @@ const login = () => {
 					iTrustGlideSsoId;
 				break;
 			case 'okta':
-				location.href =
-					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-scss.do') +
-					'&glide_sso_id=' +
-					oktaGlideSsoId;
+				location.href = oktaRedirectLoginUrl;
 				break;
 			case 'register-okta':
 				history.push(REGISTER_OKTA);
