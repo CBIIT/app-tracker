@@ -13,9 +13,9 @@ const registerOkta = () => {
 	const [message, setMessage] = useState();
 	const [error, setError] = useState(false);
 	const [isEmailNih, setIsEmailNih] = useState(false);
-
+	// oktaGlideSsoId,
 	const {
-		auth: { iTrustGlideSsoId, oktaGlideSsoId, oktaLoginAndRedirectUrl },
+		auth: { iTrustGlideSsoId, oktaLoginAndRedirectUrl },
 	} = useAuth();
 
 	const [formInstance] = Form.useForm();
