@@ -9,7 +9,7 @@ const servicenowConfig = {
    * it is being used in DEVELOPMENT mode only
    * This should be the instance where React application will be deployed to
    */
-  SERVICENOW_INSTANCE: '',
+  SERVICENOW_INSTANCE: 'https://service-dev2.nci.nih.gov/',
   /**
    * User Name for API requests
    * it is being used for sending REST calls in DEVELOPMENT mode only
