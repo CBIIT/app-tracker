@@ -21,6 +21,8 @@ import {
 	CREATE_VACANCY,
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
+	CREATE_PROFILE,
+	PROFILE
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -36,6 +38,7 @@ import Apply from './containers/Apply/Apply';
 import Application from './containers/Application/Application';
 import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
+import ApplicantProfile from './containers/Apply/Forms/Profile/ApplicantProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
@@ -60,6 +63,8 @@ const app = () => {
 			user: {
 				firstName: data.user.first_name,
 				lastInitial: data.user.last_initial,
+				email: data.user.email,
+				hasProfile: data.has_profile,
 				isChair: data.is_chair,
 				isManager: data.is_manager,
 				isExecSec: data.is_exec_sec,
@@ -157,6 +162,11 @@ const app = () => {
 				key='view-application'
 				path={VIEW_APPLICATION + ':appSysId'}
 				component={ApplicantApplicationView}
+			/>,
+			<ProtectedRoute
+				key='applicant-profile'
+				path={PROFILE + ':email'}
+				component={ApplicantProfile}
 			/>
 		);
 	} else {
