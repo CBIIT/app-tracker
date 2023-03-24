@@ -40,6 +40,7 @@ import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
 import ApplicantProfile from './containers/Apply/Forms/Profile/ApplicantProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import useAuth from './hooks/useAuth';
@@ -60,6 +61,7 @@ const app = () => {
 			isUserLoggedIn: data.logged_in,
 			iTrustGlideSsoId: data.itrust_idp,
 			oktaGlideSsoId: data.okta_idp,
+			sessionTimeout: data.session_timeout,
 			user: {
 				firstName: data.user.first_name,
 				lastInitial: data.user.last_initial,
@@ -249,6 +251,7 @@ const app = () => {
 
 	return !isLoading ? (
 		<Layout>
+			<TimeoutModal checkAuth={checkAuth} sessionTimeout={auth.sessionTimeout} />
 			<Switch>{routes}</Switch>
 		</Layout>
 	) : null;
