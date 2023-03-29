@@ -251,7 +251,7 @@ const app = () => {
 
 	return !isLoading ? (
 		<Layout>
-			<TimeoutModal checkAuth={checkAuth} sessionTimeout={auth.sessionTimeout} />
+			<TimeoutModal />
 			<Switch>{routes}</Switch>
 		</Layout>
 	) : null;
