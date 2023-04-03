@@ -65,7 +65,7 @@ const app = () => {
 			user: {
 				firstName: data.user.first_name,
 				lastInitial: data.user.last_initial,
-				email: data.user.email,
+				uid: data.user.user_id,
 				hasProfile: data.has_profile,
 				isChair: data.is_chair,
 				isManager: data.is_manager,
@@ -167,7 +167,7 @@ const app = () => {
 			/>,
 			<ProtectedRoute
 				key='applicant-profile'
-				path={PROFILE + ':email'}
+				path={PROFILE + ':sysId'}
 				component={ApplicantProfile}
 			/>
 		);

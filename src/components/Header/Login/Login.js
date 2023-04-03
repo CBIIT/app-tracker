@@ -33,7 +33,8 @@ const login = () => {
 				history.push(REGISTER_OKTA);
 				break;
 			case 'profile':
-				history.push(PROFILE + user.email);
+				history.push(PROFILE + user.uid);
+				//console.log("🚀 ~ file: Login.js:37 ~ login ~ user:", user)
 				break;
 			case 'logout':
 				location.href = '/logout.do';
