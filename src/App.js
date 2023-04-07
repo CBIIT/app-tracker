@@ -38,7 +38,7 @@ import Apply from './containers/Apply/Apply';
 import Application from './containers/Application/Application';
 import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
-import ApplicantProfile from './containers/Apply/Forms/Profile/ApplicantProfile';
+import ApplicantProfile from './containers/Profile/ApplicantProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
