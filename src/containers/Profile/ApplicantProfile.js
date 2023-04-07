@@ -33,8 +33,6 @@ const ApplicantProfile = () => {
 		}
 	};
 
-	// const getFullPhone
-
 	const getFirstInitial = (first) => {
 		const firstName = first.split('');
 		return firstName[0];
@@ -58,15 +56,20 @@ const ApplicantProfile = () => {
 		}
 	};
 
-	const { basicInfo, demographics, references } = profile;
-	const { address } = basicInfo;
+	const {
+		basicInfo,
+		demographics,
+		references,
+	} = profile;
+
+	const address = basicInfo?.address;
 
 	/*return (
 		<>
 			<h1>Hello World!</h1>
 			{console.log(
 				'🚀 ~ file: ApplicantProfile.js:67 ~ getProfileInfo ~ basicInfo:',
-				address
+				basicInfo, address
 			)}
 		</>
 	);*/
@@ -97,6 +100,7 @@ const ApplicantProfile = () => {
 							style={{
 								marginLeft: '10px',
 								marginTop: '10px',
+								fontSize: '18px',
 								color: '#2b2b2b',
 							}}
 						>
@@ -105,7 +109,7 @@ const ApplicantProfile = () => {
 					</div>
 				}
 			>
-				<div style={{marginBottom: '25px'}}>
+				<div style={{ marginBottom: '25px' }}>
 					<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
 						Address
 					</Title>
@@ -118,22 +122,24 @@ const ApplicantProfile = () => {
 						<br />
 						{address.country}
 					</Paragraph>
-						</div>
-				<div style={{marginBottom: '25px'}}>
+				</div>
+				<div style={{ marginBottom: '25px' }}>
 					<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
 						Email
 					</Title>
-					<Paragraph style={{ color: '#363636' }}>
-						{basicInfo.email}
-					</Paragraph>
+					<Paragraph style={{ color: '#363636' }}>{basicInfo.email}</Paragraph>
 				</div>
-				<div style={{marginBottom: '25px'}}>
+				<div style={{ marginBottom: '25px' }}>
 					<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
 						Mobile
 					</Title>
-					<Paragraph style={{ color: '#363636' }}>
-						{basicInfo.phone}
-					</Paragraph>
+					<Paragraph style={{ color: '#363636' }}>{basicInfo.phone}</Paragraph>
+				</div>
+				<Divider />
+				<div>
+					<Title level={4} style={{ color: '#2b2b2b', fontSize: '18px' }}>
+						Demographics <span style={{ fonstSize: '14px' }}>(optional)</span>
+					</Title>
 				</div>
 			</Card>
 		</>
