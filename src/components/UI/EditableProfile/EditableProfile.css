@@ -1,0 +1,15 @@
+.EditableProfileContainer {
+	margin: 34px;
+	width: 700px;
+}
+
+.EditableProfileContainer h2 {
+	font-family: var(--ff-primary);
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+
+.EditableProfileContainer > span {
+	margin-bottom: 16px;
+	color: var(--text-light);
+}
