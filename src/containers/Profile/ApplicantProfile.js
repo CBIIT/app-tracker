@@ -22,12 +22,12 @@ const ApplicantProfile = () => {
 		})();
 	}, []);
 
-	const getUsCitizenshipValue = (value) => {
+	const getEthnicity = (value) => {
 		switch (value) {
 			case '1':
-				return 'Yes';
+				return 'Hispanic or Latino';
 			case '0':
-				return 'No';
+				return 'Not Hispanic or Latino';
 			default:
 				return '';
 		}
@@ -56,11 +56,7 @@ const ApplicantProfile = () => {
 		}
 	};
 
-	const {
-		basicInfo,
-		demographics,
-		references,
-	} = profile;
+	const { basicInfo, demographics, references } = profile;
 
 	const address = basicInfo?.address;
 
@@ -137,9 +133,45 @@ const ApplicantProfile = () => {
 				</div>
 				<Divider />
 				<div>
-					<Title level={4} style={{ color: '#2b2b2b', fontSize: '18px' }}>
-						Demographics <span style={{ fonstSize: '14px' }}>(optional)</span>
+					<Title
+						level={4}
+						style={{
+							color: '#2b2b2b',
+							fontSize: '18px',
+							display: 'flex',
+							flexDirection: 'row',
+							alignItems: 'center',
+						}}
+					>
+						Demographics{' '}
+						<span style={{ fontSize: '14px', marginLeft: '5px' }}>
+							(optional)
+						</span>
 					</Title>
+					<div>
+						<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+							Sex
+						</Title>
+						<Paragraph style={{ color: '#363636' }}>
+							{demographics.sex}
+						</Paragraph>
+					</div>
+					<div>
+						<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}> Ethnicity </Title>
+						<Paragraph style={{ color: '#363636' }}>
+							{getEthnicity(demographics.ethnicity)}
+						</Paragraph>
+					</div>
+					<div>
+					<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}> Race </Title>
+						<Paragraph style={{ color: '#363636' }}>
+							{demographics.race}
+						</Paragraph>
+					</div>
+					<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}> Disabilities </Title>
+						<Paragraph style={{ color: '#363636' }}>
+							{demographics.disability}
+						</Paragraph>
 				</div>
 			</Card>
 		</>
