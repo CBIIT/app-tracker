@@ -5,7 +5,8 @@ import axios from 'axios';
 
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
-import EditableProfile from '../../components/UI/EditableProfile/EditableProfile'
+import EditableProfile from '../EditableProfile/EditableProfile'
+import useAuth from '../../hooks/useAuth';
 
 const columns = [
 	{
@@ -62,6 +63,10 @@ const home = () => {
 		})();
 	}, []);
 
+	const {
+		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+	} = useAuth();
+
 	return (
 		<>
 			<div className='HomeLogo'>
@@ -82,7 +87,7 @@ const home = () => {
 					</a>
 				</p>
 
-				<EditableProfile/>
+				<EditableProfile />
 
 				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
 				<p>
