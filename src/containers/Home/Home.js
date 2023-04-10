@@ -6,7 +6,6 @@ import axios from 'axios';
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
 import EditableProfile from '../EditableProfile/EditableProfile'
-import useAuth from '../../hooks/useAuth';
 
 const columns = [
 	{
@@ -62,10 +61,6 @@ const home = () => {
 			setIsLoading(false);
 		})();
 	}, []);
-
-	const {
-		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
-	} = useAuth();
 
 	return (
 		<>
