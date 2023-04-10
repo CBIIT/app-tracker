@@ -3,8 +3,24 @@ import EditableField from '../../components/UI/EditableField/EditableField'
 import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
 import EditableReferences from '../EditableReferences/EditableReferences'
 import useAuth from '../../hooks/useAuth';
+import { CHECK_AUTH } from '../../constants/ApiEndpoints';
+import { Button } from 'antd';
+
 
 const editableProfile = (props) => {
+
+	const save = async () => {
+
+		// let data = {
+		// 	jsonobj: JSON.stringify(updatedFormData),
+		// };
+	
+		// if (draftId) data['sys_id'] = draftId;
+		// const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
+
+		alert('save pressed!');
+	};
+	
 	const {
 		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
 	} = useAuth();
@@ -28,6 +44,13 @@ const editableProfile = (props) => {
 			<EditableDropDown label="Highest Level of Education" options="Bachelors,Masters,Doctorate"/>
 			<EditableDropDown label="Are you a US citizen?" options="Yes,No"/>
 			<EditableReferences/>
+			<Button
+				className='wider-button'
+				style={{ border: 'none', color: '#015EA2' }}
+				onClick={save}
+			>
+				save
+			</Button>
 		</div>
 	);
 };
