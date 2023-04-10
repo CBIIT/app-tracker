@@ -1,7 +1,6 @@
 import './EditableProfile.css';
-import EditableField from '../EditableField/EditableField'
-import EditableDropDown from '../EditableDropDown/EditableDropDown'
-import '../ReviewSectionHeader/ReviewSectionHeader.css'
+import EditableField from '../../components/UI/EditableField/EditableField'
+import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
 import EditableReferences from '../EditableReferences/EditableReferences'
 
 const editableProfile = (props) => (

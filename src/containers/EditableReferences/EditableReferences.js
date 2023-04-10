@@ -1,7 +1,6 @@
 import './EditableReferences.css';
-import EditableField from '../EditableField/EditableField'
-import EditableDropDown from '../EditableDropDown/EditableDropDown'
-import EditableRadio from '../EditableRadio/EditableRadio'
+import EditableField from '../../components/UI/EditableField/EditableField'
+import EditableRadio from '../../components/UI/EditableRadio/EditableRadio'
 
 const editableReferences = (props) => (
 	<div className='EditableReferencesContainer' style={props.containerStyle}>
