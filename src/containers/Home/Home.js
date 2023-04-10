@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
+import EditableProfile from '../../components/UI/EditableProfile/EditableProfile'
 
 const columns = [
 	{
@@ -80,6 +81,8 @@ const home = () => {
 						https://www.nih.gov/about-nih/who-we-are
 					</a>
 				</p>
+
+				<EditableProfile/>
 
 				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
 				<p>

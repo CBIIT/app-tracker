@@ -5,8 +5,7 @@ import axios from 'axios';
 
 import './App.less';
 import Layout from './hoc/Layout/Layout';
-import EditableProfile from './components/UI/EditableProfile/EditableProfile'
-// import EditableField from './components/UI/EditableField'
+
 import Home from './containers/Home/Home';
 import {
 	MANAGE_APPLICATION,
@@ -254,8 +253,8 @@ const app = () => {
 	return !isLoading ? (
 		<Layout>
 			<TimeoutModal />
-			<EditableProfile/>
 			<Switch>{routes}</Switch>
+			
 		</Layout>
 	) : null;
 };

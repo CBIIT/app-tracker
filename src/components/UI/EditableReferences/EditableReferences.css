@@ -1,16 +1,16 @@
-.EditableProfileContainer {
+.EditableReferencesContainer {
 	margin: 34px;
 	width: 700px;
 	overflow:hidden;
 }
 
-.EditableProfileContainer h2 {
+.EditableReferencesContainer h2 {
 	font-family: var(--ff-primary);
 	font-size: 14px;
 	margin-bottom: 4px;
 }
 
-.EditableProfileContainer > span {
+.EditableReferencesContainer > span {
 	margin-bottom: 16px;
 	color: var(--text-light);
 }

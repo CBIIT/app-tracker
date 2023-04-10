@@ -1,9 +1,12 @@
 import './EditableProfile.css';
 import EditableField from '../EditableField/EditableField'
 import EditableDropDown from '../EditableDropDown/EditableDropDown'
+import '../ReviewSectionHeader/ReviewSectionHeader.css'
+import EditableReferences from '../EditableReferences/EditableReferences'
 
 const editableProfile = (props) => (
 	<div className='EditableProfileContainer' style={props.containerStyle}>
+		<h2 style={{ marginBottom: '3px' }}>John Wick</h2>
 		<EditableField label="First Name" size="18"/>
 		<EditableField label="Middle Name" size="18"/>
 		<EditableField label="Last Name" size="18"/>
@@ -19,6 +22,7 @@ const editableProfile = (props) => (
 		<EditableField label="Business Phone Number (Optional)" size="18"/>
 		<EditableDropDown label="Highest Level of Education" options="Bachelors,Masters,Doctorate"/>
 		<EditableDropDown label="Are you a US citizen?" options="Yes,No"/>
+		<EditableReferences/>
 	</div>
 );
 
