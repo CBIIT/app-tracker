@@ -1,5 +1,6 @@
 import './EditableProfile.css';
 import EditableField from '../EditableField/EditableField'
+import EditableDropDown from '../EditableDropDown/EditableDropDown'
 
 const editableProfile = (props) => (
 	<div className='EditableProfileContainer' style={props.containerStyle}>
@@ -16,8 +17,8 @@ const editableProfile = (props) => (
 		<EditableField label="Confirm Email" size="18"/>
 		<EditableField label="Phone Number" size="18"/>
 		<EditableField label="Business Phone Number (Optional)" size="18"/>
-		<EditableField label="Highest Level of Education" size="55"/>
-		<EditableField label="Are you a US citizen?" size="18"/>
+		<EditableDropDown label="Highest Level of Education" options="Bachelors,Masters,Doctorate"/>
+		<EditableDropDown label="Are you a US citizen?" options="Yes,No"/>
 	</div>
 );
 

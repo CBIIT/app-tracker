@@ -3,7 +3,11 @@ import './EditableDropDown.css';
 const editableDropDown = (props) => (
 	<div className='EditableFieldContainer' style={props.containerStyle}>
 		<span style={props.labelStyle}>{props.label}</span><br/>
-		<input type="text" style={props.valueStyle} value={props.value} size={props.size}/>
+		<select value="editableOptions">
+			{props.options.split(',').map((option) => (
+				<option value={option}>{option}</option>
+			))}
+		</select>
 	</div>
 );
 
