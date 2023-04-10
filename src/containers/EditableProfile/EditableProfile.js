@@ -5,9 +5,11 @@ import EditableReferences from '../EditableReferences/EditableReferences'
 import useAuth from '../../hooks/useAuth';
 import { CHECK_AUTH } from '../../constants/ApiEndpoints';
 import { Button } from 'antd';
-
+import React, { useEffect, useState } from 'react';
 
 const editableProfile = (props) => {
+
+	const [address, setAddress] = useState('');
 
 	const save = async () => {
 
@@ -18,7 +20,13 @@ const editableProfile = (props) => {
 		// if (draftId) data['sys_id'] = draftId;
 		// const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
 
-		alert('save pressed!');
+		alert('heres the address: ' + address);
+	};
+
+	const captureAddress = (childdata) => {
+//		alert('got response: ' + childdata.target.value);
+		setAddress(childdata.target.value);
+		//setData(childdata);
 	};
 	
 	const {
@@ -31,8 +39,8 @@ const editableProfile = (props) => {
 			<EditableField label="First Name" size="18"/>
 			<EditableField label="Middle Name" size="18"/>
 			<EditableField label="Last Name" size="18"/>
-			<EditableField label="Address" size="55"/>
-			<EditableField label="Address (optional)" size="55"/>
+			<EditableField label="Address" size="55" callback={captureAddress}/>
+			<EditableField label="Address (optional)" size="55" />
 			<EditableField label="City" size="18"/>
 			<EditableField label="State/Province" size="18"/>
 			<EditableField label="Country" size="18"/>
