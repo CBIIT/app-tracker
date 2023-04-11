@@ -1,14 +1,5 @@
 import './EditableField.css';
 
-// const childToParent = () => {
-   
-// }
-
-// const handleChange = (event) => {
-// 	//alert('val:' + event.target.value);
-// };
-
-
 const editableField = (props) => (
 	<div className='EditableFieldContainer' style={props.containerStyle}>
 		<span style={props.labelStyle}>{props.label}</span><br/>
