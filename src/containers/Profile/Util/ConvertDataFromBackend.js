@@ -29,10 +29,10 @@ export const convertDataFromBackend = (data) => {
 		},
 		demographics: {
 			disability: data.demographics.disability,
-			ethnicity: data.demographics.ethnicity,
+			ethnicity: parseInt(data.demographics.ethnicity),
 			race: data.demographics.race,
 			sex: data.demographics.sex,
-			share: data.demographics.share,
+			share: parseInt(data.demographics.share),
 		},
 		references: data.references.map((reference) => {
 			return {
