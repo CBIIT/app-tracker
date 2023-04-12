@@ -3,9 +3,10 @@ import EditableField from '../../components/UI/EditableField/EditableField'
 import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
 import EditableReferences from '../EditableReferences/EditableReferences'
 import useAuth from '../../hooks/useAuth';
-import { CHECK_AUTH } from '../../constants/ApiEndpoints';
+import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
 import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const editableProfile = (props) => {
 
@@ -27,28 +28,46 @@ const editableProfile = (props) => {
 
 	const save = async () => {
 
-		 let data = {
-			firstName: firstName,
-			middleName: middleName,
-			lastName: lastName,
-			address: address,
-			addressOptional: addressOptional,
-			city: city,
-			stateName: stateName,
-			country: country,
-			zip: zip,
+	let data = {
+		basic_info : {
+			first_name: firstName,
+			middle_name: middleName,
+			last_name: lastName,
+			address: {
+				address: address,
+				address_2: addressOptional,
+				city: city,
+				state_province: stateName,
+				country: country,
+				zip_code: zip
+			},
 			email: email,
-			emailConfirm: emailConfirm,
+			email_confirm: emailConfirm,
 			phone: phone,
-			phoneBusiness: phoneBusiness,
-			education: education,
-			citizenship: citizenship,
-		 };
-	
-		// if (draftId) data['sys_id'] = draftId;
-		// const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
+			business_phone: phoneBusiness,
+			highest_level_of_education: education,
+			us_citizen: citizenship
+		},
+		demographics : {},
+		references : []
+	};
 
-		alert('heres the obj: ' + JSON.stringify(data	));
+	/*	let data = {
+			basic_info : {
+				address: {
+					address2: "",
+					city: "",
+					state: ""
+				}
+			},
+			demographics : {},
+			references : []
+		};*/
+	
+		const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
+		alert('response: ' + saveDraftResponse)
+
+//		alert('heres the obj: ' + JSON.stringify(data	));
 	};
 	
 	const {
