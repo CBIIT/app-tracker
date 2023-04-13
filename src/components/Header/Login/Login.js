@@ -6,7 +6,7 @@ import oktaIcon from '../../../assets/images/okta-login-icon.png';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { REGISTER_OKTA, VACANCY_DASHBOARD, PROFILE } from '../../../constants/Routes';
+import { REGISTER_OKTA, VACANCY_DASHBOARD } from '../../../constants/Routes';
 
 import './Login.css';
 
@@ -31,10 +31,6 @@ const login = () => {
 				break;
 			case 'register-okta':
 				history.push(REGISTER_OKTA);
-				break;
-			case 'profile':
-				history.push(PROFILE + user.uid);
-				//console.log("🚀 ~ file: Login.js:37 ~ login ~ user:", user)
 				break;
 			case 'logout':
 				location.href = '/logout.do';
@@ -72,7 +68,6 @@ const login = () => {
 
 	const logoutMenu = (
 		<Menu className='LoginMenu' onClick={handleMenuClick}>
-			<Menu.Item key='profile'>Profile</Menu.Item>
 			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);
