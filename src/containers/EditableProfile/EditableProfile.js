@@ -46,10 +46,29 @@ const editableProfile = (props) => {
 			phone: phone,
 			business_phone: phoneBusiness,
 			highest_level_of_education: education,
-			us_citizen: citizenship
+			us_citizen: citizenship.toLowerCase() == "true" ? 1 : 0
 		},
 		demographics : {},
-		references : []
+		references : [
+			{
+				first_name: "",
+				last_name: "",
+				email: "",
+				phone: "",
+				organization: "",
+				title: "",
+				contact_allowed: "true".toLowerCase() == "true" ? 1 : 0
+			},
+			{
+				first_name: "",
+				last_name: "",
+				email: "",
+				phone: "",
+				organization: "",
+				title: "",
+				contact_allowed: "true".toLowerCase() == "true" ? 1 : 0
+			}
+		]
 	};
 
 	/*	let data = {
