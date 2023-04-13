@@ -13,7 +13,7 @@ import ProfileContext from '../Util/FormContext';
 // ask share question
 // if user decides to share; populate remaining demographics questions
 const DemographicsForm = ({demographics}) => {
-	const [displayQuestions, setDisplayQuestions] = useState(true);
+	const [componentDisabled, setComponentDisabled] = useState(true);
     const [formInstance] = Form.useForm();
     const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
