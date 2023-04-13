@@ -31,9 +31,9 @@ const ApplicantProfile = () => {
 
 	const getEthnicity = (value) => {
 		switch (value) {
-			case '1':
+			case 1:
 				return 'Hispanic or Latino';
-			case '0':
+			case 0:
 				return 'Not Hispanic or Latino';
 			default:
 				return '';
