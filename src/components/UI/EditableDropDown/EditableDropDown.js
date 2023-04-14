@@ -3,7 +3,7 @@ import Select from 'react-select'
 import { Button, Menu, Dropdown, Space, Icon, Form } from 'antd';
 
 const editableDropDown = (props) => (
-	<Form.Item label={props.label} style={{ marginLeft: 'auto', width:'60%' }}>
+	<Form.Item label={props.label} >
 		{/* <span style={props.labelStyle}>{props.label}</span><br/> */}
 		<Dropdown overlay={props.menu} trigger={['click']} >
 			<a className="ant-dropdown-link" onClick={e => e.preventDefault()}>

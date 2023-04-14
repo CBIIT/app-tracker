@@ -26,6 +26,10 @@ const editableProfile = (props) => {
 	const [education, setEducation] = useState('');
 	const [citizenship, setCitizenship] = useState('');
 
+	const cancel = async () => {
+		// todo
+	};
+
 	const save = async () => {
 
 	let data = {
@@ -102,67 +106,106 @@ const editableProfile = (props) => {
 	return (
 
 		<Form
-		name="basic"
-		labelCol={{ span: 24 }}
-		wrapperCol={{ span: 24 }}
-		style={{ maxWidth: 600 }}
-		initialValues={{ remember: true }}
-		//onFinish={onFinish}
-		//onFinishFailed={onFinishFailed}
-		autoComplete="off"
-	  >
-		<Row>
+			name="basic"
+			labelCol={{ span: 24 }}
+			wrapperCol={{ span: 24 }}
+			style={{ maxWidth: 600 }}
+			initialValues={{ remember: true }}
+			//onFinish={onFinish}
+			//onFinishFailed={onFinishFailed}
+			autoComplete="off"
+	  	>
+			<Row>
 
-			<Col span={12}>
-				<EditableField label="First Name" size="18" callback={(childdata) => setFirstName(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Middle Name" size="18" callback={(childdata) => setMiddleName(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Last Name" size="18" callback={(childdata) => setLastName(childdata.target.value)}/>
-			</Col>
-			<Col span={24}>
-				<EditableField label="Address" size="55" callback={(childdata) => setAddress(childdata.target.value)}/>
-			</Col>
-			<Col span={24}>
-				<EditableField label="Address (optional)" size="55" callback={(childdata) => setAddressOptional(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="City" size="18" callback={(childdata) => setCity(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="State/Province" size="18" callback={(childdata) => setStateName(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Country" size="18" callback={(childdata) => setCountry(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Zip/Postal Code" size="18" callback={(childdata) => setZip(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Email" size="18" callback={(childdata) => setEmail(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Confirm Email" size="18" callback={(childdata) => setEmailConfirm(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Phone Number" size="18" callback={(childdata) => setPhone(childdata.target.value)}/>
-			</Col>
-			<Col span={12}>
-				<EditableField label="Business Phone Number (Optional)" size="18" callback={(childdata) => setPhoneBusiness(childdata.target.value)}/>
-			</Col>
-			<EditableDropDown label="Highest Level of Education" menu={educationMenu} />
-			<EditableDropDown label="Are you a US citizen?" menu={yesNoMenu} />
+				<Col span={10}>
+					<EditableField label="First Name" size="18" callback={(childdata) => setFirstName(childdata.target.value)}/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField label="Middle Name" size="18" callback={(childdata) => setMiddleName(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField label="Last Name" size="18" callback={(childdata) => setLastName(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={24}>
+					<EditableField label="Address" size="55" callback={(childdata) => setAddress(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={24}>
+					<EditableField label="Address (optional)" size="55" callback={(childdata) => setAddressOptional(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField label="City" size="18" callback={(childdata) => setCity(childdata.target.value)}/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField label="State/Province" size="18" callback={(childdata) => setStateName(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField label="Country" size="18" callback={(childdata) => setCountry(childdata.target.value)}/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField label="Zip/Postal Code" size="18" callback={(childdata) => setZip(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField label="Email" size="18" callback={(childdata) => setEmail(childdata.target.value)}/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField label="Confirm Email" size="18" callback={(childdata) => setEmailConfirm(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField label="Phone Number" size="18" callback={(childdata) => setPhone(childdata.target.value)}/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField label="Business Phone Number (Optional)" size="18" callback={(childdata) => setPhoneBusiness(childdata.target.value)}/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableDropDown label="Highest Level of Education" menu={educationMenu} />
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableDropDown label="Are you a US citizen?" menu={yesNoMenu} />
+				</Col>				
+			</Row>
 			<EditableReferences/>
-			<Button
-				className='wider-button'
-				style={{ border: 'none', color: '#015EA2' }}
-				onClick={save}
-			>
-				save
-			</Button>
-
+			<Row>
+				<Col span={6}>
+					<Button
+						className='wider-button'
+						style={{ border: 'none', color: '#015EA2' }}
+						onClick={cancel}
+					>
+						cancel
+					</Button>
+				</Col>
+				<Col span={12}></Col>
+				<Col span={6}>
+					<Button
+						className='wider-button'
+						style={{ border: 'none', color: '#015EA2' }}
+						onClick={save}
+					>
+						save
+					</Button>
+				</Col>
 			</Row>
 		</Form>
 		
