@@ -97,8 +97,8 @@ const editableProfile = (props) => {
 
 	  const yesNoMenu = (
 		<Menu>
-		  <Menu.Item key="Yes"> Bachelors </Menu.Item>
-		  <Menu.Item key="No"> Masters </Menu.Item>
+		  <Menu.Item key="Yes"> Yes </Menu.Item>
+		  <Menu.Item key="No"> No </Menu.Item>
 		</Menu>
 	  );
 
