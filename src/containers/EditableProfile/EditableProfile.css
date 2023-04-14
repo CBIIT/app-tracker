@@ -1,7 +1,7 @@
-.EditableProfileContainer {
+/* .EditableProfileContainer {
 	margin: 34px;
-	width: 700px;
-	overflow:hidden;
+	width: 700px; 
+	overflow:hidden; 
 }
 
 .EditableProfileContainer h2 {
@@ -14,3 +14,7 @@
 	margin-bottom: 16px;
 	color: var(--text-light);
 }
+
+.EducationMenu .ant-dropdown-menu-item {
+	color: var(--color-primary);
+} */

@@ -1,13 +1,17 @@
 .EditableDropDownContainer {
 	margin-bottom: 14px;
 	padding-right: 130px;
-	float:left;
 }
 
 .EditableDropDownContainer h2 {
 	font-family: var(--ff-primary);
 	font-size: 14px;
 	margin-bottom: 4px;
+}
+
+.EditableDropDownContainer form.Item {
+	margin-left:auto;
+	width:50%;
 }
 
 .EditableDropDownContainer > span {
