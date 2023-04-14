@@ -1,10 +1,9 @@
 import './EditableProfile.css';
 import EditableField from '../../components/UI/EditableField/EditableField'
 import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
-import EditableReferences from '../EditableReferences/EditableReferences'
 import useAuth from '../../hooks/useAuth';
 import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
-import { Button, Menu, Dropdown, Form, Input, Col, Row } from 'antd';
+import { Button, Menu, Dropdown, Form, Input, Col, Row, Divider } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -116,7 +115,6 @@ const editableProfile = (props) => {
 			autoComplete="off"
 	  	>
 			<Row>
-
 				<Col span={10}>
 					<EditableField label="First Name" size="18" callback={(childdata) => setFirstName(childdata.target.value)}/>
 				</Col>
@@ -185,7 +183,6 @@ const editableProfile = (props) => {
 					<EditableDropDown label="Are you a US citizen?" menu={yesNoMenu} />
 				</Col>				
 			</Row>
-			<EditableReferences/>
 			<Row>
 				<Col span={6}>
 					<Button
@@ -207,6 +204,7 @@ const editableProfile = (props) => {
 					</Button>
 				</Col>
 			</Row>
+			<Divider />
 		</Form>
 		
 	);
