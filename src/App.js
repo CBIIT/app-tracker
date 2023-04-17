@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import './App.less';
 import Layout from './hoc/Layout/Layout';
+
 import Home from './containers/Home/Home';
 import {
 	MANAGE_APPLICATION,
@@ -253,6 +254,7 @@ const app = () => {
 		<Layout>
 			<TimeoutModal />
 			<Switch>{routes}</Switch>
+			
 		</Layout>
 	) : null;
 };

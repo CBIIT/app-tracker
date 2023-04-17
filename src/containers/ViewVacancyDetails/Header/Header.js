@@ -12,6 +12,7 @@ import {
 import { LIVE } from '../../../constants/VacancyStates';
 import { transformDateToDisplay } from '../../../components/Util/Date/Date';
 import useAuth from '../../../hooks/useAuth';
+import ProfileModal from '../../../components/ProfileModal/ProfileModal';
 
 import './Header.css';
 
@@ -20,8 +21,9 @@ const header = (props) => {
 
 	const [userAlreadyApplied, setUserAlreadyApplied] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [showProfileDialog, setShowProfileDialog] = useState(false);
 	const {
-		auth: { isUserLoggedIn },
+		auth: { isUserLoggedIn, user },
 	} = useAuth();
 
 	useEffect(() => {
@@ -46,11 +48,20 @@ const header = (props) => {
 	};
 
 	const onButtonClick = (link) => {
-		if (userAlreadyApplied) {
+		if (!user.hasProfile) {
+			console.log("show the profile dialog before settin to true? " + showProfileDialog);
+			setShowProfileDialog(true);
+		}
+		else if (userAlreadyApplied) {
 			history.push(APPLICANT_DASHBOARD);
 			message.info('You have already applied for this position.');
 		} else history.push(link);
 	};
+
+	const handleProfileDialogClose = (link) => {
+		alert('parent is now closing the dialog');
+		setShowProfileDialog(false);
+	}
 
 	const isVacancyClosed = () => {
 		return props.vacancyState !== LIVE;
@@ -88,6 +99,9 @@ const header = (props) => {
 						</Button>
 					)}
 				</div>
+			) : null}
+			{showProfileDialog ? (
+				<ProfileModal handleClose={() => handleProfileDialogClose()}/>
 			) : null}
 		</div>
 	);

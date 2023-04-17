@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table } from 'antd';
 import axios from 'axios';
-
+import useAuth from '../../hooks/useAuth';
+import EditableReferences from '../EditableReferences/EditableReferences'
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
+import EditableProfile from '../EditableProfile/EditableProfile'
 
 const columns = [
 	{
@@ -33,6 +35,8 @@ const columns = [
 	},
 ];
 
+
+
 const transformData = (data) => {
 	return data.map((item) => ({
 		key: item.sys_id,
@@ -50,6 +54,10 @@ const transformDate = (date) => {
 const home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [data, setData] = useState();
+
+	const {
+		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+	} = useAuth();
 
 	useEffect(() => {
 		(async () => {
@@ -80,6 +88,13 @@ const home = () => {
 						https://www.nih.gov/about-nih/who-we-are
 					</a>
 				</p>
+
+				<h2 style={{ marginBottom: '3px' }}>{user.firstName} {user.lastInitial}</h2>
+				<EditableProfile />
+
+				<EditableReferences/>
+
+				<EditableReferences/>
 
 				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
 				<p>
