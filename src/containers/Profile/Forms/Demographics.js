@@ -9,7 +9,7 @@ import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 import ProfileContext from '../Util/FormContext';
 import { convertDataToBackend } from '../Util/ConvertDataToBackend';
 
-const DemographicsForm = ({ setOpen }) => {
+const DemographicsForm = ({ setDemoOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -214,7 +214,7 @@ const DemographicsForm = ({ setOpen }) => {
 							>
 								<Button
 									onClick={() => {
-										setOpen(false);
+										setDemoOpen(false);
 									}}
 								>
 									Cancel
