@@ -17,4 +17,12 @@
 .EditableDropDownContainer > span {
 	margin-bottom: 16px;
 	color: var(--text-light);
+/* } */
+
+/* .ant-select-selector {
+	margin-left: 10;
+} 
+
+.EditableDropDownContainer > .ant-select-selection-item {
+	padding-left: 10 important!
 } */

@@ -97,20 +97,8 @@ const editableProfile = (props) => {
 		console.log('todo');
 	};
 
-	const educationMenu = (
-		<Menu>
-		  <Menu.Item key="Bachelors"> Bachelors </Menu.Item>
-		  <Menu.Item key="Masters"> Masters </Menu.Item>
-		  <Menu.Item key="Doctorate"> Doctorate </Menu.Item>
-		</Menu>
-	  );
-
-	  const yesNoMenu = (
-		<Menu>
-		  <Menu.Item key="Yes"> Yes </Menu.Item>
-		  <Menu.Item key="No"> No </Menu.Item>
-		</Menu>
-	  );
+	const educationMenu = ["Bachelors", "Masters", "Doctorate"];
+	const yesNoMenu = ["Yes", "No"];
 
 	return (
 
