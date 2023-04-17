@@ -1,23 +1,13 @@
 import './EditableDropDown.css';
-// import Select from 'react-select'
-import { Button, Menu, Dropdown, Space, Icon, Form, Select } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Form, Select } from 'antd';
 
 const editableDropDown = (props) => (
 	<Form.Item label={props.label} >
 		<Select
 			defaultValue={props.menu[0]}
-			style={{ width: 120 }}
-			// onChange={handleProvinceChange}
+			style={{ width: 250 }}
 			options={props.menu.map((option) => ({ label: option, value: option }))}
 		/>
-		{/* <span style={props.labelStyle}>{props.label}</span><br/> */}
-		{/* <Dropdown overlay={props.menu} trigger={['click']} >
-			<a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-				Click me
-				<DownOutlined />
-			</a>
-		</Dropdown> */}
 	</Form.Item>
 );
 
