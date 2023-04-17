@@ -1,36 +1,61 @@
-import { useContext, useEffect, useState } from 'react';
-import { Form, Checkbox, Typography, Radio, Row, Space } from 'antd';
+import { useContext, useEffect } from 'react';
+import axios from 'axios';
+
+import { Form, Checkbox, Button, Typography, message, Radio, Space } from 'antd';
 const { Paragraph, Title } = Typography;
 
-import ProfileContext from '../Util/FormContext';
-// import Loading from '../../../components/Loading/Loading';
+import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 
-// user from auth
-// pass demographics as props; if props is empty then display empty form
-// options array
-// if user has no demographics on the demo table top mock up paragraph
-// every user should see privacy notice
-// ask share question
-// if user decides to share; populate remaining demographics questions
-const DemographicsForm = ({ demographics }) => {
-	const [componentDisabled, setComponentDisabled] = useState(true);
+import ProfileContext from '../Util/FormContext';
+import { convertDataToBackend } from '../Util/ConvertDataToBackend';
+
+const DemographicsForm = ({ setOpen, setProfile }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
+	const share = Form.useWatch('share', formInstance);
+	const { currentProfileInstance, setCurrentProfileInstance } = contextValue;
 
 	useEffect(() => {
-		const { setCurrentProfileInstance } = contextValue;
 		setCurrentProfileInstance(formInstance);
-		console.log('demographics:', demographics);
-		console.log('profile:', profile);
-		console.log('formInstance', formInstance.getFieldValue('share'));
 	}, []);
+
+	const onSave = async (values) => {
+		const successKey = 'success';
+		const errorKey = 'error';
+		const requiredField = profile.demographics.share
+		if (requiredField == undefined || requiredField == '') {
+			message.error({
+				errorKey,
+				content: 'Please select if you would like to share your demographics to improve the hiring process.',
+				duration: 3
+			});
+
+			await formInstance.validateFields(['share']);
+		} else {
+			try {
+				let data = {...profile, demographics: values};
+				const saveProfileResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+				// console.log(saveProfileResponse);
+				message.info({
+					successKey,
+					content: 'Demographics saved successfully',
+					duration: 3
+				});
+			} catch (e) {
+				console.log(e);
+				message.error('Sorry! There was an error saving your profile.')
+			}
+		}
+		location.reload();
+		// setOpen(false);
+	}
 
 	return (
 		<>
 			<div>
 				<Title level={4}>Demographic Information</Title>
-				{profile.demographics ? (
+				{!profile.demographics ? (
 					<Paragraph>
 						You have no demographic details saved in your profile. Entering your
 						details takes a few minutes and helps improve the federal hiring
@@ -54,6 +79,7 @@ const DemographicsForm = ({ demographics }) => {
 					form={formInstance}
 					initialValues={profile.demographics}
 					requiredMark={false}
+					onFinish={onSave}
 					layout='vertical'
 					name='demographics'
 				>
@@ -80,7 +106,7 @@ const DemographicsForm = ({ demographics }) => {
 								</Space>
 							</Radio.Group>
 						</Form.Item>
-						{formInstance.getFieldValue('share') == 1 ? (
+						{share ? (
 							<>
 								<Form.Item name='sex' label='Sex'>
 									<Radio.Group>
@@ -115,24 +141,66 @@ const DemographicsForm = ({ demographics }) => {
 										</Space>
 									</Checkbox.Group>
 								</Form.Item>
-								<Form.Item name='disability' label='Disability/Serious Health Condition'>
+								<Form.Item
+									name='disability'
+									label='Disability/Serious Health Condition'
+								>
 									<Checkbox.Group>
 										<Space direction='vertical'>
-											<Checkbox value='Deaf'>Deaf or serious difficulty hearing</Checkbox>
-											<Checkbox value='Blind'>Blind or serious difficulty seeing even when wearing glasses</Checkbox>
-											<Checkbox value='Amputee'>Missing an arm, leg, hand or foot</Checkbox>
-											<Checkbox value='Paralysis'>Paralysis: partial or complete paralysis (any cause)</Checkbox>
-											<Checkbox value='Disfigurement'>Significant disfigurement: for example, severe disfigurements caused by burns, wounds, accidents or congenital disorders</Checkbox>
-											<Checkbox value='Mobility Impairment'>Significant mobility impairment: for example, uses a wheelchair, scooter, walker or uses a leg brace to walk</Checkbox>
-											<Checkbox value='Psychiatric Disorder'>Significant psychiatric disorder: for example, bipolar disorder, schizophrenia, PTSD or major depression</Checkbox>
-											<Checkbox value='Intellectual Disability'>Intellectual disability (formerly described as mental retardation)</Checkbox>
-											<Checkbox value='Developmental Disability'>Developmental disability: for example, cerebral palsy or autism spectrum disorder</Checkbox>
-											<Checkbox value='Brain Injury'>Traumatic brain injury</Checkbox>
+											<Checkbox value='Deaf'>
+												Deaf or serious difficulty hearing
+											</Checkbox>
+											<Checkbox value='Blind'>
+												Blind or serious difficulty seeing even when wearing
+												glasses
+											</Checkbox>
+											<Checkbox value='Amputee'>
+												Missing an arm, leg, hand or foot
+											</Checkbox>
+											<Checkbox value='Paralysis'>
+												Paralysis: partial or complete paralysis (any cause)
+											</Checkbox>
+											<Checkbox value='Disfigurement'>
+												Significant disfigurement: for example, severe
+												disfigurements caused by burns, wounds, accidents or
+												congenital disorders
+											</Checkbox>
+											<Checkbox value='Mobility Impairment'>
+												Significant mobility impairment: for example, uses a
+												wheelchair, scooter, walker or uses a leg brace to walk
+											</Checkbox>
+											<Checkbox value='Psychiatric Disorder'>
+												Significant psychiatric disorder: for example, bipolar
+												disorder, schizophrenia, PTSD or major depression
+											</Checkbox>
+											<Checkbox value='Intellectual Disability'>
+												Intellectual disability (formerly described as mental
+												retardation)
+											</Checkbox>
+											<Checkbox value='Developmental Disability'>
+												Developmental disability: for example, cerebral palsy or
+												autism spectrum disorder
+											</Checkbox>
+											<Checkbox value='Brain Injury'>
+												Traumatic brain injury
+											</Checkbox>
 											<Checkbox value='Dwarfism'>Dwarfism</Checkbox>
-											<Checkbox value='Epilepsy'>Epilepsy or other seizure disorder</Checkbox>
-											<Checkbox value='Other Disability'>Other disability or serious health condition: for example, diabetes, cancer, cardiovascular disease, anxiety disorder or HIV infection; a learning disability, a speech impairment or a hearing impairment</Checkbox>
-											<Checkbox value='None'>None of the conditions listed above apply to me.</Checkbox>
-											<Checkbox value='Do Not Wish to Answer'>I do not wish to answer questions regarding my disability/health conditions.</Checkbox>
+											<Checkbox value='Epilepsy'>
+												Epilepsy or other seizure disorder
+											</Checkbox>
+											<Checkbox value='Other Disability'>
+												Other disability or serious health condition: for
+												example, diabetes, cancer, cardiovascular disease,
+												anxiety disorder or HIV infection; a learning
+												disability, a speech impairment or a hearing impairment
+											</Checkbox>
+											<Checkbox value='None'>
+												None of the conditions listed above apply to me.
+											</Checkbox>
+											<Checkbox value='Do Not Wish to Answer'>
+												I do not wish to answer questions regarding my
+												disability/health conditions.
+											</Checkbox>
 										</Space>
 									</Checkbox.Group>
 								</Form.Item>
@@ -140,6 +208,22 @@ const DemographicsForm = ({ demographics }) => {
 						) : (
 							<></>
 						)}
+						<Form.Item>
+							<Space
+								style={{ display: 'flex', justifyContent: 'space-between' }}
+							>
+								<Button
+									onClick={() => {
+										setOpen(false);
+									}}
+								>
+									Cancel
+								</Button>
+								<Button type='primary' htmlType='submit'>
+									Save
+								</Button>
+							</Space>
+						</Form.Item>
 					</div>
 				</Form>
 			</div>
