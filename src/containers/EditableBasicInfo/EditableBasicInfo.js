@@ -3,7 +3,7 @@ import EditableField from '../../components/UI/EditableField/EditableField'
 import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
 import useAuth from '../../hooks/useAuth';
 import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
-import { Button, Menu, Dropdown, Form, Input, Col, Row, Divider } from 'antd';
+import { Button, Menu, Dropdown, Form, Input, Col, Row, Divider, Select } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProfileContext from '../Profile/Util/FormContext';
@@ -18,6 +18,34 @@ const editableBasicInfo = ({setBasicOpen}) => {
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
 	}, []);
+
+	const phonePrefixSelector = (
+		<Form.Item name='phonePrefix' noStyle>
+			<Select
+				style={{
+					width: 70,
+				}}
+			>
+				<Option value='+1'>+1</Option>
+				<Option value='+86'>+86</Option>
+				<Option value='+87'>+87</Option>
+			</Select>
+		</Form.Item>
+	);
+
+	const businessPhonePrefixSelector = (
+		<Form.Item name='businessPhonePrefix' noStyle>
+			<Select
+				style={{
+					width: 70,
+				}}
+			>
+				<Option value='+1'>+1</Option>
+				<Option value='+86'>+86</Option>
+				<Option value='+87'>+87</Option>
+			</Select>
+		</Form.Item>
+	);
 
 	const onSave = async (values) => {
 
@@ -111,11 +139,25 @@ const editableBasicInfo = ({setBasicOpen}) => {
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="Phone Number" name="phone" required={true} size="18" />
+					<Input
+						type='tel'
+						addonBefore={phonePrefixSelector}
+						placeholder='(123) 456-7890'
+						maxLength={16}
+						name = "phone"
+						required = {true}
+					/>
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="Business Phone Number (Optional)" name="businessPhone" required={false} size="18" />
+					<Input
+							type='tel'
+							addonBefore={businessPhonePrefixSelector}
+							placeholder='(123) 456-7890'
+							maxLength={16}
+							name = "businessPhone"
+							required = {false}
+					/>
 				</Col>
 			</Row>
 			<Row>
