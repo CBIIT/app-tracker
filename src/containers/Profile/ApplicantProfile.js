@@ -31,9 +31,9 @@ const ApplicantProfile = () => {
 
 	const getEthnicity = (value) => {
 		switch (value) {
-			case '1':
+			case 1:
 				return 'Hispanic or Latino';
-			case '0':
+			case 0:
 				return 'Not Hispanic or Latino';
 			default:
 				return '';
@@ -74,16 +74,6 @@ const ApplicantProfile = () => {
 
 	const address = basicInfo?.address;
 
-	/*return (
-		<>
-			<h1>Hello World!</h1>
-			{console.log(
-				'🚀 ~ file: ApplicantProfile.js:67 ~ getProfileInfo ~ basicInfo:',
-				basicInfo, address
-			)}
-		</>
-	);*/
-
 	return isLoading ? (
 		<Loading />
 	) : (
@@ -101,7 +91,7 @@ const ApplicantProfile = () => {
 						>
 							<Avatar
 								size={50}
-								style={{ backgroundColor: '#015ea2', color: 'ffffff' }}
+								style={{ backgroundColor: '#15477a', color: 'ffffff' }}
 							>
 								{getFirstInitial(basicInfo.firstName) +
 									getLastInitial(basicInfo.lastName)}
@@ -120,7 +110,7 @@ const ApplicantProfile = () => {
 						</div>
 					}
 				>
-					<div style={{marginLeft: '60px'}}>
+					<div style={{ marginLeft: '60px', marginRight: '60px' }}>
 						<div style={{ marginBottom: '25px' }}>
 							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
 								Address
@@ -153,7 +143,7 @@ const ApplicantProfile = () => {
 						</div>
 						<Divider />
 						{open ? (
-							<DemographicsForm demographics={demographics} />
+							<DemographicsForm setOpen={setOpen} setProfile={setProfile} />
 						) : (
 							<div>
 								<Title
@@ -205,17 +195,21 @@ const ApplicantProfile = () => {
 										{' '}
 										Race{' '}
 									</Title>
-									<Paragraph style={{ color: '#363636' }}>
-										{demographics.race}
-									</Paragraph>
+									{demographics?.race.map((element) => (
+										<Paragraph style={{ color: '#363636' }} key={element}>
+											{element}
+										</Paragraph>
+									))}
 								</div>
 								<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
 									{' '}
 									Disabilities/Serious Health Condition{' '}
 								</Title>
-								<Paragraph style={{ color: '#363636' }}>
-									{demographics.disability}
-								</Paragraph>
+								{demographics?.disability.map((condition) => (
+									<Paragraph style={{ color: '#363636' }} key={condition}>
+										{condition}
+									</Paragraph>
+								))}
 							</div>
 						)}
 					</div>

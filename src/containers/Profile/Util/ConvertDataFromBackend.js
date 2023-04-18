@@ -28,9 +28,9 @@ export const convertDataFromBackend = (data) => {
 			},
 		},
 		demographics: {
-			disability: data.demographics.disability,
+			disability: data.demographics.disability.split(','),
 			ethnicity: parseInt(data.demographics.ethnicity),
-			race: data.demographics.race,
+			race: data.demographics.race.split(','),
 			sex: data.demographics.sex,
 			share: parseInt(data.demographics.share),
 		},
