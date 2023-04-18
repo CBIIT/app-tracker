@@ -3,18 +3,27 @@ import axios from 'axios';
 import { CHECK_AUTH } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { Modal, Typography, Button } from 'antd';
+import { Link, useHistory } from 'react-router-dom';
+import {
+	PROFILE
+} from '../../constants/Routes';
+
 const { Paragraph } = Typography;
+
+
 
 const ProfileModal = (props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { auth, setAuth } = useAuth();
+	const { user } = auth;
+	const history = useHistory();
 
 	const handleContinue = () => {
 		props.handleClose();
 	};
 
 	const handleFinishProfile = () => {
-		location.href = '/profile.do';
+		history.push(PROFILE + user.uid);
 	};
 
 	return (
