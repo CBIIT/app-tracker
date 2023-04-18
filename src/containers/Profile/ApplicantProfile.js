@@ -98,7 +98,7 @@ const ApplicantProfile = () => {
 	return isLoading ? (
 		<Loading />
 	) : (
-		<>
+		hasProfile ? (		<>
 			<ProfileContext.Provider value={profileContext}>
 				<Card
 					style={{ width: '100%', height: '100%' }}
@@ -254,7 +254,11 @@ const ApplicantProfile = () => {
 					</div>
 				</Card>
 			</ProfileContext.Provider>
-		</>
+		</>) : (
+			<>
+				<EditableBasicInfo/>
+				<DemographicsForm/>
+			</>)
 	);
 };
 

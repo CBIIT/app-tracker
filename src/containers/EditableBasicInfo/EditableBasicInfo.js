@@ -54,7 +54,7 @@ const editableBasicInfo = ({setBasicOpen}) => {
 			wrapperCol={{ span: 24 }}
 			style={{ maxWidth: 600 }}
 			form={formInstance}
-			initialValues={profile.basicInfo}
+			initialValues={profile?.basicInfo}
 			onFinish={onSave}
 			autoComplete="off"
 	  	>
