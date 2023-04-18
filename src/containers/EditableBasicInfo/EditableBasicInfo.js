@@ -139,25 +139,36 @@ const editableBasicInfo = ({setBasicOpen}) => {
 			</Row>
 			<Row>
 				<Col span={10}>
-					<Input
-						type='tel'
-						addonBefore={phonePrefixSelector}
-						placeholder='(123) 456-7890'
-						maxLength={16}
-						name = "phone"
-						required = {true}
-					/>
+					<Form.Item
+							label="Phone"
+							name="phone"
+							rules={[{ required: false, message: 'Please provide an answer.' }]}
+						>
+						<Input
+							type='tel'
+							addonBefore={phonePrefixSelector}
+							placeholder='(123) 456-7890'
+							maxLength={16}
+							name = "phone"
+							required = {true}
+						/>
+					</Form.Item>
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<Input
-							type='tel'
-							addonBefore={businessPhonePrefixSelector}
-							placeholder='(123) 456-7890'
-							maxLength={16}
-							name = "businessPhone"
-							required = {false}
-					/>
+					<Form.Item
+						label="Business Phone"
+						name="businessPhone"
+						rules={[{ required: false, message: 'Please provide an answer.' }]}
+					>
+						<Input								
+								type='tel'
+								addonBefore={businessPhonePrefixSelector}
+								placeholder='(123) 456-7890'
+								maxLength={16}
+								name = "businessPhone"
+						/>
+					</Form.Item>
 				</Col>
 			</Row>
 			<Row>
