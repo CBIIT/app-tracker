@@ -89,13 +89,6 @@ const home = () => {
 					</a>
 				</p>
 
-				<h2 style={{ marginBottom: '3px' }}>{user.firstName} {user.lastInitial}</h2>
-				<EditableProfile />
-
-				<EditableReferences/>
-
-				<EditableReferences/>
-
 				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
 				<p>
 					Application period for all vacancies ends at 11:59PM ET on final day.

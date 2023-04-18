@@ -4,79 +4,32 @@ import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropD
 import useAuth from '../../hooks/useAuth';
 import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
 import { Button, Menu, Dropdown, Form, Input, Col, Row, Divider } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import ProfileContext from '../Profile/Util/FormContext';
+import { convertDataToBackend } from '../Profile/Util/ConvertDataToBackend';
 
-const editableProfile = (props) => {
+const editableProfile = ({setBasicOpen}) => {
+	const [formInstance] = Form.useForm();
+	const contextValue = useContext(ProfileContext);
+	const { profile } = contextValue;
+	const { setCurrentProfileInstance } = contextValue;
 
-	const [firstName, setFirstName] = useState('');
-	const [middleName, setMiddleName] = useState('');
-	const [lastName, setLastName] = useState('');
-	const [address, setAddress] = useState('');
-	const [addressOptional, setAddressOptional] = useState('');
-	const [city, setCity] = useState('');
-	const [stateName, setStateName] = useState('');
-	const [country, setCountry] = useState('');
-	const [zip, setZip] = useState('');
-	const [email, setEmail] = useState('');
-	const [emailConfirm, setEmailConfirm] = useState('');
-	const [phone, setPhone] = useState('');
-	const [phoneBusiness, setPhoneBusiness] = useState('');
-	const [education, setEducation] = useState('');
-	const [citizenship, setCitizenship] = useState('');
+	useEffect(() => {
+		setCurrentProfileInstance(formInstance);
+	}, []);
 
 	const cancel = async () => {
 		// todo
 	};
 
-	const save = async () => {
+	const onSave = async (values) => {
 
-	let data = {
-		basic_info : {
-			first_name: firstName,
-			middle_name: middleName,
-			last_name: lastName,
-			address: {
-				address: address,
-				address_2: addressOptional,
-				city: city,
-				state_province: stateName,
-				country: country,
-				zip_code: zip
-			},
-			email: email,
-			email_confirm: emailConfirm,
-			phone: phone,
-			business_phone: phoneBusiness,
-			highest_level_of_education: education,
-			us_citizen: citizenship.toLowerCase() == "true" ? 1 : 0
-		},
-		demographics : {},
-		references : [
-			{
-				first_name: "",
-				last_name: "",
-				email: "",
-				phone: "",
-				organization: "",
-				title: "",
-				contact_allowed: "true".toLowerCase() == "true" ? 1 : 0
-			},
-			{
-				first_name: "",
-				last_name: "",
-				email: "",
-				phone: "",
-				organization: "",
-				title: "",
-				contact_allowed: "true".toLowerCase() == "true" ? 1 : 0
-			}
-		]
-	};
-		const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
-		alert('response: ' + saveDraftResponse)
+	console.log(values);
+	/*const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
+	alert('response: ' + saveDraftResponse)*/
 
-//		alert('heres the obj: ' + JSON.stringify(data	));
+	//alert('heres the obj: ' + JSON.stringify(data	));
 	};
 	
 	const {
@@ -87,8 +40,15 @@ const editableProfile = (props) => {
 		console.log('todo');
 	};
 
-	const educationMenu = ["Bachelors", "Masters", "Doctorate"];
-	const yesNoMenu = ["Yes", "No"];
+	const educationMenu = [
+		{ label: 'Bachelors', value: 'Bachelors' },
+		{ label: 'Masters', value: 'Masters' },
+		{ label: 'Doctorate', value: 'Doctorate' },
+	];
+	const yesNoMenu = [
+		{ label: 'Yes', value: 1 },
+		{ label: 'No', value: 0 },
+	];
 
 	return (
 
@@ -97,102 +57,101 @@ const editableProfile = (props) => {
 			labelCol={{ span: 24 }}
 			wrapperCol={{ span: 24 }}
 			style={{ maxWidth: 600 }}
-			initialValues={{ remember: true }}
-			//onFinish={onFinish}
+			form={formInstance}
+			initialValues={profile.basicInfo}
+			onFinish={onSave}
 			//onFinishFailed={onFinishFailed}
 			autoComplete="off"
 	  	>
 			<Row>
 				<Col span={10}>
-					<EditableField label="First Name" size="18" callback={(childdata) => setFirstName(childdata.target.value)}/>
+					<EditableField label="First Name" name="firstName" required={true} namesize="18"/>
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="Middle Name" size="18" callback={(childdata) => setMiddleName(childdata.target.value)}/>
+					<EditableField label="Middle Name" name="middleName"  required={false} size="18" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="Last Name" size="18" callback={(childdata) => setLastName(childdata.target.value)}/>
+					<EditableField label="Last Name" name="lastName" required={true} size="18" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={24}>
-					<EditableField label="Address" size="55" callback={(childdata) => setAddress(childdata.target.value)}/>
+					<EditableField label="Address" name={['address', 'address']} required={true} size="55" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={24}>
-					<EditableField label="Address (optional)" size="55" callback={(childdata) => setAddressOptional(childdata.target.value)}/>
+					<EditableField label="Apartment Number or Suite" name={['address', 'address2']} required={false} size="55" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="City" size="18" callback={(childdata) => setCity(childdata.target.value)}/>
+					<EditableField label="City" name={['address', 'city']} required={true} size="18" />
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="State/Province" size="18" callback={(childdata) => setStateName(childdata.target.value)}/>
+					<EditableField label="State/Province" name={['address', 'stateProvince']} required={true} size="18" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="Country" size="18" callback={(childdata) => setCountry(childdata.target.value)}/>
+					<EditableField label="Country" name={['address', 'country']} required={true} size="18" />
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="Zip/Postal Code" size="18" callback={(childdata) => setZip(childdata.target.value)}/>
+					<EditableField label="Zip/Postal Code" name={['address', 'zip']} required={true} size="18" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="Email" size="18" callback={(childdata) => setEmail(childdata.target.value)}/>
+					<EditableField label="Email" name="email" required={true} size="18" />
+				</Col>
+				<Col span={4}> </Col>
+				{/*<Col span={10}>
+					<EditableField label="Confirm Email" size="18" />
+				</Col> */}
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField label="Phone Number" name="phone" required={true} size="18" />
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="Confirm Email" size="18" callback={(childdata) => setEmailConfirm(childdata.target.value)}/>
+					<EditableField label="Business Phone Number (Optional)" name="businessPhone" required={false} size="18" />
 				</Col>
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="Phone Number" size="18" callback={(childdata) => setPhone(childdata.target.value)}/>
+					<EditableDropDown label="Highest Level of Education" name="highestLevelEducation" required={true} menu={educationMenu} />
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="Business Phone Number (Optional)" size="18" callback={(childdata) => setPhoneBusiness(childdata.target.value)}/>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={10}>
-					<EditableDropDown label="Highest Level of Education" menu={educationMenu} />
-				</Col>
-				<Col span={4}> </Col>
-				<Col span={10}>
-					<EditableDropDown label="Are you a US citizen?" menu={yesNoMenu} />
+					<EditableDropDown label="Are you a US citizen?" name="isUsCitizen" required={true} menu={yesNoMenu} />
 				</Col>				
 			</Row>
 			<Row>
 				<Col span={6}>
 					<Button
 						className='wider-button'
-						style={{ border: 'none', color: '#015EA2' }}
-						onClick={cancel}
+						onClick={() => (setBasicOpen(false))}
 					>
-						cancel
+						Cancel
 					</Button>
 				</Col>
 				<Col span={12}></Col>
 				<Col span={6}>
 					<Button
 						className='wider-button'
-						style={{ border: 'none', color: '#015EA2' }}
-						onClick={save}
+						type='primary'
+						htmlType='submit'
 					>
-						save
+						Save
 					</Button>
 				</Col>
 			</Row>
-			<Divider />
 		</Form>
 		
 	);

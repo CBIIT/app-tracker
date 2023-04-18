@@ -9,10 +9,14 @@ import Loading from '../../components/Loading/Loading';
 import { GET_PROFILE } from '../../constants/ApiEndpoints';
 import { convertDataFromBackend } from './Util/ConvertDataFromBackend';
 import DemographicsForm from './Forms/Demographics';
+import EditableProfile from '../EditableProfile/EditableProfile';
 
 const ApplicantProfile = () => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [open, setOpen] = useState(false);
+	// useState to open/close basic, demo, ref
+	const [demoOpen, setDemoOpen] = useState(false);
+	const [basicOpen, setBasicOpen] = useState(false);
+	const [refOpen, setRefOpen] = useState(false);
 	const [profile, setProfile] = useState(initialData);
 	const [currentProfileInstance, setCurrentProfileInstance] = useState(null);
 	const { sysId } = useParams();
@@ -22,6 +26,15 @@ const ApplicantProfile = () => {
 		currentProfileInstance,
 		setCurrentProfileInstance,
 	};
+
+	/*
+	<h2 style={{ marginBottom: '3px' }}>{user.firstName} {user.lastInitial}</h2>
+				<EditableProfile />
+
+				<EditableReferences/>
+
+				<EditableReferences/>
+	*/
 
 	useEffect(() => {
 		(async () => {
@@ -111,39 +124,57 @@ const ApplicantProfile = () => {
 					}
 				>
 					<div style={{ marginLeft: '60px', marginRight: '60px' }}>
-						<div style={{ marginBottom: '25px' }}>
-							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-								Address
-							</Title>
-							<Paragraph style={{ color: '#363636' }}>
-								{address.address2
-									? address.address + ' ' + address.address2
-									: address.address}
-								<br />
-								{`${address.city}, ${address.stateProvince} ${address.zip}`}
-								<br />
-								{address.country}
-							</Paragraph>
-						</div>
-						<div style={{ marginBottom: '25px' }}>
-							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-								Email
-							</Title>
-							<Paragraph style={{ color: '#363636' }}>
-								{basicInfo.email}
-							</Paragraph>
-						</div>
-						<div style={{ marginBottom: '25px' }}>
-							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-								Mobile
-							</Title>
-							<Paragraph style={{ color: '#363636' }}>
-								{getFullNumber(basicInfo.phonePrefix, basicInfo.phone)}
-							</Paragraph>
-						</div>
+						{basicOpen ? (
+							<EditableProfile setBasicOpen={setBasicOpen}/>
+						) : (
+							<>
+								<div style={{ marginBottom: '25px' }}>
+									<div>
+										<a onClick={() => setBasicOpen(true)}>Edit</a>
+									</div>
+									<Title
+										level={5}
+										style={{ fontSize: '14px', color: '#6a6a6a' }}
+									>
+										Address
+									</Title>
+									<Paragraph style={{ color: '#363636' }}>
+										{address.address2
+											? address.address + ' ' + address.address2
+											: address.address}
+										<br />
+										{`${address.city}, ${address.stateProvince} ${address.zip}`}
+										<br />
+										{address.country}
+									</Paragraph>
+								</div>
+								<div style={{ marginBottom: '25px' }}>
+									<Title
+										level={5}
+										style={{ fontSize: '14px', color: '#6a6a6a' }}
+									>
+										Email
+									</Title>
+									<Paragraph style={{ color: '#363636' }}>
+										{basicInfo.email}
+									</Paragraph>
+								</div>
+								<div style={{ marginBottom: '25px' }}>
+									<Title
+										level={5}
+										style={{ fontSize: '14px', color: '#6a6a6a' }}
+									>
+										Mobile
+									</Title>
+									<Paragraph style={{ color: '#363636' }}>
+										{getFullNumber(basicInfo.phonePrefix, basicInfo.phone)}
+									</Paragraph>
+								</div>
+							</>
+						)}
 						<Divider />
-						{open ? (
-							<DemographicsForm setOpen={setOpen} setProfile={setProfile} />
+						{demoOpen ? (
+							<DemographicsForm setDemoOpen={setDemoOpen} />
 						) : (
 							<div>
 								<Title
@@ -162,7 +193,7 @@ const ApplicantProfile = () => {
 									</span>
 								</Title>
 								<div>
-									<a onClick={() => setOpen(true)}>Edit</a>
+									<a onClick={() => setDemoOpen(true)}>Edit</a>
 								</div>
 								<div>
 									<Title
