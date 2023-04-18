@@ -28,9 +28,6 @@ const ApplicantProfile = () => {
 	};
 
 	/*
-	<h2 style={{ marginBottom: '3px' }}>{user.firstName} {user.lastInitial}</h2>
-				<EditableProfile />
-
 				<EditableReferences/>
 
 				<EditableReferences/>
@@ -74,6 +71,7 @@ const ApplicantProfile = () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
+			console.log(response);
 			setProfile(convertDataFromBackend(response.data.result.response));
 			setIsLoading(false);
 		} catch (e) {
@@ -88,7 +86,10 @@ const ApplicantProfile = () => {
 	const address = basicInfo?.address;
 
 	return isLoading ? (
-		<Loading />
+		<>
+			{console.log(profile)}
+			<Loading />
+		</>
 	) : (
 		<>
 			<ProfileContext.Provider value={profileContext}>
@@ -125,7 +126,7 @@ const ApplicantProfile = () => {
 				>
 					<div style={{ marginLeft: '60px', marginRight: '60px' }}>
 						{basicOpen ? (
-							<EditableProfile setBasicOpen={setBasicOpen}/>
+							<EditableProfile setBasicOpen={setBasicOpen} />
 						) : (
 							<>
 								<div style={{ marginBottom: '25px' }}>
