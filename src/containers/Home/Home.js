@@ -6,7 +6,7 @@ import useAuth from '../../hooks/useAuth';
 import EditableReferences from '../EditableReferences/EditableReferences'
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
-import EditableProfile from '../EditableProfile/EditableProfile'
+import EditableProfile from '../EditableBasicInfo/EditableBasicInfo'
 
 const columns = [
 	{

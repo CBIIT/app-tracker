@@ -1,4 +1,4 @@
-import './EditableProfile.css';
+import './EditableBasicInfo.css';
 import EditableField from '../../components/UI/EditableField/EditableField'
 import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
 import useAuth from '../../hooks/useAuth';
@@ -9,7 +9,7 @@ import axios from 'axios';
 import ProfileContext from '../Profile/Util/FormContext';
 import { convertDataToBackend } from '../Profile/Util/ConvertDataToBackend';
 
-const editableProfile = ({setBasicOpen}) => {
+const editableBasicInfo = ({setBasicOpen}) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -152,4 +152,4 @@ const editableProfile = ({setBasicOpen}) => {
 	);
 };
 
-export default editableProfile;
+export default editableBasicInfo;

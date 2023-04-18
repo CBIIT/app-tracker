@@ -9,7 +9,7 @@ import Loading from '../../components/Loading/Loading';
 import { GET_PROFILE } from '../../constants/ApiEndpoints';
 import { convertDataFromBackend } from './Util/ConvertDataFromBackend';
 import DemographicsForm from './Forms/Demographics';
-import EditableProfile from '../EditableProfile/EditableProfile';
+import EditableBasicInfo from '../EditableBasicInfo/EditableBasicInfo';
 
 const ApplicantProfile = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +19,7 @@ const ApplicantProfile = () => {
 	const [refOpen, setRefOpen] = useState(false);
 	const [profile, setProfile] = useState(initialData);
 	const [currentProfileInstance, setCurrentProfileInstance] = useState(null);
+	const [hasProfile, setHasProfile] = useState(false);
 	const { sysId } = useParams();
 
 	const profileContext = {
@@ -29,7 +30,7 @@ const ApplicantProfile = () => {
 
 	/*
 	<h2 style={{ marginBottom: '3px' }}>{user.firstName} {user.lastInitial}</h2>
-				<EditableProfile />
+				<EditableBasicInfo />
 
 				<EditableReferences/>
 
@@ -54,10 +55,12 @@ const ApplicantProfile = () => {
 	};
 
 	const getFullNumber = (prefix, number) => {
-		const areaCode = number.slice(0, 3);
-		const firstHalf = number.slice(3, 6);
-		const secondHalf = number.slice(6);
-		return `${prefix} (${areaCode}) ${firstHalf} - ${secondHalf}`;
+		if (number) {
+			const areaCode = number.slice(0, 3);
+			const firstHalf = number.slice(3, 6);
+			const secondHalf = number.slice(6);
+			return `${prefix} (${areaCode}) ${firstHalf} - ${secondHalf}`;
+		}
 	};
 
 	const getFirstInitial = (first) => {
@@ -74,7 +77,12 @@ const ApplicantProfile = () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
-			setProfile(convertDataFromBackend(response.data.result.response));
+			console.log('heres the response status: ' + JSON.stringify(response.data.result.status));
+			console.log('heres the response: ' + JSON.stringify(response));
+			if (response.data.result.status !== 400) {
+				setProfile(convertDataFromBackend(response.data.result.response));
+				setHasProfile(true);
+			}
 			setIsLoading(false);
 		} catch (e) {
 			message.error(
@@ -95,7 +103,7 @@ const ApplicantProfile = () => {
 				<Card
 					style={{ width: '100%', height: '100%' }}
 					title={
-						<div
+						hasProfile ? (						<div
 							style={{
 								display: 'flex',
 								flexDirection: 'row',
@@ -120,12 +128,12 @@ const ApplicantProfile = () => {
 							>
 								{basicInfo.firstName} {basicInfo.lastName}
 							</Title>
-						</div>
+						</div>) : (<></>)
 					}
 				>
 					<div style={{ marginLeft: '60px', marginRight: '60px' }}>
 						{basicOpen ? (
-							<EditableProfile setBasicOpen={setBasicOpen}/>
+							<EditableBasicInfo setBasicOpen={setBasicOpen}/>
 						) : (
 							<>
 								<div style={{ marginBottom: '25px' }}>
@@ -226,7 +234,7 @@ const ApplicantProfile = () => {
 										{' '}
 										Race{' '}
 									</Title>
-									{demographics?.race.map((element) => (
+									{demographics?.race?.map((element) => (
 										<Paragraph style={{ color: '#363636' }} key={element}>
 											{element}
 										</Paragraph>
@@ -236,7 +244,7 @@ const ApplicantProfile = () => {
 									{' '}
 									Disabilities/Serious Health Condition{' '}
 								</Title>
-								{demographics?.disability.map((condition) => (
+								{demographics?.disability?.map((condition) => (
 									<Paragraph style={{ color: '#363636' }} key={condition}>
 										{condition}
 									</Paragraph>
