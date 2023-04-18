@@ -61,13 +61,12 @@ const navBar = () => {
 					<Link to={APPLICANT_DASHBOARD}>Your Applications</Link>
 				</Menu.Item>
 			);
-		} else if (user.hasProfile === true) {
-			menuItems.push(
-				<Menu.Item key='your-profile'>
-					<Link to={PROFILE + user.uid}>Profile</Link>
-				</Menu.Item>
-			)
 		}
+		menuItems.push(
+			<Menu.Item key='your-profile'>
+				<Link to={PROFILE + user.uid}>Profile</Link>
+			</Menu.Item>
+		)
 	} else {
 		menuItems.push(
 			<Menu.Item

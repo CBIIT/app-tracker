@@ -14,14 +14,10 @@ const editableProfile = ({setBasicOpen}) => {
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
 	const { setCurrentProfileInstance } = contextValue;
-
+	console.log(profile);
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
 	}, []);
-
-	const cancel = async () => {
-		// todo
-	};
 
 	const onSave = async (values) => {
 
@@ -60,7 +56,6 @@ const editableProfile = ({setBasicOpen}) => {
 			form={formInstance}
 			initialValues={profile.basicInfo}
 			onFinish={onSave}
-			//onFinishFailed={onFinishFailed}
 			autoComplete="off"
 	  	>
 			<Row>

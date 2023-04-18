@@ -17,7 +17,7 @@ export const convertDataFromBackend = (data) => {
 				? data.basic_info.business_phone.slice(2)
 				: null,
 			highestLevelEducation: data.basic_info.highest_level_of_education,
-			isUsCitizen: data.basic_info.us_citizen,
+			isUsCitizen: parseInt(data.basic_info.us_citizen),
 			address: {
 				address: data.basic_info.address,
 				address2: data.basic_info.address_2,
