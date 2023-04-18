@@ -13,6 +13,7 @@ const ApplicantProfile = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [profile, setProfile] = useState(initialData);
 	const [currentProfileInstance, setCurrentProfileInstance] = useState(null);
+	const [hasProfile, setHasProfile] = useState(false);
 	const { sysId } = useParams();
 
 	const profileContext = {
@@ -33,12 +34,19 @@ const ApplicantProfile = () => {
 		})();
 	}, []);
 
-
 	const getProfileInfo = async () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
-			setProfile(convertDataFromBackend(response.data.result.response));
+			console.log(
+				'heres the response status: ' +
+					JSON.stringify(response.data.result.status)
+			);
+			console.log('heres the response: ' + JSON.stringify(response));
+			if (response.data.result.status !== 400) {
+				setProfile(convertDataFromBackend(response.data.result.response));
+				setHasProfile(true);
+			}
 			setIsLoading(false);
 		} catch (e) {
 			message.error(
@@ -51,11 +59,18 @@ const ApplicantProfile = () => {
 		<>
 			<Loading />
 		</>
-	) : (
+	) : hasProfile ? (
 		<>
 			<ProfileContext.Provider value={profileContext}>
 				<ApplicantCard />
 			</ProfileContext.Provider>
+		</>
+	) : (
+		<>
+			<div>
+				<EditableBasicInfo />
+				<DemographicsForm />
+			</div>
 		</>
 	);
 };

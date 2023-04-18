@@ -55,7 +55,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 		<>
 			<div>
 				<Title level={4}>Demographic Information</Title>
-				{!profile.demographics ? (
+				{!profile?.demographics ? (
 					<Paragraph>
 						You have no demographic details saved in your profile. Entering your
 						details takes a few minutes and helps improve the federal hiring
@@ -77,7 +77,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 				</Paragraph>
 				<Form
 					form={formInstance}
-					initialValues={profile.demographics}
+					initialValues={profile?.demographics}
 					requiredMark={false}
 					onFinish={onSave}
 					layout='vertical'

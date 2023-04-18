@@ -1,15 +1,15 @@
-import './EditableProfile.css';
+import './EditableBasicInfo.css';
 import EditableField from '../../components/UI/EditableField/EditableField'
 import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown'
 import useAuth from '../../hooks/useAuth';
 import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
-import { Button, Menu, Dropdown, Form, Input, Col, Row, Divider } from 'antd';
+import { Button, Menu, Dropdown, Form, Input, Col, Row, Divider, Select } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProfileContext from '../Profile/Util/FormContext';
 import { convertDataToBackend } from '../Profile/Util/ConvertDataToBackend';
 
-const editableProfile = ({setBasicOpen}) => {
+const editableBasicInfo = ({setBasicOpen}) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -18,6 +18,34 @@ const editableProfile = ({setBasicOpen}) => {
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
 	}, []);
+
+	const phonePrefixSelector = (
+		<Form.Item name='phonePrefix' noStyle>
+			<Select
+				style={{
+					width: 70,
+				}}
+			>
+				<Option value='+1'>+1</Option>
+				<Option value='+86'>+86</Option>
+				<Option value='+87'>+87</Option>
+			</Select>
+		</Form.Item>
+	);
+
+	const businessPhonePrefixSelector = (
+		<Form.Item name='businessPhonePrefix' noStyle>
+			<Select
+				style={{
+					width: 70,
+				}}
+			>
+				<Option value='+1'>+1</Option>
+				<Option value='+86'>+86</Option>
+				<Option value='+87'>+87</Option>
+			</Select>
+		</Form.Item>
+	);
 
 	const onSave = async (values) => {
 
@@ -54,7 +82,7 @@ const editableProfile = ({setBasicOpen}) => {
 			wrapperCol={{ span: 24 }}
 			style={{ maxWidth: 600 }}
 			form={formInstance}
-			initialValues={profile.basicInfo}
+			initialValues={profile?.basicInfo}
 			onFinish={onSave}
 			autoComplete="off"
 	  	>
@@ -111,11 +139,36 @@ const editableProfile = ({setBasicOpen}) => {
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableField label="Phone Number" name="phone" required={true} size="18" />
+					<Form.Item
+							label="Phone"
+							name="phone"
+							rules={[{ required: false, message: 'Please provide an answer.' }]}
+						>
+						<Input
+							type='tel'
+							addonBefore={phonePrefixSelector}
+							placeholder='(123) 456-7890'
+							maxLength={16}
+							name = "phone"
+							required = {true}
+						/>
+					</Form.Item>
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<EditableField label="Business Phone Number (Optional)" name="businessPhone" required={false} size="18" />
+					<Form.Item
+						label="Business Phone"
+						name="businessPhone"
+						rules={[{ required: false, message: 'Please provide an answer.' }]}
+					>
+						<Input								
+								type='tel'
+								addonBefore={businessPhonePrefixSelector}
+								placeholder='(123) 456-7890'
+								maxLength={16}
+								name = "businessPhone"
+						/>
+					</Form.Item>
 				</Col>
 			</Row>
 			<Row>
@@ -152,4 +205,4 @@ const editableProfile = ({setBasicOpen}) => {
 	);
 };
 
-export default editableProfile;
+export default editableBasicInfo;
