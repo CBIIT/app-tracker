@@ -8,6 +8,8 @@ import Loading from '../../components/Loading/Loading';
 import { GET_PROFILE } from '../../constants/ApiEndpoints';
 import { convertDataFromBackend } from './Util/ConvertDataFromBackend';
 import ApplicantCard from './Forms/ApplicantCard';
+import EditableBasicInfo from '../EditableBasicInfo/EditableBasicInfo';
+import DemographicsForm from './Forms/Demographics';
 
 const ApplicantProfile = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -38,11 +40,6 @@ const ApplicantProfile = () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
-			console.log(
-				'heres the response status: ' +
-					JSON.stringify(response.data.result.status)
-			);
-			console.log('heres the response: ' + JSON.stringify(response));
 			if (response.data.result.status !== 400) {
 				setProfile(convertDataFromBackend(response.data.result.response));
 				setHasProfile(true);
@@ -56,25 +53,17 @@ const ApplicantProfile = () => {
 	};
 
 	return isLoading ? (
-		<>
 			<Loading />
-		</>
 	) : hasProfile ? (
-		<>
 			<ProfileContext.Provider value={profileContext}>
 				<ApplicantCard />
 			</ProfileContext.Provider>
-		</>
 	) : (
-		<>
-			<div>
+			<div style={{marginLeft: 35, paddingTop: 40}}>
 				<EditableBasicInfo />
 				<DemographicsForm />
 			</div>
-		</>
 	);
 };
 
 export default ApplicantProfile;
-// If edit button is clicked in a section, the form will render
-// function to handle rendering components
