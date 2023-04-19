@@ -47,13 +47,45 @@ const editableBasicInfo = ({setBasicOpen}) => {
 		</Form.Item>
 	);
 
+	const saveCurrentForm = async (result) => {
+		const updatedForm = updateFormData(formData, result, currentStepObj.key);
+		setFormData(updatedForm);
+		return updatedForm;
+	};
+
+	const updateFormData = (currentForm, newValues, step) => {
+		const updatedForm = { ...currentForm };
+		switch (step) {
+			case 'basicInfo':
+				// (basic information) save to applicant
+				updatedForm.basicInfo = { ...currentForm.basicInfo, ...newValues };
+				return updatedForm;
+			case 'address':
+				// (address) save to applicant
+				updatedForm.address = { ...currentForm.address, ...newValues };
+				return updatedForm;
+			case 'references':
+				// (references) save to references
+				updatedForm.references = newValues.references;
+				return updatedForm;
+			default:
+				return updatedForm;
+		}
+	};
+
 	const onSave = async (values) => {
 
-	console.log(values);
-	/*const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
-	alert('response: ' + saveDraftResponse)*/
+		console.log(values);
+		/*const saveDraftResponse = await axios.post(SAVE_PROFILE, data);*/
 
-	//alert('heres the obj: ' + JSON.stringify(data	));
+		try {
+			const validationResult = await formInstance.validateFields();
+			await saveCurrentForm(validationResult);
+			window.scrollTo(0, 0);
+		} catch (error) {
+			message.error('Please fill out all required fields.');
+		}
+
 	};
 	
 	const {
@@ -132,10 +164,6 @@ const editableBasicInfo = ({setBasicOpen}) => {
 				<Col span={10}>
 					<EditableField label="Email" name="email" required={true} size="18" />
 				</Col>
-				<Col span={4}> </Col>
-				{/*<Col span={10}>
-					<EditableField label="Confirm Email" size="18" />
-				</Col> */}
 			</Row>
 			<Row>
 				<Col span={10}>
@@ -150,7 +178,6 @@ const editableBasicInfo = ({setBasicOpen}) => {
 							placeholder='(123) 456-7890'
 							maxLength={16}
 							name = "phone"
-							required = {true}
 						/>
 					</Form.Item>
 				</Col>
