@@ -1,7 +1,17 @@
 import { useContext, useEffect } from 'react';
 import axios from 'axios';
 
-import { Form, Checkbox, Button, Typography, message, Radio, Space } from 'antd';
+import {
+	Form,
+	Checkbox,
+	Col,
+	Button,
+	Typography,
+	message,
+	Radio,
+	Row,
+	Space,
+} from 'antd';
 const { Paragraph, Title } = Typography;
 
 import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
@@ -14,7 +24,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
 	const share = Form.useWatch('share', formInstance);
-	const { currentProfileInstance, setCurrentProfileInstance } = contextValue;
+	const { setCurrentProfileInstance } = contextValue;
 
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
@@ -48,36 +58,41 @@ const DemographicsForm = ({ setDemoOpen }) => {
 			}
 		}
 		location.reload();
-		// setOpen(false);
 	}
 
 	return (
 		<>
 			<div>
-				<Title level={4}>Demographic Information</Title>
-				{!profile?.demographics ? (
+				<Col span={22}>
+					<Title level={4}>Demographic Information</Title>
+					{!profile?.demographics ? (
+						<Paragraph>
+							You have no demographic details saved in your profile. Entering
+							your details takes a few minutes and helps improve the federal
+							hiring process. We never use your details in hiring decisions or
+							send individual details to hiring managers.
+						</Paragraph>
+					) : (
+						<></>
+					)}
+					<Title level={5}>Your privacy is protected.</Title>
 					<Paragraph>
-						You have no demographic details saved in your profile. Entering your
-						details takes a few minutes and helps improve the federal hiring
-						process. We never use your details in hiring decisions or send
-						individual details to hiring managers.
+						We use demographics to find out if our recruitment efforts are
+						reaching all segments of the population, consistent with federal
+						equal employment opportunity laws. We do not provide demographic
+						data to any hiring officials, anyone involved in the hiring process
+						or the public. Review our {/*content to open in new window*/}{' '}
+						privacy policy and the {/* also opens link in new window */}{' '}
+						Paperwork Reduction Act for more information.
 					</Paragraph>
-				) : (
-					<></>
-				)}
-				<Title level={5}>Your privacy is protected.</Title>
-				<Paragraph>
-					We use demographics to find out if our recruitment efforts are
-					reaching all segments of the population, consistent with federal equal
-					employment opportunity laws. We do not provide demographic data to any
-					hiring officials, anyone involved in the hiring process or the public.
-					Review our {/*content to open in new window*/} privacy policy and the{' '}
-					{/* also opens link in new window */} Paperwork Reduction Act for more
-					information.
-				</Paragraph>
+					<Space direction='vertical' size={12} />
+				</Col>
 				<Form
 					form={formInstance}
 					initialValues={profile?.demographics}
+					labelCol={{ span: 24 }}
+					wrapperCol={{ span: 24 }}
+					style={{ maxWidth: 600 }}
 					requiredMark={false}
 					onFinish={onSave}
 					layout='vertical'
@@ -209,20 +224,32 @@ const DemographicsForm = ({ setDemoOpen }) => {
 							<></>
 						)}
 						<Form.Item>
-							<Space
-								style={{ display: 'flex', justifyContent: 'space-between' }}
-							>
-								<Button
-									onClick={() => {
-										setDemoOpen(false);
-									}}
-								>
-									Cancel
-								</Button>
-								<Button type='primary' htmlType='submit'>
-									Save
-								</Button>
-							</Space>
+							<Row>
+								{!setDemoOpen ? (
+									<></>
+								) : (
+									<>
+										<Col span={6}>
+											<Button
+												className='wider-button'
+												onClick={() => setDemoOpen(false)}
+											>
+												Cancel
+											</Button>
+										</Col>
+										<Col span={12}></Col>
+									</>
+								)}
+								<Col span={6}>
+									<Button
+										className='wider-button'
+										type='primary'
+										htmlType='submit'
+									>
+										Save
+									</Button>
+								</Col>
+							</Row>
 						</Form.Item>
 					</div>
 				</Form>
