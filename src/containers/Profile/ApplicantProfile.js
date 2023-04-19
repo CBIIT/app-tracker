@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { message } from 'antd';
+import { Divider, message, Space } from 'antd';
 
 import ProfileContext, { initialData } from './Util/FormContext';
 import Loading from '../../components/Loading/Loading';
@@ -59,9 +59,12 @@ const ApplicantProfile = () => {
 				<ApplicantCard />
 			</ProfileContext.Provider>
 	) : (
-			<div style={{marginLeft: 35, paddingTop: 40}}>
-				<EditableBasicInfo />
-				<DemographicsForm />
+			<div style={{marginLeft: 35, marginRight: 35, paddingTop: 40}}>
+				<Space size={25} direction="vertical">
+					<EditableBasicInfo />
+					<Divider />
+					<DemographicsForm />
+				</Space>
 			</div>
 	);
 };
