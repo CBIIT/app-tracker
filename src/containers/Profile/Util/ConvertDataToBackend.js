@@ -26,13 +26,13 @@ export const convertDataToBackend = (data) => {
 			},
 		},
 		demographics: {
-			share: data.demographics.share.toString(),
-			sex: data.demographics.sex,
-			ethnicity: data.demographics.ethnicity.toString(),
-			race: data.demographics.race.toString(),
-			disability: data.demographics.disability.toString(),
+			share: data.demographics?.share.toString(),
+			sex: data.demographics?.sex,
+			ethnicity: data.demographics?.ethnicity.toString(),
+			race: data.demographics?.race.toString(),
+			disability: data.demographics?.disability.toString(),
 		},
-		references: data.references.map((reference) => {
+		references: data.references?.map((reference) => {
 			return {
 				ref_sys_id: reference.ref_sys_id ? reference.ref_sys_id : null,
 				first_name: reference.firstName,

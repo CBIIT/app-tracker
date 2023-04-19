@@ -33,7 +33,8 @@ const DemographicsForm = ({ setDemoOpen }) => {
 	const onSave = async (values) => {
 		const successKey = 'success';
 		const errorKey = 'error';
-		const requiredField = profile.demographics.share
+		console.log(profile);
+		const requiredField = profile.demographics.share.toString();
 		if (requiredField == undefined || requiredField == '') {
 			message.error({
 				errorKey,

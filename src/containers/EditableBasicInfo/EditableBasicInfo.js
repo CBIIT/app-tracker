@@ -61,11 +61,14 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 
 		try {
 			const validationResult = await formInstance.validateFields();
-			await saveCurrentForm(validationResult);
+			//console.log("result = " + JSON.stringify(validationResult));
+			console.log(validationResult);
+			//await saveCurrentForm(validationResult);
+			console.log("basic info details saved")
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
-			message.error('Please fill out all required fields.');
+			console.log('Please fill out all required fields.');
 		}
 
 		if (valid){
@@ -73,7 +76,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				...profile, 
 				basicInfo: values
 			}
-			const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
+			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
 			console.log(JSON.stringify(saveDraftResponse));
 
 		}

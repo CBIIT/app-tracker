@@ -40,9 +40,12 @@ const ApplicantProfile = () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
+			console.log(response.data.result);
 			if (response.data.result.status !== 400) {
+				console.log(profile);
 				setProfile(convertDataFromBackend(response.data.result.response));
-				setHasProfile(true);
+				
+	//			setHasProfile(true);
 			}
 			setIsLoading(false);
 		} catch (e) {
