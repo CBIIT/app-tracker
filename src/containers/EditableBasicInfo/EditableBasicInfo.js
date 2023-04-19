@@ -8,6 +8,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProfileContext from '../Profile/Util/FormContext';
 import { convertDataToBackend } from '../Profile/Util/ConvertDataToBackend';
+import { boolean } from 'optimist';
 
 const editableBasicInfo = ({setBasicOpen}) => {
 	const [formInstance] = Form.useForm();
@@ -47,45 +48,29 @@ const editableBasicInfo = ({setBasicOpen}) => {
 		</Form.Item>
 	);
 
-	const saveCurrentForm = async (result) => {
-		const updatedForm = updateFormData(formData, result, currentStepObj.key);
-		setFormData(updatedForm);
-		return updatedForm;
-	};
-
-	const updateFormData = (currentForm, newValues, step) => {
-		const updatedForm = { ...currentForm };
-		switch (step) {
-			case 'basicInfo':
-				// (basic information) save to applicant
-				updatedForm.basicInfo = { ...currentForm.basicInfo, ...newValues };
-				return updatedForm;
-			case 'address':
-				// (address) save to applicant
-				updatedForm.address = { ...currentForm.address, ...newValues };
-				return updatedForm;
-			case 'references':
-				// (references) save to references
-				updatedForm.references = newValues.references;
-				return updatedForm;
-			default:
-				return updatedForm;
-		}
-	};
-
 	const onSave = async (values) => {
 
 		console.log(values);
-		/*const saveDraftResponse = await axios.post(SAVE_PROFILE, data);*/
+		var valid = false;
 
 		try {
 			const validationResult = await formInstance.validateFields();
 			await saveCurrentForm(validationResult);
 			window.scrollTo(0, 0);
+			valid = true;
 		} catch (error) {
 			message.error('Please fill out all required fields.');
 		}
 
+		if (valid){
+			let data = {
+				...profile, 
+				basicInfo: values
+			}
+			const saveDraftResponse = await axios.post(SAVE_PROFILE, data);
+			console.log(JSON.stringify(saveDraftResponse));
+
+		}
 	};
 	
 	const {
