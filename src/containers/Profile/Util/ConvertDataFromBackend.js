@@ -1,4 +1,5 @@
 export const convertDataFromBackend = (data) => {
+	console.log(data);
 	return {
 		userSysId: data.basic_info.sys_id,
 		basicInfo: {
@@ -29,10 +30,10 @@ export const convertDataFromBackend = (data) => {
 		},
 		demographics: {
 			disability: data.demographics.disability.split(','),
-			ethnicity: parseInt(data.demographics.ethnicity),
+			ethnicity: data.demographics.ethnicity,
 			race: data.demographics.race.split(','),
 			sex: data.demographics.sex,
-			share: parseInt(data.demographics.share),
+			share: data.demographics.share,
 		},
 		references: data.references.map((reference) => {
 			return {
