@@ -11,7 +11,7 @@ export const convertDataFromBackend = (data) => {
 			phonePrefix: data.basic_info.phone.slice(0, 2),
 			phone: data.basic_info.phone.slice(2),
 			businessPhonePrefix: data.basic_info.business_phone
-				? data.basic_info.business_phone.slice(0, 2)
+				? data.basic_info.business_phone?.slice(0, 2)
 				: '+1',
 			businessPhone: data.basic_info.business_phone
 				? data.basic_info.business_phone.slice(2)
@@ -28,9 +28,9 @@ export const convertDataFromBackend = (data) => {
 			},
 		},
 		demographics: {
-			disability: data.demographics.disability.split(','),
+			disability: data.demographics.disability?.split(','),
 			ethnicity: parseInt(data.demographics.ethnicity),
-			race: data.demographics.race.split(','),
+			race: data.demographics.race?.split(','),
 			sex: data.demographics.sex,
 			share: parseInt(data.demographics.share),
 		},
