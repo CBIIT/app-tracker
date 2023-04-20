@@ -26,25 +26,12 @@ export const convertDataToBackend = (data) => {
 			},
 		},
 		demographics: {
-			share: data.demographics?.share.toString(),
+			//share(choice: num), sex(str), ethnicity(choice: num), race(str), disability(str)
+			share: data.demographics?.share,
 			sex: data.demographics?.sex,
-			ethnicity: data.demographics?.ethnicity.toString(),
-			race: data.demographics?.race.toString(),
-			disability: data.demographics?.disability.toString(),
+			ethnicity: data.demographics?.ethnicity,
+			race: data.demographics.race ? data.demographics?.race.toString() : null,
+			disability: data.demographics.disability ? data.demographics?.disability.toString() : null,
 		},
-		references: data.references?.map((reference) => {
-			return {
-				ref_sys_id: reference.ref_sys_id ? reference.ref_sys_id : null,
-				first_name: reference.firstName,
-				middle_name: reference.middleName,
-				last_name: reference.lastName,
-				email: reference.email,
-				phone: reference.phoneNumber,
-				contact_allowed: reference.contact,
-				organization: reference.organization,
-				title: reference.title,
-				relationship: reference.relationship,
-			};
-		}),
 	};
 };

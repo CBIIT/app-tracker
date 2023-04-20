@@ -1,5 +1,4 @@
 export const convertDataFromBackend = (data) => {
-	console.log(data);
 	return {
 		userSysId: data.basic_info.sys_id,
 		basicInfo: {
@@ -30,24 +29,10 @@ export const convertDataFromBackend = (data) => {
 		},
 		demographics: {
 			disability: data.demographics.disability.split(','),
-			ethnicity: data.demographics.ethnicity,
+			ethnicity: parseInt(data.demographics.ethnicity),
 			race: data.demographics.race.split(','),
 			sex: data.demographics.sex,
-			share: data.demographics.share,
+			share: parseInt(data.demographics.share),
 		},
-		references: data.references.map((reference) => {
-			return {
-				ref_sys_id: reference.ref_sys_id,
-				firstName: reference.first_name,
-				middleName: reference.middle_name,
-				lastName: reference.last_name,
-				email: reference.email,
-				contact: reference.contact_allowed,
-				organization: reference.organization,
-				phoneNumber: reference.phone,
-				relationship: reference.relationship,
-				title: reference.title,
-			};
-		}),
 	};
 };

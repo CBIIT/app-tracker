@@ -56,15 +56,12 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 
 	const onSave = async (values) => {
 
-		console.log(values);
 		var valid = false;
 
 		try {
 			const validationResult = await formInstance.validateFields();
 			//console.log("result = " + JSON.stringify(validationResult));
 			console.log(validationResult);
-			//await saveCurrentForm(validationResult);
-			console.log("basic info details saved")
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
@@ -72,12 +69,13 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 		}
 
 		if (valid){
+			console.log("🚀 ~ file: EditableBasicInfo.js:72 ~ onSave ~ profile:", profile)
 			let data = {
 				...profile, 
 				basicInfo: values
 			}
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-			console.log(JSON.stringify(saveDraftResponse));
+			// console.log(JSON.stringify(saveDraftResponse));
 
 		}
 	};

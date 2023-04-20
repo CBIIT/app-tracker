@@ -24,12 +24,6 @@ const ApplicantProfile = () => {
 		setCurrentProfileInstance,
 	};
 
-	/*
-				<EditableReferences/>
-
-				<EditableReferences/>
-	*/
-
 	useEffect(() => {
 		(async () => {
 			await getProfileInfo();
@@ -40,12 +34,11 @@ const ApplicantProfile = () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
-			console.log(response.data.result);
+			console.log("🚀 ~ file: ApplicantProfile.js:37 ~ getProfileInfo ~ response:", response.data.result);
 			if (response.data.result.status !== 400) {
-				console.log(profile);
 				setProfile(convertDataFromBackend(response.data.result.response));
-				
-	//			setHasProfile(true);
+				console.log("🚀 ~ file: ApplicantProfile.js:40 ~ getProfileInfo ~ profile:", profile);
+				setHasProfile(true);
 			}
 			setIsLoading(false);
 		} catch (e) {
@@ -56,19 +49,21 @@ const ApplicantProfile = () => {
 	};
 
 	return isLoading ? (
-			<Loading />
+		<Loading />
 	) : hasProfile ? (
-			<ProfileContext.Provider value={profileContext}>
-				<ApplicantCard />
-			</ProfileContext.Provider>
+		<ProfileContext.Provider value={profileContext}>
+			<ApplicantCard />
+		</ProfileContext.Provider>
 	) : (
-			<div style={{marginLeft: 35, marginRight: 35, paddingTop: 40}}>
-				<Space size={25} direction="vertical">
+		<div style={{ marginLeft: 35, marginRight: 35, paddingTop: 40 }}>
+			<ProfileContext.Provider value={profileContext}>
+				<Space size={25} direction='vertical'>
 					<EditableBasicInfo />
 					<Divider />
 					<DemographicsForm />
 				</Space>
-			</div>
+			</ProfileContext.Provider>
+		</div>
 	);
 };
 
