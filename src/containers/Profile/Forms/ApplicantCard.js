@@ -9,16 +9,15 @@ import EditableBasicInfo from '../../EditableBasicInfo/EditableBasicInfo';
 const ApplicantCard = () => {
 	const [demoOpen, setDemoOpen] = useState(false);
 	const [basicOpen, setBasicOpen] = useState(false);
-	const [refOpen, setRefOpen] = useState(false);
 
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
 
 	const getEthnicity = (value) => {
 		switch (value) {
-			case 1:
+			case '1':
 				return 'Hispanic or Latino';
-			case 0:
+			case '0':
 				return 'Not Hispanic or Latino';
 			default:
 				return '';
@@ -42,7 +41,7 @@ const ApplicantCard = () => {
 		return lastName[0];
 	};
 
-	const { basicInfo, demographics, references } = profile;
+	const { basicInfo, demographics } = profile;
 	const address = basicInfo?.address;
 
 	return (

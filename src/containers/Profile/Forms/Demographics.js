@@ -61,7 +61,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 				message.error('Sorry! There was an error saving your profile.')
 			}
 		}
-		//location.reload();
+		location.reload();
 	}
 
 	return (
@@ -138,8 +138,8 @@ const DemographicsForm = ({ setDemoOpen }) => {
 								<Form.Item name='ethnicity' label='Ethnicity'>
 									<Radio.Group>
 										<Space direction='vertical'>
-											<Radio value={1}>Hispanic or Latino</Radio>
-											<Radio value={0}>Not Hispanic or Latino</Radio>
+											<Radio value='1'>Hispanic or Latino</Radio>
+											<Radio value='0'>Not Hispanic or Latino</Radio>
 										</Space>
 									</Radio.Group>
 								</Form.Item>
