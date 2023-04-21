@@ -20,6 +20,7 @@ const ApplicantProfile = () => {
 
 	const profileContext = {
 		profile,
+		setProfile,
 		currentProfileInstance,
 		setCurrentProfileInstance,
 	};

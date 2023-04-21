@@ -21,7 +21,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
-	const { setCurrentProfileInstance } = contextValue;
+	const { setCurrentProfileInstance, setProfile } = contextValue;
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
 	}, []);
@@ -74,6 +74,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				...profile, 
 				basicInfo: values
 			}
+			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
 			// console.log(JSON.stringify(saveDraftResponse));
 

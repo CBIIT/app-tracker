@@ -19,12 +19,12 @@ import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 import ProfileContext from '../Util/FormContext';
 import { convertDataToBackend } from '../Util/ConvertDataToBackend';
 
-const DemographicsForm = ({ setDemoOpen, getProfileInfo }) => {
+const DemographicsForm = ({ setDemoOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
 	const share = Form.useWatch('share', formInstance);
-	const { setCurrentProfileInstance } = contextValue;
+	const { setCurrentProfileInstance, setProfile } = contextValue;
 
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
@@ -45,10 +45,10 @@ const DemographicsForm = ({ setDemoOpen, getProfileInfo }) => {
 			await formInstance.validateFields();
 		} else {
 			try {
-				//getProfileInfo();
-				console.log("🚀 ~ file: Demographics.js:49 ~ onSave ~ profile:", formInstance.getFieldsValue());
 				let data = {...profile, demographics: values};
-				console.log("🚀 ~ file: Demographics.js:51 ~ onSave ~ data:", data);
+				console.log("🚀 ~ file: Demographics.js:49 ~ onSave ~  converted data:", convertDataToBackend(data));
+				setProfile(data);
+				console.log("🚀 ~ file: Demographics.js:51 ~ onSave ~ profile:", profile);
 				const saveProfileResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
 				console.log("🚀 ~ file: Demographics.js:53 ~ onSave ~ saveProfileResponse:", saveProfileResponse);
 				message.info({
@@ -115,11 +115,11 @@ const DemographicsForm = ({ setDemoOpen, getProfileInfo }) => {
 						>
 							<Radio.Group>
 								<Space direction='vertical' size='middle'>
-									<Radio value={1}>
+									<Radio value='1'>
 										I want to share my demographic details and help improve the
 										hiring process.
 									</Radio>
-									<Radio value={0}>
+									<Radio value= '0'>
 										I do not want to answer the demographic questions.
 									</Radio>
 								</Space>
