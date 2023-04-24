@@ -27,7 +27,6 @@ export const convertDataToBackend = (data) => {
 			},
 		},
 		demographics: {
-			//share(choice: num), sex(str), ethnicity(choice: num), race(str), disability(str)
 			share: demographics.share ? demographics.share : null,
 			sex: demographics?.sex  ? demographics.sex : null,
 			ethnicity: demographics?.ethnicity ? demographics.ethnicity : null,

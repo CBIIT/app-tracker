@@ -7,8 +7,8 @@ import ProfileContext, { initialData } from './Util/FormContext';
 import Loading from '../../components/Loading/Loading';
 import { GET_PROFILE } from '../../constants/ApiEndpoints';
 import { convertDataFromBackend } from './Util/ConvertDataFromBackend';
-import ApplicantCard from './Forms/ApplicantCard';
-import EditableBasicInfo from '../EditableBasicInfo/EditableBasicInfo';
+import ApplicantCard from './ApplicantCard/ApplicantCard';
+import EditableBasicInfo from './Forms/EditableBasicInfo/EditableBasicInfo';
 import DemographicsForm from './Forms/Demographics';
 
 const ApplicantProfile = () => {

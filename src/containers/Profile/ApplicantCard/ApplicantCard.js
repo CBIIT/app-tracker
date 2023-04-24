@@ -3,8 +3,8 @@ import { Avatar, Card, message, Typography, Divider } from 'antd';
 const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../Util/FormContext';
-import DemographicsForm from './Demographics';
-import EditableBasicInfo from '../../EditableBasicInfo/EditableBasicInfo';
+import DemographicsForm from '../Forms/Demographics';
+import EditableBasicInfo from '../Forms/EditableBasicInfo/EditableBasicInfo';
 
 const ApplicantCard = () => {
 	const [demoOpen, setDemoOpen] = useState(false);

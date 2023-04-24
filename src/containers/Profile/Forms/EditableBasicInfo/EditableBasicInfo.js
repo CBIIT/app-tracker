@@ -1,8 +1,8 @@
 import './EditableBasicInfo.css';
-import EditableField from '../../components/UI/EditableField/EditableField';
-import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown';
-import useAuth from '../../hooks/useAuth';
-import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
+import EditableField from '../../../../components/UI/EditableField/EditableField';
+import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
+import useAuth from '../../../../hooks/useAuth';
+import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
 import {
 	Button,
 	Form,
@@ -13,8 +13,8 @@ import {
 } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import ProfileContext from '../Profile/Util/FormContext';
-import { convertDataToBackend } from '../Profile/Util/ConvertDataToBackend';
+import ProfileContext from '../../Util/FormContext';
+import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
 import { boolean } from 'optimist';
 
 const editableBasicInfo = ({ setBasicOpen }) => {
