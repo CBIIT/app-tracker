@@ -8,7 +8,6 @@ const editableDropDown = (props) => (
 		rules={[{ required: props.required, message: 'Please make a selection' }]}
 	>
 		<Select
-			style={{ width: 250 }}
 			options={props.menu.map((option) => ({ label: option.label, value: option.value }))}
 		/>
 	</Form.Item>
