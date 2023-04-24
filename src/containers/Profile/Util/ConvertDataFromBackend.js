@@ -26,7 +26,7 @@ export const convertDataFromBackend = (data) => {
 			phonePrefix: data.basic_info.phone.slice(0, 2),
 			phone: data.basic_info.phone.slice(2),
 			businessPhonePrefix: data.basic_info.business_phone
-				? data.basic_info.business_phone.slice(0, 2)
+				? data.basic_info.business_phone?.slice(0, 2)
 				: '+1',
 			businessPhone: data.basic_info.business_phone
 				? data.basic_info.business_phone.slice(2)

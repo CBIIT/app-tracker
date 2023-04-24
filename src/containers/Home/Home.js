@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 import { Table } from 'antd';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
-import EditableReferences from '../EditableReferences/EditableReferences'
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
-import EditableProfile from '../EditableBasicInfo/EditableBasicInfo'
+//import EditableProfile from '../EditableBasicInfo/EditableBasicInfo'
 
 const columns = [
 	{
