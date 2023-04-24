@@ -12,7 +12,7 @@ const editableRadio = (props) => {
 
 	<Form.Item
 		label={props.label}
-		name={props.label + "Radio"}
+		name={props.name}
 		rules={[{ required: false, message: 'please provide an answer' }]}
 	>
     <Radio.Group onChange={onChange}>
