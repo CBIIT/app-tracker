@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
-import { Avatar, Card, Typography, Divider } from 'antd';
-const { Paragraph, Title } = Typography;
+import { Avatar, Card, Typography } from 'antd';
+const { Title } = Typography;
 
 import ProfileContext from '../Util/FormContext';
 import DemographicTab from './Tabs/DemographicTab';

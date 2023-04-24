@@ -4,7 +4,7 @@ const { Paragraph, Title } = Typography;
 import ProfileContext from '../../Util/FormContext';
 import EditableBasicInfo from '../../Forms/EditableBasicInfo/EditableBasicInfo';
 
-const BasicInfoTab = () => {
+const BasicInfoTab = ({ hasProfile }) => {
 
     const [basicOpen, setBasicOpen] = useState(false);
     const contextValue = useContext(ProfileContext);
@@ -21,7 +21,7 @@ const BasicInfoTab = () => {
 
     return(
         <div style={{ marginLeft: '60px', marginRight: '60px' }}>
-            {basicOpen ? (
+            {!hasProfile || basicOpen ? (
                 <EditableBasicInfo setBasicOpen={setBasicOpen} />
             ) : (
                 <>
