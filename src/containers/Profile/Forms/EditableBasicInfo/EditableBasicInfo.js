@@ -1,5 +1,6 @@
 import './EditableBasicInfo.css';
 import EditableField from '../../../../components/UI/EditableField/EditableField';
+import EditableRadio from '../../../../components/UI/EditableRadio/EditableRadio'
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
 import useAuth from '../../../../hooks/useAuth';
 import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
@@ -15,7 +16,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
 import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
-import { boolean } from 'optimist';
 
 const editableBasicInfo = ({ setBasicOpen }) => {
 	const [formInstance] = Form.useForm();
@@ -76,8 +76,6 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			}
 			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-			// console.log(JSON.stringify(saveDraftResponse));
-
 		}
 	};
 
@@ -181,7 +179,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				</Col>
 			</Row>
 			<Row>
-				<Col span={10}>
+				<Col span={14}>
 					<EditableDropDown
 						label='Highest Level of Education'
 						name='highestLevelEducation'
@@ -190,12 +188,12 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 					/>
 				</Col>
 				<Col span={4}> </Col>
-				<Col span={10}>
-					<EditableDropDown
+				<Col span={6}>
+					<EditableRadio
 						label='Are you a US citizen?'
 						name='isUsCitizen'
 						required={true}
-						menu={yesNoMenu}
+						options={yesNoMenu}
 					/>
 				</Col>
 			</Row>

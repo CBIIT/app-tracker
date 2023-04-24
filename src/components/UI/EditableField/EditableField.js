@@ -1,5 +1,5 @@
 import './EditableField.css';
-import { Button, Input, Form } from 'antd';
+import { Input, Form } from 'antd';
 
 const editableField = (props) => (
 	<Form.Item
