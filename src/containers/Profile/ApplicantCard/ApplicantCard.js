@@ -4,7 +4,8 @@ const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../Util/FormContext';
 import DemographicsForm from '../Forms/Demographics';
-import EditableBasicInfo from '../Forms/EditableBasicInfo/EditableBasicInfo';
+import BasicInfoTab from './Tabs/BasicInfoTab';
+//import EditableBasicInfo from '../Forms/EditableBasicInfo/EditableBasicInfo';
 
 const ApplicantCard = () => {
 	const [demoOpen, setDemoOpen] = useState(false);
@@ -77,7 +78,8 @@ const ApplicantCard = () => {
 			}
 		>
 			<div style={{ marginLeft: '60px', marginRight: '60px' }}>
-				{basicOpen ? (
+				<BasicInfoTab/>
+				{/* {basicOpen ? (
 					<EditableBasicInfo setBasicOpen={setBasicOpen} />
 				) : (
 					<>
@@ -115,7 +117,7 @@ const ApplicantCard = () => {
 							</Paragraph>
 						</div>
 					</>
-				)}
+				)} */}
 				<Divider />
 				{demoOpen ? (
 					<DemographicsForm setDemoOpen={setDemoOpen} />
