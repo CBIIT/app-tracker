@@ -3,22 +3,21 @@ import { Avatar, Card, message, Typography, Divider } from 'antd';
 const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../Util/FormContext';
-import DemographicsForm from './Demographics';
-import EditableBasicInfo from '../../EditableBasicInfo/EditableBasicInfo';
+import DemographicsForm from '../Forms/Demographics';
+import EditableBasicInfo from '../Forms/EditableBasicInfo/EditableBasicInfo';
 
 const ApplicantCard = () => {
 	const [demoOpen, setDemoOpen] = useState(false);
 	const [basicOpen, setBasicOpen] = useState(false);
-	const [refOpen, setRefOpen] = useState(false);
 
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
 
 	const getEthnicity = (value) => {
 		switch (value) {
-			case 1:
+			case '1':
 				return 'Hispanic or Latino';
-			case 0:
+			case '0':
 				return 'Not Hispanic or Latino';
 			default:
 				return '';
@@ -42,7 +41,7 @@ const ApplicantCard = () => {
 		return lastName[0];
 	};
 
-	const { basicInfo, demographics, references } = profile;
+	const { basicInfo, demographics } = profile;
 	const address = basicInfo?.address;
 
 	return (
@@ -140,43 +139,60 @@ const ApplicantCard = () => {
 						<div>
 							<a onClick={() => setDemoOpen(true)}>Edit</a>
 						</div>
-						<div>
-							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-								Sex
-							</Title>
-							<Paragraph style={{ color: '#363636' }}>
-								{demographics.sex}
+						{demographics.share === '0' ? (
+							<Paragraph>
+								You've chosen not to share your demographics.
 							</Paragraph>
-						</div>
-						<div>
-							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-								{' '}
-								Ethnicity{' '}
-							</Title>
-							<Paragraph style={{ color: '#363636' }}>
-								{getEthnicity(demographics.ethnicity)}
-							</Paragraph>
-						</div>
-						<div>
-							<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-								{' '}
-								Race{' '}
-							</Title>
-							{demographics?.race.map((element) => (
-								<Paragraph style={{ color: '#363636' }} key={element}>
-									{element}
-								</Paragraph>
-							))}
-						</div>
-						<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
-							{' '}
-							Disabilities/Serious Health Condition{' '}
-						</Title>
-						{demographics?.disability.map((condition) => (
-							<Paragraph style={{ color: '#363636' }} key={condition}>
-								{condition}
-							</Paragraph>
-						))}
+						) : (
+							<>
+								<div>
+									<Title
+										level={5}
+										style={{ fontSize: '14px', color: '#6a6a6a' }}
+									>
+										Sex
+									</Title>
+									<Paragraph style={{ color: '#363636' }}>
+										{demographics.sex}
+									</Paragraph>
+								</div>
+								<div>
+									<Title
+										level={5}
+										style={{ fontSize: '14px', color: '#6a6a6a' }}
+									>
+										{' '}
+										Ethnicity{' '}
+									</Title>
+									<Paragraph style={{ color: '#363636' }}>
+										{getEthnicity(demographics.ethnicity)}
+									</Paragraph>
+								</div>
+								<div>
+									<Title
+										level={5}
+										style={{ fontSize: '14px', color: '#6a6a6a' }}
+									>
+										{' '}
+										Race{' '}
+									</Title>
+									{demographics?.race.map((element) => (
+										<Paragraph style={{ color: '#363636' }} key={element}>
+											{element}
+										</Paragraph>
+									))}
+								</div>
+								<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+									{' '}
+									Disabilities/Serious Health Condition{' '}
+								</Title>
+								{demographics?.disability.map((condition) => (
+									<Paragraph style={{ color: '#363636' }} key={condition}>
+										{condition}
+									</Paragraph>
+								))}
+							</>
+						)}
 					</div>
 				)}
 			</div>

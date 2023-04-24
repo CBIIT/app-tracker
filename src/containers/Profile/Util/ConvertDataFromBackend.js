@@ -1,4 +1,19 @@
 export const convertDataFromBackend = (data) => {
+	const createDemoObj = (data) => {
+		if (data.demographics.share === '0') {
+			return {
+				share: data.demographics.share,
+			}
+		} else {
+			return {
+				disability: data.demographics.disability.split(','),
+				ethnicity: data.demographics.ethnicity,
+				race: data.demographics.race.split(','),
+				sex: data.demographics.sex,
+				share: data.demographics.share,
+			}
+		}
+	}
 	return {
 		userSysId: data.basic_info.sys_id,
 		basicInfo: {
@@ -27,26 +42,6 @@ export const convertDataFromBackend = (data) => {
 				country: data.basic_info.country,
 			},
 		},
-		demographics: {
-			disability: data.demographics.disability?.split(','),
-			ethnicity: parseInt(data.demographics.ethnicity),
-			race: data.demographics.race?.split(','),
-			sex: data.demographics.sex,
-			share: parseInt(data.demographics.share),
-		},
-		references: data.references.map((reference) => {
-			return {
-				ref_sys_id: reference.ref_sys_id,
-				firstName: reference.first_name,
-				middleName: reference.middle_name,
-				lastName: reference.last_name,
-				email: reference.email,
-				contact: reference.contact_allowed,
-				organization: reference.organization,
-				phoneNumber: reference.phone,
-				relationship: reference.relationship,
-				title: reference.title,
-			};
-		}),
+		demographics: createDemoObj(data),
 	};
 };

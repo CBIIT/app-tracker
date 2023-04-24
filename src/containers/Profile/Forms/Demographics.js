@@ -24,7 +24,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
 	const share = Form.useWatch('share', formInstance);
-	const { setCurrentProfileInstance } = contextValue;
+	const { setCurrentProfileInstance, setProfile } = contextValue;
 
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
@@ -33,21 +33,24 @@ const DemographicsForm = ({ setDemoOpen }) => {
 	const onSave = async (values) => {
 		const successKey = 'success';
 		const errorKey = 'error';
-		console.log(profile);
-		const requiredField = profile.demographics.share.toString();
-		if (requiredField == undefined || requiredField == '') {
+		const validatedAnswers = await formInstance.validateFields();
+		console.log("🚀 ~ file: Demographics.js:37 ~ onSave ~ validatedAnswers:", validatedAnswers);
+		if (validatedAnswers.share === undefined || validatedAnswers.share === '') {
 			message.error({
 				errorKey,
 				content: 'Please select if you would like to share your demographics to improve the hiring process.',
 				duration: 3
 			});
 
-			await formInstance.validateFields(['share']);
+			await formInstance.validateFields();
 		} else {
 			try {
 				let data = {...profile, demographics: values};
+				console.log("🚀 ~ file: Demographics.js:49 ~ onSave ~  converted data:", convertDataToBackend(data));
+				setProfile(data);
+				console.log("🚀 ~ file: Demographics.js:51 ~ onSave ~ profile:", profile);
 				const saveProfileResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-				// console.log(saveProfileResponse);
+				console.log("🚀 ~ file: Demographics.js:53 ~ onSave ~ saveProfileResponse:", saveProfileResponse);
 				message.info({
 					successKey,
 					content: 'Demographics saved successfully',
@@ -112,17 +115,17 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						>
 							<Radio.Group>
 								<Space direction='vertical' size='middle'>
-									<Radio value={1}>
+									<Radio value='1'>
 										I want to share my demographic details and help improve the
 										hiring process.
 									</Radio>
-									<Radio value={0}>
+									<Radio value= '0'>
 										I do not want to answer the demographic questions.
 									</Radio>
 								</Space>
 							</Radio.Group>
 						</Form.Item>
-						{share ? (
+						{share === '1' ? (
 							<>
 								<Form.Item name='sex' label='Sex'>
 									<Radio.Group>
@@ -135,8 +138,8 @@ const DemographicsForm = ({ setDemoOpen }) => {
 								<Form.Item name='ethnicity' label='Ethnicity'>
 									<Radio.Group>
 										<Space direction='vertical'>
-											<Radio value={1}>Hispanic or Latino</Radio>
-											<Radio value={0}>Not Hispanic or Latino</Radio>
+											<Radio value='1'>Hispanic or Latino</Radio>
+											<Radio value='0'>Not Hispanic or Latino</Radio>
 										</Space>
 									</Radio.Group>
 								</Form.Item>

@@ -1,8 +1,8 @@
 import './EditableBasicInfo.css';
-import EditableField from '../../components/UI/EditableField/EditableField';
-import EditableDropDown from '../../components/UI/EditableDropDown/EditableDropDown';
-import useAuth from '../../hooks/useAuth';
-import { SAVE_PROFILE } from '../../constants/ApiEndpoints';
+import EditableField from '../../../../components/UI/EditableField/EditableField';
+import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
+import useAuth from '../../../../hooks/useAuth';
+import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
 import {
 	Button,
 	Form,
@@ -13,15 +13,15 @@ import {
 } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import ProfileContext from '../Profile/Util/FormContext';
-import { convertDataToBackend } from '../Profile/Util/ConvertDataToBackend';
+import ProfileContext from '../../Util/FormContext';
+import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
 import { boolean } from 'optimist';
 
 const editableBasicInfo = ({ setBasicOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
-	const { setCurrentProfileInstance } = contextValue;
+	const { setCurrentProfileInstance, setProfile } = contextValue;
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
 	}, []);
@@ -56,15 +56,12 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 
 	const onSave = async (values) => {
 
-		console.log(values);
 		var valid = false;
 
 		try {
 			const validationResult = await formInstance.validateFields();
 			//console.log("result = " + JSON.stringify(validationResult));
 			console.log(validationResult);
-			//await saveCurrentForm(validationResult);
-			console.log("basic info details saved")
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
@@ -72,12 +69,14 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 		}
 
 		if (valid){
+			console.log("🚀 ~ file: EditableBasicInfo.js:72 ~ onSave ~ profile:", profile)
 			let data = {
 				...profile, 
 				basicInfo: values
 			}
+			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-			console.log(JSON.stringify(saveDraftResponse));
+			// console.log(JSON.stringify(saveDraftResponse));
 
 		}
 	};
