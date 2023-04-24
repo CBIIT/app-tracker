@@ -111,7 +111,11 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			autoComplete='off'
 		>
 			<Row>
-				<Col span={10}>
+				<h2>Basic Information</h2>
+				<p>Let's start with some basic questions. You'll have a chance to review everything before submitting.</p>
+			</Row>
+			<Row>
+				<Col span={6}>
 					<EditableField
 						label='First Name'
 						name='firstName'
@@ -119,8 +123,8 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 						namesize='18'
 					/>
 				</Col>
-				<Col span={4}> </Col>
-				<Col span={10}>
+				<Col span={3}> </Col>
+				<Col span={6}>
 					<EditableField
 						label='Middle Name'
 						name='middleName'
@@ -128,9 +132,8 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 						size='18'
 					/>
 				</Col>
-			</Row>
-			<Row>
-				<Col span={10}>
+				<Col span={3}> </Col>
+				<Col span={6}>
 					<EditableField
 						label='Last Name'
 						name='lastName'
@@ -141,64 +144,6 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			</Row>
 			<Row>
 				<Col span={24}>
-					<EditableField
-						label='Address'
-						name={['address', 'address']}
-						required={true}
-						size='55'
-					/>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={24}>
-					<EditableField
-						label='Apartment Number or Suite'
-						name={['address', 'address2']}
-						required={false}
-						size='55'
-					/>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={10}>
-					<EditableField
-						label='City'
-						name={['address', 'city']}
-						required={true}
-						size='18'
-					/>
-				</Col>
-				<Col span={4}> </Col>
-				<Col span={10}>
-					<EditableField
-						label='State/Province'
-						name={['address', 'stateProvince']}
-						required={true}
-						size='18'
-					/>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={10}>
-					<EditableField
-						label='Country'
-						name={['address', 'country']}
-						required={true}
-						size='18'
-					/>
-				</Col>
-				<Col span={4}> </Col>
-				<Col span={10}>
-					<EditableField
-						label='Zip/Postal Code'
-						name={['address', 'zip']}
-						required={true}
-						size='18'
-					/>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={10}>
 					<EditableField label='Email' name='email' required={true} size='18' />
 				</Col>
 			</Row>
@@ -251,6 +196,69 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 						name='isUsCitizen'
 						required={true}
 						menu={yesNoMenu}
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<h2>Address</h2>
+			</Row>
+			<Row>
+				<p>Please provide your mailing address.</p>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField
+						label='Address'
+						name={['address', 'address']}
+						required={true}
+						size='55'
+					/>
+				</Col>
+				<Col span={4}/>
+				<Col span={10}>
+					<EditableField
+						label='Apartment Number or Suite'
+						name={['address', 'address2']}
+						required={false}
+						size='55'
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField
+						label='City'
+						name={['address', 'city']}
+						required={true}
+						size='18'
+					/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField
+						label='State/Province'
+						name={['address', 'stateProvince']}
+						required={true}
+						size='18'
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableField
+						label='Country'
+						name={['address', 'country']}
+						required={true}
+						size='18'
+					/>
+				</Col>
+				<Col span={4}> </Col>
+				<Col span={10}>
+					<EditableField
+						label='Zip/Postal Code'
+						name={['address', 'zip']}
+						required={true}
+						size='18'
 					/>
 				</Col>
 			</Row>
