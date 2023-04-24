@@ -76,7 +76,7 @@ const DemographicTab = ({ hasProfile }) => {
 	const { demographics } = profile;
 
 	return !hasProfile || demoOpen ? (
-		<DemographicsForm setDemoOpen={setDemoOpen} />
+		<DemographicsForm setDemoOpen={setDemoOpen} hasProfile={hasProfile} />
 	) : (
 		<div>
 			<Title

@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Typography, Divider } from 'antd';
+import { Typography } from 'antd';
 const { Paragraph, Title } = Typography;
 import ProfileContext from '../../Util/FormContext';
 import EditableBasicInfo from '../../Forms/EditableBasicInfo/EditableBasicInfo';
@@ -22,7 +22,7 @@ const BasicInfoTab = ({ hasProfile }) => {
     return(
         <div style={{ marginLeft: '60px', marginRight: '60px' }}>
             {!hasProfile || basicOpen ? (
-                <EditableBasicInfo setBasicOpen={setBasicOpen} />
+                <EditableBasicInfo setBasicOpen={setBasicOpen} hasProfile={hasProfile}/>
             ) : (
                 <>
                     <div style={{ marginBottom: '25px' }}>

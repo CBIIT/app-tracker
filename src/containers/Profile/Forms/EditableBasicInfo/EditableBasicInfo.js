@@ -17,7 +17,7 @@ import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
 import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
 
-const editableBasicInfo = ({ setBasicOpen }) => {
+const editableBasicInfo = ({ setBasicOpen, hasProfile }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -76,9 +76,11 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			}
 			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+			// setBasicOpen(false);
+			location.reload();
 		}
 	};
-
+	// if hasProfile reload location : else set active tab to demographics
 	const {
 		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
 	} = useAuth();
@@ -179,7 +181,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				</Col>
 			</Row>
 			<Row>
-				<Col span={14}>
+				<Col span={12}>
 					<EditableDropDown
 						label='Highest Level of Education'
 						name='highestLevelEducation'
@@ -188,7 +190,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 					/>
 				</Col>
 				<Col span={4}> </Col>
-				<Col span={6}>
+				<Col span={8}>
 					<EditableRadio
 						label='Are you a US citizen?'
 						name='isUsCitizen'
@@ -261,7 +263,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				</Col>
 			</Row>
 			<Row>
-				{!setBasicOpen ? (
+				{!hasProfile ? (
 					<></>
 				) : (
 					<>

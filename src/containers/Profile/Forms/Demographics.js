@@ -19,7 +19,7 @@ import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 import ProfileContext from '../Util/FormContext';
 import { convertDataToBackend } from '../Util/ConvertDataToBackend';
 
-const DemographicsForm = ({ setDemoOpen }) => {
+const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -62,6 +62,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 			}
 		}
 		location.reload();
+		//setDemoOpen(false);
 	}
 
 	return (
@@ -229,7 +230,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						)}
 						<Form.Item>
 							<Row>
-								{!setDemoOpen ? (
+								{!hasProfile ? (
 									<></>
 								) : (
 									<>
