@@ -109,7 +109,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			autoComplete='off'
 		>
 			<Row>
-				<h2>Basic Information</h2>
+				<h3>Basic Information</h3>
 				<p>Let's start with some basic questions. You'll have a chance to review everything before submitting.</p>
 			</Row>
 			<Row>
@@ -198,7 +198,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				</Col>
 			</Row>
 			<Row>
-				<h2>Address</h2>
+				<h3>Address</h3>
 			</Row>
 			<Row>
 				<p>Please provide your mailing address.</p>
