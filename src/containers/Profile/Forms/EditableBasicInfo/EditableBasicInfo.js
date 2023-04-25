@@ -74,16 +74,10 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			}
 			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-			//location.reload();
 			setHasProfile(true);
 			setBasicOpen(false);
 		}
 	};
-	// if hasProfile reload location : else set active tab to demographics
-	// const {
-	// 	auth: { user },
-	// } = useAuth();
-
 	const handleMenuClick = (e) => {
 		console.log('todo');
 	};

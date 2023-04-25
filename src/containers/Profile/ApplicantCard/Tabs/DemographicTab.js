@@ -4,10 +4,7 @@ const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../../Util/FormContext';
 import DemographicsForm from '../../Forms/Demographics';
-//import useAuth from '../../../../hooks/useAuth';
-
 const DemographicTab = () => {
-	//const { auth: { user } } = useAuth();
 
 	const contextValue = useContext(ProfileContext);
 	const { profile, hasProfile } = contextValue;

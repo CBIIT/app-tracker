@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Typography } from 'antd';
 const { Paragraph, Title } = Typography;
 import ProfileContext from '../../Util/FormContext';
@@ -20,7 +20,7 @@ const BasicInfoTab = () => {
 	};
 
     return(
-        <div >
+        <div>
             {!hasProfile || basicOpen ? (
                 <EditableBasicInfo setBasicOpen={setBasicOpen} />
             ) : (
