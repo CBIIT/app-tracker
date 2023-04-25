@@ -3,8 +3,11 @@ import { Typography } from 'antd';
 const { Paragraph, Title } = Typography;
 import ProfileContext from '../../Util/FormContext';
 import EditableBasicInfo from '../../Forms/EditableBasicInfo/EditableBasicInfo';
+import useAuth from '../../../../hooks/useAuth';
 
-const BasicInfoTab = ({ hasProfile }) => {
+const BasicInfoTab = () => {
+    const { auth } = useAuth();
+    const { user } = auth;
 
     const [basicOpen, setBasicOpen] = useState(false);
     const contextValue = useContext(ProfileContext);
@@ -21,8 +24,8 @@ const BasicInfoTab = ({ hasProfile }) => {
 
     return(
         <div style={{ marginLeft: '60px', marginRight: '60px' }}>
-            {!hasProfile || basicOpen ? (
-                <EditableBasicInfo setBasicOpen={setBasicOpen} hasProfile={hasProfile}/>
+            {!user.hasProfile || basicOpen ? (
+                <EditableBasicInfo setBasicOpen={setBasicOpen} />
             ) : (
                 <>
                     <div style={{ marginBottom: '25px' }}>

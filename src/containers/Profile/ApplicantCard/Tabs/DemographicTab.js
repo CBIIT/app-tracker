@@ -4,12 +4,15 @@ const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../../Util/FormContext';
 import DemographicsForm from '../../Forms/Demographics';
+import useAuth from '../../../../hooks/useAuth';
 
-const DemographicTab = ({ hasProfile }) => {
-	const [demoOpen, setDemoOpen] = useState(false);
+const DemographicTab = () => {
+	const { auth } = useAuth();
+	const { user } = auth;
 
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
+	const [demoOpen, setDemoOpen] = useState(profile?.demographics ? false : true);
 
 	const getEthnicity = (value) => {
 		switch (value) {
@@ -75,8 +78,8 @@ const DemographicTab = ({ hasProfile }) => {
 
 	const { demographics } = profile;
 
-	return !hasProfile || demoOpen ? (
-		<DemographicsForm setDemoOpen={setDemoOpen} hasProfile={hasProfile} />
+	return !user.hasProfile || demoOpen || !demographics.share ? (
+		<DemographicsForm setDemoOpen={setDemoOpen} />
 	) : (
 		<div>
 			<Title

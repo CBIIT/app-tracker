@@ -1,10 +1,10 @@
 export const convertDataFromBackend = (data) => {
 	const createDemoObj = (data) => {
-		if (data.demographics.share === '0') {
+		if (data.demographics?.share === '0') {
 			return {
 				share: data.demographics.share,
 			}
-		} else {
+		} else if (data.demographics?.share === '1') {
 			return {
 				disability: data.demographics.disability.split(','),
 				ethnicity: data.demographics.ethnicity,
@@ -12,6 +12,8 @@ export const convertDataFromBackend = (data) => {
 				sex: data.demographics.sex,
 				share: data.demographics.share,
 			}
+		} else {
+			return {};
 		}
 	}
 	return {

@@ -18,8 +18,10 @@ import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 
 import ProfileContext from '../Util/FormContext';
 import { convertDataToBackend } from '../Util/ConvertDataToBackend';
+import useAuth from '../../../hooks/useAuth';
 
-const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
+const DemographicsForm = ({ setDemoOpen }) => {
+	const { auth: { user } } = useAuth();
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -34,7 +36,6 @@ const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
 		const successKey = 'success';
 		const errorKey = 'error';
 		const validatedAnswers = await formInstance.validateFields();
-		console.log("🚀 ~ file: Demographics.js:37 ~ onSave ~ validatedAnswers:", validatedAnswers);
 		if (validatedAnswers.share === undefined || validatedAnswers.share === '') {
 			message.error({
 				errorKey,
@@ -46,11 +47,8 @@ const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
 		} else {
 			try {
 				let data = {...profile, demographics: values};
-				console.log("🚀 ~ file: Demographics.js:49 ~ onSave ~  converted data:", convertDataToBackend(data));
 				setProfile(data);
-				console.log("🚀 ~ file: Demographics.js:51 ~ onSave ~ profile:", profile);
 				const saveProfileResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-				console.log("🚀 ~ file: Demographics.js:53 ~ onSave ~ saveProfileResponse:", saveProfileResponse);
 				message.info({
 					successKey,
 					content: 'Demographics saved successfully',
@@ -61,8 +59,8 @@ const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
 				message.error('Sorry! There was an error saving your profile.')
 			}
 		}
-		location.reload();
-		//setDemoOpen(false);
+		//location.reload();
+		setDemoOpen(false);
 	}
 
 	return (
@@ -70,7 +68,7 @@ const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
 			<div>
 				<Col span={22}>
 					<Title level={4}>Demographic Information</Title>
-					{!profile?.demographics ? (
+					{!profile?.demographics.share ? (
 						<Paragraph>
 							You have no demographic details saved in your profile. Entering
 							your details takes a few minutes and helps improve the federal
@@ -230,7 +228,7 @@ const DemographicsForm = ({ setDemoOpen, hasProfile }) => {
 						)}
 						<Form.Item>
 							<Row>
-								{!hasProfile ? (
+								{!user.hasProfile ? (
 									<></>
 								) : (
 									<>

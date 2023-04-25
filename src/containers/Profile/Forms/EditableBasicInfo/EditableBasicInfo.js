@@ -17,7 +17,7 @@ import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
 import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
 
-const editableBasicInfo = ({ setBasicOpen, hasProfile }) => {
+const editableBasicInfo = ({ setBasicOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
 	const { profile } = contextValue;
@@ -65,24 +65,22 @@ const editableBasicInfo = ({ setBasicOpen, hasProfile }) => {
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
-			console.log('Please fill out all required fields.');
+			console.log(error);
 		}
 
 		if (valid){
-			console.log("🚀 ~ file: EditableBasicInfo.js:72 ~ onSave ~ profile:", profile)
 			let data = {
 				...profile, 
 				basicInfo: values
 			}
 			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-			// setBasicOpen(false);
-			location.reload();
+			setBasicOpen(false);
 		}
 	};
 	// if hasProfile reload location : else set active tab to demographics
 	const {
-		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+		auth: { user },
 	} = useAuth();
 
 	const handleMenuClick = (e) => {
@@ -263,7 +261,7 @@ const editableBasicInfo = ({ setBasicOpen, hasProfile }) => {
 				</Col>
 			</Row>
 			<Row>
-				{!hasProfile ? (
+				{!user.hasProfile ? (
 					<></>
 				) : (
 					<>

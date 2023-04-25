@@ -10,6 +10,7 @@ import { GET_PROFILE } from '../../constants/ApiEndpoints';
 import { convertDataFromBackend } from './Util/ConvertDataFromBackend';
 import BasicInfoTab from './ApplicantCard/Tabs/BasicInfoTab';
 import DemographicTab from './ApplicantCard/Tabs/DemographicTab';
+import useAuth from '../../hooks/useAuth';
 
 const tabList = [
 	{
@@ -23,16 +24,18 @@ const tabList = [
 ];
 
 const ApplicantProfile = () => {
+	const { auth } = useAuth();
+	const { user } = auth;
 	const [isLoading, setIsLoading] = useState(true);
 	const [profile, setProfile] = useState(initialData);
 	const [currentProfileInstance, setCurrentProfileInstance] = useState(null);
-	const [hasProfile, setHasProfile] = useState(false);
+	//const [hasProfile, setHasProfile] = useState(false);
 	const [activeTab, setActiveTab] = useState('basicInfo');
 	const { sysId } = useParams();
 
 	const contentObject = {
-		basicInfo: <BasicInfoTab hasProfile={hasProfile} />,
-		demographics: <DemographicTab hasProfile={hasProfile}/>,
+		basicInfo: <BasicInfoTab />,
+		demographics: <DemographicTab/>,
 	};
 
 	const profileContext = {
@@ -52,20 +55,13 @@ const ApplicantProfile = () => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(GET_PROFILE + sysId);
-			console.log(
-				'🚀 ~ file: ApplicantProfile.js:37 ~ getProfileInfo ~ response:',
-				response.data.result
-			);
 			if (response.data.result.status !== 400) {
 				setProfile(convertDataFromBackend(response.data.result.response));
-				console.log(
-					'🚀 ~ file: ApplicantProfile.js:40 ~ getProfileInfo ~ profile:',
-					profile
-				);
-				setHasProfile(true);
+				//setHasProfile(true);
 			}
 			setIsLoading(false);
 		} catch (e) {
+			console.log(e);
 			message.error(
 				'Sorry! There was an error loading your profile. Try refreshing the browser.'
 			);
@@ -98,7 +94,7 @@ const ApplicantProfile = () => {
 				activeTabKey={activeTab}
 				onTabChange={tabChange}
 				title={
-					hasProfile ? (
+					user.hasProfile ? (
 						<div
 						style={{
 							display: 'flex',
