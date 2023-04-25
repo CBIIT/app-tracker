@@ -18,13 +18,11 @@ import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 
 import ProfileContext from '../Util/FormContext';
 import { convertDataToBackend } from '../Util/ConvertDataToBackend';
-import useAuth from '../../../hooks/useAuth';
 
 const DemographicsForm = ({ setDemoOpen }) => {
-	const { auth: { user } } = useAuth();
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
-	const { profile } = contextValue;
+	const { profile, hasProfile, setHasProfile } = contextValue;
 	const share = Form.useWatch('share', formInstance);
 	const { setCurrentProfileInstance, setProfile } = contextValue;
 
@@ -59,7 +57,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 				message.error('Sorry! There was an error saving your profile.')
 			}
 		}
-		//location.reload();
+		setHasProfile(true);
 		setDemoOpen(false);
 	}
 
@@ -228,7 +226,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						)}
 						<Form.Item>
 							<Row>
-								{!user.hasProfile ? (
+								{!hasProfile ? (
 									<></>
 								) : (
 									<>

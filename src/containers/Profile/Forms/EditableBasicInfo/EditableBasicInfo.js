@@ -2,7 +2,6 @@ import './EditableBasicInfo.css';
 import EditableField from '../../../../components/UI/EditableField/EditableField';
 import EditableRadio from '../../../../components/UI/EditableRadio/EditableRadio'
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
-import useAuth from '../../../../hooks/useAuth';
 import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
 import {
 	Button,
@@ -12,7 +11,7 @@ import {
 	Row,
 	Select,
 } from 'antd';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
 import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
@@ -20,7 +19,7 @@ import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
 const editableBasicInfo = ({ setBasicOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(ProfileContext);
-	const { profile } = contextValue;
+	const { profile, hasProfile, setHasProfile } = contextValue;
 	const { setCurrentProfileInstance, setProfile } = contextValue;
 	useEffect(() => {
 		setCurrentProfileInstance(formInstance);
@@ -75,13 +74,15 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			}
 			setProfile(data);
 			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+			//location.reload();
+			setHasProfile(true);
 			setBasicOpen(false);
 		}
 	};
 	// if hasProfile reload location : else set active tab to demographics
-	const {
-		auth: { user },
-	} = useAuth();
+	// const {
+	// 	auth: { user },
+	// } = useAuth();
 
 	const handleMenuClick = (e) => {
 		console.log('todo');
@@ -261,7 +262,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				</Col>
 			</Row>
 			<Row>
-				{!user.hasProfile ? (
+				{!hasProfile ? (
 					<></>
 				) : (
 					<>

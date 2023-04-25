@@ -59,7 +59,6 @@ const header = (props) => {
 	};
 
 	const handleProfileDialogClose = (link) => {
-		alert('parent is now closing the dialog');
 		setShowProfileDialog(false);
 	}
 

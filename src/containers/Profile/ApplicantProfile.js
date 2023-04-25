@@ -24,12 +24,11 @@ const tabList = [
 ];
 
 const ApplicantProfile = () => {
-	const { auth } = useAuth();
-	const { user } = auth;
+	const { auth: { user } } = useAuth();
 	const [isLoading, setIsLoading] = useState(true);
 	const [profile, setProfile] = useState(initialData);
 	const [currentProfileInstance, setCurrentProfileInstance] = useState(null);
-	//const [hasProfile, setHasProfile] = useState(false);
+	const [hasProfile, setHasProfile] = useState(user.hasProfile ? true : false);
 	const [activeTab, setActiveTab] = useState('basicInfo');
 	const { sysId } = useParams();
 
@@ -41,6 +40,8 @@ const ApplicantProfile = () => {
 	const profileContext = {
 		profile,
 		setProfile,
+		hasProfile,
+		setHasProfile,
 		currentProfileInstance,
 		setCurrentProfileInstance,
 	};
@@ -57,7 +58,7 @@ const ApplicantProfile = () => {
 			const response = await axios.get(GET_PROFILE + sysId);
 			if (response.data.result.status !== 400) {
 				setProfile(convertDataFromBackend(response.data.result.response));
-				//setHasProfile(true);
+				setHasProfile(true);
 			}
 			setIsLoading(false);
 		} catch (e) {
@@ -94,7 +95,7 @@ const ApplicantProfile = () => {
 				activeTabKey={activeTab}
 				onTabChange={tabChange}
 				title={
-					user.hasProfile ? (
+					hasProfile ? (
 						<div
 						style={{
 							display: 'flex',

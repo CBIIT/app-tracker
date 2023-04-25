@@ -4,15 +4,14 @@ const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../../Util/FormContext';
 import DemographicsForm from '../../Forms/Demographics';
-import useAuth from '../../../../hooks/useAuth';
+//import useAuth from '../../../../hooks/useAuth';
 
 const DemographicTab = () => {
-	const { auth } = useAuth();
-	const { user } = auth;
+	//const { auth: { user } } = useAuth();
 
 	const contextValue = useContext(ProfileContext);
-	const { profile } = contextValue;
-	const [demoOpen, setDemoOpen] = useState(profile?.demographics ? false : true);
+	const { profile, hasProfile } = contextValue;
+	const [demoOpen, setDemoOpen] = useState(false);
 
 	const getEthnicity = (value) => {
 		switch (value) {
@@ -25,7 +24,6 @@ const DemographicTab = () => {
 		}
 	};
 
-    // *!TO-DO create function to render display value instead of backend value
     const getDisability = (value) => {
 			switch (value) {
 				case 'Deaf':
@@ -78,7 +76,7 @@ const DemographicTab = () => {
 
 	const { demographics } = profile;
 
-	return !user.hasProfile || demoOpen || !demographics.share ? (
+	return !hasProfile || demoOpen || !demographics.share ? (
 		<DemographicsForm setDemoOpen={setDemoOpen} />
 	) : (
 		<div>

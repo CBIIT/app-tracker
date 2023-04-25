@@ -1,17 +1,14 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Typography } from 'antd';
 const { Paragraph, Title } = Typography;
 import ProfileContext from '../../Util/FormContext';
 import EditableBasicInfo from '../../Forms/EditableBasicInfo/EditableBasicInfo';
-import useAuth from '../../../../hooks/useAuth';
 
 const BasicInfoTab = () => {
-    const { auth } = useAuth();
-    const { user } = auth;
 
     const [basicOpen, setBasicOpen] = useState(false);
     const contextValue = useContext(ProfileContext);
-    const { profile } = contextValue;
+    const { profile, hasProfile } = contextValue;
     const { basicInfo } = profile;
 	const address = basicInfo?.address;
 
@@ -23,8 +20,8 @@ const BasicInfoTab = () => {
 	};
 
     return(
-        <div style={{ marginLeft: '60px', marginRight: '60px' }}>
-            {!user.hasProfile || basicOpen ? (
+        <div >
+            {!hasProfile || basicOpen ? (
                 <EditableBasicInfo setBasicOpen={setBasicOpen} />
             ) : (
                 <>
