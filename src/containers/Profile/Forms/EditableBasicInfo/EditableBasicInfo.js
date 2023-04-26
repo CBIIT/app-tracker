@@ -97,7 +97,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			name='basic'
 			labelCol={{ span: 24 }}
 			wrapperCol={{ span: 24 }}
-			style={{ maxWidth: 600 }}
+			style={{ maxWidth: 800, marginLeft: 50, marginRight: 50 }}
 			form={formInstance}
 			initialValues={profile?.basicInfo}
 			onFinish={onSave}
@@ -105,7 +105,9 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 		>
 			<Row>
 				<h2>Basic Information</h2>
-				<p>Let's start with some basic questions. You'll have a chance to review everything before submitting.</p>
+			</Row>
+			<Row>
+			<p>Let's start with some basic questions. You'll have a chance to review everything before submitting.</p>
 			</Row>
 			<Row>
 				<Col span={6}>

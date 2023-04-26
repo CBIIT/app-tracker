@@ -63,8 +63,8 @@ const DemographicsForm = ({ setDemoOpen }) => {
 
 	return (
 		<>
-			<div>
-				<Col span={22}>
+			<div style={{marginLeft: 50, marginRight: 50}}>
+				<Col span={24}>
 					<Title level={4}>Demographic Information</Title>
 					{!profile?.demographics.share ? (
 						<Paragraph>
