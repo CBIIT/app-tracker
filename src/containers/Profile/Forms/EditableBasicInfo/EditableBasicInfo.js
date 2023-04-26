@@ -59,7 +59,6 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 
 		try {
 			const validationResult = await formInstance.validateFields();
-			//console.log("result = " + JSON.stringify(validationResult));
 			console.log(validationResult);
 			window.scrollTo(0, 0);
 			valid = true;
@@ -104,7 +103,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			autoComplete='off'
 		>
 			<Row>
-				<h2>Basic Information</h2>
+				<h3>Basic Information</h3>
 			</Row>
 			<Row>
 			<p>Let's start with some basic questions. You'll have a chance to review everything before submitting.</p>
