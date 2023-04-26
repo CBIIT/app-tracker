@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Typography } from 'antd';
+import { Typography, Row } from 'antd';
 const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../../Util/FormContext';
@@ -90,7 +90,7 @@ const DemographicTab = () => {
 				Demographics{' '}
 				<span style={{ fontSize: '14px', marginLeft: '5px' }}>(optional)</span>
 			</Title>
-			<div>
+			<div style={{marginBottom: 15}}>
 				<a onClick={() => setDemoOpen(true)}>Edit</a>
 			</div>
 			{demographics.share === '0' ? (
@@ -98,7 +98,7 @@ const DemographicTab = () => {
 			) : (
 				<>
 					<div>
-						<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+						<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 							Sex
 						</Title>
 						<Paragraph style={{ color: '#363636' }}>
@@ -106,7 +106,7 @@ const DemographicTab = () => {
 						</Paragraph>
 					</div>
 					<div>
-						<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+						<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 							{' '}
 							Ethnicity{' '}
 						</Title>
@@ -115,7 +115,7 @@ const DemographicTab = () => {
 						</Paragraph>
 					</div>
 					<div>
-						<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+						<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 							{' '}
 							Race{' '}
 						</Title>
@@ -125,7 +125,7 @@ const DemographicTab = () => {
 							</Paragraph>
 						))}
 					</div>
-					<Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+					<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 						{' '}
 						Disabilities/Serious Health Condition{' '}
 					</Title>

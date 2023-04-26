@@ -26,10 +26,10 @@ const BasicInfoTab = () => {
             ) : (
                 <>
                     <div style={{ marginBottom: '25px' }}>
-                        <div>
+                        <div style={{ marginBottom: 15 }}>
                             <a onClick={() => setBasicOpen(true)}>Edit</a>
                         </div>
-                        <Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+                        <Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
                             Address
                         </Title>
                         <Paragraph style={{ color: '#363636' }}>
@@ -43,7 +43,7 @@ const BasicInfoTab = () => {
                         </Paragraph>
                     </div>
                     <div style={{ marginBottom: '25px' }}>
-                        <Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+                        <Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
                             Email
                         </Title>
                         <Paragraph style={{ color: '#363636' }}>
@@ -51,7 +51,7 @@ const BasicInfoTab = () => {
                         </Paragraph>
                     </div>
                     <div style={{ marginBottom: '25px' }}>
-                        <Title level={5} style={{ fontSize: '14px', color: '#6a6a6a' }}>
+                        <Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
                             Mobile
                         </Title>
                         <Paragraph style={{ color: '#363636' }}>

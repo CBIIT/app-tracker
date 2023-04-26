@@ -22,7 +22,6 @@ import {
 	CREATE_VACANCY,
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
-	CREATE_PROFILE,
 	PROFILE
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
