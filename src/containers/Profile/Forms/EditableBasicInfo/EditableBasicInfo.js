@@ -104,7 +104,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				<h3>Basic Information</h3>
 			</Row>
 			<Row>
-			<p>Let's start with some basic questions. You'll have a chance to review everything before submitting.</p>
+			<p>{"Let's start with some basic questions. You'll have a chance to review everything before submitting."}</p>
 			</Row>
 			<Row>
 				<Col span={6}>

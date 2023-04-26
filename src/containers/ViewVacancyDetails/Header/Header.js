@@ -58,7 +58,7 @@ const header = (props) => {
 		} else history.push(link);
 	};
 
-	const handleProfileDialogClose = (link) => {
+	const handleProfileDialogClose = () => {
 		setShowProfileDialog(false);
 	}
 

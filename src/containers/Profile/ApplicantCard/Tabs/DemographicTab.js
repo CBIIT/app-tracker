@@ -94,7 +94,7 @@ const DemographicTab = () => {
 				<a onClick={() => setDemoOpen(true)}>Edit</a>
 			</div>
 			{demographics.share === '0' ? (
-				<Paragraph>You've chosen not to share your demographics.</Paragraph>
+				<Paragraph>{"You've chosen not to share your demographics."}</Paragraph>
 			) : (
 				<>
 					<div>

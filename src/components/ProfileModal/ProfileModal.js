@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import useAuth from '../../hooks/useAuth';
 import { Modal, Typography, Button } from 'antd';
 import { useHistory } from 'react-router-dom';

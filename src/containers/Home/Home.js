@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table } from 'antd';
 import axios from 'axios';
-import useAuth from '../../hooks/useAuth';
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
 //import EditableProfile from '../EditableBasicInfo/EditableBasicInfo'
