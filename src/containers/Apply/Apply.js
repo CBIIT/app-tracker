@@ -21,6 +21,7 @@ import Review from './Forms/Review/Review';
 import SubmitModal from './SubmitModal/SubmitModal';
 
 import './Apply.css';
+import DemographicsForm from '../Profile/Forms/Demographics';
 
 const { Step } = Steps;
 
@@ -150,6 +151,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	let steps = [
 		{
+			key: 'demographics',
+			title: 'Demographic Information',
+			content: <DemographicsForm />,
+			description: 'Opt in to share your demographics',
+			longDescription: 'Please review demographic information.',
+		},
+		{
 			key: 'basicInfo',
 			title: 'Basic Information',
 			content: <ApplicantBasicInfo />,
@@ -164,6 +172,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			description: 'Mailing address',
 			longDescription: 'Please provide your mailing address.',
 		},
+		
 		{
 			key: 'review',
 			title: 'Review',
