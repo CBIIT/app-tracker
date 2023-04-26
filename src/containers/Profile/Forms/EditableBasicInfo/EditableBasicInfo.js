@@ -195,7 +195,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				</Col>
 			</Row>
 			<Row>
-				<h2>Address</h2>
+				<h3>Address</h3>
 			</Row>
 			<Row>
 				<p>Please provide your mailing address.</p>
