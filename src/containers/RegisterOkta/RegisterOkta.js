@@ -13,9 +13,9 @@ const registerOkta = () => {
 	const [message, setMessage] = useState();
 	const [error, setError] = useState(false);
 	const [isEmailNih, setIsEmailNih] = useState(false);
-
+	// oktaGlideSsoId,
 	const {
-		auth: { iTrustGlideSsoId, oktaGlideSsoId },
+		auth: { iTrustGlideSsoId, oktaLoginAndRedirectUrl },
 	} = useAuth();
 
 	const [formInstance] = Form.useForm();
@@ -76,11 +76,11 @@ const registerOkta = () => {
 	};
 
 	const handleLoginButtonClick = () => {
-		location.href =
-			'/nav_to.do?uri=' +
-			encodeURIComponent('/nci-scss.do') +
-			'&glide_sso_id=' +
-			oktaGlideSsoId;
+		location.href = oktaLoginAndRedirectUrl;
+			// '/nav_to.do?uri=' +
+			// encodeURIComponent('/nci-scss.do') +
+			// '&glide_sso_id=' +
+			// oktaGlideSsoId;
 	};
 
 	const handleCancelButtonClick = () => {

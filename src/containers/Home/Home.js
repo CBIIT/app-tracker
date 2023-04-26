@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table } from 'antd';
 import axios from 'axios';
-
+import useAuth from '../../hooks/useAuth';
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
+//import EditableProfile from '../EditableBasicInfo/EditableBasicInfo'
 
 const columns = [
 	{
@@ -33,6 +34,8 @@ const columns = [
 	},
 ];
 
+
+
 const transformData = (data) => {
 	return data.map((item) => ({
 		key: item.sys_id,
@@ -50,6 +53,10 @@ const transformDate = (date) => {
 const home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [data, setData] = useState();
+
+	const {
+		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+	} = useAuth();
 
 	useEffect(() => {
 		(async () => {

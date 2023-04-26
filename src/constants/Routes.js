@@ -12,6 +12,9 @@ const VIEW_APPLICATION = '/apply/view/';
 const REGISTER_OKTA = '/register-okta';
 const EDIT_DRAFT = '/manage/edit/draft/';
 const VIEW_VACANCY = '/vacancy/';
+const CREATE_PROFILE = '/create-profile';
+const PROFILE = '/profile/';
+const EDIT_PROFILE = 'manage/profile/edit/';
 export {
 	MANAGE_APPLICATION,
 	MANAGE_VACANCY,
@@ -27,4 +30,7 @@ export {
 	EDIT_APPLICATION,
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
+	CREATE_PROFILE,
+	PROFILE,
+	EDIT_PROFILE
 };

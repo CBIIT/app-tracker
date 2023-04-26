@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import './App.less';
 import Layout from './hoc/Layout/Layout';
+
 import Home from './containers/Home/Home';
 import {
 	MANAGE_APPLICATION,
@@ -21,6 +22,7 @@ import {
 	CREATE_VACANCY,
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
+	PROFILE
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -36,7 +38,9 @@ import Apply from './containers/Apply/Apply';
 import Application from './containers/Application/Application';
 import EditDraft from './containers/CreateVacancy/EditDraft';
 import EditApplication from './containers/Apply/EditApplication';
+import ApplicantProfile from './containers/Profile/ApplicantProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import useAuth from './hooks/useAuth';
@@ -57,9 +61,12 @@ const app = () => {
 			isUserLoggedIn: data.logged_in,
 			iTrustGlideSsoId: data.itrust_idp,
 			oktaGlideSsoId: data.okta_idp,
+			sessionTimeout: data.session_timeout,
 			user: {
 				firstName: data.user.first_name,
 				lastInitial: data.user.last_initial,
+				uid: data.user.user_id,
+				hasProfile: data.has_profile,
 				isChair: data.is_chair,
 				isManager: data.is_manager,
 				isExecSec: data.is_exec_sec,
@@ -157,6 +164,11 @@ const app = () => {
 				key='view-application'
 				path={VIEW_APPLICATION + ':appSysId'}
 				component={ApplicantApplicationView}
+			/>,
+			<ProtectedRoute
+				key='applicant-profile'
+				path={PROFILE + ':sysId'}
+				component={ApplicantProfile}
 			/>
 		);
 	} else {
@@ -239,7 +251,9 @@ const app = () => {
 
 	return !isLoading ? (
 		<Layout>
+			<TimeoutModal />
 			<Switch>{routes}</Switch>
+			
 		</Layout>
 	) : null;
 };

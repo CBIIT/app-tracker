@@ -5,6 +5,7 @@ import {
 	VACANCY_DASHBOARD,
 	CHAIR_DASHBOARD,
 	APPLICANT_DASHBOARD,
+	PROFILE
 } from '../../constants/Routes';
 import useAuth from '../../hooks/useAuth';
 import './NavBar.css';
@@ -61,6 +62,11 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
+		menuItems.push(
+			<Menu.Item key='your-profile'>
+				<Link to={PROFILE + user.uid}>Profile</Link>
+			</Menu.Item>
+		)
 	} else {
 		menuItems.push(
 			<Menu.Item
