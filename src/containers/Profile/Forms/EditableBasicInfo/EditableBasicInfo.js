@@ -11,6 +11,7 @@ import {
 	Row,
 	Select,
 } from 'antd';
+const { Option } = Select;
 import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
@@ -72,13 +73,10 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				basicInfo: values
 			}
 			setProfile(data);
-			const saveDraftResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+			await axios.post(SAVE_PROFILE, convertDataToBackend(data));
 			setHasProfile(true);
 			setBasicOpen(false);
 		}
-	};
-	const handleMenuClick = (e) => {
-		console.log('todo');
 	};
 
 	const educationMenu = [

@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Typography, Row } from 'antd';
+import { Typography } from 'antd';
 const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../../Util/FormContext';

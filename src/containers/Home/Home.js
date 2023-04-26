@@ -54,10 +54,6 @@ const home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [data, setData] = useState();
 
-	const {
-		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
-	} = useAuth();
-
 	useEffect(() => {
 		(async () => {
 			const response = await axios.get(

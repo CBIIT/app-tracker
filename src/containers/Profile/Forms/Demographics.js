@@ -46,7 +46,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 			try {
 				let data = {...profile, demographics: values};
 				setProfile(data);
-				const saveProfileResponse = await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+				await axios.post(SAVE_PROFILE, convertDataToBackend(data));
 				message.info({
 					successKey,
 					content: 'Demographics saved successfully',
