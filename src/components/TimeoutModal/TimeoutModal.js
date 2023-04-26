@@ -7,7 +7,6 @@ const { Paragraph } = Typography;
 
 const TimeoutModal = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
 	const { auth, setAuth } = useAuth();
 	let uiTimeout = auth.sessionTimeout * 0.9;
 	let remainingTime = auth.sessionTimeout - uiTimeout;
@@ -54,7 +53,6 @@ const TimeoutModal = () => {
 	};
 
 	const refreshAuth = async () => {
-		setIsLoading(true);
 		const response = await axios.get(CHECK_AUTH);
 		const data = response.data.result;
 		setAuth({
@@ -75,7 +73,6 @@ const TimeoutModal = () => {
 			},
 			oktaLoginAndRedirectUrl: data.okta_login_and_redirect_url,
 		});
-		setIsLoading(false);
 	};
 
 	return (
