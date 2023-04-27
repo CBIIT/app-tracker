@@ -22,6 +22,7 @@ import SubmitModal from './SubmitModal/SubmitModal';
 
 import './Apply.css';
 import DemographicsForm from '../Profile/Forms/Demographics';
+import DemographicTab from '../Profile/ApplicantCard/Tabs/DemographicTab';
 
 const { Step } = Steps;
 
@@ -153,25 +154,26 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		{
 			key: 'demographics',
 			title: 'Demographic Information',
+			//content: <DemographicTab />,
 			content: <DemographicsForm />,
 			description: 'Opt in to share your demographics',
 			longDescription: 'Please review demographic information.',
 		},
-		{
-			key: 'basicInfo',
-			title: 'Basic Information',
-			content: <ApplicantBasicInfo />,
-			description: 'Personal information about applicant',
-			longDescription:
-				'Let’s start with some basic questions. You’ll have a chance to review everything before submitting.',
-		},
-		{
-			key: 'address',
-			title: 'Address',
-			content: <ApplicantAddress />,
-			description: 'Mailing address',
-			longDescription: 'Please provide your mailing address.',
-		},
+		// {
+		// 	key: 'basicInfo',
+		// 	title: 'Basic Information',
+		// 	content: <ApplicantBasicInfo />,
+		// 	description: 'Personal information about applicant',
+		// 	longDescription:
+		// 		'Let’s start with some basic questions. You’ll have a chance to review everything before submitting.',
+		// },
+		// {
+		// 	key: 'address',
+		// 	title: 'Address',
+		// 	content: <ApplicantAddress />,
+		// 	description: 'Mailing address',
+		// 	longDescription: 'Please provide your mailing address.',
+		// },
 		
 		{
 			key: 'review',
