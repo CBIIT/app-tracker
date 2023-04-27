@@ -251,7 +251,7 @@ const app = () => {
 
 	return !isLoading ? (
 		<Layout>
-			<TimeoutModal />
+			{isUserLoggedIn && <TimeoutModal />}
 			<Switch>{routes}</Switch>
 			
 		</Layout>
