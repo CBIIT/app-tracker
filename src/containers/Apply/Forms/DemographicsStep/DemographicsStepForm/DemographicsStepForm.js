@@ -32,42 +32,41 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 		setCurrentProfileInstance(formInstance);
 	}, []);
 
-	const onSave = async (values) => {
-		const successKey = 'success';
-		const errorKey = 'error';
-		const validatedAnswers = await formInstance.validateFields();
-		if (validatedAnswers.share === undefined || validatedAnswers.share === '') {
-			message.error({
-				errorKey,
-				content: 'Please select if you would like to share your demographics to improve the hiring process.',
-				duration: 3
-			});
+	// const onSave = async (values) => {
+	// 	const successKey = 'success';
+	// 	const errorKey = 'error';
+	// 	const validatedAnswers = await formInstance.validateFields();
+	// 	if (validatedAnswers.share === undefined || validatedAnswers.share === '') {
+	// 		message.error({
+	// 			errorKey,
+	// 			content: 'Please select if you would like to share your demographics to improve the hiring process.',
+	// 			duration: 3
+	// 		});
 
-			await formInstance.validateFields();
-		} else {
-			try {
-				//let data = {...profile, demographics: values};
-				//setProfile(data);
-				//await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-				//message.info({
-				//	successKey,
-				//	content: 'Demographics saved successfully',
-				//	duration: 3
-				//});
-			} catch (e) {
-				console.log(e);
-				message.error('Sorry! There was an error saving your profile.')
-			}
-		}
-		setHasProfile(true);
-		setDemoOpen(false);
-	}
+	// 		await formInstance.validateFields();
+	// 	} else {
+	// 		try {
+	// 			//let data = {...profile, demographics: values};
+	// 			//setProfile(data);
+	// 			//await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+	// 			//message.info({
+	// 			//	successKey,
+	// 			//	content: 'Demographics saved successfully',
+	// 			//	duration: 3
+	// 			//});
+	// 		} catch (e) {
+	// 			console.log(e);
+	// 			message.error('Sorry! There was an error saving your profile.')
+	// 		}
+	// 	}
+	// 	setHasProfile(true);
+	// 	setDemoOpen(false);
+	// }
 
 	return (
 		<>
 			<div style={{marginLeft: 50, marginRight: 50}}>
 				<Col span={24}>
-					<Title level={4}>Demographic Information</Title>
 					{!profile?.demographics.share ? (
 						<Paragraph>
 							You have no demographic details saved in your profile. Entering
@@ -97,7 +96,7 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 					wrapperCol={{ span: 24 }}
 					style={{ maxWidth: 600 }}
 					requiredMark={false}
-					onFinish={onSave}
+				//	onFinish={onSave}
 					layout='vertical'
 					name='demographics'
 				>
@@ -243,15 +242,6 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 										<Col span={12}></Col>
 									</>
 								)}
-								<Col span={6}>
-									<Button
-										className='wider-button'
-										type='primary'
-										htmlType='submit'
-									>
-										Save
-									</Button>
-								</Col>
 							</Row>
 						</Form.Item>
 					</div>
