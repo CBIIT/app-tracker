@@ -131,7 +131,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			GET_PROFILE + user.uid
 		);
 
-		//console.log(profileResponse);
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		const {basicInfo, demographics} = profileData;
 		const address = basicInfo?.address;
@@ -150,12 +149,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		) {
 			references.push({});
 		}
-
-		// TODO import auth to get sys Id
-		// (initial values only get pulled in if it doesnt exist yet)
-
-		// need to do OUR GET response
-		// set address / demographics (questions?)
 
 		const newFormData = {
 			...formData,
@@ -177,7 +170,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		{
 			key: 'demographics',
 			title: 'Demographic Information',
-			//content: <DemographicTab />,
 			content: <DemographicsStepForm />,
 			description: 'Opt in to share your demographics',
 			longDescription: 'Please review demographic information.',

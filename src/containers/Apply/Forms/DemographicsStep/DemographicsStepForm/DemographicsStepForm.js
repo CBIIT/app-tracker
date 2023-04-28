@@ -14,12 +14,7 @@ import {
 } from 'antd';
 const { Paragraph, Title } = Typography;
 
-import { SAVE_PROFILE } from '../../../../../constants/ApiEndpoints';
-
 import FormContext from '../../../Context.js';
-//import FormContext, { defaultFormData } from './Context';
-//import ProfileContext from '../../../../Profile/Util/FormContext';
-//import { convertDataToBackend } from '../../../../../containers/profile/Util/ConvertDataToBackend';
 
 const DemographicsStepForm = ({ setDemoOpen }) => {
 	const [formInstance] = Form.useForm();
@@ -27,46 +22,11 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 	const {formData, setCurrentFormInstance} = contextValue;
 	console.log(formData);
 	
-//	const profileContextValue = useContext(ProfileContext);
-//	const { profile, hasProfile, setHasProfile } = profileContextValue;
 	const share = Form.useWatch('share', formInstance);
-//	const { setCurrentProfileInstance, setProfile } = profileContextValue;
 
 	useEffect(() => {
 		setCurrentFormInstance(formInstance);
-		//setCurrentProfileInstance(formInstance);
 	}, []);
-
-	// const onSave = async (values) => {
-	// 	const successKey = 'success';
-	// 	const errorKey = 'error';
-	// 	const validatedAnswers = await formInstance.validateFields();
-	// 	if (validatedAnswers.share === undefined || validatedAnswers.share === '') {
-	// 		message.error({
-	// 			errorKey,
-	// 			content: 'Please select if you would like to share your demographics to improve the hiring process.',
-	// 			duration: 3
-	// 		});
-
-	// 		await formInstance.validateFields();
-	// 	} else {
-	// 		try {
-	// 			//let data = {...profile, demographics: values};
-	// 			//setProfile(data);
-	// 			//await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-	// 			//message.info({
-	// 			//	successKey,
-	// 			//	content: 'Demographics saved successfully',
-	// 			//	duration: 3
-	// 			//});
-	// 		} catch (e) {
-	// 			console.log(e);
-	// 			message.error('Sorry! There was an error saving your profile.')
-	// 		}
-	// 	}
-	// 	setHasProfile(true);
-	// 	setDemoOpen(false);
-	// }
 
 	return (
 		<>
@@ -91,7 +51,6 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 					wrapperCol={{ span: 24 }}
 					style={{ maxWidth: 600 }}
 					requiredMark={false}
-				//	onFinish={onSave}
 					layout='vertical'
 					name='demographics'
 				>
