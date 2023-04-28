@@ -23,7 +23,6 @@ import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
 import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
-import DemographicTab from '../Profile/ApplicantCard/Tabs/DemographicTab';
 
 const { Step } = Steps;
 
