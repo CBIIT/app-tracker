@@ -3,6 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Steps, Button, Result, Space, Alert, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
@@ -10,6 +11,7 @@ import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
 import {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	SAVE_APP_DRAFT,
+	GET_PROFILE,
 } from '../../constants/ApiEndpoints';
 
 import FormContext, { defaultFormData } from './Context';
@@ -17,6 +19,7 @@ import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
 import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import Review from './Forms/Review/Review';
 import SubmitModal from './SubmitModal/SubmitModal';
+import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
 import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
@@ -117,10 +120,23 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		setFormData(formData);
 	};
 
+	const {auth: {user}} = useAuth();
+
 	const instantiateNewApplication = async () => {
+
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
+		const profileResponse = await axios.get(
+			GET_PROFILE + user.uid
+		);
+
+		//console.log(profileResponse);
+		const profileData = convertDataFromBackend(profileResponse.data.result.response)
+		const {basicInfo, demographics} = profileData;
+		const address = basicInfo?.address;
+		console.log(basicInfo, address, demographics);
+
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 
@@ -135,6 +151,12 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			references.push({});
 		}
 
+		// TODO import auth to get sys Id
+		// (initial values only get pulled in if it doesnt exist yet)
+
+		// need to do OUR GET response
+		// set address / demographics (questions?)
+
 		const newFormData = {
 			...formData,
 			sysId: vacancySysId,
@@ -143,6 +165,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					document.file ? document : { ...document, file: { fileList: [] } }
 			),
 			references: references,
+			questions: demographics,
+			address: address,
+			basicInfo: basicInfo
 		};
 
 		setFormData(newFormData);

@@ -16,20 +16,25 @@ const { Paragraph, Title } = Typography;
 
 import { SAVE_PROFILE } from '../../../../../constants/ApiEndpoints';
 
-import FormContext, { defaultFormData } from '../../../Context.js';
-import ProfileContext from '../../../../Profile/Util/FormContext';
+import FormContext from '../../../Context.js';
+//import FormContext, { defaultFormData } from './Context';
+//import ProfileContext from '../../../../Profile/Util/FormContext';
 //import { convertDataToBackend } from '../../../../../containers/profile/Util/ConvertDataToBackend';
 
 const DemographicsStepForm = ({ setDemoOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
-	const profileContextValue = useContext(ProfileContext);
-	const { profile, hasProfile, setHasProfile } = profileContextValue;
+	const {formData, setCurrentFormInstance} = contextValue;
+	console.log(formData);
+	
+//	const profileContextValue = useContext(ProfileContext);
+//	const { profile, hasProfile, setHasProfile } = profileContextValue;
 	const share = Form.useWatch('share', formInstance);
-	const { setCurrentProfileInstance, setProfile } = profileContextValue;
+//	const { setCurrentProfileInstance, setProfile } = profileContextValue;
 
 	useEffect(() => {
-		setCurrentProfileInstance(formInstance);
+		setCurrentFormInstance(formInstance);
+		//setCurrentProfileInstance(formInstance);
 	}, []);
 
 	// const onSave = async (values) => {
@@ -67,16 +72,6 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 		<>
 			<div style={{marginLeft: 50, marginRight: 50}}>
 				<Col span={24}>
-					{!profile?.demographics.share ? (
-						<Paragraph>
-							You have no demographic details saved in your profile. Entering
-							your details takes a few minutes and helps improve the federal
-							hiring process. We never use your details in hiring decisions or
-							send individual details to hiring managers.
-						</Paragraph>
-					) : (
-						<></>
-					)}
 					<Title level={5}>Your privacy is protected.</Title>
 					<Paragraph>
 						We use demographics to find out if our recruitment efforts are
@@ -91,7 +86,7 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 				</Col>
 				<Form
 					form={formInstance}
-					initialValues={profile?.demographics}
+					initialValues={formData?.questions}
 					labelCol={{ span: 24 }}
 					wrapperCol={{ span: 24 }}
 					style={{ maxWidth: 600 }}
@@ -225,25 +220,6 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 						) : (
 							<></>
 						)}
-						<Form.Item>
-							<Row>
-								{!hasProfile ? (
-									<></>
-								) : (
-									<>
-										<Col span={6}>
-											<Button
-												className='wider-button'
-												onClick={() => setDemoOpen(false)}
-											>
-												Cancel
-											</Button>
-										</Col>
-										<Col span={12}></Col>
-									</>
-								)}
-							</Row>
-						</Form.Item>
 					</div>
 				</Form>
 			</div>
