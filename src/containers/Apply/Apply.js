@@ -87,6 +87,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
 		);
+		const profileResponse = await axios.get(
+			GET_PROFILE + user.uid
+		);
+
+		const profileData = convertDataFromBackend(profileResponse.data.result.response)
+		const {demographics} = profileData;
+
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 		if (!editSubmitted) setDraftId(appSysId);
@@ -114,6 +121,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
+			questions: demographics
 		};
 
 		setFormData(formData);
