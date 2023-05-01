@@ -172,27 +172,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		setFormData(newFormData);
 	};
 
-	let steps = [
-		// {
-		// 	key: 'demographics',
-		// 	title: 'Demographic Information',
-		// 	content: <DemographicsStepForm />,
-		// 	description: 'Opt in to share your demographics',
-		// 	longDescription: 'Please review demographic information.',
-		// },
-		// {
-		// 	key: 'review',
-		// 	title: 'Review',
-		// 	content: (
-		// 		<Review
-		// 			vacancyTenantType={vacancyTenantType}
-		// 			onEditButtonClick={(step) => onEditButtonClick(step)}
-		// 		/>
-		// 	),
-		// 	description: 'Review before submitting',
-		// 	longDescription: 'Please review key information entered in each section.',
-		// },
-	];
+	let steps = [];
 
 	if (formData.applicantDocuments.length > 0)
 		steps.splice(2, 0, {
