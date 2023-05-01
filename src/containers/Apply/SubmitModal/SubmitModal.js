@@ -29,10 +29,8 @@ const submitModal = ({
 
 	const handleOk = async () => {
 		setConfirmLoading(true);
-
 		try {
 			const dataToSend = transformJsonToBackend(data);
-
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
 

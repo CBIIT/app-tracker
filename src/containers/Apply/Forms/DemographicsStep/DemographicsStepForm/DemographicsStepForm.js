@@ -20,7 +20,6 @@ const DemographicsStepForm = ({ setDemoOpen }) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
 	const {formData, setCurrentFormInstance} = contextValue;
-	console.log(formData);
 	
 	const share = Form.useWatch('share', formInstance);
 
