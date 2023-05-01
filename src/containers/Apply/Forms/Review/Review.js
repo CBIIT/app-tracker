@@ -117,7 +117,7 @@ const review = (props) => {
 					/>
 					<LabelValuePair
 						label='Address Line 2'
-						value={formData.address.address2}
+						value={formData.address.address2 === undefined ? formData.address.address2 : ""}
 					/>
 				</div>
 				<div className='SectionContentRow'>
