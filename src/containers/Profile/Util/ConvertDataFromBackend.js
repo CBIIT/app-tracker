@@ -6,9 +6,9 @@ export const convertDataFromBackend = (data) => {
 			}
 		} else if (data.demographics?.share === '1') {
 			return {
-				disability: data.demographics.disability.split(','),
+				disability: data.demographics.disability?.split(','),
 				ethnicity: data.demographics.ethnicity,
-				race: data.demographics.race.split(','),
+				race: data.demographics.race?.split(','),
 				sex: data.demographics.sex,
 				share: data.demographics.share,
 			}
