@@ -107,6 +107,7 @@ const review = (props) => {
 			<SectionHeader
 				title='Address'
 				onClick={() => props.onEditButtonClick('address')}
+				showButton='false'
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
