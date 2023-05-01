@@ -194,7 +194,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		// },
 	];
 
-	if (formData.applicantDocuments.length > 0)
+	if (formData.applicantDocuments?.length > 0)
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
 			title: 'Application Documents',
@@ -206,7 +206,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				'Please ensure each of your documents are unique files.  \nApplication documents will not be saved unless your application is submitted/finalized on the next section.',
 		});
 
-	if (formData.references.length > 0)
+	if (formData.references?.length > 0)
 		steps.splice(2, 0, {
 			key: 'references',
 			title: 'References',
