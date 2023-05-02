@@ -123,7 +123,7 @@ const DemographicTab = () => {
 							<Paragraph style={{ color: '#363636' }} key={element}>
 								{getRace(element)}
 							</Paragraph>
-						)) : "Prefer not to answer"}
+						))}
 					</div>
 					<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 						{' '}
