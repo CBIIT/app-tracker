@@ -75,7 +75,9 @@ const TimeoutModal = () => {
 		});
 	};
 
-	return (
+	const { isUserLoggedIn } = auth;
+
+	return isUserLoggedIn && (
 		<>
 			<Modal
 				title='Session Timeout'

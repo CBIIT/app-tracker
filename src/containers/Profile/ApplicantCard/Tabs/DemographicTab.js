@@ -102,7 +102,7 @@ const DemographicTab = () => {
 							Sex
 						</Title>
 						<Paragraph style={{ color: '#363636' }}>
-							{demographics.sex}
+							{demographics.sex ? demographics.sex : "Prefer not to answer"}
 						</Paragraph>
 					</div>
 					<div>
@@ -111,7 +111,7 @@ const DemographicTab = () => {
 							Ethnicity{' '}
 						</Title>
 						<Paragraph style={{ color: '#363636' }}>
-							{getEthnicity(demographics.ethnicity)}
+							{demographics.ethnicity ? getEthnicity(demographics.ethnicity) : "Prefer not to answer"}
 						</Paragraph>
 					</div>
 					<div>
@@ -123,7 +123,7 @@ const DemographicTab = () => {
 							<Paragraph style={{ color: '#363636' }} key={element}>
 								{getRace(element)}
 							</Paragraph>
-						))}
+						)) : "Prefer not to answer"}
 					</div>
 					<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 						{' '}

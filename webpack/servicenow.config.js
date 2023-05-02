@@ -22,6 +22,7 @@ const servicenowConfig = {
    */
   REACT_APP_PASSWORD: '',
   /**
+   * 
    * ServiceNow path to GET resource which serves javascript files
    * Current configuration does not produce CSS files
    * CSS code will be embedded into javascript files
