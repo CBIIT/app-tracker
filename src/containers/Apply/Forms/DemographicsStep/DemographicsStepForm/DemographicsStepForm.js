@@ -1,22 +1,18 @@
 import { useContext, useEffect } from 'react';
-import axios from 'axios';
 
 import {
 	Form,
 	Checkbox,
 	Col,
-	Button,
 	Typography,
-	message,
 	Radio,
-	Row,
 	Space,
 } from 'antd';
 const { Paragraph, Title } = Typography;
 
 import FormContext from '../../../Context.js';
 
-const DemographicsStepForm = ({ setDemoOpen }) => {
+const DemographicsStepForm = () => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
 	const {formData, setCurrentFormInstance} = contextValue;
