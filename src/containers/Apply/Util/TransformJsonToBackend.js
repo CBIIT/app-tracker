@@ -26,6 +26,13 @@ export const transformJsonToBackend = (sourceJson) => {
 		},
 		vacancy_documents: sourceJson.applicantDocuments,
 		references: transformReferences(sourceJson.references),
+		questions: {
+			share: sourceJson.questions.share ? sourceJson.questions.share : null,
+			sex: sourceJson.questions?.sex  ? sourceJson.questions.sex : null,
+			ethnicity: sourceJson.questions?.ethnicity ? sourceJson.questions.ethnicity : null,
+			race: sourceJson.questions?.race ? sourceJson.questions?.race.toString() : null,
+			disability: sourceJson.questions?.disability ? sourceJson.questions?.disability.toString() : null,
+		}
 	};
 
 	return targetJson;

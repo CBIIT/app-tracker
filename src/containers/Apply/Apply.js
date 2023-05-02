@@ -3,6 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Steps, Button, Result, Space, Alert, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
@@ -10,17 +11,18 @@ import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
 import {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	SAVE_APP_DRAFT,
+	GET_PROFILE,
 } from '../../constants/ApiEndpoints';
 
 import FormContext, { defaultFormData } from './Context';
-import ApplicantBasicInfo from './Forms/BasicInfo/ApplicantBasicInfo.js';
-import ApplicantAddress from './Forms/Address/ApplicantAddress.js';
 import ApplicantDocuments from './Forms/ApplicantDocuments/ApplicantDocuments';
 import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import Review from './Forms/Review/Review';
 import SubmitModal from './SubmitModal/SubmitModal';
+import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
+import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
 
 const { Step } = Steps;
 
@@ -85,6 +87,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
 		);
+		const profileResponse = await axios.get(
+			GET_PROFILE + user.uid
+		);
+
+		const profileData = convertDataFromBackend(profileResponse.data.result.response)
+		const {demographics} = profileData;
+
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 		if (!editSubmitted) setDraftId(appSysId);
@@ -112,15 +121,27 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
+			questions: demographics
 		};
 
 		setFormData(formData);
 	};
 
+	const {auth: {user}} = useAuth();
+
 	const instantiateNewApplication = async () => {
+
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
+		const profileResponse = await axios.get(
+			GET_PROFILE + user.uid
+		);
+
+		const profileData = convertDataFromBackend(profileResponse.data.result.response)
+		const {basicInfo, demographics} = profileData;
+		const address = basicInfo?.address;
+
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 
@@ -143,42 +164,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					document.file ? document : { ...document, file: { fileList: [] } }
 			),
 			references: references,
+			questions: demographics,
+			address: address,
+			basicInfo: basicInfo
 		};
 
 		setFormData(newFormData);
 	};
 
-	let steps = [
-		{
-			key: 'basicInfo',
-			title: 'Basic Information',
-			content: <ApplicantBasicInfo />,
-			description: 'Personal information about applicant',
-			longDescription:
-				'Let’s start with some basic questions. You’ll have a chance to review everything before submitting.',
-		},
-		{
-			key: 'address',
-			title: 'Address',
-			content: <ApplicantAddress />,
-			description: 'Mailing address',
-			longDescription: 'Please provide your mailing address.',
-		},
-		{
-			key: 'review',
-			title: 'Review',
-			content: (
-				<Review
-					vacancyTenantType={vacancyTenantType}
-					onEditButtonClick={(step) => onEditButtonClick(step)}
-				/>
-			),
-			description: 'Review before submitting',
-			longDescription: 'Please review key information entered in each section.',
-		},
-	];
+	let steps = [];
 
-	if (formData.applicantDocuments.length > 0)
+	if (formData.applicantDocuments?.length > 0)
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
 			title: 'Application Documents',
@@ -190,7 +186,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				'Please ensure each of your documents are unique files.  \nApplication documents will not be saved unless your application is submitted/finalized on the next section.',
 		});
 
-	if (formData.references.length > 0)
+	if (formData.references?.length > 0)
 		steps.splice(2, 0, {
 			key: 'references',
 			title: 'References',
@@ -199,6 +195,26 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			longDescription:
 				'Please provide professional references that can submit a recommendation on your behalf.',
 		});
+
+	steps.push({
+		key: 'additionalQuestions',
+		title: 'Demographic Information',
+		content: <DemographicsStepForm />,
+		description: 'Opt in to share your demographics',
+		longDescription: 'Please review demographic information.',
+	},
+	{
+		key: 'review',
+		title: 'Review',
+		content: (
+			<Review
+				vacancyTenantType={vacancyTenantType}
+				onEditButtonClick={(step) => onEditButtonClick(step)}
+			/>
+		),
+		description: 'Review before submitting',
+		longDescription: 'Please review key information entered in each section.',
+	});
 
 	const onEditButtonClick = (step) => {
 		const index = steps.findIndex((item) => item.key === step);

@@ -22,7 +22,7 @@ import {
 	CREATE_VACANCY,
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
-	PROFILE
+	PROFILE,
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -80,6 +80,8 @@ const app = () => {
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
+
+	console.log(user);
 
 	if (isUserLoggedIn) {
 		if (user.isChair) {
@@ -232,6 +234,12 @@ const app = () => {
 
 	routes.push(
 		<ProtectedRoute
+				key='applicant-dashboard'
+				path={APPLICANT_DASHBOARD}
+				component={ApplicantDashboard}
+				useOktaAuth={true}
+			/>,
+		<ProtectedRoute
 			key='apply'
 			path={APPLY + ':vacancySysId'}
 			component={Apply}
@@ -253,7 +261,6 @@ const app = () => {
 		<Layout>
 			{isUserLoggedIn && <TimeoutModal />}
 			<Switch>{routes}</Switch>
-			
 		</Layout>
 	) : null;
 };

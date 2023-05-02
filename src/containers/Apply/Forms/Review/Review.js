@@ -49,6 +49,7 @@ const review = (props) => {
 			<SectionHeader
 				title='Basic Information'
 				onClick={() => props.onEditButtonClick('basicInfo')}
+				showButton='false'
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
@@ -106,6 +107,7 @@ const review = (props) => {
 			<SectionHeader
 				title='Address'
 				onClick={() => props.onEditButtonClick('address')}
+				showButton='false'
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
@@ -115,7 +117,7 @@ const review = (props) => {
 					/>
 					<LabelValuePair
 						label='Address Line 2'
-						value={formData.address.address2}
+						value={formData.address.address2 === undefined ? formData.address.address2 : ""}
 					/>
 				</div>
 				<div className='SectionContentRow'>

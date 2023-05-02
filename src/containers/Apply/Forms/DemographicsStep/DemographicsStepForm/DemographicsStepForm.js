@@ -1,81 +1,32 @@
 import { useContext, useEffect } from 'react';
-import axios from 'axios';
 
 import {
 	Form,
 	Checkbox,
 	Col,
-	Button,
 	Typography,
-	message,
 	Radio,
-	Row,
 	Space,
 } from 'antd';
 const { Paragraph, Title } = Typography;
 
-import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
+import FormContext from '../../../Context.js';
 
-import ProfileContext from '../Util/FormContext';
-import { convertDataToBackend } from '../Util/ConvertDataToBackend';
-
-const DemographicsForm = ({ setDemoOpen }) => {
+const DemographicsStepForm = () => {
 	const [formInstance] = Form.useForm();
-	const contextValue = useContext(ProfileContext);
-	const { profile, hasProfile, setHasProfile } = contextValue;
+	const contextValue = useContext(FormContext);
+	const {formData, setCurrentFormInstance} = contextValue;
+	
 	const share = Form.useWatch('share', formInstance);
-	const { setCurrentProfileInstance, setProfile } = contextValue;
 
 	useEffect(() => {
-		setCurrentProfileInstance(formInstance);
+		setCurrentFormInstance(formInstance);
 	}, []);
-
-	const onSave = async (values) => {
-		const successKey = 'success';
-		const errorKey = 'error';
-		const validatedAnswers = await formInstance.validateFields();
-		if (validatedAnswers.share === undefined || validatedAnswers.share === '') {
-			message.error({
-				errorKey,
-				content: 'Please select if you would like to share your demographics to improve the hiring process.',
-				duration: 3
-			});
-
-			await formInstance.validateFields();
-		} else {
-			try {
-				let data = {...profile, demographics: values};
-				setProfile(data);
-				await axios.post(SAVE_PROFILE, convertDataToBackend(data));
-				message.info({
-					successKey,
-					content: 'Demographics saved successfully',
-					duration: 3
-				});
-			} catch (e) {
-				console.log(e);
-				message.error('Sorry! There was an error saving your profile.')
-			}
-		}
-		setHasProfile(true);
-		setDemoOpen(false);
-	}
 
 	return (
 		<>
 			<div style={{marginLeft: 50, marginRight: 50}}>
 				<Col span={24}>
-					<Title level={4}>Demographic Information</Title>
-					{!profile?.demographics.share ? (
-						<Paragraph>
-							You have no demographic details saved in your profile. Entering
-							your details takes a few minutes and helps improve the federal
-							hiring process. We never use your details in hiring decisions or
-							send individual details to hiring managers.
-						</Paragraph>
-					) : (
-						<></>
-					)}
 					<Title level={5}>Your privacy is protected.</Title>
 					<Paragraph>
 						We use demographics to find out if our recruitment efforts are
@@ -90,12 +41,11 @@ const DemographicsForm = ({ setDemoOpen }) => {
 				</Col>
 				<Form
 					form={formInstance}
-					initialValues={profile?.demographics}
+					initialValues={formData?.questions}
 					labelCol={{ span: 24 }}
 					wrapperCol={{ span: 24 }}
 					style={{ maxWidth: 600 }}
 					requiredMark={false}
-					onFinish={onSave}
 					layout='vertical'
 					name='demographics'
 				>
@@ -224,35 +174,6 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						) : (
 							<></>
 						)}
-						<Form.Item>
-							{/* Conditionally render buttons based on whether vacancy sys id is passed? */}
-							<Row>
-								{!hasProfile ? (
-									<></>
-								) : (
-									<>
-										<Col span={6}>
-											<Button
-												className='wider-button'
-												onClick={() => setDemoOpen(false)}
-											>
-												Cancel
-											</Button>
-										</Col>
-										<Col span={12}></Col>
-									</>
-								)}
-								<Col span={6}>
-									<Button
-										className='wider-button'
-										type='primary'
-										htmlType='submit'
-									>
-										Save
-									</Button>
-								</Col>
-							</Row>
-						</Form.Item>
 					</div>
 				</Form>
 			</div>
@@ -260,4 +181,4 @@ const DemographicsForm = ({ setDemoOpen }) => {
 	);
 };
 
-export default DemographicsForm;
+export default DemographicsStepForm;

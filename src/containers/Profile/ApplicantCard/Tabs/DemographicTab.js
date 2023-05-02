@@ -119,7 +119,7 @@ const DemographicTab = () => {
 							{' '}
 							Race{' '}
 						</Title>
-						{demographics.race.length > 0 ? demographics?.race.map((element) => (
+						{demographics?.race?.map((element) => (
 							<Paragraph style={{ color: '#363636' }} key={element}>
 								{getRace(element)}
 							</Paragraph>
@@ -129,7 +129,7 @@ const DemographicTab = () => {
 						{' '}
 						Disabilities/Serious Health Condition{' '}
 					</Title>
-					{demographics?.disability.map((condition) => (
+					{demographics?.disability?.map((condition) => (
 						<Paragraph style={{ color: '#363636' }} key={condition}>
 							{getDisability(condition)}
 						</Paragraph>
