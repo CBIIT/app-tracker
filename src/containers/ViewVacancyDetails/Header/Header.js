@@ -56,13 +56,12 @@ const header = (props) => {
 			const response = await axios.get(CHECK_HAS_PROFILE);
 			setHasProfile(response.data.result.exists);
 		} catch (e) {
-			message.error(response.data.result.message);
+			message.error('Sorry! An error occured while searching for your profile.');
 		}
 	}
 
 	const onButtonClick = (link) => {
 		if (!hasProfile) {
-			console.log("show the profile dialog before settin to true? " + showProfileDialog);
 			setShowProfileDialog(true);
 		}
 		else if (userAlreadyApplied) {

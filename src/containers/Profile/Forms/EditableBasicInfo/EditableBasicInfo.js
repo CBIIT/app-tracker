@@ -60,7 +60,6 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 
 		try {
 			const validationResult = await formInstance.validateFields();
-			console.log(validationResult);
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
