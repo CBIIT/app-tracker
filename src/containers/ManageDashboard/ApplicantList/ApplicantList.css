@@ -7,3 +7,7 @@
 .applicant-table td.ant-table-column-sort {
 	background-color: inherit;
 }
+
+.checked-green {
+	color: #117E46
+}

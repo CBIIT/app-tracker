@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { message, Table, Collapse } from 'antd';
 import { useParams, Link } from 'react-router-dom';
+import { CheckOutlined} from '@ant-design/icons';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
@@ -46,7 +47,7 @@ const applicantColumns = [
 				</Link>
 			);
 		},
-		width: 250,
+		width: 200,
 		defaultSortOrder: defaultApplicantSort,
 		sorter: true,
 	},
@@ -61,6 +62,12 @@ const applicantColumns = [
 		dataIndex: 'submitted',
 		key: 'submitted',
 		render: (date) => transformDateTimeToDisplay(date),
+	},
+	{
+		title: 'Complete',
+		dataIndex: 'Complete',
+		key: 'complete',
+		render: (date) => <CheckOutlined className='checked-green'/>,
 	},
 	{
 		title: 'Vacancy Manager Triage Decision',
