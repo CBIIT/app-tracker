@@ -64,24 +64,23 @@ const applicantColumns = [
 		render: (date) => transformDateTimeToDisplay(date),
 	},
 	{
-		title: 'Complete',
-		dataIndex: 'Complete',
-		key: 'complete',
-		render: (date) => <CheckOutlined className='checked-green'/>,
-	},
-	{
 		title: 'Vacancy Manager Triage Decision',
 		dataIndex: 'owm_triage_status',
 		key: 'OWMStatus',
 		render: (text) => renderDecision(text),
 	},
-
 	{
 		title: 'Chair Triage Decision',
 		dataIndex: 'chair_triage_status',
 		key: 'ChairStatus',
 		render: (text) => renderDecision(text),
 	},
+	{
+		title: 'Complete',
+		dataIndex: 'Complete',
+		key: 'complete',
+		render: (date) => <CheckOutlined className='checked-green'/>,
+	}
 ];
 
 const applicantList = (props) => {
