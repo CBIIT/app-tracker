@@ -81,8 +81,6 @@ const app = () => {
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
 
-	console.log(user);
-
 	if (isUserLoggedIn) {
 		if (user.isChair) {
 			routes.push(

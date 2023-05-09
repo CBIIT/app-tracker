@@ -98,3 +98,5 @@ export const SELECTED = '/api/x_g_nci_app_tracke/application/selected';
 export const GET_PROFILE = '/api/x_g_nci_app_tracke/user/user_profile/';
 
 export const SAVE_PROFILE = '/api/x_g_nci_app_tracke/user/save_user_profile';
+
+export const CHECK_HAS_PROFILE = '/api/x_g_nci_app_tracke/user/check_profile';

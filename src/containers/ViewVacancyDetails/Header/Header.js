@@ -3,7 +3,7 @@ import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { CHECK_USER_ALREADY_APPLIED } from '../../../constants/ApiEndpoints';
+import { CHECK_USER_ALREADY_APPLIED, CHECK_HAS_PROFILE } from '../../../constants/ApiEndpoints';
 import {
 	APPLICANT_DASHBOARD,
 	APPLY,
@@ -21,6 +21,7 @@ const header = (props) => {
 
 	const [userAlreadyApplied, setUserAlreadyApplied] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasProfile, setHasProfile] = useState(false);
 	const [showProfileDialog, setShowProfileDialog] = useState(false);
 	const {
 		auth: { isUserLoggedIn, user },
@@ -30,6 +31,9 @@ const header = (props) => {
 		(async () => {
 			setIsLoading(true);
 			await checkUserAlreadyApplied();
+			if (!user.hasProfile) {
+				await checkHasProfile();
+			}
 			setIsLoading(false);
 		})();
 	}, []);
@@ -47,9 +51,17 @@ const header = (props) => {
 		}
 	};
 
+	const checkHasProfile = async () => {
+		try {
+			const response = await axios.get(CHECK_HAS_PROFILE);
+			setHasProfile(response.data.result.exists);
+		} catch (e) {
+			message.error('Sorry! An error occured while searching for your profile.');
+		}
+	}
+
 	const onButtonClick = (link) => {
-		if (!user.hasProfile) {
-			console.log("show the profile dialog before settin to true? " + showProfileDialog);
+		if (!hasProfile) {
 			setShowProfileDialog(true);
 		}
 		else if (userAlreadyApplied) {
