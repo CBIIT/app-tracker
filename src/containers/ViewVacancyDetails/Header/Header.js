@@ -33,6 +33,8 @@ const header = (props) => {
 			await checkUserAlreadyApplied();
 			if (!user.hasProfile) {
 				await checkHasProfile();
+			} else {
+				setHasProfile(true);
 			}
 			setIsLoading(false);
 		})();
