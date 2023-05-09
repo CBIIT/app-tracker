@@ -59,7 +59,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 		var valid = false;
 
 		try {
-			const validationResult = await formInstance.validateFields();
+			await formInstance.validateFields();
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
