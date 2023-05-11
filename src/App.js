@@ -43,6 +43,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { CHECK_AUTH } from './constants/ApiEndpoints';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
+import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
 
 const app = () => {
@@ -50,10 +51,12 @@ const app = () => {
 	const { auth, setAuth } = useAuth();
 
 	useEffect(() => {
+		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth();
 	}, []);
 
-	const checkAuth = async () => {
+
+/* 	const checkAuth = async () => {
 		setIsLoading(true);
 		const response = await axios.get(CHECK_AUTH);
 		const data = response.data.result;
@@ -76,7 +79,7 @@ const app = () => {
 			oktaLoginAndRedirectUrl: data.okta_login_and_redirect_url,
 		});
 		setIsLoading(false);
-	};
+	}; */
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;

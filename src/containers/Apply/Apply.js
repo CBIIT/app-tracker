@@ -123,7 +123,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			applicantDocuments: Object.values(applicantDocuments),
 			questions: demographics
 		};
-
 		setFormData(formData);
 	};
 
@@ -168,7 +167,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			address: address,
 			basicInfo: basicInfo
 		};
-
 		setFormData(newFormData);
 	};
 
