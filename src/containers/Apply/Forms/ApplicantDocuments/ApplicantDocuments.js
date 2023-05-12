@@ -80,24 +80,22 @@ const ApplicantDocuments = () => {
 	};
 
 	const storeFile = (changedInfo, index, appDocs) => {
-		// applicantDocuments[index]?.file?.fileList
 		appDocs[index]?.file?.fileList.push(changedInfo.file);
 
-		// try setting the default file to the new file in the form data
+		// set the default file to the new file in the form data
 		var target = event.target || event.srcElement;
-		//console.log(this);	// undefined
-		//console.log(target); //<input id="applicantDocuments_2_file" type="file" accept=".docx, .pdf, .doc" style="display: none;">
 		target.defaultFiles = appDocs[index]?.file?.fileList;
-
-		//this.forceUpdate();
-		//etFileList(index, appDocs);
 	};
 
 	const getFileList = (index, appDocs) => {
+		var tempList = [];
 		if (!appDocs || index >= appDocs.length)
-		return {};
+		return tempList;
 
 		var thisFile = appDocs[index]?.file;
+		if (!thisFile.file)
+		return tempList;
+
 		var visualizedFile = {};
 		visualizedFile.name = thisFile?.file?.name;
 		visualizedFile.uid = thisFile?.file?.uid;
@@ -105,8 +103,6 @@ const ApplicantDocuments = () => {
 		visualizedFile.status = 'done';
 		visualizedFile.url = 'temp;'
 
-//		return appDocs[index]?.file?.fileList;
-		var tempList = [];
 		tempList.push(visualizedFile);
 		return tempList;
 	};
@@ -170,56 +166,9 @@ const ApplicantDocuments = () => {
 													</>
 												) : (
 
-													// this gets 404 but it doesn't have the double upload problem
-													// <Upload >
-													// 	<Button icon={<UploadOutlined />}>Click to Upload</Button>
-													// </Upload>
-
-													// this gets 404 but it doesn't have the double upload problem
-													// <Upload >
-													// 	<Button
-													// 		disabled={
-													// 			applicantDocuments[index].file.fileList
-													// 				.length >= 1
-													// 		}
-													// 	>Click to Upload2</Button>
-													// </Upload>
-													
-													// this gets 404 but it doesn't have the double upload problem
-													// <Upload >
-													// 	<Button
-													// 		disabled={
-													// 			applicantDocuments[index].file.fileList
-													// 				.length >= 1
-													// 		}
-													// 	>
-													// 		<UploadOutlined /> Upload
-													// 	</Button>
-													// </Upload>
-
-													// the fileList attribute causes the double upload problem
-													// <Upload 
-													// 	fileList={applicantDocuments[index].file.fileList}
-													// >
-													// 	<Button
-													// 		disabled={
-													// 			applicantDocuments[index].file.fileList
-													// 				.length >= 1
-													// 		}
-													// 	>
-													// 		<UploadOutlined /> Upload
-													// 	</Button>
-													// </Upload>
-
-													// option 1 is delete fileList=... and it works but disappears if you click back
-
 													<Upload 
-														//fileList={[...applicantDocuments[index]?.file?.fileList]}
-														//fileList = {getFileList(index, applicantDocuments)}
-														//fileList={applicantDocuments[index]?.file?.fileList}
 														defaultFileList={getFileList(index, applicantDocuments)}
 														{...uploadProps}
-														//onRemove={(file) => onRemove(file, index)}
 														onChange={(info) => storeFile(info, index, applicantDocuments)}
 													>
 														<Button
@@ -232,20 +181,6 @@ const ApplicantDocuments = () => {
 														</Button>
 													</Upload>
 
-													// <Upload
-													// 	fileList={applicantDocuments[index].file.fileList}
-													// 	{...uploadProps}
-													// 	onRemove={(file) => onRemove(file, index)}
-													// >
-													// 	<Button
-													// 		disabled={
-													// 			applicantDocuments[index].file.fileList
-													// 				.length >= 1
-													// 		}
-													// 	>
-													// 		<UploadOutlined /> Upload
-													// 	</Button>
-													// </Upload>
 												)}
 											</Form.Item>
 										</div>
