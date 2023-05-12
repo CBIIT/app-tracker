@@ -12,7 +12,7 @@ import './Review.css';
 const review = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
-
+	const reviewData = JSON.parse(JSON.stringify(formData));
 	const referencesColumns = [
 		{
 			title: 'Name',
@@ -223,11 +223,11 @@ const review = (props) => {
 					/>
 					<LabelValuePair
 						label='Race'
-						value={getAllRaces(formData?.questions?.race)}
+						value={getAllRaces(reviewData?.questions?.race)}
 					/>
 					<LabelValuePair
 						label='Disability'
-						value={getAllDisabilities(formData?.questions?.disability)}
+						value={getAllDisabilities(reviewData?.questions?.disability)}
 					/>
 				</div>
 			</div>

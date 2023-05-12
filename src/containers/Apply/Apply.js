@@ -124,6 +124,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			questions: demographics
 		};
 		setFormData(formData);
+		console.log("🚀 ~ file: Apply.js:127 ~ loadExistingApplication ~ formData:", formData)	
 	};
 
 	const {auth: {user}} = useAuth();
@@ -168,6 +169,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			basicInfo: basicInfo
 		};
 		setFormData(newFormData);
+		console.log("🚀 ~ file: Apply.js:173 ~ instantiateNewApplication ~ newFormData:", newFormData)
 	};
 
 	let steps = [];
@@ -222,7 +224,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const saveCurrentForm = async (result) => {
 		const updatedForm = updateFormData(formData, result, currentStepObj.key);
+		console.log("🚀 ~ file: Apply.js:225 ~ saveCurrentForm ~ updatedForm:", updatedForm)
 		setFormData(updatedForm);
+		console.log("🚀 ~ file: Apply.js:227 ~ saveCurrentForm ~ formData:", formData)
 		return updatedForm;
 	};
 
@@ -430,6 +434,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					</div>
 				</div>
 			</FormContext.Provider>
+			{console.log(formData)}
 			<SubmitModal
 				visible={submitModalVisible}
 				onCancel={handleSubmitModalCancel}
