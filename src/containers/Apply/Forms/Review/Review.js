@@ -12,7 +12,7 @@ import './Review.css';
 const review = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
-
+	const reviewData = JSON.parse(JSON.stringify(formData));
 	const referencesColumns = [
 		{
 			title: 'Name',
@@ -136,39 +136,39 @@ const review = (props) => {
 				<div className='SectionContentRow'>
 					<LabelValuePair
 						label='First Name'
-						value={formData.basicInfo.firstName}
+						value={reviewData.basicInfo.firstName}
 					/>
 					<LabelValuePair
 						label='Middle Name'
-						value={formData.basicInfo.middleName}
+						value={reviewData.basicInfo.middleName}
 					/>
 					<LabelValuePair
 						label='Last Name'
-						value={formData.basicInfo.lastName}
+						value={reviewData.basicInfo.lastName}
 					/>
 				</div>
 				<div className='SectionContentRow'>
 					<LabelValuePair
 						label='Email Address'
-						value={formData.basicInfo.email}
+						value={reviewData.basicInfo.email}
 					/>
 				</div>
 				<div className='SectionContentRow'>
 					<LabelValuePair
 						label='Phone'
 						value={
-							formData.basicInfo.phone
-								? formData.basicInfo.phonePrefix.toString() +
-								  formData.basicInfo.phone.toString()
+							reviewData.basicInfo.phone
+								? reviewData.basicInfo.phonePrefix.toString() +
+								  reviewData.basicInfo.phone.toString()
 								: ''
 						}
 					/>
 					<LabelValuePair
 						label='Business Phone'
 						value={
-							formData.basicInfo.businessPhone
-								? formData.basicInfo.businessPhonePrefix.toString() +
-								  formData.basicInfo.businessPhone.toString()
+							reviewData.basicInfo.businessPhone
+								? reviewData.basicInfo.businessPhonePrefix.toString() +
+								  reviewData.basicInfo.businessPhone.toString()
 								: ''
 						}
 					/>
@@ -177,11 +177,11 @@ const review = (props) => {
 					<LabelValuePair
 						containerStyle={{ width: '100%', maxWidth: '320px' }}
 						label='Highest Level of Education'
-						value={formData.basicInfo.highestLevelEducation}
+						value={reviewData.basicInfo.highestLevelEducation}
 					/>
 					<LabelValuePair
 						label='Are you a US citizen?'
-						value={formData.basicInfo.isUsCitizen === '1' ? 'Yes' : 'No'}
+						value={reviewData.basicInfo.isUsCitizen === '1' ? 'Yes' : 'No'}
 					/>
 				</div>
 			</div>
@@ -194,20 +194,20 @@ const review = (props) => {
 				<div className='SectionContentRow'>
 					<LabelValuePair
 						label='Address Line 1'
-						value={formData.address.address}
+						value={reviewData.address.address}
 					/>
 					<LabelValuePair
 						label='Address Line 2'
-						value={formData.address.address2 === undefined ? formData.address.address2 : ""}
+						value={reviewData.address.address2 !== undefined ? reviewData.address.address2 : ""}
 					/>
 				</div>
 				<div className='SectionContentRow'>
-					<LabelValuePair label='City' value={formData.address.city} />
+					<LabelValuePair label='City' value={reviewData.address.city} />
 					<LabelValuePair
 						label='State'
-						value={formData.address.stateProvince}
+						value={reviewData.address.stateProvince}
 					/>
-					<LabelValuePair label='Post Code' value={formData.address.zip} />
+					<LabelValuePair label='Post Code' value={reviewData.address.zip} />
 				</div>
 			</div>
 			<SectionHeader
@@ -219,27 +219,27 @@ const review = (props) => {
 				<div className='SectionContentRow'>
 					<LabelValuePair
 						label='Sharing demographics'
-						value={formData?.questions?.share != "0" ? "Yes" : "No" }
+						value={reviewData?.questions?.share != "0" ? "Yes" : "No" }
 					/>
 					<LabelValuePair
 						label='Sex'
-						value={ formData?.questions?.sex ? formData?.questions?.sex : "Prefer not to answer"}
+						value={ reviewData?.questions?.sex ? reviewData?.questions?.sex : "Prefer not to answer"}
 					/>
 					<LabelValuePair
 						label='Ethnicity'
-						value={formData?.questions?.ethnicity ? getEthnicity(formData?.questions?.ethnicity) : "Prefer not to answer"}
+						value={reviewData?.questions?.ethnicity ? getEthnicity(reviewData?.questions?.ethnicity) : "Prefer not to answer"}
 					/>
 					<LabelValuePair
 						label='Race'
-						value={getAllRaces(formData?.questions?.race)}
+						value={getAllRaces(reviewData?.questions?.race)}
 					/>
 					<LabelValuePair
 						label='Disability'
-						value={getAllDisabilities(formData?.questions?.disability)}
+						value={getAllDisabilities(reviewData?.questions?.disability)}
 					/>
 				</div>
 			</div>
-			{formData.references.length > 0 ? (
+			{reviewData.references.length > 0 ? (
 				<>
 					<SectionHeader
 						title='References'
@@ -260,14 +260,14 @@ const review = (props) => {
 				</>
 			) : null}
 
-			{formData.applicantDocuments.length > 0 ? (
+			{reviewData.applicantDocuments.length > 0 ? (
 				<>
 					<SectionHeader
 						title='Application Documents'
 						onClick={() => props.onEditButtonClick('applicantDocuments')}
 					/>
 					<div className='SectionContent'>
-						{formData.applicantDocuments.map((document, index) => (
+						{reviewData.applicantDocuments.map((document, index) => (
 							<div key={index}>
 								{document.uploadedDocument &&
 								document.uploadedDocument.markedToDelete === false ? (

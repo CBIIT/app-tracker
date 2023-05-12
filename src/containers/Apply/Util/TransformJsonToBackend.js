@@ -1,4 +1,5 @@
 export const transformJsonToBackend = (sourceJson) => {
+	console.log(sourceJson);
 	const targetJson = {
 		basic_info: {
 			sys_id: sourceJson.sysId,
