@@ -79,6 +79,38 @@ const ApplicantDocuments = () => {
 		});
 	};
 
+	const storeFile = (changedInfo, index, appDocs) => {
+		// applicantDocuments[index]?.file?.fileList
+		appDocs[index]?.file?.fileList.push(changedInfo.file);
+
+		// try setting the default file to the new file in the form data
+		var target = event.target || event.srcElement;
+		//console.log(this);	// undefined
+		//console.log(target); //<input id="applicantDocuments_2_file" type="file" accept=".docx, .pdf, .doc" style="display: none;">
+		target.defaultFiles = appDocs[index]?.file?.fileList;
+
+		//this.forceUpdate();
+		//etFileList(index, appDocs);
+	};
+
+	const getFileList = (index, appDocs) => {
+		if (!appDocs || index >= appDocs.length)
+		return {};
+
+		var thisFile = appDocs[index]?.file;
+		var visualizedFile = {};
+		visualizedFile.name = thisFile?.file?.name;
+		visualizedFile.uid = thisFile?.file?.uid;
+		visualizedFile.percent = 0;
+		visualizedFile.status = 'done';
+		visualizedFile.url = 'temp;'
+
+//		return appDocs[index]?.file?.fileList;
+		var tempList = [];
+		tempList.push(visualizedFile);
+		return tempList;
+	};
+
 	return !isLoading && applicantDocuments && applicantDocuments.length !== 0 ? (
 		<Form form={formInstance} initialValues={formData} onChange={onChange}>
 			<div className='upload-documents'>
@@ -137,10 +169,58 @@ const ApplicantDocuments = () => {
 														></Button>
 													</>
 												) : (
-													<Upload
-														fileList={applicantDocuments[index].file.fileList}
+
+													// this gets 404 but it doesn't have the double upload problem
+													// <Upload >
+													// 	<Button icon={<UploadOutlined />}>Click to Upload</Button>
+													// </Upload>
+
+													// this gets 404 but it doesn't have the double upload problem
+													// <Upload >
+													// 	<Button
+													// 		disabled={
+													// 			applicantDocuments[index].file.fileList
+													// 				.length >= 1
+													// 		}
+													// 	>Click to Upload2</Button>
+													// </Upload>
+													
+													// this gets 404 but it doesn't have the double upload problem
+													// <Upload >
+													// 	<Button
+													// 		disabled={
+													// 			applicantDocuments[index].file.fileList
+													// 				.length >= 1
+													// 		}
+													// 	>
+													// 		<UploadOutlined /> Upload
+													// 	</Button>
+													// </Upload>
+
+													// the fileList attribute causes the double upload problem
+													// <Upload 
+													// 	fileList={applicantDocuments[index].file.fileList}
+													// >
+													// 	<Button
+													// 		disabled={
+													// 			applicantDocuments[index].file.fileList
+													// 				.length >= 1
+													// 		}
+													// 	>
+													// 		<UploadOutlined /> Upload
+													// 	</Button>
+													// </Upload>
+
+													// option 1 is delete fileList=... and it works but disappears if you click back
+
+													<Upload 
+														//fileList={[...applicantDocuments[index]?.file?.fileList]}
+														//fileList = {getFileList(index, applicantDocuments)}
+														//fileList={applicantDocuments[index]?.file?.fileList}
+														defaultFileList={getFileList(index, applicantDocuments)}
 														{...uploadProps}
-														onRemove={(file) => onRemove(file, index)}
+														//onRemove={(file) => onRemove(file, index)}
+														onChange={(info) => storeFile(info, index, applicantDocuments)}
 													>
 														<Button
 															disabled={
@@ -151,6 +231,21 @@ const ApplicantDocuments = () => {
 															<UploadOutlined /> Upload
 														</Button>
 													</Upload>
+
+													// <Upload
+													// 	fileList={applicantDocuments[index].file.fileList}
+													// 	{...uploadProps}
+													// 	onRemove={(file) => onRemove(file, index)}
+													// >
+													// 	<Button
+													// 		disabled={
+													// 			applicantDocuments[index].file.fileList
+													// 				.length >= 1
+													// 		}
+													// 	>
+													// 		<UploadOutlined /> Upload
+													// 	</Button>
+													// </Upload>
 												)}
 											</Form.Item>
 										</div>
