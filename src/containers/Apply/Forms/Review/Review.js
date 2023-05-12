@@ -45,18 +45,24 @@ const review = (props) => {
 	}));
 
 	const getAllRaces = (value) => {
+		if (!value)
+			return '';
 		for(var i = 0; i < value.length; i++)
 			value[i] = getRace(value[i]);
 		return value.join(', ');
 	}
 
 	const getAllDisabilities = (value) => {
+		if (!value)
+			return '';
 		for(var i = 0; i < value.length; i++)
 			value[i] = getDisability(value[i]);
 		return value.join(', ');
 	}
 
 	const getEthnicity = (value) => {
+		if (!value)
+			return '';
 		switch (value) {
 			case '1':
 				return 'Hispanic or Latino';
@@ -68,39 +74,41 @@ const review = (props) => {
 	};
 
     const getDisability = (value) => {
-			switch (value) {
-				case 'Deaf':
-					return 'Deaf or serious difficulty hearing';
-				case 'Blind':
-					return 'Blind or serious difficulty seeing even when wearing glasses';
-				case 'Amputee':
-					return 'Missing an arm, leg, hand or foot';
-				case 'Paralysis':
-					return 'Paralysis: partial or complete paralysis (any cause)';
-				case 'Disfigurement':
-					return 'Significant disfigurement: for example, severe disfigurements caused by burns, wounds, accidents or congenital disorders';
-				case 'Mobility Impairment':
-					return 'Significant mobility impairment: for example, uses a wheelchair, scooter, walker or uses a leg brace to walk';
-				case 'Psychiatric Disorder':
-					return 'Significant psychiatric disorder: for example, bipolar disorder, schizophrenia, PTSD or major depression';
-				case 'Intellectual Disability':
-					return 'Intellectual disability (formerly described as mental retardation)';
-				case 'Developmental Disability':
-					return 'Developmental disability: for example, cerebral palsy or autism spectrum disorder';
-				case 'Brain Injury':
-					return 'Traumatic brain injury';
-				case 'Dwarfism':
-					return 'Dwarfism';
-				case 'Epilepsy':
-					return 'Epilepsy';
-				case 'Other Disability':
-					return 'Other disability or serious health condition: for example, diabetes, cancer, cardiovascular disease, anxiety disorder or HIV infection';
-				case 'None':
-					return 'None of the conditions listed above apply to me.';
-				case 'Do Not Wish to Answer':
-					return 'I do not wish to answer questions regarding my disability/health conditions.';
-			}
-		};
+		if (!value)
+			return 'Prefer not to answer';
+		switch (value) {
+			case 'Deaf':
+				return 'Deaf or serious difficulty hearing';
+			case 'Blind':
+				return 'Blind or serious difficulty seeing even when wearing glasses';
+			case 'Amputee':
+				return 'Missing an arm, leg, hand or foot';
+			case 'Paralysis':
+				return 'Paralysis: partial or complete paralysis (any cause)';
+			case 'Disfigurement':
+				return 'Significant disfigurement: for example, severe disfigurements caused by burns, wounds, accidents or congenital disorders';
+			case 'Mobility Impairment':
+				return 'Significant mobility impairment: for example, uses a wheelchair, scooter, walker or uses a leg brace to walk';
+			case 'Psychiatric Disorder':
+				return 'Significant psychiatric disorder: for example, bipolar disorder, schizophrenia, PTSD or major depression';
+			case 'Intellectual Disability':
+				return 'Intellectual disability (formerly described as mental retardation)';
+			case 'Developmental Disability':
+				return 'Developmental disability: for example, cerebral palsy or autism spectrum disorder';
+			case 'Brain Injury':
+				return 'Traumatic brain injury';
+			case 'Dwarfism':
+				return 'Dwarfism';
+			case 'Epilepsy':
+				return 'Epilepsy';
+			case 'Other Disability':
+				return 'Other disability or serious health condition: for example, diabetes, cancer, cardiovascular disease, anxiety disorder or HIV infection';
+			case 'None':
+				return 'None of the conditions listed above apply to me.';
+			case 'Do Not Wish to Answer':
+				return 'I do not wish to answer questions regarding my disability/health conditions.';
+		}
+	};
 
     const getRace = (value) => {
         switch (value) {
@@ -211,7 +219,7 @@ const review = (props) => {
 				<div className='SectionContentRow'>
 					<LabelValuePair
 						label='Sharing demographics'
-						value={formData?.questions?.share ? "Yes" : "No" }
+						value={formData?.questions?.share != "0" ? "Yes" : "No" }
 					/>
 					<LabelValuePair
 						label='Sex'
