@@ -79,6 +79,34 @@ const ApplicantDocuments = () => {
 		});
 	};
 
+	const storeFile = (changedInfo, index, appDocs) => {
+		appDocs[index]?.file?.fileList.push(changedInfo.file);
+
+		// set the default file to the new file in the form data
+		var target = event.target || event.srcElement;
+		target.defaultFiles = appDocs[index]?.file?.fileList;
+	};
+
+	const getFileList = (index, appDocs) => {
+		var tempList = [];
+		if (!appDocs || index >= appDocs.length)
+		return tempList;
+
+		var thisFile = appDocs[index]?.file;
+		if (!thisFile.file)
+		return tempList;
+
+		var visualizedFile = {};
+		visualizedFile.name = thisFile?.file?.name;
+		visualizedFile.uid = thisFile?.file?.uid;
+		visualizedFile.percent = 0;
+		visualizedFile.status = 'done';
+		visualizedFile.url = 'temp;'
+
+		tempList.push(visualizedFile);
+		return tempList;
+	};
+
 	return !isLoading && applicantDocuments && applicantDocuments.length !== 0 ? (
 		<Form form={formInstance} initialValues={formData} onChange={onChange}>
 			<div className='upload-documents'>
@@ -137,10 +165,11 @@ const ApplicantDocuments = () => {
 														></Button>
 													</>
 												) : (
-													<Upload
-														fileList={applicantDocuments[index].file.fileList}
+
+													<Upload 
+														defaultFileList={getFileList(index, applicantDocuments)}
 														{...uploadProps}
-														onRemove={(file) => onRemove(file, index)}
+														onChange={(info) => storeFile(info, index, applicantDocuments)}
 													>
 														<Button
 															disabled={
@@ -151,6 +180,7 @@ const ApplicantDocuments = () => {
 															<UploadOutlined /> Upload
 														</Button>
 													</Upload>
+
 												)}
 											</Form.Item>
 										</div>
