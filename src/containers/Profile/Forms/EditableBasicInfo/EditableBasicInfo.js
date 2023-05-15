@@ -2,6 +2,7 @@ import './EditableBasicInfo.css';
 import EditableField from '../../../../components/UI/EditableField/EditableField';
 import EditableRadio from '../../../../components/UI/EditableRadio/EditableRadio'
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
+import EditableFocusArea from '../../../../components/UI/EditableFocusArea/EditableFocusArea';
 import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
 import {
 	Button,
@@ -169,6 +170,11 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 							name='businessPhone'
 						/>
 					</Form.Item>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={10}>
+					<EditableFocusArea mode="multiple"/>
 				</Col>
 			</Row>
 			<Row>

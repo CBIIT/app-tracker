@@ -17,6 +17,7 @@ export const convertDataToBackend = (data) => {
 					: ''),
 			highest_level_of_education: basicInfo.highestLevelEducation,
 			us_citizen: basicInfo.isUsCitizen?.toString(),
+			focuse_area: basicInfo.focusArea,
 			address: {
 				address: basicInfo.address.address,
 				address_2: basicInfo.address.address2,

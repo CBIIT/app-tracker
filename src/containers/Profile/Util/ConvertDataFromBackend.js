@@ -35,6 +35,7 @@ export const convertDataFromBackend = (data) => {
 				: null,
 			highestLevelEducation: data.basic_info?.highest_level_of_education,
 			isUsCitizen: parseInt(data.basic_info?.us_citizen),
+			focusArea: data.basic_info.focus_area,
 			address: {
 				address: data.basic_info?.address,
 				address2: data.basic_info?.address_2,
