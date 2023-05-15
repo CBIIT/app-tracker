@@ -1,5 +1,7 @@
 import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
 
+import React, { useEffect, useState } from "react";
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
@@ -10,6 +12,9 @@ import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
 const basicInformation = (props) => {
+
+	const [ displayFocusArea, setDisplayFocusArea ] = useState(false);
+
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
 	const readOnly = props.readOnly;
@@ -21,9 +26,16 @@ const basicInformation = (props) => {
 		3: '3',
 	};
 
+	console.log(formInstance.getFieldValue('openDate'));	// undefined !!
+	console.log(formInstance);
+
 	const disabledDate = (currentDate) => {
 		return currentDate <= new Date().setHours(0, 0, 0, 0);
 	};
+
+	const setFocusArea = (info) => {
+		setDisplayFocusArea(info.target.checked);
+	}
 
 	const validateDates = async (formItem) => {
 		const openDate = new Date(formInstance.getFieldValue('openDate')).setHours(
@@ -109,15 +121,18 @@ const basicInformation = (props) => {
 				label='Focus Area Selection'
 				name='focusAreaEnabled'
 			>
-				<Checkbox>Enable focus area</Checkbox>
+				<Checkbox onChange={(info) => setFocusArea(info)}>Enable focus area</Checkbox>
 			</Form.Item>
 
-			<Form.Item
-				label=''
-				name='focusArea'
-			>
-				<EditableFocusArea mode="single" directions="select a focus area"/>
-			</Form.Item>
+			{displayFocusArea
+					? <Form.Item
+						label=''
+						name='focusArea'
+					>
+						<EditableFocusArea mode="single" directions="select a focus area"/>
+					  </Form.Item>
+					: null
+			}
 
 			<Form.Item
 				label='Vacancy Description'
