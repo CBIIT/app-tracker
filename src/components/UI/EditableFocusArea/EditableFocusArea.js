@@ -37,7 +37,7 @@ const editableFocusArea = (props) => (
 		name='focusArea'
 		rules={[{ required: props.required, message: 'Please make a selection' }]}
 	>
-		<span>Select at least one area, no more than 2</span>
+		<div style={{ margin: '10px' }}>{props.directions}</div>
 		<Select
 			mode= {props.mode}
 			options={focusAreaMenu.map((option) => ({ label: option.label, value: option.value }))}

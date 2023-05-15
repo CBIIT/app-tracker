@@ -3,6 +3,7 @@ import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
+import EditableFocusArea from '../../../../components/UI/EditableFocusArea/EditableFocusArea';
 
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
@@ -103,6 +104,20 @@ const basicInformation = (props) => {
 					</Tooltip>
 				</div>
 			</div>
+
+			<Form.Item
+				label='Focus Area Selection'
+				name='focusAreaEnabled'
+			>
+				<Checkbox>Enable focus area</Checkbox>
+			</Form.Item>
+
+			<Form.Item
+				label=''
+				name='focusArea'
+			>
+				<EditableFocusArea mode="single" directions="select a focus area"/>
+			</Form.Item>
 
 			<Form.Item
 				label='Vacancy Description'

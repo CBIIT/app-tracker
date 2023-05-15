@@ -174,7 +174,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			</Row>
 			<Row>
 				<Col span={10}>
-					<EditableFocusArea mode="multiple"/>
+					<EditableFocusArea mode="multiple" directions="Select at least one area, no more than 2"/>
 				</Col>
 			</Row>
 			<Row>
