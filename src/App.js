@@ -1,7 +1,6 @@
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 import './App.less';
 import Layout from './hoc/Layout/Layout';
@@ -54,32 +53,6 @@ const app = () => {
 		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth();
 	}, []);
-
-
-/* 	const checkAuth = async () => {
-		setIsLoading(true);
-		const response = await axios.get(CHECK_AUTH);
-		const data = response.data.result;
-		setAuth({
-			isUserLoggedIn: data.logged_in,
-			iTrustGlideSsoId: data.itrust_idp,
-			oktaGlideSsoId: data.okta_idp,
-			sessionTimeout: data.session_timeout,
-			user: {
-				firstName: data.user.first_name,
-				lastInitial: data.user.last_initial,
-				uid: data.user.user_id,
-				hasProfile: data.has_profile,
-				isChair: data.is_chair,
-				isManager: data.is_manager,
-				isExecSec: data.is_exec_sec,
-				hasApplications: data.user.has_applications,
-				roles: data.user.roles,
-			},
-			oktaLoginAndRedirectUrl: data.okta_login_and_redirect_url,
-		});
-		setIsLoading(false);
-	}; */
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
