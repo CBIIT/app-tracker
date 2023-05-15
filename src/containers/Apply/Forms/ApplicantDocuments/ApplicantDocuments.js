@@ -32,7 +32,7 @@ const ApplicantDocuments = () => {
 		multiple: false,
 	};
 
-	const onRemove = (file, index) => {
+/* 	const onRemove = (file, index) => {
 		const fileIndex = applicantDocuments[index].file.fileList.indexOf(file);
 
 		const newFileList = applicantDocuments[index].file.fileList.slice();
@@ -45,7 +45,7 @@ const ApplicantDocuments = () => {
 		};
 
 		setApplicantDocuments(newApplicantDocuments);
-	};
+	}; */
 
 	const onChange = () => {
 		setApplicantDocuments(formInstance.getFieldValue('applicantDocuments'));

@@ -40,7 +40,6 @@ import EditApplication from './containers/Apply/EditApplication';
 import ApplicantProfile from './containers/Profile/ApplicantProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import TimeoutModal from './components/TimeoutModal/TimeoutModal';
-import { CHECK_AUTH } from './constants/ApiEndpoints';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
