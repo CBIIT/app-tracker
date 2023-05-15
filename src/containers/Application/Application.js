@@ -500,7 +500,6 @@ const application = () => {
 								style={{
 									backgroundColor: 'white',
 									minHeight: '60px',
-									//marginBottom: '0px',
 								}}
 							>
 								{loremFocusArea.map((area, index) => {

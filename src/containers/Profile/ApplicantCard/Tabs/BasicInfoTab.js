@@ -19,6 +19,10 @@ const BasicInfoTab = () => {
 		return `${prefix} (${areaCode}) ${firstHalf} - ${secondHalf}`;
 	};
 
+    // TODO: remove this after integrating with SNow
+    const loremFocusArea = ["Chemistry/Chemical Biology/Toxicology", "Chromosome Biology/Epigentics/Transcription"];
+
+
     return(
         <div>
             {!hasProfile || basicOpen ? (
@@ -58,6 +62,18 @@ const BasicInfoTab = () => {
                             {getFullNumber(basicInfo.phonePrefix, basicInfo.phone)}
                         </Paragraph>
                     </div>
+                    <div style={{ marginBottom: '25px' }}>
+                        <Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
+                            Focus Area
+                        </Title>
+                        {loremFocusArea.map((area, index) => {
+                            return (
+                                <Paragraph style={{ color: '#363636' }} key={index}>
+                                    {area}
+                                </Paragraph>
+                            );
+                        })}
+                    </div> 
                 </>
             )}
         </div>
