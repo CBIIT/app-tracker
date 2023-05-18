@@ -499,7 +499,7 @@ const application = () => {
 									minHeight: '60px',
 								}}
 							>
-								{application.basicInfo.focusArea.map((area, index) => {
+								{application.basicInfo?.focusArea?.map((area, index) => {
 									return (
 										<InfoCardRow key={index}
 											style={{ paddingBottom: '5px'}}
