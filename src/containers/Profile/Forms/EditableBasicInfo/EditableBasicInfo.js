@@ -73,7 +73,8 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				basicInfo: values
 			}
 			setProfile(data);
-			await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+			var convertedData = convertDataToBackend(data);
+			await axios.post(SAVE_PROFILE, convertedData);
 			setHasProfile(true);
 			setBasicOpen(false);
 		}

@@ -55,9 +55,6 @@ import Loading from '../../components/Loading/Loading';
 
 const { confirm } = Modal;
 
-// TODO: remove this after integrating with SNow
-const loremFocusArea = ["Chemistry/Chemical Biology/Toxicology", "Chromosome Biology/Epigentics/Transcription"];
-
 const individualScoreCategories = [
 	{ key: 'category1', title: 'Category 1' },
 	{ key: 'category2', title: 'Category 2' },
@@ -502,7 +499,7 @@ const application = () => {
 									minHeight: '60px',
 								}}
 							>
-								{loremFocusArea.map((area, index) => {
+								{application.basicInfo.focusArea.map((area, index) => {
 									return (
 										<InfoCardRow key={index}
 											style={{ paddingBottom: '5px'}}
