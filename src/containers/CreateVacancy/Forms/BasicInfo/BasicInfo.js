@@ -110,7 +110,7 @@ const basicInformation = (props) => {
 
 			<Form.Item
 				label='Focus Area Selection'
-				name='focusArea'
+				name='requireFocusArea'
 				valuePropName='checked'
 				style={{ margin: '0px', paddingLeft: '10px' }}
 			>

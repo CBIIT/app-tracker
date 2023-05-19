@@ -11,6 +11,10 @@ export const transformJsonFromBackend = (sourceJson) => {
 				sourceJson.basic_info.allow_hr_specialist_triage.value == '1'
 					? true
 					: false,
+			requireFocusArea:
+			sourceJson.basic_info.require_focus_area.value == '1'
+				? true
+				: false,
 			description: sourceJson.basic_info.vacancy_description.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({
 				document: doc.title.value,

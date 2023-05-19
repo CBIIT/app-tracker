@@ -37,7 +37,7 @@ const finalizeVacancy = (props) => {
 				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
 					<div>
 						<h2>Focus Area</h2>
-						<p>{(basicInfo.focusArea) ? 'Visible' : 'Not Visible'}</p>
+						<p>{(basicInfo.requireFocusArea) ? 'Visible' : 'Not Visible'}</p>
 					</div>
 				</div>
 				<h2>Vacancy Description</h2>
