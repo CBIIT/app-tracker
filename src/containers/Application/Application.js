@@ -538,22 +538,27 @@ const application = () => {
 									marginBottom: '0px',
 								}}
 							/>
-							<InfoCard title='Focus Areas'
-								style={{
-									backgroundColor: 'white',
-									minHeight: '60px',
-								}}
-							>
-								{(requireFocusArea !== '0') ? focusArea?.map((area, index) => {
-									return (
-										<InfoCardRow key={index}
-											style={{ paddingBottom: '5px'}}
-											>
-											<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
-										</InfoCardRow>
-									);
-								}) : null}
-							</InfoCard>
+							{(requireFocusArea !== '0') ?
+								<InfoCard title='Focus Areas'
+									style={{
+										backgroundColor: 'white',
+										minHeight: '60px',
+									}}
+								>
+									{(requireFocusArea !== '0') ? focusArea?.map((area, index) => {
+										return (
+											<InfoCardRow key={index}
+												style={{ paddingBottom: '5px'}}
+												>
+												<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
+											</InfoCardRow>
+										);
+									}) : null}
+								</InfoCard>
+								:
+								null
+							}
+
 							<Address
 								address={application?.address}
 								style={{ backgroundColor: 'white', marginBottom: '0px' }}
