@@ -28,6 +28,7 @@ import {
 	GET_VACANCY_MANAGER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
 	RECUSE,
+	GET_DRAFT,
 } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY } from '../../constants/Routes';
 import {
@@ -52,6 +53,8 @@ import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import { displayReferenceContactQuestion } from '../../components/Util/Application/Application';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 import Loading from '../../components/Loading/Loading';
+
+//import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 const { confirm } = Modal;
 
@@ -171,14 +174,20 @@ const application = () => {
 	const [showRecuseModal, setShowRecuseModal] = useState(false);
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [recused, setRecused] = useState(false);
+	const [focusArea, setFocusArea] = useState([]);
+	const [requireFocusArea, setRequireFocusArea] = useState('0');
 
 	const history = useHistory();
 	const { sysId } = useParams();
 
 	useEffect(() => {
 		loadApplication();
-	}, []);
 
+		// (async () => {
+		// 	await getProfileInfo();
+		// })();
+	}, []);
+	
 	const openRecuseModal = (e) => {
 		e.preventDefault();
 		setShowRecuseModal(true);
@@ -307,6 +316,42 @@ const application = () => {
 				setIndividualScoresComments(individualScores.comments.value);
 				setIndividualTriageChoice(individualScores.recommend.value);
 			}
+
+			// the flag to display the focus area should be in the above vacancy object,
+			// but for some reason it only comes back from GET_DRAFT
+			//const vacancyDraft = await axios.get(GET_DRAFT + sysId);
+			//setFocusArea(vacancyDraft.data.result?.basic_info?.focus_area);
+			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
+			setFocusArea(application?.basicInfo?.focusArea);
+			// var candidatesId = application?.basicInfo?.sys_id;
+			// try {
+			// 	const response = await axios.get(GET_PROFILE + candidatesId);
+			// 	if (response.data.result.status !== 400) {
+			// 		setFocusArea(convertDataFromBackend(response.data.result.response).focusArea);
+			// 	}
+			// } catch (e) {
+			// 	console.log(e);
+			// 	message.error(
+			// 		'Sorry! There was an error loading your profile. Try refreshing the browser.'
+			// 	);
+			// }
+
+			// const getProfileInfo = async () => {
+			// 	// get candidate's sysId
+			// 	var candidatesId = application?.basicInfo?.sys_id
+			
+			// 	try {
+			// 		const response = await axios.get(GET_PROFILE + candidatesId);
+			// 		if (response.data.result.status !== 400) {
+			// 			setFocusArea(convertDataFromBackend(response.data.result.response).focusArea);
+			// 		}
+			// 	} catch (e) {
+			// 		console.log(e);
+			// 		message.error(
+			// 			'Sorry! There was an error loading your profile. Try refreshing the browser.'
+			// 		);
+			// 	}
+			// };
 
 			setIsLoading(false);
 		} catch (error) {
@@ -467,9 +512,9 @@ const application = () => {
 					<div className='ApplicationHeaderBar'>
 						<h2>
 							Applicant:{' '}
-							{application.basicInfo.firstName +
+							{application?.basicInfo?.firstName +
 								' ' +
-								application.basicInfo.lastName}
+								application?.basicInfo?.lastName}
 						</h2>
 						<Button
 							onClick={onViewApplicantsListClick}
@@ -486,7 +531,7 @@ const application = () => {
 							style={{ flexBasis: '670px' }}
 						>
 							<ApplicantInfo
-								basicInfo={application.basicInfo}
+								basicInfo={application?.basicInfo}
 								style={{
 									backgroundColor: 'white',
 									minHeight: '334px',
@@ -499,7 +544,7 @@ const application = () => {
 									minHeight: '60px',
 								}}
 							>
-								{application.basicInfo?.focusArea?.map((area, index) => {
+								{(requireFocusArea !== '0') ? focusArea?.map((area, index) => {
 									return (
 										<InfoCardRow key={index}
 											style={{ paddingBottom: '5px'}}
@@ -507,10 +552,10 @@ const application = () => {
 											<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
 										</InfoCardRow>
 									);
-								})}
+								}) : null}
 							</InfoCard>
 							<Address
-								address={application.address}
+								address={application?.address}
 								style={{ backgroundColor: 'white', marginBottom: '0px' }}
 							/>
 
@@ -533,7 +578,7 @@ const application = () => {
 							)}
 
 							<Documents
-								documents={application.documents}
+								documents={application?.documents}
 								style={{ backgroundColor: 'white' }}
 							/>
 						</div>
@@ -734,7 +779,7 @@ const application = () => {
 									<a
 										href={
 											'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
-											application.appSysId
+											application?.appSysId
 										}
 									>
 										Download Applicant Info {<DownloadOutlined />}

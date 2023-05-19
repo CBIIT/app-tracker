@@ -5,11 +5,11 @@ const documents = (props) => (
 	<div style={props.style}>
 		<InfoCard title='Applicant Documents'>
 			<ul className='ApplicantDocumentList'>
-				{props.documents.map((document, index) => (
+				{props.documents?.map((document, index) => (
 					<li key={index}>
-						<div className='LineItemItem'>{document.title}</div>
+						<div className='LineItemItem'>{document?.title}</div>
 						<div className='LineItemItem'>
-							<a href={document.downloadLink}>{document.filename}</a>
+							<a href={document.downloadLink}>{document?.filename}</a>
 						</div>
 					</li>
 				))}
