@@ -54,8 +54,6 @@ import { displayReferenceContactQuestion } from '../../components/Util/Applicati
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 import Loading from '../../components/Loading/Loading';
 
-//import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
-
 const { confirm } = Modal;
 
 const individualScoreCategories = [
@@ -182,10 +180,6 @@ const application = () => {
 
 	useEffect(() => {
 		loadApplication();
-
-		// (async () => {
-		// 	await getProfileInfo();
-		// })();
 	}, []);
 	
 	const openRecuseModal = (e) => {
@@ -317,42 +311,9 @@ const application = () => {
 				setIndividualTriageChoice(individualScores.recommend.value);
 			}
 
-			// the flag to display the focus area should be in the above vacancy object,
-			// but for some reason it only comes back from GET_DRAFT
-			//const vacancyDraft = await axios.get(GET_DRAFT + sysId);
-			//setFocusArea(vacancyDraft.data.result?.basic_info?.focus_area);
 			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
 			setFocusArea(application?.basicInfo?.focusArea);
-			// var candidatesId = application?.basicInfo?.sys_id;
-			// try {
-			// 	const response = await axios.get(GET_PROFILE + candidatesId);
-			// 	if (response.data.result.status !== 400) {
-			// 		setFocusArea(convertDataFromBackend(response.data.result.response).focusArea);
-			// 	}
-			// } catch (e) {
-			// 	console.log(e);
-			// 	message.error(
-			// 		'Sorry! There was an error loading your profile. Try refreshing the browser.'
-			// 	);
-			// }
-
-			// const getProfileInfo = async () => {
-			// 	// get candidate's sysId
-			// 	var candidatesId = application?.basicInfo?.sys_id
 			
-			// 	try {
-			// 		const response = await axios.get(GET_PROFILE + candidatesId);
-			// 		if (response.data.result.status !== 400) {
-			// 			setFocusArea(convertDataFromBackend(response.data.result.response).focusArea);
-			// 		}
-			// 	} catch (e) {
-			// 		console.log(e);
-			// 		message.error(
-			// 			'Sorry! There was an error loading your profile. Try refreshing the browser.'
-			// 		);
-			// 	}
-			// };
-
 			setIsLoading(false);
 		} catch (error) {
 			message.error('Sorry, an error occurred while loading.');
