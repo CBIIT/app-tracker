@@ -176,7 +176,6 @@ const manageDashboard = () => {
 		);
 
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
-
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
 		setVacancy(vacancy);
@@ -331,6 +330,7 @@ const manageDashboard = () => {
 					<Tabs.TabPane tab='Applicants' key='applicants'>
 						<ApplicantList
 							vacancyState={vacancy.state}
+							vacancyTenant={vacancy.basicInfo.tenant}
 							userRoles={user.roles}
 							userCommitteeRole={userCommitteeRole}
 							reloadVacancy={loadLatestVacancyInfo}

@@ -9,5 +9,13 @@
 }
 
 .checked-green {
-	color: #117E46
+	color: #117E46;
+	font-size: 25px;
+	margin-left: 15px;
+}
+
+.closed-red {
+	color: #8b0000;
+	font-size: 25px;
+	margin-left: 15px;
 }

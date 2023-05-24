@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { message, Table, Collapse } from 'antd';
 import { useParams, Link } from 'react-router-dom';
-import { CheckOutlined} from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
@@ -74,12 +74,6 @@ const applicantColumns = [
 		dataIndex: 'chair_triage_status',
 		key: 'ChairStatus',
 		render: (text) => renderDecision(text),
-	},
-	{
-		title: 'Complete',
-		dataIndex: 'Complete',
-		key: 'complete',
-		render: (date) => <CheckOutlined className='checked-green'/>,
 	}
 ];
 
@@ -89,6 +83,25 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
+	
+	useEffect(() => {
+		if (props.vacancyTenant === "Stadtman" && (!applicantColumns.some(column => column.title === "Complete"))) {
+			applicantColumns.push(
+				{
+					title: 'Complete',
+					dataIndex: 'is_app_complete',
+					key: 'complete',
+					render: (text) => {
+						return text === true ? (
+							<CheckCircleOutlined className='checked-green'/>
+						) : (
+							<CloseCircleOutlined className="closed-red"/>
+						)
+					},
+				}
+			)
+		};
+	}, []);
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
@@ -322,6 +335,7 @@ const applicantList = (props) => {
 			if (recommended) apiString += '&recommended=' + recommended;
 
 			const response = await axios.get(apiString);
+			//console.log("🚀 ~ file: ApplicantList.js:326 ~ loadApplicants ~ response:", response);
 			return {
 				applicants: response.data.result.applicants,
 				totalCount: response.data.result.totalCount,
