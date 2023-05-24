@@ -2,22 +2,41 @@ import FormContext from '../../Context';
 import { useState, useEffect, useContext } from 'react';
 import { Form, Upload, Button, message } from 'antd';
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
+import EditableFocusArea from '../../../../components/UI/EditableFocusArea/EditableFocusArea';
 import './ApplicantDocuments.css';
+import axios from 'axios';
+import { GET_VACANCY_MANAGER_VIEW } from '../../../../constants/ApiEndpoints';
+import { useParams } from 'react-router-dom';
 
-const ApplicantDocuments = () => {
+const ApplicantDocuments = (props) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
 	const [applicantDocuments, setApplicantDocuments] = useState([]);
+	const [focusArea, setFocusArea] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [requireFocusArea, setRequireFocusArea] = useState('0');
+	const { sysId } = useParams();
 
 	useEffect(() => {
 		setIsLoading(true);
 		const { setCurrentFormInstance } = contextValue;
 		setCurrentFormInstance(formInstance);
 		setApplicantDocuments(formData.applicantDocuments);
+		loadApplication();
 		setIsLoading(false);
 	}, []);
+
+	const loadApplication = async () => {
+		try {
+			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);
+			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
+
+		} catch (error) {
+			message.error('Sorry, an error occurred while loading.');
+			throw error;
+		}
+	};
 
 	const uploadProps = {
 		beforeUpload: (file) => {
@@ -46,6 +65,10 @@ const ApplicantDocuments = () => {
 
 		setApplicantDocuments(newApplicantDocuments);
 	}; */
+
+	const onFocusAreaChange = () => {
+		setRequireFocusArea(formInstance.getFieldValue('focusArea'));
+	}
 
 	const onChange = () => {
 		setApplicantDocuments(formInstance.getFieldValue('applicantDocuments'));
@@ -108,90 +131,99 @@ const ApplicantDocuments = () => {
 	};
 
 	return !isLoading && applicantDocuments && applicantDocuments.length !== 0 ? (
-		<Form form={formInstance} initialValues={formData} onChange={onChange}>
-			<div className='upload-documents'>
-				<Form.List name='applicantDocuments'>
-					{(fields) => {
-						return (
-							<div>
-								{fields.map((field, index) => (
-									<div key={field.key}>
-										<div className='document-title'>
-											{formInstance.getFieldValue([
-												'applicantDocuments',
-												index,
-												'title',
-												'value',
-											])}
-											{applicantDocuments[index].is_optional.value == '1'
-												? ' (optional)'
-												: ''}
-										</div>
-										<div className='UploadRow'>
-											<Form.Item
-												name={[index, 'file']}
-												valuePropName={[index, 'file']}
-												rules={[
-													{
-														validator: () =>
-															validateFile(
-																applicantDocuments[index].file.fileList,
-																applicantDocuments[index].is_optional.value,
-																applicantDocuments[index].uploadedDocument
-															),
-													},
-												]}
-											>
-												{applicantDocuments[index]?.uploadedDocument
-													?.markedToDelete === false ? (
-													<>
-														<a
-															href={
-																applicantDocuments[index].uploadedDocument
-																	.downloadLink
-															}
-															style={{ marginRight: '16px' }}
-														>
-															{
-																applicantDocuments[index].uploadedDocument
-																	.fileName
-															}
-														</a>
-														<Button
-															onClick={() =>
-																markToDeleteOriginalDocument(index)
-															}
-															icon={<DeleteOutlined />}
-														></Button>
-													</>
-												) : (
+		<div>
+			<Form form={formInstance} initialValues={formData} onChange={onChange}>
+				<div className='upload-documents'>
+					<Form.List name='applicantDocuments'>
+						{(fields) => {
+							return (
+								<div>
+									{fields.map((field, index) => (
+										<div key={field.key}>
+											<div className='document-title'>
+												{formInstance.getFieldValue([
+													'applicantDocuments',
+													index,
+													'title',
+													'value',
+												])}
+												{applicantDocuments[index].is_optional.value == '1'
+													? ' (optional)'
+													: ''}
+											</div>
+											<div className='UploadRow'>
+												<Form.Item
+													name={[index, 'file']}
+													valuePropName={[index, 'file']}
+													rules={[
+														{
+															validator: () =>
+																validateFile(
+																	applicantDocuments[index].file.fileList,
+																	applicantDocuments[index].is_optional.value,
+																	applicantDocuments[index].uploadedDocument
+																),
+														},
+													]}
+												>
+													{applicantDocuments[index]?.uploadedDocument
+														?.markedToDelete === false ? (
+														<>
+															<a
+																href={
+																	applicantDocuments[index].uploadedDocument
+																		.downloadLink
+																}
+																style={{ marginRight: '16px' }}
+															>
+																{
+																	applicantDocuments[index].uploadedDocument
+																		.fileName
+																}
+															</a>
+															<Button
+																onClick={() =>
+																	markToDeleteOriginalDocument(index)
+																}
+																icon={<DeleteOutlined />}
+															></Button>
+														</>
+													) : (
 
-													<Upload 
-														defaultFileList={getFileList(index, applicantDocuments)}
-														{...uploadProps}
-														onChange={(info) => storeFile(info, index, applicantDocuments)}
-													>
-														<Button
-															disabled={
-																applicantDocuments[index].file.fileList
-																	.length >= 1
-															}
+														<Upload 
+															defaultFileList={getFileList(index, applicantDocuments)}
+															{...uploadProps}
+															onChange={(info) => storeFile(info, index, applicantDocuments)}
 														>
-															<UploadOutlined /> Upload
-														</Button>
-													</Upload>
+															<Button
+																disabled={
+																	applicantDocuments[index].file.fileList
+																		.length >= 1
+																}
+															>
+																<UploadOutlined /> Upload
+															</Button>
+														</Upload>
 
-												)}
-											</Form.Item>
+													)}
+												</Form.Item>
+											</div>
 										</div>
-									</div>
-								))}
-							</div>
-						);
-					}}
-				</Form.List>
-			</div>
-		</Form>
+									))}
+								</div>
+							);
+						}}
+					</Form.List>
+				</div>
+			</Form>
+			<Form form={formInstance} initialValues={formData} onChange={onFocusAreaChange}>
+				<div>
+					{requireFocusArea !== '0' ?
+					<EditableFocusArea mode="multiple" directions="Select at least one area, no more than 2"/>
+					: null }
+				</div>
+			</Form>
+		</div>
 	) : null;
 };
 export default ApplicantDocuments;

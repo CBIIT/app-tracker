@@ -12,7 +12,17 @@ import './Review.css';
 const review = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
-	const reviewData = JSON.parse(JSON.stringify(formData));
+
+	const deepCopy = (body) => {
+		var response = JSON.parse(JSON.stringify(body));
+		for(var i = 0; i < body.applicantDocuments?.focusArea?.length; i++) {
+			var valToAdd = body.applicantDocuments?.focusArea[i];
+			response.applicantDocuments.push(valToAdd);
+		}
+		return response;
+	};
+
+	const reviewData = deepCopy(formData);
 	const referencesColumns = [
 		{
 			title: 'Name',
@@ -210,6 +220,24 @@ const review = (props) => {
 					<LabelValuePair label='Post Code' value={reviewData.address.zip} />
 				</div>
 			</div>
+			{reviewData?.applicantDocuments?.focusArea ?
+				<SectionHeader
+					title='Focus Area'
+					onClick={() => props.onEditButtonClick('focusArea')}
+					showButton='false'
+				/>
+				: null
+			}			
+			{reviewData?.applicantDocuments?.focusArea ?
+				<div className='SectionContent'>
+				{reviewData?.applicantDocuments?.focusArea?.map((area, index) => {
+					return (
+						<p key={index}>{area}</p>
+					);
+				})}
+				</div>
+				: null
+			}
 			<SectionHeader
 				title='Demographics'
 				onClick={() => props.onEditButtonClick('demographics')}
@@ -283,9 +311,9 @@ const review = (props) => {
 									</>
 								) : (
 									<>
-										{document.file.fileList.length > 0 ? '✓ ' : '× '}
-										{document.title.value}
-										{document.file.fileList.map((file, index) => (
+										{document.file?.fileList.length > 0 ? '✓ ' : '× '}
+										{document.title?.value}
+										{document.file?.fileList.map((file, index) => (
 											<div className='FileListRow' key={index}>
 												<FileTextOutlined /> {file.name}
 											</div>

@@ -58,18 +58,6 @@ const BasicInfoTab = () => {
                             {getFullNumber(basicInfo.phonePrefix, basicInfo.phone)}
                         </Paragraph>
                     </div>
-                    <div style={{ marginBottom: '25px' }}>
-                        <Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
-                            Focus Area
-                        </Title>
-                        {basicInfo?.focusArea?.map((area, index) => {
-                            return (
-                                <Paragraph style={{ color: '#363636' }} key={index}>
-                                    {area}
-                                </Paragraph>
-                            );
-                        })}
-                    </div> 
                 </>
             )}
         </div>
