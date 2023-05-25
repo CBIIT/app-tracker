@@ -52,7 +52,7 @@ export const convertDataFromBackend = (data) => {
 				country: data.basic_info?.country,
 			},
 		},
-		focusArea: cleanseFocusArea(data.basic_info?.focus_area),
+		focusArea: cleanseFocusArea(data?.focus_area),
 		demographics: createDemoObj(data),
 	};
 };

@@ -32,7 +32,7 @@ export const transformJsonToBackend = (sourceJson) => {
 			state_province: sourceJson.address.stateProvince,
 			country: sourceJson.address.country,
 		},
-		focus_area: cleanseFocusArea(sourceJson.basicInfo.focusArea),
+		focus_area: cleanseFocusArea(sourceJson?.focusArea),
 		vacancy_documents: sourceJson.applicantDocuments,
 		references: transformReferences(sourceJson.references),
 		questions: {
