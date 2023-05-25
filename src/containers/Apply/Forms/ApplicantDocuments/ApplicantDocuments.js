@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 const ApplicantDocuments = (props) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
-	const { formData } = contextValue;
+	const { formData, setCurrentFormInstance } = contextValue;
 	const [applicantDocuments, setApplicantDocuments] = useState([]);
 	const [focusArea, setFocusArea] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ const ApplicantDocuments = (props) => {
 
 	useEffect(() => {
 		setIsLoading(true);
-		const { setCurrentFormInstance } = contextValue;
+		//const { setCurrentFormInstance } = contextValue;
 		setCurrentFormInstance(formInstance);
 		console.log(formData);
 		setApplicantDocuments(formData.applicantDocuments);
@@ -228,7 +228,7 @@ const ApplicantDocuments = (props) => {
 			</Form>
 			<Form
 				form={formInstance}
-				initialValues={formData} onChange={onFocusAreaChange}
+				initialValues={formData.focusArea} onChange={onFocusAreaChange}
 			>
 				<div>
 					{requireFocusArea !== '0' ? (

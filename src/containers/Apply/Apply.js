@@ -44,6 +44,7 @@ const updateFormData = (currentForm, newValues, step) => {
 		case 'applicantDocuments':
 			// (documents) handle attachments
 			updatedForm.applicantDocuments = newValues.applicantDocuments;
+			updatedForm.focusArea = newValues.focusArea;
 			return updatedForm;
 		case 'additionalQuestions':
 			// (last-content) save to questions
