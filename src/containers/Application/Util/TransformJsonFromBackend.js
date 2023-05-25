@@ -21,7 +21,7 @@ export const transformJsonFromBackend = (backendJson) => {
 				backendJson.basic_info?.highest_level_of_education?.value,
 			isUsCitizen: backendJson?.basic_info?.us_citizen?.value,			
 		},
-		focusArea: cleanseFocusArea(backendJson?.focus_area.value),
+		focusArea: cleanseFocusArea(backendJson?.focus_area?.focus_area),
 		address: {
 			address1: backendJson.basic_info.address.value,
 			address2: backendJson.basic_info.address_2.value,
