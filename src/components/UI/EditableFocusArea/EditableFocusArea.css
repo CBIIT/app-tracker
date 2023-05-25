@@ -1,1 +1,4 @@
 /*  */
+.ant-select-multiple .ant-select-selection-item {
+    margin: 0px 5px;
+}
