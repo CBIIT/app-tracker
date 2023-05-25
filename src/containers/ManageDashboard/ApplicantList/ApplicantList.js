@@ -85,22 +85,23 @@ const applicantList = (props) => {
 	const [tableLoading, setTableLoading] = useState(false);
 	
 	useEffect(() => {
-		if (props.vacancyTenant === "Stadtman" && (!applicantColumns.some(column => column.title === "Complete"))) {
-			applicantColumns.push(
-				{
-					title: 'Complete',
-					dataIndex: 'is_app_complete',
-					key: 'complete',
-					render: (text) => {
-						return text === true ? (
-							<CheckCircleOutlined className='checked-green'/>
-						) : (
-							<CloseCircleOutlined className="closed-red"/>
-						)
-					},
-				}
-			)
-		};
+		if (
+			props.vacancyTenant === 'Stadtman' &&
+			!applicantColumns.some((column) => column.title === 'Complete')
+		) {
+			applicantColumns.push({
+				title: 'Complete',
+				dataIndex: 'is_app_complete',
+				key: 'complete',
+				render: (text) => {
+					return text === true ? (
+						<CheckCircleOutlined className='checked-green' />
+					) : (
+						<CloseCircleOutlined className='closed-red' />
+					);
+				},
+			});
+		}
 	}, []);
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);

@@ -515,7 +515,7 @@ const application = () => {
 									)}
 								/>
 							)}
-
+							{console.log(references)}
 							<Documents
 								documents={application.documents}
 								style={{ backgroundColor: 'white' }}
