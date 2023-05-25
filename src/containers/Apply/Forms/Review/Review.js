@@ -12,17 +12,7 @@ import './Review.css';
 const review = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
-
-	const deepCopy = (body) => {
-		var response = JSON.parse(JSON.stringify(body));
-		for(var i = 0; i < body.applicantDocuments?.focusArea?.length; i++) {
-			var valToAdd = body.applicantDocuments?.focusArea[i];
-			response.applicantDocuments.push(valToAdd);
-		}
-		return response;
-	};
-
-	const reviewData = deepCopy(formData);
+	const reviewData = JSON.parse(JSON.stringify(formData));
 	const referencesColumns = [
 		{
 			title: 'Name',
@@ -220,7 +210,7 @@ const review = (props) => {
 					<LabelValuePair label='Post Code' value={reviewData.address.zip} />
 				</div>
 			</div>
-			{reviewData?.applicantDocuments?.focusArea ?
+			{reviewData?.focusArea ?
 				<SectionHeader
 					title='Focus Area'
 					onClick={() => props.onEditButtonClick('focusArea')}
@@ -228,9 +218,9 @@ const review = (props) => {
 				/>
 				: null
 			}			
-			{reviewData?.applicantDocuments?.focusArea ?
+			{reviewData?.focusArea ?
 				<div className='SectionContent'>
-				{reviewData?.applicantDocuments?.focusArea?.map((area, index) => {
+				{reviewData?.focusArea?.map((area, index) => {
 					return (
 						<p key={index}>{area}</p>
 					);

@@ -17,12 +17,12 @@ export const convertDataFromBackend = (data) => {
 		}
 	}
 
-	/* const cleanseFocusArea = (localFocusAreas) => {
+	const cleanseFocusArea = (localFocusAreas) => {
 		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas.includes("undefined"))
 			return [];
 		else
 			return localFocusAreas.split(',');
-	}; */
+	}; 
 
 	return {
 		userSysId: data.basic_info?.sys_id,
@@ -43,7 +43,6 @@ export const convertDataFromBackend = (data) => {
 				: null,
 			highestLevelEducation: data.basic_info?.highest_level_of_education,
 			isUsCitizen: parseInt(data.basic_info?.us_citizen),
-			//focusArea: cleanseFocusArea(data.basic_info?.focus_area),
 			address: {
 				address: data.basic_info?.address,
 				address2: data.basic_info?.address_2,
@@ -53,6 +52,7 @@ export const convertDataFromBackend = (data) => {
 				country: data.basic_info?.country,
 			},
 		},
+		focusArea: cleanseFocusArea(data.basic_info?.focus_area),
 		demographics: createDemoObj(data),
 	};
 };

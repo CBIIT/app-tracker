@@ -312,7 +312,7 @@ const application = () => {
 			}
 
 			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
-			setFocusArea(application?.basicInfo?.focusArea);
+			setFocusArea(application?.focusArea);
 			
 			setIsLoading(false);
 		} catch (error) {
