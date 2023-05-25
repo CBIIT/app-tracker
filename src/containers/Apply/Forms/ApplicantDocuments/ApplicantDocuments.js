@@ -20,23 +20,19 @@ const ApplicantDocuments = (props) => {
 
 	useEffect(() => {
 		setIsLoading(true);
-		//const { setCurrentFormInstance } = contextValue;
 		setCurrentFormInstance(formInstance);
-		console.log(formData);
 		setApplicantDocuments(formData.applicantDocuments);
 		loadApplication();
 		setIsLoading(false);
 	}, []);
 
-	useEffect(() => {
-		console.log(formInstance.getFieldValue("focusArea"));
-		console.log(formInstance.getFieldsValue());
-	})
-
 	const loadApplication = async () => {
 		try {
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);
-			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
+			const reqFocusAreaValue = vacancy.data.result.basic_info?.require_focus_area?.value
+			if (reqFocusAreaValue !== "" || reqFocusAreaValue !== undefined) {
+				setRequireFocusArea(reqFocusAreaValue);
+			}
 
 		} catch (error) {
 			message.error('Sorry, an error occurred while loading.');
@@ -231,7 +227,7 @@ const ApplicantDocuments = (props) => {
 				initialValues={formData.focusArea} onChange={onFocusAreaChange}
 			>
 				<div>
-					{requireFocusArea !== '0' ? (
+					{requireFocusArea !== '0' && requireFocusArea !== undefined  ? (
 						<>
 							<div style={{ margin: '10px' }}>
 								{'Select at least one area, no more than 2'}

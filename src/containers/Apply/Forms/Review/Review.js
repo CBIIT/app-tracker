@@ -213,8 +213,7 @@ const review = (props) => {
 			{reviewData?.focusArea ?
 				<SectionHeader
 					title='Focus Area'
-					onClick={() => props.onEditButtonClick('focusArea')}
-					showButton='false'
+					onClick={() => props.onEditButtonClick('applicantDocuments')}
 				/>
 				: null
 			}			
@@ -230,8 +229,7 @@ const review = (props) => {
 			}
 			<SectionHeader
 				title='Demographics'
-				onClick={() => props.onEditButtonClick('demographics')}
-				showButton='false'
+				onClick={() => props.onEditButtonClick('additionalQuestions')}
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
