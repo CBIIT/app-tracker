@@ -33,23 +33,24 @@ const focusAreaMenu = [
 
 const editableFocusArea = (props) => (
 	<Form.Item
-	label='Focus Area'
-	name='focusArea'
-	rules={[
-		{
-			required: true,
-			message: 'Please make a selection'
-		},
-	]}
->
-	<Select
-		mode={props.mode}
-		/* options={focusAreaMenu.map((option) => ({
-			label: option.label,
-			value: option.value,
-		}))} */
-		options={focusAreaMenu}
-	/>
+		label='Focus Area'
+		name='focusArea'
+		rules={[
+			{
+				required: true,
+				message: 'Please make a selection',
+			},
+			{
+				max: 2,
+				message: 'Please only select a maximum of 2 focus areas',
+				type: 'array',
+			},
+		]}
+	>
+		<Select
+			mode={props.mode}
+			options={focusAreaMenu}
+		/>
 	</Form.Item>
 );
 
