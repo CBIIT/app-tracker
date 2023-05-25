@@ -21,6 +21,7 @@ const DemographicsStepForm = () => {
 
 	useEffect(() => {
 		setCurrentFormInstance(formInstance);
+		console.log(formData);
 	}, []);
 
 	return (

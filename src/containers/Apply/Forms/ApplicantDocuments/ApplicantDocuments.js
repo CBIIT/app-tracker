@@ -22,10 +22,16 @@ const ApplicantDocuments = (props) => {
 		setIsLoading(true);
 		const { setCurrentFormInstance } = contextValue;
 		setCurrentFormInstance(formInstance);
+		console.log(formData);
 		setApplicantDocuments(formData.applicantDocuments);
 		loadApplication();
 		setIsLoading(false);
 	}, []);
+
+	useEffect(() => {
+		console.log(formInstance.getFieldValue("focusArea"));
+		console.log(formInstance.getFieldsValue());
+	})
 
 	const loadApplication = async () => {
 		try {
@@ -67,7 +73,8 @@ const ApplicantDocuments = (props) => {
 	}; */
 
 	const onFocusAreaChange = () => {
-		setRequireFocusArea(formInstance.getFieldValue('focusArea'));
+		//setRequireFocusArea(formInstance.getFieldValue('focusArea'));
+		console.log(formInstance.getFieldValue('focusArea'))
 	}
 
 	const onChange = () => {
@@ -189,11 +196,15 @@ const ApplicantDocuments = (props) => {
 															></Button>
 														</>
 													) : (
-
-														<Upload 
-															defaultFileList={getFileList(index, applicantDocuments)}
+														<Upload
+															defaultFileList={getFileList(
+																index,
+																applicantDocuments
+															)}
 															{...uploadProps}
-															onChange={(info) => storeFile(info, index, applicantDocuments)}
+															onChange={(info) =>
+																storeFile(info, index, applicantDocuments)
+															}
 														>
 															<Button
 																disabled={
@@ -204,7 +215,6 @@ const ApplicantDocuments = (props) => {
 																<UploadOutlined /> Upload
 															</Button>
 														</Upload>
-
 													)}
 												</Form.Item>
 											</div>
@@ -216,11 +226,19 @@ const ApplicantDocuments = (props) => {
 					</Form.List>
 				</div>
 			</Form>
-			<Form form={formInstance} initialValues={formData} onChange={onFocusAreaChange}>
+			<Form
+				form={formInstance}
+				initialValues={formData} onChange={onFocusAreaChange}
+			>
 				<div>
-					{requireFocusArea !== '0' ?
-					<EditableFocusArea mode="multiple" directions="Select at least one area, no more than 2"/>
-					: null }
+					{requireFocusArea !== '0' ? (
+						<>
+							<div style={{ margin: '10px' }}>
+								{'Select at least one area, no more than 2'}
+							</div>
+								<EditableFocusArea mode='multiple' />
+						</>
+					) : null}
 				</div>
 			</Form>
 		</div>

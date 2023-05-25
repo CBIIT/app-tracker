@@ -2,8 +2,9 @@ import { createContext } from 'react';
 const defaultFormData = {
 	basicInfo: {
 		phonePrefix: '+1',
-		businessPhonePrefix: '+1',
+		businessPhonePrefix: '+1'
 	},
+	focusArea: [],
 	address: {},
 	references: [],
 	applicantDocuments: [],

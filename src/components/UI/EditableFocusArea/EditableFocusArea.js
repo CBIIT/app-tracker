@@ -32,19 +32,25 @@ const focusAreaMenu = [
 ];
 
 const editableFocusArea = (props) => (
-	<div>
-		<div style={{ margin: '10px' }}>{props.directions}</div>
-		<Form.Item
-			label='Focus Area'
-			name='focusArea'
-			rules={[{ required: props.required, message: 'Please make a selection' }]}
-		>
-			<Select
-				mode= {props.mode}
-				options={focusAreaMenu.map((option) => ({ label: option.label, value: option.value }))}
-			/>
-		</Form.Item>
-	</div>
+	<Form.Item
+	label='Focus Area'
+	name='focusArea'
+	rules={[
+		{
+			required: true,
+			message: 'Please make a selection'
+		},
+	]}
+>
+	<Select
+		mode={props.mode}
+		/* options={focusAreaMenu.map((option) => ({
+			label: option.label,
+			value: option.value,
+		}))} */
+		options={focusAreaMenu}
+	/>
+	</Form.Item>
 );
 
 export default editableFocusArea;
