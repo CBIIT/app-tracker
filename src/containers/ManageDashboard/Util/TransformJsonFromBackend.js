@@ -7,6 +7,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			closeDate: sourceJson.basic_info.close_date.label,
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
+			tenant: sourceJson.basic_info.tenant.label,
 			allowHrSpecialistTriage:
 				sourceJson.basic_info.allow_hr_specialist_triage.value == '1'
 					? true

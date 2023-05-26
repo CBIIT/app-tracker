@@ -7,3 +7,15 @@
 .applicant-table td.ant-table-column-sort {
 	background-color: inherit;
 }
+
+.checked-green {
+	color: #117E46;
+	font-size: 25px;
+	margin-left: 15px;
+}
+
+.closed-red {
+	color: #8b0000;
+	font-size: 25px;
+	margin-left: 15px;
+}
