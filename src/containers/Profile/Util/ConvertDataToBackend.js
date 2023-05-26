@@ -1,5 +1,13 @@
 export const convertDataToBackend = (data) => {
 	const { basicInfo, demographics } = data;
+
+	 const cleanseFocusArea = (localFocusAreas) => {
+		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas[0] === 'undefined')
+			return '';
+		else
+			return localFocusAreas.join(',');
+	};
+ 
 	return {
 		basic_info: {
 			sys_id: data.userSysId,
@@ -16,7 +24,8 @@ export const convertDataToBackend = (data) => {
 					? basicInfo.businessPhone.toString()
 					: ''),
 			highest_level_of_education: basicInfo.highestLevelEducation,
-			us_citizen: basicInfo.isUsCitizen.toString(),
+			us_citizen: basicInfo.isUsCitizen?.toString(),
+			focus_area: cleanseFocusArea(basicInfo?.focusArea),
 			address: {
 				address: basicInfo.address.address,
 				address_2: basicInfo.address.address2,

@@ -59,7 +59,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 		var valid = false;
 
 		try {
-			const validationResult = await formInstance.validateFields();
+			await formInstance.validateFields();
 			window.scrollTo(0, 0);
 			valid = true;
 		} catch (error) {
@@ -72,7 +72,8 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				basicInfo: values
 			}
 			setProfile(data);
-			await axios.post(SAVE_PROFILE, convertDataToBackend(data));
+			var convertedData = convertDataToBackend(data);
+			await axios.post(SAVE_PROFILE, convertedData);
 			setHasProfile(true);
 			setBasicOpen(false);
 		}

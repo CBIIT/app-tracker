@@ -9,6 +9,7 @@ import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
 const basicInformation = (props) => {
+
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
 	const readOnly = props.readOnly;
@@ -19,6 +20,9 @@ const basicInformation = (props) => {
 		2: '2',
 		3: '3',
 	};
+
+	console.log(formInstance.getFieldValue('openDate'));	// undefined !!
+	console.log(formInstance);
 
 	const disabledDate = (currentDate) => {
 		return currentDate <= new Date().setHours(0, 0, 0, 0);
@@ -103,6 +107,15 @@ const basicInformation = (props) => {
 					</Tooltip>
 				</div>
 			</div>
+
+			<Form.Item
+				label='Focus Area Selection'
+				name='requireFocusArea'
+				valuePropName='checked'
+				style={{ margin: '0px', paddingLeft: '10px', paddingBottom: '10px' }}
+			>
+				<Checkbox>Enable focus area</Checkbox>
+			</Form.Item>
 
 			<Form.Item
 				label='Vacancy Description'

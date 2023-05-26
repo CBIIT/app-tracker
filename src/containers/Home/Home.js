@@ -4,7 +4,6 @@ import { Table } from 'antd';
 import axios from 'axios';
 import './Home.css';
 import homeLogo from '../../assets/images/landing-page-image.jpg';
-//import EditableProfile from '../EditableBasicInfo/EditableBasicInfo'
 
 const columns = [
 	{

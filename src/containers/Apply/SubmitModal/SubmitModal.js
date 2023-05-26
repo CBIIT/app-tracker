@@ -12,6 +12,8 @@ import {
 	SERVICE_NOW_ATTACHMENT,
 } from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
+import useAuth from '../../../hooks/useAuth';
+import { checkAuth } from '../../../constants/checkAuth';
 
 const submitModal = ({
 	data,
@@ -26,6 +28,8 @@ const submitModal = ({
 	const [submitted, setSubmitted] = useState(false);
 
 	const history = useHistory();
+
+	const { setAuth } = useAuth();
 
 	const handleOk = async () => {
 		setConfirmLoading(true);
@@ -113,6 +117,7 @@ const submitModal = ({
 			);
 		} finally {
 			setConfirmLoading(false);
+			checkAuth(setConfirmLoading, setAuth);
 		}
 	};
 

@@ -34,6 +34,12 @@ const finalizeVacancy = (props) => {
 						<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
 					</div>
 				</div>
+				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
+					<div>
+						<h2>Focus Area</h2>
+						<p>{(basicInfo.requireFocusArea) ? 'Visible' : 'Not Visible'}</p>
+					</div>
+				</div>
 				<h2>Vacancy Description</h2>
 				<ReactQuill
 					className='RichTextDisplay'

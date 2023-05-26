@@ -44,6 +44,7 @@ const updateFormData = (currentForm, newValues, step) => {
 		case 'applicantDocuments':
 			// (documents) handle attachments
 			updatedForm.applicantDocuments = newValues.applicantDocuments;
+			updatedForm.focusArea = newValues.focusArea;
 			return updatedForm;
 		case 'additionalQuestions':
 			// (last-content) save to questions
@@ -123,7 +124,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			applicantDocuments: Object.values(applicantDocuments),
 			questions: demographics
 		};
-
 		setFormData(formData);
 	};
 
@@ -168,7 +168,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			address: address,
 			basicInfo: basicInfo
 		};
-
 		setFormData(newFormData);
 	};
 
@@ -178,7 +177,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
 			title: 'Application Documents',
-			content: <ApplicantDocuments />,
+			content: <ApplicantDocuments vacancyId={vacancySysId}/>,
 			description: 'CV, cover letter, and statement of research interests',
 			longDescription:
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
