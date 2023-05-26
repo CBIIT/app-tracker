@@ -108,14 +108,17 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			<Form.Item
-				label='Focus Area Selection'
-				name='requireFocusArea'
-				valuePropName='checked'
-				style={{ margin: '0px', paddingLeft: '10px', paddingBottom: '10px' }}
-			>
-				<Checkbox>Enable focus area</Checkbox>
-			</Form.Item>
+			{ (true) ?	// TODO: replace "true" with an auth / user indicator that is true if the vacancy manager is stadman
+				<Form.Item
+					label='Focus Area Selection'
+					name='requireFocusArea'
+					valuePropName='checked'
+					style={{ margin: '0px', paddingLeft: '10px', paddingBottom: '10px' }}
+				>
+					<Checkbox>Enable focus area</Checkbox>
+				</Form.Item>
+				: null
+			}
 
 			<Form.Item
 				label='Vacancy Description'
