@@ -69,7 +69,6 @@ const ApplicantDocuments = (props) => {
 	}; */
 
 	const onFocusAreaChange = () => {
-		//setRequireFocusArea(formInstance.getFieldValue('focusArea'));
 		console.log(formInstance.getFieldValue('focusArea'))
 	}
 
