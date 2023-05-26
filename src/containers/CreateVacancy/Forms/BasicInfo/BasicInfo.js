@@ -1,5 +1,5 @@
 import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
-
+import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
@@ -13,6 +13,9 @@ const basicInformation = (props) => {
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
 	const readOnly = props.readOnly;
+
+	const { auth } = useAuth();
+	const { user } = auth;
 
 	const sliderMarks = {
 		0: '0',
@@ -108,14 +111,17 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			<Form.Item
-				label='Focus Area Selection'
-				name='requireFocusArea'
-				valuePropName='checked'
-				style={{ margin: '0px', paddingLeft: '10px', paddingBottom: '10px' }}
-			>
-				<Checkbox>Enable focus area</Checkbox>
-			</Form.Item>
+			{ (user?.tenant.trim().toLowerCase() === "stadtman") ?	// TODO: replace "true" with an auth / user indicator that is true if the vacancy manager is stadman
+				<Form.Item
+					label='Focus Area Selection'
+					name='requireFocusArea'
+					valuePropName='checked'
+					style={{ margin: '0px', paddingLeft: '10px', paddingBottom: '10px' }}
+				>
+					<Checkbox>Enable focus area</Checkbox>
+				</Form.Item>
+				: null
+			}
 
 			<Form.Item
 				label='Vacancy Description'

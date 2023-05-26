@@ -15,6 +15,7 @@ export const checkAuth = async (setIsLoading, setAuth) => {
             lastInitial: data.user.last_initial,
             uid: data.user.user_id,
             hasProfile: data.has_profile,
+            tenant: data.user.tenant,
             isChair: data.is_chair,
             isManager: data.is_manager,
             isExecSec: data.is_exec_sec,
