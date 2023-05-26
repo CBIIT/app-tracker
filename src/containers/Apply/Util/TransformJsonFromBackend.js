@@ -1,4 +1,12 @@
 export const transformJsonFromBackend = (sourceJson) => {
+
+	 const cleanseFocusArea = (localFocusAreas) => {
+		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas.includes("undefined"))
+			return [];
+		else
+			return localFocusAreas.split(',');
+	}; 
+
 	return {
 		sysId: sourceJson.basic_info.vacancy,
 		basicInfo: {
@@ -17,6 +25,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			highestLevelEducation: sourceJson.basic_info.highest_level_of_education,
 			isUsCitizen: sourceJson.basic_info.us_citizen,
 		},
+		focusArea: cleanseFocusArea(sourceJson.focus_area),
 		address: {
 			address: sourceJson.basic_info.address,
 			address2: sourceJson.basic_info.address_2,

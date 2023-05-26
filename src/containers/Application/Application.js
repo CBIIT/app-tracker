@@ -28,6 +28,7 @@ import {
 	GET_VACANCY_MANAGER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
 	RECUSE,
+	GET_DRAFT,
 } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY } from '../../constants/Routes';
 import {
@@ -171,6 +172,8 @@ const application = () => {
 	const [showRecuseModal, setShowRecuseModal] = useState(false);
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [recused, setRecused] = useState(false);
+	const [focusArea, setFocusArea] = useState([]);
+	const [requireFocusArea, setRequireFocusArea] = useState('0');
 
 	const history = useHistory();
 	const { sysId } = useParams();
@@ -178,7 +181,7 @@ const application = () => {
 	useEffect(() => {
 		loadApplication();
 	}, []);
-
+	
 	const openRecuseModal = (e) => {
 		e.preventDefault();
 		setShowRecuseModal(true);
@@ -308,6 +311,9 @@ const application = () => {
 				setIndividualTriageChoice(individualScores.recommend.value);
 			}
 
+			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
+			setFocusArea(application?.focusArea);
+			
 			setIsLoading(false);
 		} catch (error) {
 			message.error('Sorry, an error occurred while loading.');
@@ -467,9 +473,9 @@ const application = () => {
 					<div className='ApplicationHeaderBar'>
 						<h2>
 							Applicant:{' '}
-							{application.basicInfo.firstName +
+							{application?.basicInfo?.firstName +
 								' ' +
-								application.basicInfo.lastName}
+								application?.basicInfo?.lastName}
 						</h2>
 						<Button
 							onClick={onViewApplicantsListClick}
@@ -486,15 +492,36 @@ const application = () => {
 							style={{ flexBasis: '670px' }}
 						>
 							<ApplicantInfo
-								basicInfo={application.basicInfo}
+								basicInfo={application?.basicInfo}
 								style={{
 									backgroundColor: 'white',
 									minHeight: '334px',
 									marginBottom: '0px',
 								}}
 							/>
+							{(requireFocusArea !== '0') ?
+								<InfoCard title='Focus Areas'
+									style={{
+										backgroundColor: 'white',
+										minHeight: '60px',
+									}}
+								>
+									{(requireFocusArea !== '0') ? focusArea?.map((area, index) => {
+										return (
+											<InfoCardRow key={index}
+												style={{ paddingBottom: '5px'}}
+												>
+												<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
+											</InfoCardRow>
+										);
+									}) : null}
+								</InfoCard>
+								:
+								null
+							}
+
 							<Address
-								address={application.address}
+								address={application?.address}
 								style={{ backgroundColor: 'white', marginBottom: '0px' }}
 							/>
 
@@ -517,7 +544,7 @@ const application = () => {
 							)}
 
 							<Documents
-								documents={application.documents}
+								documents={application?.documents}
 								style={{ backgroundColor: 'white' }}
 							/>
 						</div>
@@ -718,7 +745,7 @@ const application = () => {
 									<a
 										href={
 											'/x_g_nci_app_tracke_application.do?PDF&sys_id=' +
-											application.appSysId
+											application?.appSysId
 										}
 									>
 										Download Applicant Info {<DownloadOutlined />}

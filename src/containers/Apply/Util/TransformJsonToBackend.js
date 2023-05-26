@@ -1,4 +1,12 @@
 export const transformJsonToBackend = (sourceJson) => {
+
+	 const cleanseFocusArea = (localFocusAreas) => {
+		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas[0] === 'undefined')
+			return '';
+		else
+			return localFocusAreas.join(',');
+	}; 
+
 	const targetJson = {
 		basic_info: {
 			sys_id: sourceJson.sysId,
@@ -24,6 +32,7 @@ export const transformJsonToBackend = (sourceJson) => {
 			state_province: sourceJson.address.stateProvince,
 			country: sourceJson.address.country,
 		},
+		focus_area: cleanseFocusArea(sourceJson?.focusArea),
 		vacancy_documents: sourceJson.applicantDocuments,
 		references: transformReferences(sourceJson.references),
 		questions: {

@@ -4,7 +4,7 @@ import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow
 
 const address = (props) => {
 	const { address, address2, city, stateProvince, postalCode, country } =
-		props.address;
+		props?.address;
 
 	return (
 		<InfoCard title='Address' style={props.style}>

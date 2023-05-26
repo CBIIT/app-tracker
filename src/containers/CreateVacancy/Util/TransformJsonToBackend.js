@@ -21,6 +21,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 	const transformedBasicInfo = {
 		vacancy_title: basicInfo.title,
 		allow_hr_specialist_triage: basicInfo.allowHrSpecialistTriage,
+		require_focus_area: basicInfo.requireFocusArea ? '1' : '0',
 		vacancy_description: basicInfo.description,
 		open_date: getDateFromDateTime(basicInfo.openDate),
 		close_date: getDateFromDateTime(basicInfo.closeDate),

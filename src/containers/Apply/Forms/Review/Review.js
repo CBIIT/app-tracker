@@ -210,10 +210,26 @@ const review = (props) => {
 					<LabelValuePair label='Post Code' value={reviewData.address.zip} />
 				</div>
 			</div>
+			{reviewData?.focusArea ?
+				<SectionHeader
+					title='Focus Area'
+					onClick={() => props.onEditButtonClick('applicantDocuments')}
+				/>
+				: null
+			}			
+			{reviewData?.focusArea ?
+				<div className='SectionContent'>
+				{reviewData?.focusArea?.map((area, index) => {
+					return (
+						<p key={index}>{area}</p>
+					);
+				})}
+				</div>
+				: null
+			}
 			<SectionHeader
 				title='Demographics'
-				onClick={() => props.onEditButtonClick('demographics')}
-				showButton='false'
+				onClick={() => props.onEditButtonClick('additionalQuestions')}
 			/>
 			<div className='SectionContent'>
 				<div className='SectionContentRow'>
@@ -283,9 +299,9 @@ const review = (props) => {
 									</>
 								) : (
 									<>
-										{document.file.fileList.length > 0 ? '✓ ' : '× '}
-										{document.title.value}
-										{document.file.fileList.map((file, index) => (
+										{document.file?.fileList.length > 0 ? '✓ ' : '× '}
+										{document.title?.value}
+										{document.file?.fileList.map((file, index) => (
 											<div className='FileListRow' key={index}>
 												<FileTextOutlined /> {file.name}
 											</div>

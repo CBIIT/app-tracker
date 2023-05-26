@@ -16,6 +16,14 @@ export const convertDataFromBackend = (data) => {
 			return {};
 		}
 	}
+
+	const cleanseFocusArea = (localFocusAreas) => {
+		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas.includes("undefined"))
+			return [];
+		else
+			return localFocusAreas.split(',');
+	}; 
+
 	return {
 		userSysId: data.basic_info?.sys_id,
 		basicInfo: {
@@ -44,6 +52,7 @@ export const convertDataFromBackend = (data) => {
 				country: data.basic_info?.country,
 			},
 		},
+		focusArea: cleanseFocusArea(data?.focus_area),
 		demographics: createDemoObj(data),
 	};
 };
