@@ -28,7 +28,7 @@ import {
 	GET_VACANCY_MANAGER_VIEW,
 	SUBMIT_INDIVIDUAL_SCORING,
 	RECUSE,
-	GET_DRAFT,
+	//GET_DRAFT,
 } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY } from '../../constants/Routes';
 import {

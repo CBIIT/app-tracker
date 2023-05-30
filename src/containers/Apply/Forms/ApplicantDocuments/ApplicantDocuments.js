@@ -13,10 +13,8 @@ const ApplicantDocuments = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData, setCurrentFormInstance } = contextValue;
 	const [applicantDocuments, setApplicantDocuments] = useState([]);
-	const [focusArea, setFocusArea] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [requireFocusArea, setRequireFocusArea] = useState('0');
-	const { sysId } = useParams();
 
 	useEffect(() => {
 		setIsLoading(true);
