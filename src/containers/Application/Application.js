@@ -282,7 +282,7 @@ const application = () => {
 			const refDocIds = refDocs
 				.map((doc) => doc.attach_sys_id);
 			setAppDocIds(appDocIds => appDocIds.concat(refDocIds));
-			
+
 			setApplication(application);
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
 			setVacancyState(vacancy.data.result.basic_info.state.value);
@@ -748,7 +748,6 @@ const application = () => {
 										</a>
 									</Button>
 								</Tooltip>
-								{console.log(appDocIds)}
 								<Button>
 									<a
 										href={
