@@ -6,7 +6,6 @@ import EditableFocusArea from '../../../../components/UI/EditableFocusArea/Edita
 import './ApplicantDocuments.css';
 import axios from 'axios';
 import { GET_VACANCY_MANAGER_VIEW } from '../../../../constants/ApiEndpoints';
-import { useParams } from 'react-router-dom';
 
 const ApplicantDocuments = (props) => {
 	const [formInstance] = Form.useForm();
