@@ -274,6 +274,15 @@ const application = () => {
 				.map((filtDoc) => filtDoc.doc_sys_id);
 			setAppDocIds(filteredAppDocs);
 
+			const refDocs = applicationResponse.data.result.references
+				.map((ref) => {
+					ref.documents.length > 0
+					return ref.documents[0];
+				});
+			const refDocIds = refDocs
+				.map((doc) => doc.attach_sys_id);
+			setAppDocIds(appDocIds => appDocIds.concat(refDocIds));
+			
 			setApplication(application);
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
 			setVacancyState(vacancy.data.result.basic_info.state.value);
@@ -313,7 +322,6 @@ const application = () => {
 
 			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
 			setFocusArea(application?.focusArea);
-			
 			setIsLoading(false);
 		} catch (error) {
 			message.error('Sorry, an error occurred while loading.');
@@ -542,7 +550,6 @@ const application = () => {
 									)}
 								/>
 							)}
-							{console.log(references)}
 							<Documents
 								documents={application?.documents}
 								style={{ backgroundColor: 'white' }}
@@ -741,6 +748,7 @@ const application = () => {
 										</a>
 									</Button>
 								</Tooltip>
+								{console.log(appDocIds)}
 								<Button>
 									<a
 										href={
