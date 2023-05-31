@@ -277,11 +277,10 @@ const application = () => {
 			const refDocs = applicationResponse.data.result.references
 				.map((ref) => {
 					ref.documents.length > 0
-					return ref.documents[0];
+					return ref.ref_sys_id;
 				});
-			const refDocIds = refDocs
-				.map((doc) => doc.attach_sys_id);
-			setAppDocIds(appDocIds => appDocIds.concat(refDocIds));
+			
+			setAppDocIds(appDocIds => appDocIds.concat(refDocs));
 
 			setApplication(application);
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
@@ -735,6 +734,7 @@ const application = () => {
 											: ''
 									}
 								>
+									{console.log(appDocIds)}
 									<Button disabled={appDocIds.length === 0}>
 										<a
 											href={
