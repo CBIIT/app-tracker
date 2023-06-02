@@ -1,10 +1,18 @@
 export const transformJsonFromBackend = (sourceJson) => {
 
 	 const cleanseFocusArea = (localFocusAreas) => {
-		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas.includes("undefined"))
+		if (!localFocusAreas || localFocusAreas.length == 0 )
 			return [];
-		else
-			return localFocusAreas.split(',');
+		else {
+			var innerFocusAreas = localFocusAreas;
+			if (typeof localFocusAreas !== "string") {
+				innerFocusAreas = localFocusAreas["focus_area"];
+			}
+			if (innerFocusAreas.includes("undefined")) {
+				return [];
+			}
+			return innerFocusAreas.split(',');
+		}
 	}; 
 
 	return {
