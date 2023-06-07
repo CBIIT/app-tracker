@@ -3,6 +3,7 @@ import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
+import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
 
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
@@ -24,7 +25,40 @@ const basicInformation = (props) => {
 		3: '3',
 	};
 
-	console.log(formInstance.getFieldValue('openDate'));	// undefined !!
+	// TODO: get from new API endpoint
+	const appInitiatorMenu = [];	
+
+	const positionClassificationMenu = [
+		{ label: 'Senior Investigator', value: 'Senior Investigator' },
+		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
+		{ label: 'Investigator 2', value: 'Investigator 2' },
+		{ label: 'Investigator (HS)', value: 'Investigator (HS)' },
+		{ label: 'Senior Clinician', value: 'Senior Clinician' },
+		{ label: 'Senior Clinician (HS)', value: 'Senior Clinician (HS)' },
+		{ label: 'Senior Scientist', value: 'Senior Scientist' },
+		{ label: 'Assistant Clinical Investigator 2', value: 'Assistant Clinical Investigator 2' },
+		{ label: 'Assistant Clinical Investigator (HS)', value: 'Assistant Clinical Investigator (HS)' },
+		{ label: 'Staff Clinician 2', value: 'Staff Clinician 2' },
+		{ label: 'Staff Clinician (HS)', value: 'Staff Clinician (HS)' },
+		{ label: 'Staff Scientist 2', value: 'Staff Scientist 2' },
+		{ label: 'Staff Scientist 2 (Clinical)', value: 'Staff Scientist 2 (Clinical)' },
+		{ label: 'Staff Scientist 2 (Facility Head)', value: 'Staff Scientist 2 (Facility Head)' },
+		{ label: 'Scientific Executive', value: 'Scientific Executive' },
+		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
+		{ label: 'Scientific Policy or Program Leader – Tier 2', value: 'Scientific Policy or Program Leader – Tier 2' },
+		{ label: 'Scientific Director', value: 'Scientific Director' },
+		{ label: 'Clinical Director', value: 'Clinical Director' },
+		{ label: 'IC Deputy Director', value: 'IC Deputy Director' },
+		{ label: 'IC Director', value: 'IC Director' },
+		{ label: 'NIH Deputy Director', value: 'NIH Deputy Director' },
+		{ label: 'SBRBPAS', value: 'SBRBPAS' },
+		{ label: 'N/A', value: 'N/A' },
+	];
+
+	// TODO: get from new API endpoint
+	const orgCodeMenu = [];
+
+	console.log(formInstance.getFieldValue('openDate'));
 	console.log(formInstance);
 
 	const disabledDate = (currentDate) => {
@@ -131,6 +165,39 @@ const basicInformation = (props) => {
 			>
 				<ReactQuill className='QuillEditor' readOnly={readOnly} />
 			</Form.Item>
+
+			{/* TODO: are these three drop downs required ? */}
+
+			<div className='DatePickerContainer'>				
+				<div className='DatePicker'>
+					{/* TODO: Needs API call */}
+					<EditableDropDown
+						label='Appointment Package Indicator'
+						name='appointmentPackageIndicator'
+						required={true}
+						menu={appInitiatorMenu}
+					/>
+				</div>
+
+				<div className='DatePicker'>
+					<EditableDropDown
+						label='Position Classification'
+						name='positionClassification'
+						required={true}
+						menu={positionClassificationMenu}
+					/>	
+				</div>
+			</div>
+
+			{/* TODO: Needs API call */}
+			<div className='DatePicker'>
+				<EditableDropDown
+					label='Organization Code'
+					name='orgCode'
+					required={true}
+					menu={orgCodeMenu}
+				/>	
+			</div>
 
 			<div className='DatePickerContainer'>
 				<div className='DatePicker'>
