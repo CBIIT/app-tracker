@@ -69,6 +69,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
+	const vacancyId = initialValues?.sysId || vacancySysId;
 
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
 
@@ -177,7 +178,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
 			title: 'Application Documents',
-			content: <ApplicantDocuments vacancyId={vacancySysId}/>,
+			content: <ApplicantDocuments vacancyId={vacancyId}/>,
 			description: 'CV, cover letter, and statement of research interests',
 			longDescription:
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
@@ -338,7 +339,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
-	const vacancyId = initialValues?.sysId || vacancySysId;
 
 	return (
 		<>
