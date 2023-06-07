@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { message, Table, Collapse } from 'antd';
+import { useEffect, useState, useRef } from 'react';
+import { message, Table, Collapse, Button, Input, Space } from 'antd';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
@@ -35,7 +35,7 @@ const renderDecision = (text) =>
 	);
 
 const defaultApplicantSort = 'ascend';
-const applicantColumns = [
+/* const applicantColumns = [
 	{
 		title: 'Applicant',
 		dataIndex: 'applicant_last_name',
@@ -75,7 +75,7 @@ const applicantColumns = [
 		key: 'ChairStatus',
 		render: (text) => renderDecision(text),
 	}
-];
+]; */
 
 const applicantList = (props) => {
 	const { sysId } = useParams();
@@ -83,6 +83,145 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
+
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+		confirm();
+		setSearchText(selectedKeys[0]);
+		setSearchedColumn(dataIndex);
+	}
+
+	const handleReset = (clearFilters) => {
+		clearFilters();
+		setSearchText('');
+	}
+
+	const getColumnSeachProps = (dataIndex) => ({
+		filterDropdown: ({
+			setSelectedKeys,
+			selectedKeys,
+			confirm,
+			clearFilters,
+			close,
+		}) => (
+			<div
+				style={{
+					padding: 8,
+				}}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
+				<Input
+					ref={searchInput}
+					placeholder={`Search ${dataIndex}`}
+					value={selectedKeys[0]}
+					onChange={(e) =>
+						setSelectedKeys(e.target.value ? [e.target.value] : [])
+					}
+					onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+					style={{
+						marginBottom: 8,
+						display: 'block',
+					}}
+				/>
+				<Space>
+					<Button
+						type='primary'
+						onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+						icon={<SearchOutlined />}
+						size='small'
+						style={{
+							width: 90,
+						}}
+					>
+						Search
+					</Button>
+					<Button
+						type='link'
+						size='small'
+						onClick={() => {
+							confirm({
+								closeDropdown: false,
+							});
+							setSearchText(selectedKeys[0]);
+							setSearchedColumn(dataIndex);
+						}}
+					>
+						Filter
+					</Button>
+					<Button
+						type='link'
+						size='small'
+						onClick={() => {
+							close();
+						}}
+					>
+						Close
+					</Button>
+				</Space>
+			</div>
+		),
+		filterIcon: (filtered) => (
+			<SearchOutlined
+				style={{
+					color: filtered ? '#1677ff' : undefined,
+				}}
+			/>
+		),
+		onFilter: (value, record) => {
+			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+		},
+		onFilterDropdownOpenChange: (visible) => {
+			if (visible) {
+				setTimeout(() => searchInput.current?.select(), 100);
+			}
+		},
+	});
+
+	const applicantColumns = [
+		{
+			title: 'Applicant',
+			dataIndex: 'applicant_last_name',
+			key: 'name',
+			render: (text, record) => {
+				return (
+					<Link to={MANAGE_APPLICATION + record.sys_id}>
+						{text}, {record.applicant_first_name}
+					</Link>
+				);
+			},
+			width: 200,
+			...getColumnSeachProps('applicant_last_name'),
+			defaultSortOrder: defaultApplicantSort,
+			sorter: true,
+		},
+		{
+			title: 'Email',
+			dataIndex: 'applicant_email',
+			key: 'email',
+			maxWidth: 250,
+			...getColumnSeachProps('applicant_email'),
+		},
+		{
+			title: 'Submitted',
+			dataIndex: 'submitted',
+			key: 'submitted',
+			render: (date) => transformDateTimeToDisplay(date),
+		},
+		{
+			title: 'Vacancy Manager Triage Decision',
+			dataIndex: 'owm_triage_status',
+			key: 'OWMStatus',
+			render: (text) => renderDecision(text),
+		},
+		{
+			title: 'Chair Triage Decision',
+			dataIndex: 'chair_triage_status',
+			key: 'ChairStatus',
+			render: (text) => renderDecision(text),
+		}
+	];
 	
 	useEffect(() => {
 		if (
