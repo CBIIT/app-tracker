@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { message, Table, Collapse, Button, Input, Space } from 'antd';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
@@ -138,6 +139,15 @@ const applicantList = (props) => {
 						Search
 					</Button>
 					<Button
+						onClick={() => clearFilters && handleReset(clearFilters)}
+						size='small'
+						style={{
+							width: 90,
+						}}
+					>
+						Reset
+					</Button>
+					<Button
 						type='link'
 						size='small'
 						onClick={() => {
@@ -170,27 +180,59 @@ const applicantList = (props) => {
 			/>
 		),
 		onFilter: (value, record) => {
-			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+			record[dataIndex].toLowerCase().includes(value.toLowerCase());
 		},
 		onFilterDropdownOpenChange: (visible) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
 			}
 		},
+		render: (text) =>
+			searchedColumn === dataIndex ? (
+				<Highlighter
+				highlightStyle={{
+					backgroundColor: '#ffc069',
+					padding: 0,
+				}}
+				searchWords={[searchText]}
+				autoEscape
+				textToHighlight={text ? text.toString() : ''}
+				/>
+			) : (
+				text
+			),
 	});
+
+	/* switch (dataIndex) {
+				case "applicant_last_name":
+					return (
+						<Link to={MANAGE_APPLICATION + record.sys_id}>
+							{text}, {record.applicant_first_name}
+						</Link>
+					);
+				default:
+					return text;
+			} 
+		searchedColumn === dataIndex ? (
+				<Highlighter
+					highlightStyle={{
+						backgroundColor: '#ffc069',
+						padding: 0,
+					}}
+					searchWords={[searchText]}
+					autoEscape
+					textToHighlight={text ? text.toString() : ''}
+				/>
+			) : (
+				text
+			)
+	*/
 
 	const applicantColumns = [
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_last_name',
 			key: 'name',
-			render: (text, record) => {
-				return (
-					<Link to={MANAGE_APPLICATION + record.sys_id}>
-						{text}, {record.applicant_first_name}
-					</Link>
-				);
-			},
 			width: 200,
 			...getColumnSeachProps('applicant_last_name'),
 			defaultSortOrder: defaultApplicantSort,

@@ -93,7 +93,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		);
 
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
-		const {demographics} = profileData;
+		const {basicInfo, demographics} = profileData;
+		const address = basicInfo?.address;
+		
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
@@ -122,7 +124,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
-			questions: demographics
+			questions: demographics,
+			basicInfo: basicInfo,
+			address: address
 		};
 		setFormData(formData);
 	};

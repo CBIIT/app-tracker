@@ -34,7 +34,7 @@ const BasicInfoTab = () => {
                         </Title>
                         <Paragraph style={{ color: '#363636' }}>
 
-                            {address.address2 !== '' || address.address2 !== undefined
+                            {address.address2
                                 ? address.address + ' ' + address.address2
                                 : address.address}
 
