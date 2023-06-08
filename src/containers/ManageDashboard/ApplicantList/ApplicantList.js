@@ -99,7 +99,7 @@ const applicantList = (props) => {
 		setSearchText('');
 	}
 
-	const getColumnSeachProps = (dataIndex) => ({
+	const getColumnSeachProps = (dataIndex, key) => ({
 		filterDropdown: ({
 			setSelectedKeys,
 			selectedKeys,
@@ -115,7 +115,7 @@ const applicantList = (props) => {
 			>
 				<Input
 					ref={searchInput}
-					placeholder={`Search ${dataIndex}`}
+					placeholder={`Search ${key}`}
 					value={selectedKeys[0]}
 					onChange={(e) =>
 						setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -179,28 +179,13 @@ const applicantList = (props) => {
 				}}
 			/>
 		),
-		onFilter: (value, record) => {
-			record[dataIndex].toLowerCase().includes(value.toLowerCase());
-		},
+		onFilter: (value, record) => 
+			record[dataIndex].toLowerCase().includes(value.toLowerCase()),
 		onFilterDropdownOpenChange: (visible) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
 			}
-		},
-		render: (text) =>
-			searchedColumn === dataIndex ? (
-				<Highlighter
-				highlightStyle={{
-					backgroundColor: '#ffc069',
-					padding: 0,
-				}}
-				searchWords={[searchText]}
-				autoEscape
-				textToHighlight={text ? text.toString() : ''}
-				/>
-			) : (
-				text
-			),
+		}
 	});
 
 	/* switch (dataIndex) {
@@ -234,16 +219,20 @@ const applicantList = (props) => {
 			dataIndex: 'applicant_last_name',
 			key: 'name',
 			width: 200,
-			...getColumnSeachProps('applicant_last_name'),
+			...getColumnSeachProps('applicant_last_name', 'name'),
 			defaultSortOrder: defaultApplicantSort,
 			sorter: true,
+			render: (text, record) => 
+				<Link to={MANAGE_APPLICATION + record.sys_id}>
+					{text}, {record.applicant_first_name}
+				</Link>
 		},
 		{
 			title: 'Email',
 			dataIndex: 'applicant_email',
 			key: 'email',
 			maxWidth: 250,
-			...getColumnSeachProps('applicant_email'),
+			...getColumnSeachProps('applicant_email', 'email'),
 		},
 		{
 			title: 'Submitted',
@@ -262,28 +251,27 @@ const applicantList = (props) => {
 			dataIndex: 'chair_triage_status',
 			key: 'ChairStatus',
 			render: (text) => renderDecision(text),
-		}
+		},
 	];
-	
-	useEffect(() => {
-		if (
-			props.vacancyTenant === 'Stadtman' &&
-			!applicantColumns.some((column) => column.title === 'Complete')
-		) {
-			applicantColumns.push({
-				title: 'Complete',
-				dataIndex: 'is_app_complete',
-				key: 'complete',
-				render: (text) => {
-					return text === true ? (
-						<CheckCircleOutlined className='checked-green' />
-					) : (
-						<CloseCircleOutlined className='closed-red' />
-					);
-				},
-			});
-		}
-	}, []);
+
+	if (
+		props.vacancyTenant === 'Stadtman' &&
+		!applicantColumns.some((column) => column.title === 'Complete')
+	) {
+		applicantColumns.push({
+			title: 'Complete',
+			dataIndex: 'is_app_complete',
+			key: 'complete',
+			render: (text) => {
+				return text === true ? (
+					<CheckCircleOutlined className='checked-green' />
+				) : (
+					<CloseCircleOutlined className='closed-red' />
+				);
+			},
+		});
+	}
+
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
