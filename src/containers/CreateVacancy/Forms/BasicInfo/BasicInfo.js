@@ -1,4 +1,5 @@
 import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
+import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -10,6 +11,11 @@ import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
 const basicInformation = (props) => {
+
+	// TODO: get from new API endpoint
+	const [appInitiatorMenu, setAppInitiatorMenu] = useState([]);
+	// TODO: get from new API endpoint
+	const [orgCodeMenu, setOrgCodeMenu] = useState([]);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -24,9 +30,6 @@ const basicInformation = (props) => {
 		2: '2',
 		3: '3',
 	};
-
-	// TODO: get from new API endpoint
-	const appInitiatorMenu = [];	
 
 	const positionClassificationMenu = [
 		{ label: 'Senior Investigator', value: 'Senior Investigator' },
@@ -55,11 +58,21 @@ const basicInformation = (props) => {
 		{ label: 'N/A', value: 'N/A' },
 	];
 
-	// TODO: get from new API endpoint
-	const orgCodeMenu = [];
-
-	console.log(formInstance.getFieldValue('openDate'));
-	console.log(formInstance);
+	useEffect(() => {
+		(async () => {
+			const appInitiatorResponse = await axios.get(
+				APP_INITIATOR
+			);
+			setAppInitiatorMenu(convertDataFromBackend(appInitiatorResponse.data.result.response));
+			//const profileData = convertDataFromBackend(profileResponse.data.result.response)
+		})();
+		(async () => {
+			const orgCodeResponses = await axios.get(
+				GET_ORG_CODES
+			);
+			//setOrgCodeMenu( convertDataFromBackend(orgCodeResponses.data.result.response) );
+		})();
+	}, []);
 
 	const disabledDate = (currentDate) => {
 		return currentDate <= new Date().setHours(0, 0, 0, 0);
