@@ -2,6 +2,7 @@ import './EditableBasicInfo.css';
 import EditableField from '../../../../components/UI/EditableField/EditableField';
 import EditableRadio from '../../../../components/UI/EditableRadio/EditableRadio'
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
+import {excelToJson } from 'convert-excel-to-json';
 import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
 import {
 	Button,
@@ -16,6 +17,10 @@ import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
 import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
+
+import { UploadOutlined } from '@ant-design/icons';
+import { UploadProps } from 'antd';
+import { Upload } from 'antd';
 
 const editableBasicInfo = ({ setBasicOpen }) => {
 	const [formInstance] = Form.useForm();
@@ -78,6 +83,16 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			setBasicOpen(false);
 		}
 	};
+
+	const testExcel = (file) => {
+		console.log(file);
+		const result = excelToJson({
+			sourceFile: file.name
+			//sourceFile: 'SOME-EXCEL-FILE.xlsx'
+		});
+		console.log(result);
+//		alert('alerted');
+	}
 
 	const educationMenu = [
 		{ label: 'Bachelors', value: 'Bachelors' },
@@ -276,6 +291,25 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 					</Button>
 				</Col>
 			</Row>
+			<Row>
+				<br/>
+				Here's a POC for the excel thing:
+			</Row>
+			<Row>
+				<Upload onChange={(file) => testExcel(file)}>
+					<Button icon={<UploadOutlined />}>Click to Upload</Button>
+				</Upload>
+				{/* <input type="file"
+					id="avatar" name="avatar"
+					accept="image/png, image/jpeg"
+					onClick={() => testExcel()}
+					></input> */}
+			</Row>
+			{/* <Row>
+				<Button className='wider-button' onClick={() => testExcel()}>
+						Here we go !
+				</Button>
+			</Row> */}
 		</Form>
 	);
 };
