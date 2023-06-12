@@ -5,7 +5,9 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
+import axios from 'axios';
 
+import { CHECK_HAS_PROFILE, GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
@@ -13,9 +15,11 @@ import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValid
 const basicInformation = (props) => {
 
 	// TODO: get from new API endpoint
-	const [appInitiatorMenu, setAppInitiatorMenu] = useState([]);
+	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	// TODO: get from new API endpoint
-	const [orgCodeMenu, setOrgCodeMenu] = useState([]);
+	const [orgCodeMenu, setOrgCodeMenu] = useState([{ label: ' ', value: ' ' }]);
+
+	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -30,6 +34,14 @@ const basicInformation = (props) => {
 		2: '2',
 		3: '3',
 	};
+
+	const positionClassificationT42OWMMenu = [
+		{ label: 'Scientific Executive', value: 'Scientific Executive' },
+		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
+		{ label: 'Scientific Policy or Program Leader – Tier 2', value: 'Scientific Policy or Program Leader – Tier 2' },
+		{ label: 'Scientific Director', value: 'Scientific Director' },
+		{ label: 'Clinical Director', value: 'Clinical Director' }
+	];
 
 	const positionClassificationMenu = [
 		{ label: 'Senior Investigator', value: 'Senior Investigator' },
@@ -61,16 +73,19 @@ const basicInformation = (props) => {
 	useEffect(() => {
 		(async () => {
 			const appInitiatorResponse = await axios.get(
-				APP_INITIATOR
+				CHECK_HAS_PROFILE //+ appSysId
 			);
 			setAppInitiatorMenu(convertDataFromBackend(appInitiatorResponse.data.result.response));
-			//const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		})();
 		(async () => {
 			const orgCodeResponses = await axios.get(
-				GET_ORG_CODES
+				GET_VACANCY_OPTIONS
 			);
-			//setOrgCodeMenu( convertDataFromBackend(orgCodeResponses.data.result.response) );
+			if (!orgCodeResponses.data.result.isOWM)
+				setCurrentPositionMenu(positionClassificationT42OWMMenu);
+			else
+				setCurrentPositionMenu(positionClassification);
+			//setOrgCodeMenu( orgCodeResponses.data.result );		// contains ic (usually null) and isOWM and packageInitiators (0)
 		})();
 	}, []);
 
@@ -181,16 +196,15 @@ const basicInformation = (props) => {
 
 			{/* TODO: are these three drop downs required ? */}
 
-			<div className='DatePickerContainer'>				
+			<div className='DatePickerContainer'>	
 				<div className='DatePicker'>
-					{/* TODO: Needs API call */}
 					<EditableDropDown
-						label='Appointment Package Indicator'
-						name='appointmentPackageIndicator'
+						label='Organization Code'
+						name='orgCode'
 						required={true}
-						menu={appInitiatorMenu}
-					/>
-				</div>
+						menu={orgCodeMenu}
+					/>	
+				</div>			
 
 				<div className='DatePicker'>
 					<EditableDropDown
@@ -204,12 +218,13 @@ const basicInformation = (props) => {
 
 			{/* TODO: Needs API call */}
 			<div className='DatePicker'>
-				<EditableDropDown
-					label='Organization Code'
-					name='orgCode'
-					required={true}
-					menu={orgCodeMenu}
-				/>	
+					{/* TODO: Needs API call */}
+					<EditableDropDown
+						label='Appointment Package Indicator'
+						name='appointmentPackageIndicator'
+						required={true}
+						menu={appInitiatorMenu}
+					/>
 			</div>
 
 			<div className='DatePickerContainer'>
