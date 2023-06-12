@@ -23,7 +23,8 @@
 		"react-router-dom": "^5.2.0",
 		"react-select": "^4.1.0",
 		"react-select-async-paginate": "^0.5.3",
-		"react-to-print": "^2.14.7"
+		"react-to-print": "^2.14.7",
+		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.3.4",

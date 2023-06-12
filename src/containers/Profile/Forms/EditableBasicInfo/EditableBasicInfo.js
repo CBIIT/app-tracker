@@ -2,7 +2,6 @@ import './EditableBasicInfo.css';
 import EditableField from '../../../../components/UI/EditableField/EditableField';
 import EditableRadio from '../../../../components/UI/EditableRadio/EditableRadio'
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
-import {excelToJson } from 'convert-excel-to-json';
 import { SAVE_PROFILE } from '../../../../constants/ApiEndpoints';
 import {
 	Button,
@@ -18,6 +17,8 @@ import axios from 'axios';
 import ProfileContext from '../../Util/FormContext';
 import { convertDataToBackend } from '../../Util/ConvertDataToBackend';
 
+import * as XLSX from 'xlsx';
+//import {excelToJson } from 'convert-excel-to-json';
 import { UploadOutlined } from '@ant-design/icons';
 import { UploadProps } from 'antd';
 import { Upload } from 'antd';
@@ -84,13 +85,78 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 		}
 	};
 
-	const testExcel = (file) => {
-		console.log(file);
-		const result = excelToJson({
-			sourceFile: file.name
-			//sourceFile: 'SOME-EXCEL-FILE.xlsx'
-		});
-		console.log(result);
+	const [workbook, setWorkbook] = React.useState(XLSX.utils.book_new());
+
+	const testExcel = async (inboundFile) => {
+		console.log(inboundFile);
+
+		console.log('readin the thing.');
+
+		//const file = event.target.files[0];
+//		const file = inboundFile.fileList[0];
+//		var reader = new FileReader();
+	
+//		reader.readAsArrayBuffer(file);
+//		reader.onload = function (e) {
+//		reader.onload = (e: any) => {
+	
+		  // upload file
+	//	  const binarystr = new Uint8Array(e.target.result);
+		  const wb = XLSX.readFile(inboundFile.fileList[0].name, { type: 'array', raw: true, cellFormula: false });
+		  //const wb = XLSX.read(binarystr, { type: 'array', raw: true, cellFormula: false });
+		  //const wb = XLSX.WorkBook = XLSX.read(binarystr, { type: 'array', raw: true, cellFormula: false });
+		  console.log(wb.Sheets)
+	
+		  const wsname = wb.SheetNames[0];
+		  const data = XLSX.utils.sheet_to_json(wb.Sheets[wsname]);
+		  console.log(data)
+//		}
+
+		/* fetch and parse workbook -- see the fetch example for details */
+		//setWorkbook(XLSX.read(await (await fetch("sheetjs.xlsx")).arrayBuffer()));
+		//setWorkbook(XLSX.read(await (await fetch(file.name)).arrayBuffer()));		fetch tries to get from HTTP request but its a local file
+		//setWorkbook(XLSX.read(await (await file.name)));		// no .arrayBuffer cannot read properties of undefined (reading 'slice')
+		// MLH: need an example to read from user input
+
+		//var reader = new FileReader();
+		// console.log('got file reader');
+        // reader.readAsArrayBuffer(file);
+		// console.log('read file bugger');
+
+		//console.log('read buffer');
+		//var data = new Uint8Array(reader.result);
+		//console.log('got data');
+		//var workbook = XLSX.read(file);
+		//var workbook = XLSX.readFile(file.name);
+		// var workbook = XLSX.read(file, {type: 'raw', raw: true});
+		// console.log(workbook);
+		// console.log('Made it to the happy side of friday');
+		// //var workbook = XLSX.read(data, {type: 'array'});
+		// var sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+		// reader.onload = function (e) {
+		// 	console.log('read buffer');
+        //     var data = new Uint8Array(reader.result);
+		// 	console.log('got data');
+		// 	var workbook = XLSX.read(file, {type: 'array'});
+        //     //var workbook = XLSX.read(data, {type: 'array'});
+        //     var sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+		// 	console.log('set the workbook');
+
+		// 	var jsa = XLSX.utils.sheet_to_json(worksheet, opts);
+	
+		// 	console.log('heres the JSA:');
+		// 	console.log(jsa);
+		// }
+
+
+
+		// const result = excelToJson({
+		// 	sourceFile: file.name
+		// 	//sourceFile: 'SOME-EXCEL-FILE.xlsx'
+		// });
+		//console.log(result);
 //		alert('alerted');
 	}
 
