@@ -16,7 +16,6 @@ const basicInformation = (props) => {
 
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
-	//const [currentIC, setCurrentIC] = useState(null);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
