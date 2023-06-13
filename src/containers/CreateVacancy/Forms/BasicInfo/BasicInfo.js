@@ -7,7 +7,7 @@ import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
 import axios from 'axios';
 
-import { GET_VACANCY_OPTIONS, CHECK_HAS_PROFILE } from '../../../../constants/ApiEndpoints';
+import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
@@ -69,15 +69,10 @@ const basicInformation = (props) => {
 
 	useEffect(() => {
 		(async () => {
-			const appInitiatorResponse = await axios.get(
-				CHECK_HAS_PROFILE
-			);
-			setCurrentIC(convertDataFromBackend(appInitiatorResponse.data.result.ic));
-		})();
-		(async () => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
 			);
+			setCurrentIC(vacancyOptionsResponse.data.result.ic);
 			if (!vacancyOptionsResponse.data.result.isOWM)
 				setCurrentPositionMenu(positionClassificationT42OWMMenu);
 			else
