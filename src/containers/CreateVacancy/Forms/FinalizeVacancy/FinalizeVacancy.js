@@ -97,6 +97,24 @@ const finalizeVacancy = (props) => {
 						{basicInfo.numberOfRecommendations} recommendations
 					</li>
 				</ul>
+				<h2>Organization Code</h2>
+				<ul>
+					<p>
+						{basicInfo.orgCode} 
+					</p>
+				</ul>
+				<h2>Position Classification</h2>
+				<ul>
+					<p>
+						{basicInfo.positionClassification} 
+					</p>
+				</ul>
+				<h2>Appointment Package Initiator</h2>
+				<ul>
+					<p>
+						{basicInfo.appointmentPackageIndicator} 
+					</p>
+				</ul>
 			</div>
 			<SectionHeader
 				title='Mandatory Statements'
