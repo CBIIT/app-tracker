@@ -14,11 +14,8 @@ import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValid
 
 const basicInformation = (props) => {
 
-	// TODO: get from new API endpoint
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
-	// TODO: get from new API endpoint
 	const [orgCodeMenu, setOrgCodeMenu] = useState([{ label: ' ', value: ' ' }]);
-
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
 
 	const formInstance = props.formInstance;
@@ -71,32 +68,24 @@ const basicInformation = (props) => {
 	];
 
 	useEffect(() => {
-		// (async () => {
-		// 	const appInitiatorResponse = await axios.get(
-		// 		CHECK_HAS_PROFILE //+ appSysId
-		// 	);
-		// 	setAppInitiatorMenu(convertDataFromBackend(appInitiatorResponse.data.result.response));
-		// })();
 		(async () => {
-			const orgCodeResponses = await axios.get(
+			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
 			);
-			if (!orgCodeResponses.data.result.isOWM)
+			if (!vacancyOptionsResponse.data.result.isOWM)
 				setCurrentPositionMenu(positionClassificationT42OWMMenu);
 			else
 				setCurrentPositionMenu(positionClassification);
 			var packageInitiators = [];
-			for(var i = 0; i < orgCodeResponses.data.result.packageInitiators.length; i++) {
-				var packageInitiator = orgCodeResponses.data.result.packageInitiators[i];
+			for(var i = 0; i < vacancyOptionsResponse.data.result.packageInitiators.length; i++) {
+				var packageInitiator = vacancyOptionsResponse.data.result.packageInitiators[i];
 				var packageInitiatorOption = {
 					label :  packageInitiator.name,
 					value : packageInitiator.sys_id
 				};
 				packageInitiators.push(packageInitiatorOption);
 			}
-		//	setAppInitiatorMenu([{label: 'test', value: 'test'}]);	//works as expected
 			setAppInitiatorMenu(packageInitiators); // this should work but it's a long list of blanks
-			//setOrgCodeMenu( orgCodeResponses.data.result );		// contains ic (usually null) and isOWM and packageInitiators (0)
 		})();
 	}, []);
 
@@ -275,13 +264,12 @@ const basicInformation = (props) => {
 				</Form.Item>
 			</Form.Item>
 
-			{/* TODO: are these three drop downs required ? */}
 			<div className='DatePickerContainer'>	
 				<div className='DatePicker'>
 					<EditableDropDown
 						label='Organization Code'
 						name='orgCode'
-						required={true}
+						required={false}
 						menu={orgCodeMenu}
 					/>	
 				</div>			
@@ -296,9 +284,7 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{/* TODO: Needs API call */}
 			<div className='DatePicker'>
-					{/* TODO: Needs API call */}
 					<EditableDropDown
 						label='Appointment Package Indicator'
 						name='appointmentPackageIndicator'
