@@ -303,6 +303,7 @@ const basicInformation = (props) => {
 						label='Appointment Package Indicator'
 						name='appointmentPackageIndicator'
 						required={true}
+						showSearch={true}
 						menu={appInitiatorMenu}
 					/>
 			</div>
