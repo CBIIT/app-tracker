@@ -77,7 +77,7 @@ const basicInformation = (props) => {
 			if (!vacancyOptionsResponse.data.result.isOWM)
 				setCurrentPositionMenu(positionClassificationT42OWMMenu);
 			else
-				setCurrentPositionMenu(positionClassification);
+				setCurrentPositionMenu(positionClassificationMenu);
 			var packageInitiators = [];
 			for(var i = 0; i < vacancyOptionsResponse.data.result.packageInitiators.length; i++) {
 				var packageInitiator = vacancyOptionsResponse.data.result.packageInitiators[i];

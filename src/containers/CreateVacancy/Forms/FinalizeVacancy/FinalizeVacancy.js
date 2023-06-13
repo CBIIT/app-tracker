@@ -30,7 +30,7 @@ const finalizeVacancy = (props) => {
 		})();
 	}, []);
 
-	function getPackageInitiatorDisplayName(sysId, packageInitiators) {
+	function getPackageInitiatorDisplayName() {
 		var displayName = '';
 		for(var i = 0; i < allPackageInitiators.length; i++) {
 			var packageInitiator = allPackageInitiators[i];
