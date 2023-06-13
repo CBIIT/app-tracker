@@ -16,7 +16,7 @@ const basicInformation = (props) => {
 
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
-	const [currentIC, setCurrentIC] = useState(null);
+	//const [currentIC, setCurrentIC] = useState(null);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -72,7 +72,9 @@ const basicInformation = (props) => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
 			);
-			setCurrentIC(vacancyOptionsResponse.data.result.ic);
+			formInstance.setFieldsValue({
+				ic: vacancyOptionsResponse.data.result.ic,
+			});
 			if (!vacancyOptionsResponse.data.result.isOWM)
 				setCurrentPositionMenu(positionClassificationT42OWMMenu);
 			else
@@ -86,7 +88,7 @@ const basicInformation = (props) => {
 				};
 				packageInitiators.push(packageInitiatorOption);
 			}
-			setAppInitiatorMenu(packageInitiators); // this should work but it's a long list of blanks
+			setAppInitiatorMenu(packageInitiators);
 		})();
 	}, []);
 
@@ -174,7 +176,7 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{ (user?.tenant.trim().toLowerCase() === "stadtman") ?	// TODO: replace "true" with an auth / user indicator that is true if the vacancy manager is stadman
+			{ (user?.tenant.trim().toLowerCase() === "stadtman") ?
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'
@@ -289,7 +291,6 @@ const basicInformation = (props) => {
 			<Form.Item 
 				name='ic'
 				noStyle
-				initialValue={currentIC}
 			>
 				<Input type="hidden"></Input>
 			</Form.Item>
