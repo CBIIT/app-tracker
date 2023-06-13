@@ -7,7 +7,7 @@ import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
 import axios from 'axios';
 
-import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
+import { GET_VACANCY_OPTIONS, CHECK_HAS_PROFILE } from '../../../../constants/ApiEndpoints';
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
@@ -16,6 +16,7 @@ const basicInformation = (props) => {
 
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
+	const [currentIC, setCurrentIC] = useState(null);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -67,6 +68,12 @@ const basicInformation = (props) => {
 	];
 
 	useEffect(() => {
+		(async () => {
+			const appInitiatorResponse = await axios.get(
+				CHECK_HAS_PROFILE
+			);
+			setCurrentIC(convertDataFromBackend(appInitiatorResponse.data.result.ic));
+		})();
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
@@ -284,7 +291,13 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-
+			<Form.Item 
+				name='ic'
+				noStyle
+				initialValue={currentIC}
+			>
+				<Input type="hidden"></Input>
+			</Form.Item>
 
 		</Form>
 	);
