@@ -7,7 +7,7 @@ import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
 import axios from 'axios';
 
-import { CHECK_HAS_PROFILE, GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
+import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
@@ -15,7 +15,6 @@ import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValid
 const basicInformation = (props) => {
 
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
-	const [orgCodeMenu, setOrgCodeMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
 
 	const formInstance = props.formInstance;
@@ -267,24 +266,14 @@ const basicInformation = (props) => {
 			<div className='DatePickerContainer'>	
 				<div className='DatePicker'>
 					<EditableDropDown
-						label='Organization Code'
-						name='orgCode'
-						required={false}
-						menu={orgCodeMenu}
-					/>	
-				</div>			
-
-				<div className='DatePicker'>
-					<EditableDropDown
 						label='Position Classification'
 						name='positionClassification'
 						required={true}
 						menu={currentPositionMenu}
 					/>	
 				</div>
-			</div>
 
-			<div className='DatePicker'>
+				<div className='DatePicker'>
 					<EditableDropDown
 						label='Appointment Package Indicator'
 						name='appointmentPackageIndicator'
@@ -292,7 +281,10 @@ const basicInformation = (props) => {
 						showSearch={true}
 						menu={appInitiatorMenu}
 					/>
+				</div>
 			</div>
+
+
 
 		</Form>
 	);

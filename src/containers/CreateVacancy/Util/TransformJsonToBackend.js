@@ -24,7 +24,6 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		require_focus_area: basicInfo.requireFocusArea ? '1' : '0',
 		vacancy_description: basicInfo.description,
 		package_initiator: basicInfo.appointmentPackageIndicator,
-		organization_code: basicInfo.orgCode,
 		title_42_position_classification: basicInfo.positionClassification,
 		open_date: getDateFromDateTime(basicInfo.openDate),
 		close_date: getDateFromDateTime(basicInfo.closeDate),
