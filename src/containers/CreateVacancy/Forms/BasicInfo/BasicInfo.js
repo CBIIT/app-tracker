@@ -1,4 +1,5 @@
-import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
+import { Form, Input, Slider, DatePicker, Tooltip, Checkbox, Typography, Space } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
@@ -16,6 +17,7 @@ const basicInformation = (props) => {
 
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
+	const [isOWM, setIsOWM] = useState(false);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -74,10 +76,12 @@ const basicInformation = (props) => {
 			formInstance.setFieldsValue({
 				ic: vacancyOptionsResponse.data.result.ic,
 			});
-			if (!vacancyOptionsResponse.data.result.isOWM)
+			if (vacancyOptionsResponse.data.result.isOWM){
 				setCurrentPositionMenu(positionClassificationT42OWMMenu);
-			else
+				setIsOWM(vacancyOptionsResponse.data.result.isOWM);
+			}else{
 				setCurrentPositionMenu(positionClassificationMenu);
+			}
 			var packageInitiators = [];
 			for(var i = 0; i < vacancyOptionsResponse.data.result.packageInitiators.length; i++) {
 				var packageInitiator = vacancyOptionsResponse.data.result.packageInitiators[i];
@@ -175,7 +179,7 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{ (user?.tenant.trim().toLowerCase() === "stadtman") ?
+			{user?.tenant.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'
@@ -184,8 +188,7 @@ const basicInformation = (props) => {
 				>
 					<Checkbox>Enable focus area</Checkbox>
 				</Form.Item>
-				: null
-			}
+			) : null}
 
 			<Form.Item
 				label='Vacancy Description'
@@ -266,19 +269,62 @@ const basicInformation = (props) => {
 				</Form.Item>
 			</Form.Item>
 
-			<div className='DatePickerContainer'>	
+			<div className='DatePickerContainer'>
 				<div className='DatePicker'>
 					<EditableDropDown
-						label='Position Classification'
+						label={
+							<>
+								<Space>
+									Position Classification
+									<Tooltip
+										title={ isOWM ? (
+											<>
+												Select the Intramural or Extramural Professional
+												Designation for your vacancy.
+											</>
+										) : (
+											<>
+												Select the Intramural or Extramural Professional
+												Designation for your vacancy. Select “N/A” for Stadtman
+												positions.
+											</>
+										)}
+									>
+										<Typography.Link>
+											<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+										</Typography.Link>
+									</Tooltip>
+								</Space>
+							</>
+						}
 						name='positionClassification'
 						required={true}
 						menu={currentPositionMenu}
-					/>	
+					/>
 				</div>
-
 				<div className='DatePicker'>
 					<EditableDropDown
-						label='Appointment Package Indicator'
+						label={
+							<>
+								<Space>
+									Appointment Package Initiator
+									<Tooltip
+										title={
+											<>
+												Populate the individual who will be assembling the
+												appointment package within the Personnel Action Tracking
+												Solution (PATS). Value defaults to the SSJ Vacancy Manager, but
+												can be updated within the SSJ or later in PATS.
+											</>
+										}
+									>
+										<Typography.Link>
+											<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+										</Typography.Link>
+									</Tooltip>
+								</Space>
+							</>
+						}
 						name='appointmentPackageIndicator'
 						required={true}
 						showSearch={true}
@@ -287,13 +333,9 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			<Form.Item 
-				name='ic'
-				noStyle
-			>
-				<Input type="hidden"></Input>
+			<Form.Item name='ic' noStyle>
+				<Input type='hidden'></Input>
 			</Form.Item>
-
 		</Form>
 	);
 };
