@@ -25,6 +25,7 @@ const basicInformation = (props) => {
 
 	const { auth } = useAuth();
 	const { user } = auth;
+	console.log(user);
 
 	const sliderMarks = {
 		0: '0',
@@ -329,6 +330,9 @@ const basicInformation = (props) => {
 						required={true}
 						showSearch={true}
 						menu={appInitiatorMenu}
+						filterOption={(input, option) => (option?.label ?? '').includes(input)}
+						filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
+						defaultValue={appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : (null)}
 					/>
 				</div>
 			</div>
