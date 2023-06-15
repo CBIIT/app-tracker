@@ -141,6 +141,18 @@ const basicInformation = (props) => {
 		formInstance.setFields([{ name: 'description', errors: '' }]);
 	};
 
+	const findDefault = (user) => {
+		const defaultList = appInitiatorMenu.filter(initiator => {
+			initiator.value === user.uid
+		})
+
+		if (defaultList.length > 0) {
+			return defaultList[0].label
+		} else {
+			return ""
+		}
+	}
+
 	return (
 		<Form
 			layout='vertical'
@@ -331,11 +343,11 @@ const basicInformation = (props) => {
 						menu={appInitiatorMenu}
 						filterOption={(input, option) => (option?.label ?? '').includes(input)}
 						filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
-						defaultValue={appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('')}
+						defaultValue={findDefault(user)}
 					/>
 				</div>
 			</div>
-
+			{/** appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('') */}
 			<Form.Item name='ic' noStyle>
 				<Input type='hidden'></Input>
 			</Form.Item>
