@@ -271,53 +271,105 @@ const basicInformation = (props) => {
 					/>
 				</Form.Item>
 			</Form.Item>
-
-			<div className='DatePickerContainer'>
-				<div className='DatePicker'>
-					<EditableDropDown
-						label={
-							<>
-								<Space>
-									Position Classification
-									<Tooltip
-										title={ isOWM ? (
-											<>
-												Select the Intramural or Extramural Professional
-												Designation for your vacancy.
-											</>
-										) : (
-											<>
-												Select the Intramural or Extramural Professional
-												Designation for your vacancy. Select “N/A” for Stadtman
-												positions.
-											</>
-										)}
-									>
-										<Typography.Link>
-											<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
-										</Typography.Link>
-									</Tooltip>
-								</Space>
-							</>
-						}
-						name='positionClassification'
-						required={true}
-						menu={currentPositionMenu}
-					/>
+			<Form.Item label="ECM Integreation Opt In">
+				<div className='DatePickerContainer'>
+					<div className='DatePicker'>
+						<EditableDropDown
+							label={
+								<>
+									<Space>
+										Position Classification
+										<Tooltip
+											title={
+												isOWM ? (
+													<>
+														Select the Intramural or Extramural Professional
+														Designation for your vacancy.
+													</>
+												) : (
+													<>
+														Select the Intramural or Extramural Professional
+														Designation for your vacancy. Select “N/A” for
+														Stadtman positions.
+													</>
+												)
+											}
+										>
+											<Typography.Link>
+												<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+											</Typography.Link>
+										</Tooltip>
+									</Space>
+								</>
+							}
+							name='positionClassification'
+							required={true}
+							menu={currentPositionMenu}
+						/>
+					</div>
+					<div className='DatePicker'>
+						<EditableDropDown
+							label={
+								<>
+									<Space>
+										Appointment Package Initiator
+										<Tooltip
+											title={
+												<>
+													Populate the individual who will be assembling the
+													appointment package within the Personnel Action
+													Tracking Solution (PATS). Value defaults to the SSJ
+													Vacancy Manager, but can be updated within the SSJ or
+													later in PATS.
+												</>
+											}
+										>
+											<Typography.Link>
+												<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+											</Typography.Link>
+										</Tooltip>
+									</Space>
+								</>
+							}
+							name='appointmentPackageIndicator'
+							required={true}
+							showSearch={true}
+							menu={appInitiatorMenu}
+							filterOption={(input, option) =>
+								(option?.label ?? '').includes(input)
+							}
+							filterSort={(optionA, optionB) =>
+								(optionA?.label ?? '')
+									.toLowerCase()
+									.localeCompare((optionB?.label ?? '').toLowerCase())
+							}
+							loading={isLoading}
+						/>
+					</div>
 				</div>
+				{/** appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('') */}
 				<div className='DatePicker'>
 					<EditableDropDown
+						name='sacCode'
+						showSearch={true}
+						menu={[]}
+						filterOption={(input, option) =>
+							(option?.label ?? '').includes(input)
+						}
+						filterSort={(optionA, optionB) =>
+							(optionA?.label ?? '')
+								.toLowerCase()
+								.localeCompare((optionB?.label ?? '').toLowerCase())
+						}
 						label={
 							<>
 								<Space>
-									Appointment Package Initiator
+									Organizational Code
 									<Tooltip
 										title={
 											<>
-												Populate the individual who will be assembling the
-												appointment package within the Personnel Action Tracking
-												Solution (PATS). Value defaults to the SSJ Vacancy Manager, but
-												can be updated within the SSJ or later in PATS.
+												Provide SAC code for organization where the position
+												will reside.
 											</>
 										}
 									>
@@ -328,19 +380,8 @@ const basicInformation = (props) => {
 								</Space>
 							</>
 						}
-						name='appointmentPackageIndicator'
-						required={true}
-						showSearch={true}
-						menu={appInitiatorMenu}
-						filterOption={(input, option) => (option?.label ?? '').includes(input)}
-						filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
-						loading={isLoading}
 					/>
 				</div>
-			</div>
-			{/** appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('') */}
-			<Form.Item name='ic' noStyle>
-				<Input type='hidden'></Input>
 			</Form.Item>
 		</Form>
 	);
