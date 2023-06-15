@@ -12,7 +12,6 @@ const editableDropDown = (props) => (
 			options={props.menu?.map((option) => ({ label: option.label, value: option.value }))}
 			filterOption={props.filterOption}
 			filterSort={props.filterSort}
-			defaultValue={props.defaultValue}
 		/>
 	</Form.Item>
 );

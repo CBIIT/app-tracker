@@ -141,16 +141,6 @@ const basicInformation = (props) => {
 		formInstance.setFields([{ name: 'description', errors: '' }]);
 	};
 
-	const findDefault = (user) => {
-		return appInitiatorMenu.filter(initiator => {
-			if (initiator.value === user.uid) {
-				return initiator.value
-			} else {
-				return ""
-			}
-		});
-	}
-
 	return (
 		<Form
 			layout='vertical'
@@ -341,7 +331,6 @@ const basicInformation = (props) => {
 						menu={appInitiatorMenu}
 						filterOption={(input, option) => (option?.label ?? '').includes(input)}
 						filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
-						defaultValue={findDefault(user)}
 					/>
 				</div>
 			</div>

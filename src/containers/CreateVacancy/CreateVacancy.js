@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
+import useAuth from '../../hooks/useAuth';
 import { Steps, Button, Form, message, Tooltip } from 'antd';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
@@ -14,11 +15,19 @@ import axios from 'axios';
 import { transformJsonToBackend } from './Util/TransformJsonToBackend';
 
 const createVacancy = (props) => {
+	const { auth: { user } } = useAuth();
+	const newValues = {
+		...initialValues,
+		basicInfo: {
+			...initialValues.basicInfo,
+			appointmentPackageIndicator: user.uid,
+		},
+	};
 	const { Step } = Steps;
 	const history = useHistory();
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(
-		props.initialValues ? props.initialValues : initialValues
+		props.initialValues ? props.initialValues : newValues
 	);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
