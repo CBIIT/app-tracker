@@ -332,7 +332,7 @@ const basicInformation = (props) => {
 						menu={appInitiatorMenu}
 						filterOption={(input, option) => (option?.label ?? '').includes(input)}
 						filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
-						defaultValue={appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : (null)}
+						defaultValue={appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('')}
 					/>
 				</div>
 			</div>
