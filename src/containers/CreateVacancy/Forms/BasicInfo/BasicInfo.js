@@ -18,6 +18,7 @@ const basicInformation = (props) => {
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
 	const [isOWM, setIsOWM] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -69,6 +70,7 @@ const basicInformation = (props) => {
 	];
 
 	useEffect(() => {
+		setIsLoading(true);
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
@@ -92,6 +94,7 @@ const basicInformation = (props) => {
 				packageInitiators.push(packageInitiatorOption);
 			}
 			setAppInitiatorMenu(packageInitiators);
+			setIsLoading(false)
 		})();
 	}, []);
 
@@ -331,6 +334,7 @@ const basicInformation = (props) => {
 						menu={appInitiatorMenu}
 						filterOption={(input, option) => (option?.label ?? '').includes(input)}
 						filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
+						loading={isLoading}
 					/>
 				</div>
 			</div>
