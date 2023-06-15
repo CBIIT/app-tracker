@@ -25,7 +25,6 @@ const basicInformation = (props) => {
 
 	const { auth } = useAuth();
 	const { user } = auth;
-	console.log(user);
 
 	const sliderMarks = {
 		0: '0',
