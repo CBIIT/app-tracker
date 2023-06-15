@@ -142,12 +142,9 @@ const basicInformation = (props) => {
 	};
 
 	const findDefault = (user) => {
-		const defaultList = appInitiatorMenu.filter(initiator => {
-			initiator.value === user.uid
-		})
-
-		if (defaultList.length > 0) {
-			return defaultList[0].label
+		const list = appInitiatorMenu.filter(initiator => initiator.value === user.uid);
+		if (list.length > 0) {
+			return initiator.value
 		} else {
 			return ""
 		}
