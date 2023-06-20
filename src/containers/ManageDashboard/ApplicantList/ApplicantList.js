@@ -36,47 +36,6 @@ const renderDecision = (text) =>
 	);
 
 const defaultApplicantSort = 'ascend';
-/* const applicantColumns = [
-	{
-		title: 'Applicant',
-		dataIndex: 'applicant_last_name',
-		key: 'name',
-		render: (text, record) => {
-			return (
-				<Link to={MANAGE_APPLICATION + record.sys_id}>
-					{text}, {record.applicant_first_name}
-				</Link>
-			);
-		},
-		width: 200,
-		defaultSortOrder: defaultApplicantSort,
-		sorter: true,
-	},
-	{
-		title: 'Email',
-		dataIndex: 'applicant_email',
-		key: 'email',
-		maxWidth: 250,
-	},
-	{
-		title: 'Submitted',
-		dataIndex: 'submitted',
-		key: 'submitted',
-		render: (date) => transformDateTimeToDisplay(date),
-	},
-	{
-		title: 'Vacancy Manager Triage Decision',
-		dataIndex: 'owm_triage_status',
-		key: 'OWMStatus',
-		render: (text) => renderDecision(text),
-	},
-	{
-		title: 'Chair Triage Decision',
-		dataIndex: 'chair_triage_status',
-		key: 'ChairStatus',
-		render: (text) => renderDecision(text),
-	}
-]; */
 
 const applicantList = (props) => {
 	const { sysId } = useParams();
@@ -185,47 +144,51 @@ const applicantList = (props) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
 			}
+		},
+		render: (text, record) => {
+			if (dataIndex === 'applicant_name') {
+				return searchedColumn === dataIndex ? (
+					<Link to={MANAGE_APPLICATION + record.sys_id}>
+						<Highlighter
+							highlightStyle={{
+								backgroundColor: '#FFFF00',
+								padding: 0,
+							}}
+							searchWords={[searchText]}
+							autoEscape
+							textToHighlight={text ? text.toString() : ''}
+						/>
+					</Link>
+				) : (
+					<Link to={MANAGE_APPLICATION + record.sys_id}>{text}</Link>
+				);
+			} else {
+				return searchedColumn === dataIndex ? (
+					<Highlighter
+						highlightStyle={{
+							backgroundColor: '#FFFF00',
+							padding: 0,
+						}}
+						searchWords={[searchText]}
+						autoEscape
+						textToHighlight={text ? text.toString() : ''}
+					/>
+				) : (
+					text
+				);
+			}
 		}
 	});
-
-	/* switch (dataIndex) {
-				case "applicant_last_name":
-					return (
-						<Link to={MANAGE_APPLICATION + record.sys_id}>
-							{text}, {record.applicant_first_name}
-						</Link>
-					);
-				default:
-					return text;
-			} 
-		searchedColumn === dataIndex ? (
-				<Highlighter
-					highlightStyle={{
-						backgroundColor: '#ffc069',
-						padding: 0,
-					}}
-					searchWords={[searchText]}
-					autoEscape
-					textToHighlight={text ? text.toString() : ''}
-				/>
-			) : (
-				text
-			)
-	*/
 
 	const applicantColumns = [
 		{
 			title: 'Applicant',
-			dataIndex: 'applicant_last_name',
+			dataIndex: 'applicant_name',
 			key: 'name',
 			width: 200,
-			...getColumnSeachProps('applicant_last_name', 'name'),
+			...getColumnSeachProps('applicant_name', 'name'),
 			defaultSortOrder: defaultApplicantSort,
 			sorter: true,
-			render: (text, record) => 
-				<Link to={MANAGE_APPLICATION + record.sys_id}>
-					{text}, {record.applicant_first_name}
-				</Link>
 		},
 		{
 			title: 'Email',
