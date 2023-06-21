@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import { Table, Select, Modal, Input, Button, message } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
+import { getColumnSearchProps } from '../../Util/ColumnSearchProps';
 import axios from 'axios';
 
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
@@ -15,7 +15,6 @@ import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	VOTING_COMPLETE,
 } from '../../../../constants/VacancyStates';
-import { MANAGE_APPLICATION } from '../../../../constants/Routes';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -55,6 +54,11 @@ const individualScoringTable = (props) => {
 	const [triageComments, setTriageComments] = useState('');
 	const [chairComments, setChairComments] = useState('');
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
+
+	console.log(props.applicants);
 
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
@@ -102,24 +106,19 @@ const individualScoringTable = (props) => {
 		const columns = [
 			{
 				title: 'Applicant',
-				dataIndex: 'applicant_last_name',
+				dataIndex: 'applicant_name',
 				key: 'name',
 				sorter: true,
-				render: (text, record) => {
-					return (
-						<Link to={MANAGE_APPLICATION + record.sys_id}>
-							{text}, {record.applicant_first_name}
-						</Link>
-					);
-				},
 				defaultSortOrder: 'ascend',
 				width: 200,
+				...getColumnSearchProps('applicant_name', 'name', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
 			},
 			{
 				title: 'Email',
 				dataIndex: 'applicant_email',
 				key: 'email',
 				width: 200,
+				...getColumnSearchProps('applicant_email', 'email', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
 			},
 			{
 				title: 'Average Score',
