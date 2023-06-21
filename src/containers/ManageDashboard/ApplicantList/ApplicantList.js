@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { message, Table, Collapse, Button, Input, Space } from 'antd';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import Highlighter from 'react-highlight-words';
+//import Highlighter from 'react-highlight-words';
+import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
@@ -47,7 +48,7 @@ const applicantList = (props) => {
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
 
-	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+	/* const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
 		setSearchText(selectedKeys[0]);
 		setSearchedColumn(dataIndex);
@@ -178,7 +179,7 @@ const applicantList = (props) => {
 				);
 			}
 		}
-	});
+	}); */
 
 	const applicantColumns = [
 		{
@@ -186,7 +187,7 @@ const applicantList = (props) => {
 			dataIndex: 'applicant_name',
 			key: 'name',
 			width: 200,
-			...getColumnSeachProps('applicant_name', 'name'),
+			...getColumnSearchProps('applicant_name', 'name', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
 			defaultSortOrder: defaultApplicantSort,
 			sorter: true,
 		},
@@ -195,7 +196,7 @@ const applicantList = (props) => {
 			dataIndex: 'applicant_email',
 			key: 'email',
 			maxWidth: 250,
-			...getColumnSeachProps('applicant_email', 'email'),
+			...getColumnSearchProps('applicant_email', 'email', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
 		},
 		{
 			title: 'Submitted',
