@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { message, Table, Collapse } from 'antd';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
-import { MANAGE_APPLICATION } from '../../../constants/Routes';
 import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
@@ -35,47 +35,6 @@ const renderDecision = (text) =>
 	);
 
 const defaultApplicantSort = 'ascend';
-const applicantColumns = [
-	{
-		title: 'Applicant',
-		dataIndex: 'applicant_last_name',
-		key: 'name',
-		render: (text, record) => {
-			return (
-				<Link to={MANAGE_APPLICATION + record.sys_id}>
-					{text}, {record.applicant_first_name}
-				</Link>
-			);
-		},
-		width: 200,
-		defaultSortOrder: defaultApplicantSort,
-		sorter: true,
-	},
-	{
-		title: 'Email',
-		dataIndex: 'applicant_email',
-		key: 'email',
-		maxWidth: 250,
-	},
-	{
-		title: 'Submitted',
-		dataIndex: 'submitted',
-		key: 'submitted',
-		render: (date) => transformDateTimeToDisplay(date),
-	},
-	{
-		title: 'Vacancy Manager Triage Decision',
-		dataIndex: 'owm_triage_status',
-		key: 'OWMStatus',
-		render: (text) => renderDecision(text),
-	},
-	{
-		title: 'Chair Triage Decision',
-		dataIndex: 'chair_triage_status',
-		key: 'ChairStatus',
-		render: (text) => renderDecision(text),
-	}
-];
 
 const applicantList = (props) => {
 	const { sysId } = useParams();
@@ -83,26 +42,65 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
-	
-	useEffect(() => {
-		if (
-			props.vacancyTenant === 'Stadtman' &&
-			!applicantColumns.some((column) => column.title === 'Complete')
-		) {
-			applicantColumns.push({
-				title: 'Complete',
-				dataIndex: 'is_app_complete',
-				key: 'complete',
-				render: (text) => {
-					return text === true ? (
-						<CheckCircleOutlined className='checked-green' />
-					) : (
-						<CloseCircleOutlined className='closed-red' />
-					);
-				},
-			});
-		}
-	}, []);
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
+
+	const applicantColumns = [
+		{
+			title: 'Applicant',
+			dataIndex: 'applicant_name',
+			key: 'name',
+			width: 200,
+			...getColumnSearchProps('applicant_name', 'name', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
+			defaultSortOrder: defaultApplicantSort,
+			sorter: true,
+		},
+		{
+			title: 'Email',
+			dataIndex: 'applicant_email',
+			key: 'email',
+			maxWidth: 250,
+			...getColumnSearchProps('applicant_email', 'email', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
+		},
+		{
+			title: 'Submitted',
+			dataIndex: 'submitted',
+			key: 'submitted',
+			render: (date) => transformDateTimeToDisplay(date),
+		},
+		{
+			title: 'Vacancy Manager Triage Decision',
+			dataIndex: 'owm_triage_status',
+			key: 'OWMStatus',
+			render: (text) => renderDecision(text),
+		},
+		{
+			title: 'Chair Triage Decision',
+			dataIndex: 'chair_triage_status',
+			key: 'ChairStatus',
+			render: (text) => renderDecision(text),
+		},
+	];
+
+	if (
+		props.vacancyTenant === 'Stadtman' &&
+		!applicantColumns.some((column) => column.title === 'Complete')
+	) {
+		applicantColumns.push({
+			title: 'Complete',
+			dataIndex: 'is_app_complete',
+			key: 'complete',
+			render: (text) => {
+				return text === true ? (
+					<CheckCircleOutlined className='checked-green' />
+				) : (
+					<CloseCircleOutlined className='closed-red' />
+				);
+			},
+		});
+	}
+
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =

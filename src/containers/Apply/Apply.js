@@ -132,7 +132,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	};
 
 	const {auth: {user}} = useAuth();
-
+	
 	const instantiateNewApplication = async () => {
 
 		const response = await axios.get(
@@ -181,7 +181,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
 			title: 'Application Documents',
-			content: <ApplicantDocuments vacancyId={vacancyId}/>,
+			content: <ApplicantDocuments vacancyId={initialValues ? initialValues.sysId : vacancyId}/>,
 			description: 'CV, cover letter, and statement of research interests',
 			longDescription:
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
