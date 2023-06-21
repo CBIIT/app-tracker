@@ -58,8 +58,6 @@ const individualScoringTable = (props) => {
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
 
-	console.log(props.applicants);
-
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
 		setCommitteeComments(comment);
