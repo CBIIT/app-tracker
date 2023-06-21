@@ -100,3 +100,5 @@ export const GET_PROFILE = '/api/x_g_nci_app_tracke/user/user_profile/';
 export const SAVE_PROFILE = '/api/x_g_nci_app_tracke/user/save_user_profile';
 
 export const CHECK_HAS_PROFILE = '/api/x_g_nci_app_tracke/user/check_profile';
+
+export const GET_VACANCY_OPTIONS = '/api/x_g_nci_app_tracke/vacancy/get_vacancy_options';

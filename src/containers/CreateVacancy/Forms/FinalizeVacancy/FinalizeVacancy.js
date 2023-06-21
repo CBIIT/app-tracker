@@ -2,10 +2,14 @@ import { Table } from 'antd';
 import ReactQuill from 'react-quill';
 import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewSectionHeader';
 import './FinalizeVacancy.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 
 const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
+	const [allPackageInitiators, setAllPackageInitiators] = useState('');
 
 	const vacancyCommitteeColumns = [
 		{
@@ -15,6 +19,26 @@ const finalizeVacancy = (props) => {
 		},
 		{ title: 'Role', dataIndex: 'role', key: 'role' },
 	];
+
+	useEffect(() => {
+		// since appointment package inititator only displays the sys_id, do a GET to figure out what the display of it should be
+		(async () => {
+			const vacancyOptionsResponse = await axios.get(
+				GET_VACANCY_OPTIONS
+			);
+			setAllPackageInitiators(vacancyOptionsResponse.data.result.packageInitiators);
+		})();
+	}, []);
+
+	function getPackageInitiatorDisplayName() {
+		var displayName = '';
+		for(var i = 0; i < allPackageInitiators.length; i++) {
+			var packageInitiator = allPackageInitiators[i];
+			if (packageInitiator.sys_id === basicInfo.appointmentPackageIndicator)
+				displayName = packageInitiator.name;
+		}
+		return displayName;
+	}
 
 	return (
 		<>
@@ -96,6 +120,18 @@ const finalizeVacancy = (props) => {
 					<li className='ListItemTrue'>
 						{basicInfo.numberOfRecommendations} recommendations
 					</li>
+				</ul>
+				<h2>Position Classification</h2>
+				<ul>
+					<p>
+						{basicInfo.positionClassification} 
+					</p>
+				</ul>
+				<h2>Appointment Package Initiator</h2>
+				<ul>
+					<p>
+						{getPackageInitiatorDisplayName(basicInfo.appointmentPackageIndicator, allPackageInitiators)} 
+					</p>
 				</ul>
 			</div>
 			<SectionHeader

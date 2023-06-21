@@ -258,6 +258,7 @@ const application = () => {
 			const vacancySysId =
 				applicationResponse.data.result.basic_info.vacancy.value;
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + vacancySysId);
+			console.log(vacancy.data.result);
 			setVacancyData(vacancy.data.result);
 
 			const roles = vacancy.data.result.user.roles;
@@ -772,12 +773,14 @@ const application = () => {
 									</Button>
 								</Tooltip>
 								{additionalDocumentLinks.map((document, index) => {
-									return (
+									return document ? (
 										<Button key={index}>
 											<a href={document.link}>
 												{'Download ' + document.filename} <DownloadOutlined />{' '}
 											</a>
 										</Button>
+									) : (
+										<></>
 									);
 								})}
 							</div>

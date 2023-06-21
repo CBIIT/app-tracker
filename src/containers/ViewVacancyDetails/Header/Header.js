@@ -58,7 +58,7 @@ const header = (props) => {
 			const response = await axios.get(CHECK_HAS_PROFILE);
 			setHasProfile(response.data.result.exists);
 		} catch (e) {
-			message.error('Sorry! An error occured while searching for your profile.');
+			console.log('Failed to find user profile.');
 		}
 	}
 

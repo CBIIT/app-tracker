@@ -69,6 +69,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
+	const vacancyId = initialValues?.sysId || vacancySysId;
 
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
 
@@ -95,7 +96,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		const {basicInfo, demographics} = profileData;
 		const address = basicInfo?.address;
-		
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
@@ -342,7 +342,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
-	const vacancyId = initialValues?.sysId || vacancySysId;
 
 	return (
 		<>

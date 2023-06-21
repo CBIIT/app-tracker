@@ -1,14 +1,24 @@
-import { Form, Input, Slider, DatePicker, Tooltip, Checkbox } from 'antd';
+import { Form, Input, Slider, DatePicker, Tooltip, Checkbox, Typography, Space } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
+import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
+import axios from 'axios';
 
+import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
 const basicInformation = (props) => {
+
+	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
+	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
+	const [isOWM, setIsOWM] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -24,8 +34,69 @@ const basicInformation = (props) => {
 		3: '3',
 	};
 
-	console.log(formInstance.getFieldValue('openDate'));	// undefined !!
-	console.log(formInstance);
+	const positionClassificationT42OWMMenu = [
+		{ label: 'Scientific Executive', value: 'Scientific Executive' },
+		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
+		{ label: 'Scientific Policy or Program Leader – Tier 2', value: 'Scientific Policy or Program Leader – Tier 2' },
+		{ label: 'Scientific Director', value: 'Scientific Director' },
+		{ label: 'Clinical Director', value: 'Clinical Director' }
+	];
+
+	const positionClassificationMenu = [
+		{ label: 'Senior Investigator', value: 'Senior Investigator' },
+		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
+		{ label: 'Investigator 2', value: 'Investigator 2' },
+		{ label: 'Investigator (HS)', value: 'Investigator (HS)' },
+		{ label: 'Senior Clinician', value: 'Senior Clinician' },
+		{ label: 'Senior Clinician (HS)', value: 'Senior Clinician (HS)' },
+		{ label: 'Senior Scientist', value: 'Senior Scientist' },
+		{ label: 'Assistant Clinical Investigator 2', value: 'Assistant Clinical Investigator 2' },
+		{ label: 'Assistant Clinical Investigator (HS)', value: 'Assistant Clinical Investigator (HS)' },
+		{ label: 'Staff Clinician 2', value: 'Staff Clinician 2' },
+		{ label: 'Staff Clinician (HS)', value: 'Staff Clinician (HS)' },
+		{ label: 'Staff Scientist 2', value: 'Staff Scientist 2' },
+		{ label: 'Staff Scientist 2 (Clinical)', value: 'Staff Scientist 2 (Clinical)' },
+		{ label: 'Staff Scientist 2 (Facility Head)', value: 'Staff Scientist 2 (Facility Head)' },
+		{ label: 'Scientific Executive', value: 'Scientific Executive' },
+		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
+		{ label: 'Scientific Policy or Program Leader – Tier 2', value: 'Scientific Policy or Program Leader – Tier 2' },
+		{ label: 'Scientific Director', value: 'Scientific Director' },
+		{ label: 'Clinical Director', value: 'Clinical Director' },
+		{ label: 'IC Deputy Director', value: 'IC Deputy Director' },
+		{ label: 'IC Director', value: 'IC Director' },
+		{ label: 'NIH Deputy Director', value: 'NIH Deputy Director' },
+		{ label: 'SBRBPAS', value: 'SBRBPAS' },
+		{ label: 'N/A', value: 'N/A' },
+	];
+
+	useEffect(() => {
+		setIsLoading(true);
+		(async () => {
+			const vacancyOptionsResponse = await axios.get(
+				GET_VACANCY_OPTIONS
+			);
+			formInstance.setFieldsValue({
+				ic: vacancyOptionsResponse.data.result.ic,
+			});
+			if (vacancyOptionsResponse.data.result.isOWM){
+				setCurrentPositionMenu(positionClassificationT42OWMMenu);
+				setIsOWM(vacancyOptionsResponse.data.result.isOWM);
+			}else{
+				setCurrentPositionMenu(positionClassificationMenu);
+			}
+			var packageInitiators = [];
+			for(var i = 0; i < vacancyOptionsResponse.data.result.packageInitiators.length; i++) {
+				var packageInitiator = vacancyOptionsResponse.data.result.packageInitiators[i];
+				var packageInitiatorOption = {
+					label :  packageInitiator.name,
+					value : packageInitiator.sys_id
+				};
+				packageInitiators.push(packageInitiatorOption);
+			}
+			setAppInitiatorMenu(packageInitiators);
+			setIsLoading(false)
+		})();
+	}, []);
 
 	const disabledDate = (currentDate) => {
 		return currentDate <= new Date().setHours(0, 0, 0, 0);
@@ -111,7 +182,7 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{ (user?.tenant.trim().toLowerCase() === "stadtman") ?	// TODO: replace "true" with an auth / user indicator that is true if the vacancy manager is stadman
+			{user?.tenant.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'
@@ -120,8 +191,7 @@ const basicInformation = (props) => {
 				>
 					<Checkbox>Enable focus area</Checkbox>
 				</Form.Item>
-				: null
-			}
+			) : null}
 
 			<Form.Item
 				label='Vacancy Description'
@@ -200,6 +270,118 @@ const basicInformation = (props) => {
 						disabled={readOnly}
 					/>
 				</Form.Item>
+			</Form.Item>
+			<Form.Item label="ECM Integreation Opt In">
+				<div className='DatePickerContainer'>
+					<div className='DatePicker'>
+						<EditableDropDown
+							label={
+								<>
+									<Space>
+										Position Classification
+										<Tooltip
+											title={
+												isOWM ? (
+													<>
+														Select the Intramural or Extramural Professional
+														Designation for your vacancy.
+													</>
+												) : (
+													<>
+														Select the Intramural or Extramural Professional
+														Designation for your vacancy. Select “N/A” for
+														Stadtman positions.
+													</>
+												)
+											}
+										>
+											<Typography.Link>
+												<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+											</Typography.Link>
+										</Tooltip>
+									</Space>
+								</>
+							}
+							name='positionClassification'
+							required={true}
+							menu={currentPositionMenu}
+						/>
+					</div>
+					<div className='DatePicker'>
+						<EditableDropDown
+							label={
+								<>
+									<Space>
+										Appointment Package Initiator
+										<Tooltip
+											title={
+												<>
+													Populate the individual who will be assembling the
+													appointment package within the Personnel Action
+													Tracking Solution (PATS). Value defaults to the SSJ
+													Vacancy Manager, but can be updated within the SSJ or
+													later in PATS.
+												</>
+											}
+										>
+											<Typography.Link>
+												<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+											</Typography.Link>
+										</Tooltip>
+									</Space>
+								</>
+							}
+							name='appointmentPackageIndicator'
+							required={true}
+							showSearch={true}
+							menu={appInitiatorMenu}
+							filterOption={(input, option) =>
+								(option?.label ?? '').includes(input)
+							}
+							filterSort={(optionA, optionB) =>
+								(optionA?.label ?? '')
+									.toLowerCase()
+									.localeCompare((optionB?.label ?? '').toLowerCase())
+							}
+							loading={isLoading}
+						/>
+					</div>
+				</div>
+				{/** appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('') */}
+				<div className='DatePicker'>
+					<EditableDropDown
+						name='sacCode'
+						showSearch={true}
+						menu={[]}
+						filterOption={(input, option) =>
+							(option?.label ?? '').includes(input)
+						}
+						filterSort={(optionA, optionB) =>
+							(optionA?.label ?? '')
+								.toLowerCase()
+								.localeCompare((optionB?.label ?? '').toLowerCase())
+						}
+						label={
+							<>
+								<Space>
+									Organizational Code
+									<Tooltip
+										title={
+											<>
+												Provide SAC code for organization where the position
+												will reside.
+											</>
+										}
+									>
+										<Typography.Link>
+											<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+										</Typography.Link>
+									</Tooltip>
+								</Space>
+							</>
+						}
+					/>
+				</div>
 			</Form.Item>
 		</Form>
 	);
