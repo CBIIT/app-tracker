@@ -83,6 +83,8 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						<Title level={5} style={{"margin-top": "10px"}}>Your privacy is protected.</Title>
 						<Tooltip
 							title='Demographic information shared here will not save until the "save" button is tapped.'
+							placement="right"
+							defaultOpen={true}
 						>
 							<Typography.Link>
 								<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
