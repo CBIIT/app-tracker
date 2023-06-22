@@ -11,8 +11,10 @@ import {
 	Radio,
 	Row,
 	Space,
+	Tooltip
 } from 'antd';
 const { Paragraph, Title } = Typography;
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 import { SAVE_PROFILE } from '../../../constants/ApiEndpoints';
 
@@ -76,7 +78,17 @@ const DemographicsForm = ({ setDemoOpen }) => {
 					) : (
 						<></>
 					)}
-					<Title level={5}>Your privacy is protected.</Title>
+					
+					<Space>
+						<Title level={5} style={{"margin-top": "10px"}}>Your privacy is protected.</Title>
+						<Tooltip
+							title='Demographic information shared here will not save until the "save" button is tapped.'
+						>
+							<Typography.Link>
+								<InfoCircleOutlined style={{ fontSize: '1.25rem' }} />
+							</Typography.Link>
+						</Tooltip>
+					</Space>
 					<Paragraph>
 						We use demographics to find out if our recruitment efforts are
 						reaching all segments of the population, consistent with federal
