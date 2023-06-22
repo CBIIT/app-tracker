@@ -22,7 +22,6 @@ export const transformJsonFromBackend = (sourceJson) => {
 			description: sourceJson.basic_info.vacancy_description.value,
 			appointmentPackageIndicator: sourceJson.basic_info.package_initiator.value,
 			positionClassification: sourceJson.basic_info.title_42_position_classification.value,
-			ic: sourceJson.basic_info.ic.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({
 				sys_id: doc.sys_id.value,
 				document: doc.title.value,

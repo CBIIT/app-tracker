@@ -75,9 +75,6 @@ const basicInformation = (props) => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
 			);
-			formInstance.setFieldsValue({
-				ic: vacancyOptionsResponse.data.result.ic,
-			});
 			if (vacancyOptionsResponse.data.result.isOWM){
 				setCurrentPositionMenu(positionClassificationT42OWMMenu);
 				setIsOWM(vacancyOptionsResponse.data.result.isOWM);
