@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 import axios from 'axios';
 import ReactQuill from 'react-quill';
@@ -18,6 +19,18 @@ const viewVacancyDetails = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const { sysId } = useParams();
 
+	const getCloseTime = (time) => {
+		const timeArr = time.split(':');
+		let hours = timeArr[0];
+		let minutes = timeArr[1];
+		if (hours >= 12) {
+			hours -= 12;
+			return `${hours}:${minutes}PM`
+		} else {
+			return `${hours}:${minutes}AM`
+		}
+	}
+
 	useEffect(() => {
 		(async () => {
 			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
@@ -35,6 +48,7 @@ const viewVacancyDetails = () => {
 				openDate={vacancyDetails.basic_info.open_date.value}
 				closeDate={vacancyDetails.basic_info.close_date.value}
 				vacancyState={vacancyDetails.basic_info.state.value}
+				closeTime={getCloseTime(vacancyDetails.basic_info.closing_time.label)}
 				sysId={sysId}
 			/>
 			<div className='Content'>
