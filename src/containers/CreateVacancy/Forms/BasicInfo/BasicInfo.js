@@ -268,7 +268,7 @@ const basicInformation = (props) => {
 					/>
 				</Form.Item>
 			</Form.Item>
-			<Form.Item label="ECM Integreation Opt In">
+			<Form.Item label="ECM Integretion Opt In">
 				<div className='DatePickerContainer'>
 					<div className='DatePicker'>
 						<EditableDropDown
