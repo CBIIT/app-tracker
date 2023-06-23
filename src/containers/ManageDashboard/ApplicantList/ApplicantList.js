@@ -52,7 +52,15 @@ const applicantList = (props) => {
 			dataIndex: 'applicant_name',
 			key: 'name',
 			width: 200,
-			...getColumnSearchProps('applicant_name', 'name', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
+			...getColumnSearchProps(
+				'applicant_name',
+				'name',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
 			defaultSortOrder: defaultApplicantSort,
 			sorter: true,
 		},
@@ -61,7 +69,15 @@ const applicantList = (props) => {
 			dataIndex: 'applicant_email',
 			key: 'email',
 			maxWidth: 250,
-			...getColumnSearchProps('applicant_email', 'email', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
+			...getColumnSearchProps(
+				'applicant_email',
+				'email',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
 		},
 		{
 			title: 'Submitted',
@@ -100,7 +116,6 @@ const applicantList = (props) => {
 			},
 		});
 	}
-
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
@@ -151,7 +166,7 @@ const applicantList = (props) => {
 
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort);
-	}, [props.vacancyState]);
+	}, [props.vacancyState, searchText]);
 
 	const loadRecommendedApplicants = async (page, pageSize, orderBy) => {
 		setRecommendedApplicantsTableLoading(true);
@@ -332,9 +347,11 @@ const applicantList = (props) => {
 				orderBy;
 
 			if (recommended) apiString += '&recommended=' + recommended;
+			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 
 			const response = await axios.get(apiString);
 			//console.log("🚀 ~ file: ApplicantList.js:326 ~ loadApplicants ~ response:", response);
+			
 			return {
 				applicants: response.data.result.applicants,
 				totalCount: response.data.result.totalCount,
