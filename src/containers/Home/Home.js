@@ -84,7 +84,9 @@ const home = () => {
 
 				<h2 style={{ marginBottom: '3px' }}>Open Vacancies</h2>
 				<p>
-					Application period for all vacancies ends at 11:59PM ET on final day.
+					The closing time for the application period differs for each vacancy
+					on the final day. Please click on a vacancy below to find the specific
+					closing time.
 				</p>
 
 				<Table
