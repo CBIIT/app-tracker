@@ -22,10 +22,12 @@ const viewVacancyDetails = () => {
 		const timeArr = time.split(':');
 		let hours = timeArr[0];
 		let minutes = timeArr[1];
-		if (hours >= 12) {
+		if (hours > 12) {
 			hours -= 12;
 			return `${hours}:${minutes}PM`
-		} else {
+		} else if(hours == 12) {
+			return `${hours}:${minutes}PM`
+		} else if(hours < 12) {
 			return `${hours}:${minutes}AM`
 		}
 	}
