@@ -130,7 +130,7 @@ const individualScoringTable = (props) => {
 							</span>
 						);
 					} else {
-						return text;
+						return text.toFixed(2);;
 					}
 				},
 			},
