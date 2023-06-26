@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
 
 import axios from 'axios';
 import ReactQuill from 'react-quill';
