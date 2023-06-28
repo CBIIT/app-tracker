@@ -114,7 +114,7 @@ const finalizeVacancy = (props) => {
 						</li>
 					))}
 				</ul>
-				<h2>Letters of Recommendations</h2>
+				<h2>Full Contact Details for References</h2>
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
 					<li className='ListItemTrue'>
