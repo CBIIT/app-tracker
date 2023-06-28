@@ -79,13 +79,12 @@ const viewVacancyDetails = () => {
 								] +
 									' (' +
 									vacancyDetails.basic_info.number_of_recommendation.value +
-									') Letter' +
+									') Full Contact Details for Reference' +
 									(vacancyDetails.basic_info.number_of_recommendation.value >
 										1 ||
 									vacancyDetails.basic_info.number_of_recommendation.value == 0
 										? 's'
-										: '') +
-									' of Recommendation'}
+										: '') }
 							</li>
 						)}
 					</ul>

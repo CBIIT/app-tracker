@@ -252,7 +252,7 @@ const basicInformation = (props) => {
 				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
 
-			<Form.Item label='Letters of Recommendation'>
+			<Form.Item label='Full Contact Details for References'>
 				<p className='SmallText'>
 					How many recommendations does this vacancy require?
 				</p>
