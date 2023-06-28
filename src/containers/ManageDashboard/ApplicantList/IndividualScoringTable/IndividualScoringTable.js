@@ -106,7 +106,10 @@ const individualScoringTable = (props) => {
 				title: 'Applicant',
 				dataIndex: 'applicant_name',
 				key: 'name',
-				sorter: true,
+				sorter: {
+					compare: (a, b) => a.applicant_name - b.applicant_name,
+					multiple: 2,
+				},
 				defaultSortOrder: 'ascend',
 				width: 200,
 				...getColumnSearchProps('applicant_name', 'name', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
@@ -132,6 +135,10 @@ const individualScoringTable = (props) => {
 					} else {
 						return text.toFixed(2);;
 					}
+				},
+				sorter: {
+					compare: (a, b) => a.average_member_score - b.average_member_score,
+					multiple: 1,
 				},
 			},
 		];
