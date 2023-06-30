@@ -48,7 +48,6 @@ import useTimeout from './hooks/useTimeout';
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const { auth, setAuth } = useAuth();	// this populates auth
-	const { modalTimeout, setModalTimeout } = useTimeout();	// this populates nothing
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth();
