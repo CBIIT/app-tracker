@@ -4,6 +4,7 @@ import { Steps, Button, Result, Space, Alert, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
+import useTimeout from '../../hooks/useTimeout';
 
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
@@ -66,12 +67,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
+	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
 	const vacancyId = initialValues?.sysId || vacancySysId;
 
+	const checkTimeDuration = 1000;
+
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
+
+	const { modalTimeout } = useTimeout();
 
 	useEffect(() => {
 		(async () => {
@@ -84,6 +90,18 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			setIsLoading(false);
 		})();
 	}, []);
+
+	setTimeout(async () => {
+		// checking to see if user is about to get logged out
+		// NB: this drops right to zero
+		if (lastModalTimeout > 0.01 && Math.abs(lastModalTimeout - modalTimeout) > 0.1) {
+			console.log('Saving ...');
+			// it changed, since it only changes when time runs out, save now
+			setLastModalTimeout(modalTimeout);
+			save();
+		}
+		setLastModalTimeout(modalTimeout);
+	}, checkTimeDuration);
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(

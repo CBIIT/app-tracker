@@ -2,27 +2,36 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CHECK_AUTH } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
+import useTimeout from '../../hooks/useTimeout';
 import { Modal, Typography, Button } from 'antd';
 const { Paragraph } = Typography;
 
 const TimeoutModal = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const { auth, setAuth } = useAuth();
+	const { modalTimeout, setModalTimeout } = useTimeout();
+	let fullTimeoutDuration = auth.sessionTimeout;
 	let uiTimeout = auth.sessionTimeout * 0.9;
 	let remainingTime = auth.sessionTimeout - uiTimeout;
 	let timeout;
 
 	useEffect(() => {
 		// show modal after 90% of session time has elapsed
+		console.log('inside timeout modal');
+		console.log(modalTimeout);
+		setTimeout(fullTimeoutDuration);
+		setModalTimeout(uiTimeout);
 		const showModal = () => {
 			timeout = setTimeout(() => {
 				setIsModalOpen(true);
+				setModalTimeout(0);
 			}, uiTimeout);
 		};
 		const autoCloseModal = () => {
 			timeout = setTimeout(() => {
 				// log user out
 				setIsModalOpen(false);
+				setModalTimeout(auth.sessionTimeout * 0.1);
 				location.href = '/logout.do';
 			}, remainingTime);
 		};

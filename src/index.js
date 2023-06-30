@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { AuthProvider } from './context/AuthContext';
+import { TimeoutProvider } from './context/TimeoutContext';
 import App from './App';
 
 // define ServiceNow authentication schema for REST calls
@@ -26,7 +27,9 @@ axios.defaults.headers.put['Content-Type'] = 'application/json';
 const app = (
 	<HashRouter>
 		<AuthProvider>
-			<App />
+			<TimeoutProvider>
+				<App />
+			</TimeoutProvider>
 		</AuthProvider>
 	</HashRouter>
 );

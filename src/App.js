@@ -43,11 +43,12 @@ import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
+import useTimeout from './hooks/useTimeout';
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
-	const { auth, setAuth } = useAuth();
-
+	const { auth, setAuth } = useAuth();	// this populates auth
+	const { modalTimeout, setModalTimeout } = useTimeout();	// this populates nothing
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth();
