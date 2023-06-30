@@ -61,14 +61,14 @@ const app = () => {
 		if (!auth.isUserLoggedIn) checkAuth();
 		//console.log(modalTimeout);
 		//setAuth({});
-		setModalTimeout(50);
+		//setModalTimeout(50);
 		console.log(modalTimeout);
 	}, []);
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
 	console.log('outer');
-	console.log(auth);
+	//console.log(auth);
 	console.log(modalTimeout);
 
 	if (isUserLoggedIn) {

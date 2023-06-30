@@ -20,11 +20,12 @@ const TimeoutModal = () => {
 		console.log('inside timeout modal');
 		console.log(modalTimeout);
 		setTimeout(fullTimeoutDuration);
+		setModalTimeout(uiTimeout);
 		const showModal = () => {
 			timeout = setTimeout(() => {
 				setIsModalOpen(true);
 				setModalTimeout(0);
-			}, uiTimeout);	// adjust this in milliseconds to test, 30000 or uiTimeout
+			}, 30000);	// adjust this in milliseconds to test, 30000 or uiTimeout
 		};
 		const autoCloseModal = () => {
 			timeout = setTimeout(() => {
