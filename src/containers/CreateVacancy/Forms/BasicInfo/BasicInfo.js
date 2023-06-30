@@ -17,6 +17,7 @@ const basicInformation = (props) => {
 
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
+	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' '}]);
 	const [isOWM, setIsOWM] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -82,8 +83,8 @@ const basicInformation = (props) => {
 				setCurrentPositionMenu(positionClassificationMenu);
 			}
 			var packageInitiators = [];
-			for(var i = 0; i < vacancyOptionsResponse.data.result.packageInitiators.length; i++) {
-				var packageInitiator = vacancyOptionsResponse.data.result.packageInitiators[i];
+			for(var i = 0; i < vacancyOptionsResponse.data.result.package_initiators.length; i++) {
+				var packageInitiator = vacancyOptionsResponse.data.result.package_initiators[i];
 				var packageInitiatorOption = {
 					label :  packageInitiator.name,
 					value : packageInitiator.sys_id
@@ -91,6 +92,9 @@ const basicInformation = (props) => {
 				packageInitiators.push(packageInitiatorOption);
 			}
 			setAppInitiatorMenu(packageInitiators);
+			const codes = [];
+			vacancyOptionsResponse.data.result.sac_codes.forEach(code => {codes.push({label: code, value: code})});
+			setSacCodes(codes);
 			setIsLoading(false)
 		})();
 	}, []);
@@ -349,7 +353,7 @@ const basicInformation = (props) => {
 					<EditableDropDown
 						name='sacCode'
 						showSearch={true}
-						menu={[]}
+						menu={sacCodes}
 						filterOption={(input, option) =>
 							(option?.label ?? '').includes(input)
 						}

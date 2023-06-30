@@ -25,6 +25,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		vacancy_description: basicInfo.description,
 		package_initiator: basicInfo.appointmentPackageIndicator,
 		title_42_position_classification: basicInfo.positionClassification,
+		organization_code: basicInfo.sacCode,
 		open_date: getDateFromDateTime(basicInfo.openDate),
 		close_date: getDateFromDateTime(basicInfo.closeDate),
 		scoring_due_by_date: getDateFromDateTime(basicInfo.scoringDueByDate),
