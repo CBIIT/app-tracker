@@ -4,6 +4,7 @@ import { Steps, Button, Result, Space, Alert, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
+import useTimeout from '../../hooks/useTimeout';
 
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
@@ -66,12 +67,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
+	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
 	const vacancyId = initialValues?.sysId || vacancySysId;
 
+	const checkTimeDuration = 1000;
+
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
+
+	const { modalTimeout } = useTimeout();
 
 	useEffect(() => {
 		(async () => {
@@ -84,6 +90,25 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			setIsLoading(false);
 		})();
 	}, []);
+
+	//setTimeout(async (modalTimeout, lastModalTimeout) => {
+	setTimeout(async () => {
+		console.log('checking to see if timeout is close to expiring ...');
+		console.log(lastModalTimeout)
+		console.log(modalTimeout)
+		// log user out
+		// TODO: use auth to get initial duration and make sure to not save if the global timeout is the initial duration
+		if (modalTimeout > 0.01 && Math.abs(lastModalTimeout - modalTimeout) > 0.1) {
+			// it changed, since it only changes when time runs out, save now
+			const fieldsValues = currentFormInstance.getFieldsValue();
+			await saveCurrentForm(fieldsValues);
+			//saveCurrentForm(fieldsValues).catch(function ignore() {});	// we don't care about the result here, so don't await
+		}
+		console.log('setting last timeout');
+		setLastModalTimeout(modalTimeout);
+		console.log('last timeout set');
+	}, checkTimeDuration);
+	//}, []);
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
