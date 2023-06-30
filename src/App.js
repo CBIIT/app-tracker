@@ -52,13 +52,10 @@ const app = () => {
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth();
-		console.log(modalTimeout);
 	}, []);
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
-	console.log('outer');
-	console.log(modalTimeout);
 
 	if (isUserLoggedIn) {
 		if (user.isChair) {
