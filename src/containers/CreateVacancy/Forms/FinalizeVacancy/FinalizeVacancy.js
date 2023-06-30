@@ -19,14 +19,13 @@ const finalizeVacancy = (props) => {
 		},
 		{ title: 'Role', dataIndex: 'role', key: 'role' },
 	];
-
 	useEffect(() => {
 		// since appointment package inititator only displays the sys_id, do a GET to figure out what the display of it should be
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
 			);
-			setAllPackageInitiators(vacancyOptionsResponse.data.result.packageInitiators);
+			setAllPackageInitiators(vacancyOptionsResponse.data.result.package_initiators);
 		})();
 	}, []);
 
@@ -120,6 +119,12 @@ const finalizeVacancy = (props) => {
 					<li className='ListItemTrue'>
 						{basicInfo.numberOfRecommendations} recommendations
 					</li>
+				</ul>
+				<h2>Organization Code</h2>
+				<ul>
+					<p>
+						{basicInfo.sacCode}
+					</p>
 				</ul>
 				<h2>Position Classification</h2>
 				<ul>

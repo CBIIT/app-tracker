@@ -174,7 +174,6 @@ const manageDashboard = () => {
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);
-
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
