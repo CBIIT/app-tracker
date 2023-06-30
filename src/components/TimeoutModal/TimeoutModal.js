@@ -9,7 +9,7 @@ const { Paragraph } = Typography;
 const TimeoutModal = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const { auth, setAuth } = useAuth();
-	const { modalTimeout, setModalTimeout } = useTimeout();	// useTimeout() returns {}
+	const { modalTimeout, setModalTimeout } = useTimeout();
 	let fullTimeoutDuration = auth.sessionTimeout;
 	let uiTimeout = auth.sessionTimeout * 0.9;
 	let remainingTime = auth.sessionTimeout - uiTimeout;
@@ -25,7 +25,7 @@ const TimeoutModal = () => {
 			timeout = setTimeout(() => {
 				setIsModalOpen(true);
 				setModalTimeout(0);
-			}, 30000);	// adjust this in milliseconds to test, 30000 or uiTimeout
+			}, uiTimeout);
 		};
 		const autoCloseModal = () => {
 			timeout = setTimeout(() => {

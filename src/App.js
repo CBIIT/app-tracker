@@ -46,29 +46,18 @@ import useAuth from './hooks/useAuth';
 import useTimeout from './hooks/useTimeout';
 
 const app = () => {
-	// console.log('inner');
-	// console.log(auth);
-	// console.log(modalTimeout);
 	const [isLoading, setIsLoading] = useState(true);
 	const { auth, setAuth } = useAuth();	// this populates auth
 	const { modalTimeout, setModalTimeout } = useTimeout();	// this populates nothing
-	// console.log('inner2');
-	// console.log(auth);
-	// console.log(modalTimeout);
-
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth();
-		//console.log(modalTimeout);
-		//setAuth({});
-		//setModalTimeout(50);
 		console.log(modalTimeout);
 	}, []);
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
 	console.log('outer');
-	//console.log(auth);
 	console.log(modalTimeout);
 
 	if (isUserLoggedIn) {

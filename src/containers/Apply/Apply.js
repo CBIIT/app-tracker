@@ -91,26 +91,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		})();
 	}, []);
 
-	//setTimeout(async (modalTimeout, lastModalTimeout) => {
 	setTimeout(async () => {
-		console.log('checking to see if timeout is close to expiring ...');
-		console.log(lastModalTimeout)
-		console.log(modalTimeout)
-		// log user out
-		// TODO: use auth to get initial duration and make sure to not save if the global timeout is the initial duration
+		// checking to see if user is about to get logged out
 		// NB: this drops right to zero
 		if (lastModalTimeout > 0.01 && Math.abs(lastModalTimeout - modalTimeout) > 0.1) {
 			console.log('Saving ...');
 			// it changed, since it only changes when time runs out, save now
-			const fieldsValues = currentFormInstance.getFieldsValue();
-			await saveCurrentForm(fieldsValues);
-			//saveCurrentForm(fieldsValues).catch(function ignore() {});	// we don't care about the result here, so don't await
+			setLastModalTimeout(modalTimeout);
+			save();
 		}
-		console.log('setting last timeout');
 		setLastModalTimeout(modalTimeout);
-		console.log('last timeout set');
 	}, checkTimeDuration);
-	//}, []);
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
