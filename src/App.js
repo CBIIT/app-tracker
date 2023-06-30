@@ -43,7 +43,6 @@ import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
-import useTimeout from './hooks/useTimeout';
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
