@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import { Button, Menu, Dropdown } from 'antd';
+import { Button, Menu, Dropdown, Divider } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 
 import oktaIcon from '../../../assets/images/okta-login-icon.png';
@@ -42,7 +42,50 @@ const login = () => {
 
 	const loginMenu = (
 		<Menu className='LoginMenu' onClick={handleMenuClick}>
-			<span className='MenuTextSpan'>NIH Employee/NIH Contractor?</span>
+			<div>
+				<div class="login-container">
+					<div class="login-text-header">
+						FOR NIH EMPLOYEES
+					</div>
+					<div class="login-text">
+						<span className='MenuTextSpan'>Employee/ Contractor only</span>
+						<Menu.Item
+							key='itrust'
+							icon={<img className='CustomIcon' src={iTrustIcon} />}
+							style={{ width: "170px"}}
+						>
+							NIH Login
+						</Menu.Item>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="login-container">
+					<div class="login-text-header2">
+						NOT NIH EMPLOYEES
+					</div>
+					<div class="login-text">
+						<span className='MenuTextSpan'>Already registered ?</span>
+						<Menu.Item
+							key='okta'
+							style={{ width: "100px"}}
+						>
+							Click here
+						</Menu.Item>
+						<div style={{width : "300px", height : "1px"}}>&nbsp;</div>
+						<Divider/>
+						<span className='MenuTextSpan'>Not registered ?</span>
+						<Menu.Item
+							key='register-okta'
+							style={{ width: "120px"}}
+						>
+							Register here
+						</Menu.Item>
+					</div>
+				</div>
+			</div>
+
+			{/* <span className='MenuTextSpan'>NIH Employee/NIH Contractor?</span>
 			<Menu.Item
 				key='itrust'
 				icon={<img className='CustomIcon' src={iTrustIcon} />}
@@ -62,7 +105,7 @@ const login = () => {
 				icon={<img className='CustomIcon' src={oktaIcon} />}
 			>
 				Login here
-			</Menu.Item>
+			</Menu.Item> */}
 		</Menu>
 	);
 

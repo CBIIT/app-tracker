@@ -13,8 +13,13 @@
 	box-shadow: none;
 }
 
+/*note the width here controls the menu width, 300 is good*/
 .LoginMenu .ant-dropdown-menu-item {
 	color: var(--color-primary);
+	/* max-width: 170px;		 */
+	text-decoration: underline;
+	font-weight: bold;
+	margin: auto;
 }
 
 .CustomIcon {
@@ -26,4 +31,47 @@
 .MenuTextSpan {
 	padding-left: 12px;
 	color: var(--text-light);
+	justify-content: center;
+	display: flex; 
+}
+
+.login-container {
+	width: 100%;
+	height: 100%;
+	padding-top: 20px;
+}
+
+.login-text-header {
+	color: #015ea2;
+	text-align: center;
+	top: 25px;
+	width: 210px;
+	left: 70px;
+	position: absolute;
+	background: white;
+	font-weight: bold;
+}
+
+.login-text-header2 {
+	color: #015ea2;
+	text-align: center;
+	top: 179px;
+	width: 210px;
+	left: 70px;
+	position: absolute;
+	background: white;
+	font-weight: bold;
+}
+
+.login-text {
+	margin: 10px;
+	text-align: left;
+	padding: 20px 10px 20px 10px;
+	border: 5px solid #015ea2;
+	font-weight: bold;
+}
+
+/* Solid border */
+hr.solid {
+	border-top: 3px solid #bbb;
 }
