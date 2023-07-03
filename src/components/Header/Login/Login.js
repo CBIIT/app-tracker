@@ -65,7 +65,7 @@ const login = () => {
 			<div>
 				<div className="login-container">
 					<div className="login-text-header2">
-						NON-NIH EMPLOYEES
+						NON-NIH EMPLOYEES 
 					</div>
 					<div className="login-text">
 						<div onClick={alreadyRegisteredClicked}>
