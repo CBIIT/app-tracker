@@ -1,8 +1,7 @@
 import { useHistory } from 'react-router-dom';
-import { Button, Menu, Dropdown } from 'antd';
+import { Button, Menu, Dropdown, Divider } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 
-import oktaIcon from '../../../assets/images/okta-login-icon.png';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
@@ -17,21 +16,24 @@ const login = () => {
 
 	const history = useHistory();
 
+	const nihClicked = () => {
+		location.href =
+		'/nav_to.do?uri=' +
+		encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
+		'&glide_sso_id=' +
+		iTrustGlideSsoId;
+	}
+
+	const alreadyRegisteredClicked = () => {
+		location.href = oktaLoginAndRedirectUrl;
+	}
+
+	const notRegistered = () => {
+		history.push(REGISTER_OKTA);
+	}
+
 	const handleMenuClick = (e) => {
 		switch (e.key) {
-			case 'itrust':
-				location.href =
-					'/nav_to.do?uri=' +
-					encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
-					'&glide_sso_id=' +
-					iTrustGlideSsoId;
-				break;
-			case 'okta':
-				location.href = oktaLoginAndRedirectUrl;
-				break;
-			case 'register-okta':
-				history.push(REGISTER_OKTA);
-				break;
 			case 'logout':
 				location.href = '/logout.do';
 				break;
@@ -42,32 +44,59 @@ const login = () => {
 
 	const loginMenu = (
 		<Menu className='LoginMenu' onClick={handleMenuClick}>
-			<span className='MenuTextSpan'>NIH Employee/NIH Contractor?</span>
-			<Menu.Item
-				key='itrust'
-				icon={<img className='CustomIcon' src={iTrustIcon} />}
-			>
-				Login here
-			</Menu.Item>
-			<span className='MenuTextSpan'>Non-NIH Employee/Non-NIH Contractor?</span>
-			<Menu.Item
-				key='register-okta'
-				icon={<img className='CustomIcon' src={oktaIcon} />}
-			>
-				Register here
-			</Menu.Item>
-			<span className='MenuTextSpan'>Already Registered?</span>
-			<Menu.Item
-				key='okta'
-				icon={<img className='CustomIcon' src={oktaIcon} />}
-			>
-				Login here
-			</Menu.Item>
+			<div>
+				<div className="login-container">
+					<div className="login-text-header">
+						FOR NIH EMPLOYEES
+					</div>
+					<div className="login-text" onClick={nihClicked}>
+						<span className='MenuTextSpan'>Employee/ Contractor only</span>
+						<Menu.Item
+							key='itrust'
+							icon={<img className='CustomIcon' src={iTrustIcon} />}
+							style={{ width: "170px"}}
+							
+						>
+							NIH Login
+						</Menu.Item>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div className="login-container">
+					<div className="login-text-header2">
+						NOT NIH EMPLOYEES
+					</div>
+					<div className="login-text">
+						<div onClick={alreadyRegisteredClicked}>
+							<span className='MenuTextSpan'>Already registered ?</span>
+						
+							<Menu.Item
+								key='okta'
+								style={{ width: "100px"}}
+							>
+								Click here
+							</Menu.Item>
+						</div>
+						<div style={{width : "300px", height : "1px"}}>&nbsp;</div>
+						<Divider/>
+						<div onClick={notRegistered}>
+							<span className='MenuTextSpan'>Not registered ?</span>
+							<Menu.Item
+								key='register-okta'
+								style={{ width: "120px"}}
+							>
+								Register here
+							</Menu.Item>
+						</div>
+					</div>
+				</div>
+			</div>
 		</Menu>
 	);
 
 	const logoutMenu = (
-		<Menu className='LoginMenu' onClick={handleMenuClick}>
+		<Menu className='LoginMenu'onClick={handleMenuClick}>
 			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);
