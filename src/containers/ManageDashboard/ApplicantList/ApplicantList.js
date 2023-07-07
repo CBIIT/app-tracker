@@ -226,8 +226,8 @@ const applicantList = (props) => {
 					loadAllApplicants(
 						pagination.current,
 						pagination.pageSize,
-						sorter[0].order,
-						sorter[0].field
+						sorter.order,
+						sorter.field
 					);
 				}}
 			></Table>
