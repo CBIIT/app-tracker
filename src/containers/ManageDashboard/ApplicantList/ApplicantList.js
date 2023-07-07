@@ -165,51 +165,51 @@ const applicantList = (props) => {
 	};
 
 	useEffect(() => {
-		updateData(1, pageSize, defaultApplicantSort);
+		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText]);
 
-	const loadRecommendedApplicants = async (page, pageSize, orderBy) => {
+	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, 'yes');
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes');
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
 
-	const loadNonRecommendedApplicants = async (page, pageSize, orderBy) => {
+	const loadNonRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setNonRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, 'no');
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no');
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
 
-	const loadAllApplicants = async (page, pageSize, orderBy) => {
+	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
 		setTableLoading(false);
 		setApplicants(data.applicants);
 		setTotalCount(data.totalCount);
 		setPageSize(data.pageSize);
 	};
 
-	const updateData = async (page, pageSize, orderBy) => {
+	const updateData = async (page, pageSize, orderBy, orderColumn) => {
 		if (
 			props.userRoles.includes(OWM_TEAM) &&
 			(props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 				props.vacancyState === VOTING_COMPLETE ||
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS)
 		) {
-			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy);
+			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
 			loadNonRecommendedApplicants(
 				1,
 				nonRecommendedApplicantsPageSize,
-				orderBy
+				orderBy, orderColumn
 			);
 		} else {
-			loadAllApplicants(1, pageSize, orderBy);
+			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
 	};
 
@@ -226,7 +226,8 @@ const applicantList = (props) => {
 					loadAllApplicants(
 						pagination.current,
 						pagination.pageSize,
-						sorter.order
+						sorter[0].order,
+						sorter[0].field
 					);
 				}}
 			></Table>
@@ -332,7 +333,7 @@ const applicantList = (props) => {
 		}
 	};
 
-	const loadApplicants = async (page, pageSize, orderBy, recommended) => {
+	const loadApplicants = async (page, pageSize, orderBy, orderColumn, recommended) => {
 		const offset = page;
 		const limit = pageSize;
 		try {
@@ -344,7 +345,9 @@ const applicantList = (props) => {
 				'&limit=' +
 				limit +
 				'&orderBy=' +
-				orderBy;
+				orderBy +
+				'&orderColumn=' +
+				orderColumn;
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
@@ -365,7 +368,7 @@ const applicantList = (props) => {
 	};
 
 	const loadVacancyAndApplicants = () => {
-		updateData(1, pageSize, defaultApplicantSort);
+		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 		props.reloadVacancy();
 	};
 

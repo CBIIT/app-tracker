@@ -107,8 +107,7 @@ const individualScoringTable = (props) => {
 				dataIndex: 'applicant_name',
 				key: 'name',
 				sorter: {
-					compare: (a, b) => a.applicant_name - b.applicant_name,
-					multiple: 2,
+					compare: (a, b) => a.applicant_name - b.applicant_name
 				},
 				defaultSortOrder: 'ascend',
 				width: 200,
@@ -137,8 +136,7 @@ const individualScoringTable = (props) => {
 					}
 				},
 				sorter: {
-					compare: (a, b) => a.average_member_score - b.average_member_score,
-					multiple: 1,
+					compare: (a, b) => a.average_member_score - b.average_member_score
 				},
 			},
 		];
@@ -300,7 +298,8 @@ const individualScoringTable = (props) => {
 					props.onTableChange(
 						pagination.current,
 						pagination.pageSize,
-						sorter.order
+						sorter.order,
+						sorter.field
 					);
 				}}
 				scroll={{ x: 'true' }}
