@@ -258,7 +258,6 @@ const application = () => {
 			const vacancySysId =
 				applicationResponse.data.result.basic_info.vacancy.value;
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + vacancySysId);
-			console.log(vacancy.data.result);
 			setVacancyData(vacancy.data.result);
 
 			const roles = vacancy.data.result.user.roles;
