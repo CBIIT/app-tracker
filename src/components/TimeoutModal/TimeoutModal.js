@@ -52,6 +52,7 @@ const TimeoutModal = () => {
 		// extend user session
 		refreshAuth();
 		setIsModalOpen(false);
+		console.log(modalTimeout);
 	};
 
 	const handleCancel = () => {
