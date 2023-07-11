@@ -213,15 +213,15 @@ const applicantApplicationView = (props) => {
 					</InfoCardRow>
 				</InfoCard>
 				<Address address={application.address} />
-				{(application.focusArea && application.focusArea.filter(e => !application.focusArea.includes("null")).length > 0)  ?
+				{(application.focusArea && application.focusArea.filter(() => !application.focusArea.includes("null")).length > 0)  ?
 					<InfoCard title='Focus Areas'
 						style={{
 							backgroundColor: 'white',
 							minHeight: '60px',
 						}}
 					>
-						{(application.focusArea && application.focusArea.filter(e => !application.focusArea.includes("null")).length > 0) 
-							? application.focusArea?.filter(e => !application.focusArea.includes("null")).map((area, index) => {
+						{(application.focusArea && application.focusArea.filter(() => !application.focusArea.includes("null")).length > 0) 
+							? application.focusArea?.filter(() => !application.focusArea.includes("null")).map((area, index) => {
 								return (
 									<InfoCardRow key={index}
 										style={{ paddingBottom: '5px'}}
