@@ -73,13 +73,13 @@ const viewVacancyDetails = () => {
 							: null}
 						{vacancyDetails.basic_info.number_of_recommendation.value ==
 						0 ? null : (
-							<li>
+							<li>Full Contact Details for&nbsp; 
 								{numberToWordMap[
 									vacancyDetails.basic_info.number_of_recommendation.value
 								] +
 									' (' +
 									vacancyDetails.basic_info.number_of_recommendation.value +
-									') Full Contact Details for Reference' +
+									') Reference' +
 									(vacancyDetails.basic_info.number_of_recommendation.value >
 										1 ||
 									vacancyDetails.basic_info.number_of_recommendation.value == 0
