@@ -65,7 +65,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 
 	return (
 		<>
-			<div style={{marginLeft: 50, marginRight: 50}}>
+			<div style={{ marginLeft: 50, marginRight: 50 }}>
 				<Col span={24}>
 					<Title level={4}>Demographic Information</Title>
 					{!profile?.demographics.share ? (
@@ -78,12 +78,14 @@ const DemographicsForm = ({ setDemoOpen }) => {
 					) : (
 						<></>
 					)}
-					
+
 					<Space>
-						<Title level={5} style={{"margin-top": "10px"}}>Your privacy is protected.</Title>
+						<Title level={5} style={{ marginTop: '10px' }}>
+							Your privacy is protected.
+						</Title>
 						<Tooltip
 							title='Demographic information shared here will not save until the "save" button is tapped.'
-							placement="right"
+							placement='right'
 							defaultOpen={true}
 						>
 							<Typography.Link>
@@ -96,9 +98,21 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						reaching all segments of the population, consistent with federal
 						equal employment opportunity laws. We do not provide demographic
 						data to any hiring officials, anyone involved in the hiring process
-						or the public. Review our {/*content to open in new window*/}{' '}
-						privacy policy and the {/* also opens link in new window */}{' '}
-						Paperwork Reduction Act for more information.
+						or the public. Review our {' '}
+						<a
+							href='https://www.opm.gov/information-management/privacy-policy/'
+							target='_blank'
+						>
+							privacy policy
+						</a>{' '}
+						and the {' '}
+						<a
+							href='https://www.opm.gov/about-us/open-government/digital-government-strategy/fitara/paperwork-reduction-act-guide.pdf'
+							target='_blank'
+						>
+							Paperwork Reduction Act
+						</a>{' '}
+						for more information.
 					</Paragraph>
 					<Space direction='vertical' size={12} />
 				</Col>
@@ -130,7 +144,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 										I want to share my demographic details and help improve the
 										hiring process.
 									</Radio>
-									<Radio value= '0'>
+									<Radio value='0'>
 										I do not want to answer the demographic questions.
 									</Radio>
 								</Space>
