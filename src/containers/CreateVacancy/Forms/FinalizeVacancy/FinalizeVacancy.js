@@ -120,7 +120,7 @@ const finalizeVacancy = (props) => {
 						{basicInfo.numberOfRecommendations} recommendations
 					</li>
 				</ul>
-				<h2>Organization Code</h2>
+				<h2>Organizational Code</h2>
 				<ul>
 					<p>
 						{basicInfo.sacCode}
