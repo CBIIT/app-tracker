@@ -33,9 +33,23 @@ const DemographicsStepForm = () => {
 						reaching all segments of the population, consistent with federal
 						equal employment opportunity laws. We do not provide demographic
 						data to any hiring officials, anyone involved in the hiring process
-						or the public. Review our {/*content to open in new window*/}{' '}
-						privacy policy and the {/* also opens link in new window */}{' '}
-						Paperwork Reduction Act for more information.
+						or the public. Review our {' '}
+						<a
+							href='https://www.opm.gov/information-management/privacy-policy/'
+							target='_blank'
+							rel="noopener noreferrer"
+						>
+							privacy policy
+						</a>{' '}
+						and the {' '}
+						<a
+							href='https://www.opm.gov/about-us/open-government/digital-government-strategy/fitara/paperwork-reduction-act-guide.pdf'
+							target='_blank'
+							rel="noopener noreferrer"
+						>
+							Paperwork Reduction Act
+						</a>{' '}
+						for more information.
 					</Paragraph>
 					<Space direction='vertical' size={12} />
 				</Col>
