@@ -352,6 +352,7 @@ const basicInformation = (props) => {
 				<div className='DatePicker'>
 					<EditableDropDown
 						name='sacCode'
+						required={true}
 						showSearch={true}
 						menu={sacCodes}
 						filterOption={(input, option) =>
