@@ -102,6 +102,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						<a
 							href='https://www.opm.gov/information-management/privacy-policy/'
 							target='_blank'
+							rel="noopener noreferrer"
 						>
 							privacy policy
 						</a>{' '}
@@ -109,6 +110,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						<a
 							href='https://www.opm.gov/about-us/open-government/digital-government-strategy/fitara/paperwork-reduction-act-guide.pdf'
 							target='_blank'
+							rel="noopener noreferrer"
 						>
 							Paperwork Reduction Act
 						</a>{' '}
