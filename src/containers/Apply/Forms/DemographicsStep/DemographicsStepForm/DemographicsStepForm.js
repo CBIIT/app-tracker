@@ -25,7 +25,7 @@ const DemographicsStepForm = () => {
 
 	return (
 		<>
-			<div style={{marginLeft: 50, marginRight: 50}}>
+			<div style={{marginRight: 50}}>
 				<Col span={24}>
 					<Title level={5}>Your privacy is protected.</Title>
 					<Paragraph>

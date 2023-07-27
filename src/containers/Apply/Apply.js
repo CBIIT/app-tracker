@@ -395,7 +395,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 						</Steps>
 					</div>
 					<div className='StepContentContainer'>
-						<div className='StepContent'>
+						<div className='StepContent' style={{marginLeft: 15}}>
 							<h3>{currentStepObj.title}</h3>
 							<p>{currentStepObj.longDescription}</p>
 							<span style={{ marginBottom: '0px', whiteSpace: 'pre-wrap' }}>
@@ -415,7 +415,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 						{!formIsFinished && (
 							<div className='steps-action'>
-								<div>
+								<div style={{marginLeft: 15}}>
 									<Button
 										onClick={prev}
 										type='primary'
