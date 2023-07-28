@@ -119,7 +119,7 @@ const ApplicantProfile = () => {
 								color: '#2b2b2b',
 							}}
 						>
-							{basicInfo.firstName} {basicInfo.lastName}
+							{basicInfo.firstName} {basicInfo.middleName ? (basicInfo.middleName) : ('')} {basicInfo.lastName}
 						</Title>
 					</div>
 					) : (

@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Typography } from 'antd';
+import { Typography, Button } from 'antd';
 const { Paragraph, Title } = Typography;
 
 import ProfileContext from '../../Util/FormContext';
@@ -81,7 +81,7 @@ const DemographicTab = () => {
 				level={4}
 				style={{
 					color: '#2b2b2b',
-					fontSize: '18px',
+					fontSize: '20px',
 					display: 'flex',
 					flexDirection: 'row',
 					alignItems: 'center',
@@ -90,8 +90,18 @@ const DemographicTab = () => {
 				Demographics{' '}
 				<span style={{ fontSize: '14px', marginLeft: '5px' }}>(optional)</span>
 			</Title>
-			<div style={{marginBottom: 15}}>
-				<a onClick={() => setDemoOpen(true)}>Edit</a>
+			<div style={{ marginBottom: 20, marginTop: 15 }}>
+				<Button
+					type='primary'
+					style={{
+						fontSize: '14px',
+						width: '60px',
+						height: '30px',
+					}}
+					onClick={() => setDemoOpen(true)}
+				>
+					Edit
+				</Button>
 			</div>
 			{demographics.share === '0' ? (
 				<Paragraph>{"You've chosen not to share your demographics."}</Paragraph>
@@ -102,7 +112,7 @@ const DemographicTab = () => {
 							Sex
 						</Title>
 						<Paragraph style={{ color: '#363636' }}>
-							{demographics.sex ? demographics.sex : "Prefer not to answer"}
+							{demographics.sex ? demographics.sex : 'Prefer not to answer'}
 						</Paragraph>
 					</div>
 					<div>
@@ -111,7 +121,9 @@ const DemographicTab = () => {
 							Ethnicity{' '}
 						</Title>
 						<Paragraph style={{ color: '#363636' }}>
-							{demographics.ethnicity ? getEthnicity(demographics.ethnicity) : "Prefer not to answer"}
+							{demographics.ethnicity
+								? getEthnicity(demographics.ethnicity)
+								: 'Prefer not to answer'}
 						</Paragraph>
 					</div>
 					<div>

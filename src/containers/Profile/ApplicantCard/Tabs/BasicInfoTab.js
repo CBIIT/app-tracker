@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Typography } from 'antd';
+import { Typography, Button } from 'antd';
 const { Paragraph, Title } = Typography;
 import ProfileContext from '../../Util/FormContext';
 import EditableBasicInfo from '../../Forms/EditableBasicInfo/EditableBasicInfo';
@@ -27,7 +27,18 @@ const BasicInfoTab = () => {
                 <>
                     <div style={{ marginBottom: '25px' }}>
                         <div style={{ marginBottom: 15 }}>
-                            <a onClick={() => setBasicOpen(true)}>Edit</a>
+                            {/* <a onClick={() => setBasicOpen(true)}>Edit</a> */}
+                            <Button
+								type='primary'
+								style={{
+									fontSize: '14px',
+									width: '60px',
+									height: '30px',
+								}}
+								onClick={() => setBasicOpen(true)}
+							>
+								Edit
+							</Button>
                         </div>
                         <Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
                             Address
