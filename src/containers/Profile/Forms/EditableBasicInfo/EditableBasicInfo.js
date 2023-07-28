@@ -144,7 +144,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 					<Form.Item
 						label='Phone'
 						name='phone'
-						rules={[{ required: false, message: 'Please provide an answer.' }]}
+						rules={[{ required: true, message: 'Please provide an answer.' }]}
 					>
 						<Input
 							type='tel'
