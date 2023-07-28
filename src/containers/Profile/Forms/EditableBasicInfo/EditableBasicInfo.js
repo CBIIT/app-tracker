@@ -152,6 +152,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 							placeholder='(123) 456-7890'
 							maxLength={16}
 							name = "phone"
+							required={true}
 						/>
 					</Form.Item>
 				</Col>
