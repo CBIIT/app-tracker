@@ -161,14 +161,18 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 									pattern: new RegExp(/^[0-9]+$/),
 									message: 'Incorrect format.',
 								},
+								{
+									type: 'string',
+									min: 10,
+									max: 10,
+									message: 'Number must be 10 numerical digits.'
+								},
 							]}
 						>
 							<Input
 								type='tel'
 								addonBefore={phonePrefixSelector}
 								placeholder='123 456 7890'
-								maxLength={10}
-								minLength={10}
 								name='phone'
 								required={true}
 							/>
@@ -192,14 +196,18 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 									pattern: new RegExp(/^[0-9]+$/),
 									message: 'Incorrect format.',
 								},
+								{
+									type: 'string',
+									min: 10,
+									max: 10,
+									message: 'Number must be 10 numberical digits.'
+								}
 							]}
 						>
 							<Input
 								type='tel'
 								addonBefore={businessPhonePrefixSelector}
 								placeholder='123 456 7890'
-								maxLength={10}
-								minLength={10}
 								name='businessPhone'
 							/>
 						</Form.Item>

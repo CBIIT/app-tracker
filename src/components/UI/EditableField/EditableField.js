@@ -7,10 +7,10 @@ const editableField = (props) =>
 			label={props.label}
 			name={props.name}
 			rules={[
-				{ required: props.required, message: 'Please provide an answer.' },
+				{ required: props.required, message: 'Please provide an email.' },
 				{
 					type: 'string',
-					pattern: new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
+					pattern: new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
 					message: 'Please provide a valid email address.',
 				}
 			]}
