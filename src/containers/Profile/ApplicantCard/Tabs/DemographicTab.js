@@ -77,20 +77,7 @@ const DemographicTab = () => {
 		<DemographicsForm setDemoOpen={setDemoOpen} />
 	) : (
 		<div>
-			<Title
-				level={4}
-				style={{
-					color: '#2b2b2b',
-					fontSize: '20px',
-					display: 'flex',
-					flexDirection: 'row',
-					alignItems: 'center',
-				}}
-			>
-				Demographics{' '}
-				<span style={{ fontSize: '14px', marginLeft: '5px' }}>(optional)</span>
-			</Title>
-			<div style={{ marginBottom: 20, marginTop: 15 }}>
+			<div style={{ marginBottom: 20 }}>
 				<Button
 					type='primary'
 					style={{

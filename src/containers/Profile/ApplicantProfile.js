@@ -19,7 +19,7 @@ const tabList = [
 	},
 	{
 		key: 'demographics',
-		tab: 'Demographics',
+		tab: 'Demographics (optional)',
 	},
 ];
 

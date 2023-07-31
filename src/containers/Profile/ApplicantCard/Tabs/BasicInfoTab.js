@@ -72,17 +72,24 @@ const BasicInfoTab = () => {
 							</div>
 						</Col>
 						<Col span={9} style={{ marginTop: 50 }}>
-							<div style={{ marginBottom: 20 }}>
-								<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
-									Business Phone
-								</Title>
-								<Paragraph style={{ color: '#363636' }}>
-									{getFullNumber(
-										basicInfo.businessPhonePrefix,
-										basicInfo.businessPhone
-									)}
-								</Paragraph>
-							</div>
+							{basicInfo.businessPhone ? (
+								<div style={{ marginBottom: 20 }}>
+									<Title
+										level={5}
+										style={{ fontSize: '16px', color: '#6a6a6a' }}
+									>
+										Business Phone
+									</Title>
+									<Paragraph style={{ color: '#363636' }}>
+										{getFullNumber(
+											basicInfo.businessPhonePrefix,
+											basicInfo.businessPhone
+										)}
+									</Paragraph>
+								</div>
+							) : (
+								''
+							)}
 							<div style={{ marginBottom: 20 }}>
 								<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
 									Highest Level of Education
