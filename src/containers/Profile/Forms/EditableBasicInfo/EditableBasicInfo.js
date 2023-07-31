@@ -10,6 +10,7 @@ import {
 	Col,
 	Row,
 	Select,
+	Tooltip
 } from 'antd';
 const { Option } = Select;
 import React, { useContext, useEffect } from 'react';
@@ -104,7 +105,11 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 				<h3>Basic Information</h3>
 			</Row>
 			<Row>
-			<p>{"Let's start with some basic questions. You'll have a chance to review everything before submitting."}</p>
+				<p>
+					{
+						"Let's start with some basic questions. You'll have a chance to review everything before submitting."
+					}
+				</p>
 			</Row>
 			<Row>
 				<Col span={6}>
@@ -141,36 +146,64 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			</Row>
 			<Row>
 				<Col span={10}>
-					<Form.Item
-						label='Phone'
-						name='phone'
-						rules={[{ required: true, message: 'Please provide an answer.' }]}
+					<Tooltip
+						title='Example format: 1112223333'
+						trigger='focus'
+						placement='left'
 					>
-						<Input
-							type='tel'
-							addonBefore={phonePrefixSelector}
-							placeholder='(123) 456-7890'
-							maxLength={16}
-							name = "phone"
-							required={true}
-						/>
-					</Form.Item>
+						<Form.Item
+							label='Phone'
+							name='phone'
+							rules={[
+								{ required: true, message: 'Please provide an answer.' },
+								{
+									type: 'string',
+									pattern: new RegExp(/^[0-9]+$/),
+									message: 'Incorrect format.',
+								},
+							]}
+						>
+							<Input
+								type='tel'
+								addonBefore={phonePrefixSelector}
+								placeholder='123 456 7890'
+								maxLength={10}
+								minLength={10}
+								name='phone'
+								required={true}
+							/>
+						</Form.Item>
+					</Tooltip>
 				</Col>
 				<Col span={4}> </Col>
 				<Col span={10}>
-					<Form.Item
-						label='Business Phone'
-						name='businessPhone'
-						rules={[{ required: false, message: 'Please provide an answer.' }]}
+					<Tooltip
+						title='Example format: 1112223333'
+						trigger='focus'
+						placement='right'
 					>
-						<Input
-							type='tel'
-							addonBefore={businessPhonePrefixSelector}
-							placeholder='(123) 456-7890'
-							maxLength={16}
+						<Form.Item
+							label='Business Phone'
 							name='businessPhone'
-						/>
-					</Form.Item>
+							rules={[
+								{ required: false },
+								{
+									type: 'string',
+									pattern: new RegExp(/^[0-9]+$/),
+									message: 'Incorrect format.',
+								},
+							]}
+						>
+							<Input
+								type='tel'
+								addonBefore={businessPhonePrefixSelector}
+								placeholder='123 456 7890'
+								maxLength={10}
+								minLength={10}
+								name='businessPhone'
+							/>
+						</Form.Item>
+					</Tooltip>
 				</Col>
 			</Row>
 			<Row>
@@ -207,7 +240,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 						size='55'
 					/>
 				</Col>
-				<Col span={4}/>
+				<Col span={4} />
 				<Col span={10}>
 					<EditableField
 						label='Apartment Number or Suite'
