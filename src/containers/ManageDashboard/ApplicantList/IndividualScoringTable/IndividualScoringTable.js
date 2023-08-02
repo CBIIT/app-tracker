@@ -132,7 +132,7 @@ const individualScoringTable = (props) => {
 							</span>
 						);
 					} else {
-						return text.toFixed(2);;
+						return parseFloat(text).toFixed(2);;
 					}
 				},
 				sorter: {
