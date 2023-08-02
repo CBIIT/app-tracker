@@ -11,7 +11,7 @@ const externalNav = () => (
 						<a href='https://ccr.cancer.gov/'>Home</a>
 					</li>
 					<li>
-						<a href='mailto:nciowmstaff@mail.nih.gov'>Support</a>
+						<a href='mailto:NCIAppSupport@mail.nih.gov'>Support</a>
 					</li>
 					<li>
 						<a href='https://www.cancer.gov/global/web/policies'>Policies</a>

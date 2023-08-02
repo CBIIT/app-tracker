@@ -46,7 +46,7 @@ const registerOkta = () => {
 				setError(true);
 			} else if (result.includes('errorCode')) {
 				setMessage(
-					'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact 1-800-518-8474 or supportemail@mail.nih.gov'
+					'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact NCIAppSupport@mail.nih.gov'
 				);
 				setError(true);
 			} else {
@@ -57,7 +57,7 @@ const registerOkta = () => {
 			}
 		} catch (error) {
 			setMessage(
-				'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact 1-800-518-8474 or supportemail@mail.nih.gov'
+				'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact NCIAppSupport@mail.nih.gov'
 			);
 			setError(true);
 		}
@@ -155,9 +155,9 @@ const registerOkta = () => {
 						<p>
 							Okta is the platform that manages and provides security for NIH
 							Accounts. If you do not receive an email from Okta within 24
-							hours, please contact us at 1-800-518-8474 or{' '}
-							<a href='mailto:supportemail@mail.nih.gov'>
-								supportemail@mail.nih.gov
+							hours, please contact us at {' '}
+							<a href='mailto:NCIAppSupport@mail.nih.gov'>
+								NCIAppSupport@mail.nih.gov
 							</a>
 						</p>
 						<Form
