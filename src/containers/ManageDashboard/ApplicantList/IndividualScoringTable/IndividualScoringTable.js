@@ -125,14 +125,14 @@ const individualScoringTable = (props) => {
 				dataIndex: 'average_member_score',
 				width: 50,
 				render: (text) => {
-					if (text == 'NaN') {
+					if (!text || text == 'NaN') {
 						return (
 							<span style={{ color: 'rgba(0,0,0,0.25)' }}>
 								{(text = 'Pending')}
 							</span>
 						);
 					} else {
-						return parseFloat(text).toFixed(2);;
+						return parseFloat(text).toFixed(2);
 					}
 				},
 				sorter: {
