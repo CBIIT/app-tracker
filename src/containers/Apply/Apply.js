@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Steps, Button, Result, Space, Alert, message } from 'antd';
+import { Steps, Button, Result, Space, Alert, message, notification } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -68,6 +68,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [lastModalTimeout, setLastModalTimeout] = useState();
+	const [showDemoAlert, setShowDemoAlert] = useState(false);
+	const [showAlert, setShowAlert] = useState(false);
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
@@ -257,7 +259,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
-				message.error('Please fill out all required fields.');
+				if (steps[currentStep].key === 'additionalQuestions') {
+					notification.error({
+						message: "Please make a selection.",
+						description: "You've chosen to share your demographics. Please make a selection for at least one question.",
+						duration: 5,
+						style: {
+							height: "15vh",
+							display: 'flex',
+							alignItems: 'center'
+						}
+					})
+				} else {
+					message.error('Please fill out all required fields.');
+				}
 			}
 		} else {
 			setSubmitModalVisible(true);
@@ -371,11 +386,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					}}
 				>
 					<Alert
-						message='You are editing a submitted application.  Changes are not saved until the application is submitted again.'
+						message='You are editing a submitted application.'
+						description="Changes are not saved until the application is submitted again."
 						banner
 					/>
 				</Space>
 			) : null}
+
 			<HeaderWithLink
 				title={vacancyTitle}
 				route={'/vacancy/' + vacancyId}

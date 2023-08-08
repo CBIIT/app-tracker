@@ -18,6 +18,10 @@ const DemographicsStepForm = () => {
 	const {formData, setCurrentFormInstance} = contextValue;
 	
 	const share = Form.useWatch('share', formInstance);
+	const sex = Form.useWatch('sex', formInstance);
+	const ethnicity = Form.useWatch('ethnicity', formInstance);
+	const race = Form.useWatch('race', formInstance);
+	const disability = Form.useWatch('disability', formInstance);
 
 	useEffect(() => {
 		setCurrentFormInstance(formInstance);
@@ -25,7 +29,7 @@ const DemographicsStepForm = () => {
 
 	return (
 		<>
-			<div style={{marginRight: 50}}>
+			<div style={{ marginRight: 50 }}>
 				<Col span={24}>
 					<Title level={5}>Your privacy is protected.</Title>
 					<Paragraph>
@@ -33,19 +37,19 @@ const DemographicsStepForm = () => {
 						reaching all segments of the population, consistent with federal
 						equal employment opportunity laws. We do not provide demographic
 						data to any hiring officials, anyone involved in the hiring process
-						or the public. Review our {' '}
+						or the public. Review our{' '}
 						<a
 							href='https://www.opm.gov/information-management/privacy-policy/'
 							target='_blank'
-							rel="noopener noreferrer"
+							rel='noopener noreferrer'
 						>
 							privacy policy
 						</a>{' '}
-						and the {' '}
+						and the{' '}
 						<a
 							href='https://www.opm.gov/about-us/open-government/digital-government-strategy/fitara/paperwork-reduction-act-guide.pdf'
 							target='_blank'
-							rel="noopener noreferrer"
+							rel='noopener noreferrer'
 						>
 							Paperwork Reduction Act
 						</a>{' '}
@@ -80,7 +84,7 @@ const DemographicsStepForm = () => {
 										I want to share my demographic details and help improve the
 										hiring process.
 									</Radio>
-									<Radio value= '0'>
+									<Radio value='0'>
 										I do not want to answer the demographic questions.
 									</Radio>
 								</Space>
@@ -88,7 +92,17 @@ const DemographicsStepForm = () => {
 						</Form.Item>
 						{share === '1' ? (
 							<>
-								<Form.Item name='sex' label='Sex'>
+								<Form.Item
+									name='sex'
+									label='Sex'
+									rules={[
+										{
+											required:
+												share === '1' && !ethnicity && !race && !disability,
+											message: ''
+										},
+									]}
+								>
 									<Radio.Group>
 										<Space direction='vertical'>
 											<Radio value='Male'>Male</Radio>
@@ -96,7 +110,16 @@ const DemographicsStepForm = () => {
 										</Space>
 									</Radio.Group>
 								</Form.Item>
-								<Form.Item name='ethnicity' label='Ethnicity'>
+								<Form.Item
+									name='ethnicity'
+									label='Ethnicity'
+									rules={[
+										{
+											required: share === '1' && !sex && !race && !disability,
+											message: '',
+										},
+									]}
+								>
 									<Radio.Group>
 										<Space direction='vertical'>
 											<Radio value='1'>Hispanic or Latino</Radio>
@@ -104,7 +127,17 @@ const DemographicsStepForm = () => {
 										</Space>
 									</Radio.Group>
 								</Form.Item>
-								<Form.Item name='race' label='Race'>
+								<Form.Item
+									name='race'
+									label='Race'
+									rules={[
+										{
+											required:
+												share === '1' && !ethnicity && !sex && !disability,
+											message: '',
+										},
+									]}
+								>
 									<Checkbox.Group>
 										<Space direction='vertical'>
 											<Checkbox value='American Indian'>
@@ -124,6 +157,12 @@ const DemographicsStepForm = () => {
 								<Form.Item
 									name='disability'
 									label='Disability/Serious Health Condition'
+									rules={[
+										{
+											required: share === '1' && !ethnicity && !race && !sex,
+											message: ''
+										},
+									]}
 								>
 									<Checkbox.Group>
 										<Space direction='vertical'>

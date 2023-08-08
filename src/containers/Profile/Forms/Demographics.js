@@ -26,6 +26,10 @@ const DemographicsForm = ({ setDemoOpen }) => {
 	const contextValue = useContext(ProfileContext);
 	const { profile, hasProfile, setHasProfile } = contextValue;
 	const share = Form.useWatch('share', formInstance);
+	const sex = Form.useWatch('sex', formInstance);
+	const ethnicity = Form.useWatch('ethnicity', formInstance);
+	const race = Form.useWatch('race', formInstance);
+	const disability = Form.useWatch('disability', formInstance);
 	const { setCurrentProfileInstance, setProfile } = contextValue;
 
 	useEffect(() => {
@@ -98,19 +102,19 @@ const DemographicsForm = ({ setDemoOpen }) => {
 						reaching all segments of the population, consistent with federal
 						equal employment opportunity laws. We do not provide demographic
 						data to any hiring officials, anyone involved in the hiring process
-						or the public. Review our {' '}
+						or the public. Review our{' '}
 						<a
 							href='https://www.opm.gov/information-management/privacy-policy/'
 							target='_blank'
-							rel="noopener noreferrer"
+							rel='noopener noreferrer'
 						>
 							privacy policy
 						</a>{' '}
-						and the {' '}
+						and the{' '}
 						<a
 							href='https://www.opm.gov/about-us/open-government/digital-government-strategy/fitara/paperwork-reduction-act-guide.pdf'
 							target='_blank'
-							rel="noopener noreferrer"
+							rel='noopener noreferrer'
 						>
 							Paperwork Reduction Act
 						</a>{' '}
@@ -272,13 +276,30 @@ const DemographicsForm = ({ setDemoOpen }) => {
 									</>
 								)}
 								<Col span={6}>
-									<Button
-										className='wider-button'
-										type='primary'
-										htmlType='submit'
-									>
-										Save
-									</Button>
+									{share === '1' &&
+									!sex &&
+									!race &&
+									!ethnicity &&
+									!disability ? (
+										<Tooltip title="You've chosen to share your demographics. Please make a selection.">
+											<Button
+												className='wider-button'
+												type='primary'
+												htmlType='submit'
+												disabled={true}
+											>
+												Save
+											</Button>
+										</Tooltip>
+									) : (
+										<Button
+											className='wider-button'
+											type='primary'
+											htmlType='submit'
+										>
+											Save
+										</Button>
+									)}
 								</Col>
 							</Row>
 						</Form.Item>
