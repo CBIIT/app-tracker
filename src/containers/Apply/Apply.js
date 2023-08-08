@@ -68,8 +68,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [lastModalTimeout, setLastModalTimeout] = useState();
-	const [showDemoAlert, setShowDemoAlert] = useState(false);
-	const [showAlert, setShowAlert] = useState(false);
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
