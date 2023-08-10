@@ -188,7 +188,6 @@ const basicInformation = (props) => {
 					label='Focus Area Selection'
 					name='requireFocusArea'
 					valuePropName='checked'
-					style={{ margin: '0px', paddingLeft: '10px', paddingBottom: '10px' }}
 				>
 					<Checkbox>Enable focus area</Checkbox>
 				</Form.Item>
