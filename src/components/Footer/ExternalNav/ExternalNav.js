@@ -1,13 +1,20 @@
 import React from 'react';
 
+import { useEffect, useState } from 'react';
+import SupportModal from '../../SupportModal/SupportModal';
 import './ExternalNav.css';
 
 const externalNav = () => {
 
+	const [showSupportDialog, setShowSupportDialog] = useState(false);
+
 	const displayDialog = (link) => {
-		alert('groovy baby YEAH !')
-		//setShowProfileDialog(true);
+		setShowSupportDialog(true);
 	};
+
+	const handleSupportDialogClose = () => {
+		setShowSupportDialog(false);
+	}
 
 	return (
 		<div className='ExternalNav'>
@@ -64,6 +71,9 @@ const externalNav = () => {
 			<div className='ExternalNavTrademark'>
 				NIH ... Turning Discovery Into Health ®
 			</div>
+			{showSupportDialog ? (
+				<SupportModal handleClose={() => handleSupportDialogClose()}/>
+			) : null}
 		</div>
 	);
 };
