@@ -45,14 +45,15 @@ const SupportModal = (props) => {
 
 				<div className='Content help-item'>
 					<h2 className='BoldHeading'>Business Points of Contact</h2>
-					Abdullah Sharif &bull; <a href='mailto:abdullah.sharif@mail.nih.gov'>abdullah.sharif@mail.nih.gov</a>
+					Abdullah Sharif &bull; <a href='mailto:abdullah.sharif@nih.gov'>abdullah.sharif@nih.gov</a>
 					<br/>
+					Vacancy Manager
 				</div>
 				<br/>
 
 				<div className='Content help-item'>
 					<h2 className='BoldHeading'>Technical Support Contact</h2>
-					SCSS Support &bull; <a href='mailto:scssappsupport@mail.nih.gov'>scssappsupport@mail.nih.gov</a>
+					SCSS Support &bull; <a href='mailto:scssappsupport@nih.gov'>scssappsupport@nih.gov</a>
 					<br/>
 				</div>
 				<br/>
