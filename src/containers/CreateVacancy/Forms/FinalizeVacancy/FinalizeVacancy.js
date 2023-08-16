@@ -39,16 +39,6 @@ const finalizeVacancy = (props) => {
 		return displayName;
 	}
 
-	function isErrorSection(title) {
-		let isError = false;
-		errors.forEach(error => {
-			if (error.section === title) {
-				isError = true
-			}
-		})
-		return isError;
-	}
-
 	return (
 		<>
 			<SectionHeader
