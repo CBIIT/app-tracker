@@ -63,7 +63,7 @@ const createVacancy = (props) => {
 	const validateAllFormsAndDisplayModal = async () => {
 		const errorForms = [];
 		try {
-			await basicInfoForm.validateFields();
+			await basicInfoForm.validateFields()
 		} catch (error) {
 			errorForms.push('Basic Vacancy Information');
 		}
@@ -89,6 +89,7 @@ const createVacancy = (props) => {
 		setErrorSections(errorForms);
 
 		if (errorForms.length === 0) showSubmitModal();
+		if (errorForms.length > 0) window.scrollTo(0, 0);
 	};
 
 	const getVacancyCommittee = () => {
@@ -166,6 +167,7 @@ const createVacancy = (props) => {
 				<FinalizeVacancy
 					allForms={allForms}
 					onEditButtonClick={(number) => stepClickHandler(number)}
+					errorSections={errorSections}
 				/>
 			),
 		});
@@ -358,6 +360,29 @@ const createVacancy = (props) => {
 							))}
 						</Steps>
 					</div>
+					<div
+							className='ErrorPanel'
+							style={
+								errorSections.length === 0 || currentStep < steps.length - 1
+									? { display: 'none' }
+									: null
+							}
+						>
+							<p style={{maxWidth: '75vw', marginLeft: 30}}>
+								{
+									"Sorry, we can't submit just yet.  The sections below in red have fields that require a different selection or a selection must be made."
+								}
+								<br />
+								{
+									" We've highlighted those fields in red.  Please return to those sections and address the highlights, then return here and click 'Save and Finalize' again."
+								}
+							</p>
+							{/* <ul>
+								{errorSections.map((section, index) => (
+									<li key={index}>{section}</li>
+								))}
+							</ul> */}
+						</div>
 					<div className='StepContentContainer'>
 						<div className='StepContent'>
 							<h3>{currentStepObject.title}</h3>
@@ -406,30 +431,6 @@ const createVacancy = (props) => {
 									{isCurrentStepFinalize() ? 'save and finalize' : 'save'}
 								</Button>
 							</Tooltip>
-						</div>
-						<div
-							className='ErrorPanel'
-							style={
-								errorSections.length === 0 || currentStep < steps.length - 1
-									? { display: 'none' }
-									: null
-							}
-						>
-							<p>
-								{
-									"Sorry, we can't submit just yet.  The following sections have fields that need to change or have values: "
-								}
-							</p>
-							<ul>
-								{errorSections.map((section, index) => (
-									<li key={index}>{section}</li>
-								))}
-							</ul>
-							<p>
-								{
-									"We've highlighted those fields in red.  Please return to those sections and address the highlights, then return here and click 'Save and Finalize' again."
-								}
-							</p>
 						</div>
 					</div>
 				</div>

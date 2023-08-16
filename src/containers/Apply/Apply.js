@@ -384,6 +384,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					}}
 				>
 					<Alert
+						type='error'
 						message='You are editing a submitted application.'
 						description="Changes are not saved until the application is submitted again."
 						banner
