@@ -59,7 +59,7 @@ const mandatoryStatements = (props) => {
 				onBlur={() => {
 					formInstance.validateFields(['mandatoryStatements']);
 				}}
-				readOnly={readOnly}
+				readOnly={true}
 			/>
 			<SwitchFormItemEditor
 				name='standardsOfConduct'
