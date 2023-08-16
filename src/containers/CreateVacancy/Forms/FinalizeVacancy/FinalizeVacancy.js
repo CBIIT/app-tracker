@@ -10,7 +10,7 @@ const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
-
+	const errors = props.errorSections
 	const vacancyCommitteeColumns = [
 		{
 			title: 'Committee Member',
@@ -39,12 +39,23 @@ const finalizeVacancy = (props) => {
 		return displayName;
 	}
 
+	function isErrorSection(title) {
+		let isError = false;
+		errors.forEach(error => {
+			if (error.section === title) {
+				isError = true
+			}
+		})
+		return isError;
+	}
+
 	return (
 		<>
 			<SectionHeader
 				title='Basic Vacancy Information'
 				onClick={() => props.onEditButtonClick(0)}
 				showButton={props.showButton}
+				error={errors.includes('Basic Vacancy Information')}
 			/>
 			<div className='SectionContent' style={props.sectionContentStyle}>
 				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
@@ -60,10 +71,12 @@ const finalizeVacancy = (props) => {
 				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
 					<div>
 						<h2>Focus Area</h2>
-						<p>{(basicInfo.requireFocusArea) ? 'Visible' : 'Not Visible'}</p>
+						<p>{basicInfo.requireFocusArea ? 'Visible' : 'Not Visible'}</p>
 					</div>
 				</div>
-				<h2>Vacancy Description</h2>
+				<h2 style={basicInfo.description ? null : { color: 'red' }}>
+					{basicInfo.description ? null : '! '}Vacancy Description
+				</h2>
 				<ReactQuill
 					className='RichTextDisplay'
 					value={basicInfo.description}
@@ -72,7 +85,9 @@ const finalizeVacancy = (props) => {
 				/>
 				<div className='DateSection'>
 					<div className='DateCard'>
-						<h2>Open Date</h2>
+						<h2 style={basicInfo.openDate ? null : { color: 'red' }}>
+						{basicInfo.openDate ? null : '! '}Open Date
+						</h2>
 						<p>
 							{basicInfo.openDate
 								? new Date(basicInfo.openDate)
@@ -82,7 +97,9 @@ const finalizeVacancy = (props) => {
 						</p>
 					</div>
 					<div className='DateCard'>
-						<h2>Close Date</h2>
+						<h2 style={basicInfo.closeDate ? null : { color: 'red' }}>
+						{basicInfo.closeDate ? null : '! '}Close Date
+						</h2>
 						<p>
 							{basicInfo.closeDate
 								? new Date(basicInfo.closeDate)
@@ -120,22 +137,23 @@ const finalizeVacancy = (props) => {
 						{basicInfo.numberOfRecommendations} recommendations
 					</li>
 				</ul>
-				<h2>Organizational Code</h2>
+				<h2 style={basicInfo.sacCode ? null : { color: 'red' }}>
+					{basicInfo.sacCode ? null : '! '}Organizational Code</h2>
 				<ul>
-					<p>
-						{basicInfo.sacCode}
-					</p>
+					<p>{basicInfo.sacCode}</p>
 				</ul>
-				<h2>Position Classification</h2>
+				<h2 style={basicInfo.positionClassification ? null : { color: 'red' }}>
+					{basicInfo.positionClassification ? null : '! '}Position Classification</h2>
 				<ul>
-					<p>
-						{basicInfo.positionClassification} 
-					</p>
+					<p>{basicInfo.positionClassification}</p>
 				</ul>
 				<h2>Appointment Package Initiator</h2>
 				<ul>
 					<p>
-						{getPackageInitiatorDisplayName(basicInfo.appointmentPackageIndicator, allPackageInitiators)} 
+						{getPackageInitiatorDisplayName(
+							basicInfo.appointmentPackageIndicator,
+							allPackageInitiators
+						)}
 					</p>
 				</ul>
 			</div>
@@ -143,6 +161,7 @@ const finalizeVacancy = (props) => {
 				title='Mandatory Statements'
 				onClick={() => props.onEditButtonClick(1)}
 				showButton={props.showButton}
+				error={errors.includes('Mandatory Statements')}
 			/>
 			<div className='SectionContent' style={props.sectionContentStyle}>
 				<div className='TwoColumnCheckList'>
@@ -192,6 +211,7 @@ const finalizeVacancy = (props) => {
 						title='Vacancy Committee'
 						onClick={() => props.onEditButtonClick(2)}
 						showButton={props.showButton}
+						error={errors.includes('Vacancy Committee')}
 					/>
 					<div className='SectionContent' style={props.sectionContentStyle}>
 						<Table
@@ -215,6 +235,7 @@ const finalizeVacancy = (props) => {
 						title='Email Templates'
 						onClick={() => props.onEditButtonClick(3)}
 						showButton={props.showButton}
+						error={errors.includes('Email Templates')}
 					/>
 					<div className='SectionContent' style={props.sectionContentStyle}>
 						<div className='TwoColumnCheckList'>
