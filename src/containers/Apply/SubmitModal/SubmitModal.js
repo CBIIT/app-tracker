@@ -132,8 +132,8 @@ const submitModal = ({
 			confirmLoading={confirmLoading}
 			onCancel={onCancel}
 			closable={false}
-			okText='ok'
-			cancelText='cancel'
+			okText='Ok'
+			cancelText='Cancel'
 		>
 			<div className='ConfirmSubmitModal'>
 				<ExclamationCircleFilled
@@ -157,7 +157,7 @@ const submitModal = ({
 			onCancel={onCancel}
 			closable={false}
 			className='ModalConfirmed'
-			okText='done'
+			okText='Done'
 		>
 			<div className='Confirmed'>
 				<CheckCircleFilled className='ConfirmedIcon' />

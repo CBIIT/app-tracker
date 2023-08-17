@@ -438,7 +438,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 										ghost
 										className='wider-button'
 									>
-										{currentStep === 0 ? 'cancel' : 'back'}
+										{currentStep === 0 ? 'Cancel' : 'Back'}
 									</Button>
 								</div>
 								{!editSubmitted ? (
@@ -448,7 +448,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 											style={{ border: 'none', color: '#015EA2' }}
 											onClick={save}
 										>
-											<SaveOutlined /> save application
+											<SaveOutlined /> Save Application
 										</Button>
 									</div>
 								) : null}
@@ -459,8 +459,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 										className='wider-button'
 									>
 										{currentStep == steps.length - 1
-											? 'submit application'
-											: 'next'}
+											? 'Submit Application'
+											: 'Next'}
 									</Button>
 								</div>
 							</div>

@@ -162,7 +162,7 @@ const applicantDashboard = () => {
 									history.push(EDIT_APPLICATION + application.app_id);
 								}}
 							>
-								<EditOutlined /> edit
+								<EditOutlined /> Edit
 							</Button>,
 							<Divider key='divider' type='vertical' />
 						);
@@ -176,7 +176,7 @@ const applicantDashboard = () => {
 							}}
 						>
 							<MinusCircleOutlined />
-							withdraw
+							Withdraw
 						</Button>
 					);
 					return <Space size='middle'>{buttons}</Space>;
@@ -189,7 +189,7 @@ const applicantDashboard = () => {
 							}}
 						>
 							<FileTextOutlined />
-							view vacancy
+							View Vacancy
 						</Button>
 					);
 				} else {
@@ -203,7 +203,7 @@ const applicantDashboard = () => {
 									);
 								}}
 							>
-								<EditOutlined /> edit
+								<EditOutlined /> Edit
 							</Button>
 							<Divider type='vertical' />
 							<Button
@@ -213,7 +213,7 @@ const applicantDashboard = () => {
 									setCurrentApplication(application);
 								}}
 							>
-								<DeleteOutlined /> remove
+								<DeleteOutlined /> Remove
 							</Button>
 						</Space>
 					);
