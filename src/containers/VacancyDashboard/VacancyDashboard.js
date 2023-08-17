@@ -246,7 +246,7 @@ const vacancyDashboard = () => {
 							handleEditButtonClick(record);
 						}}
 					>
-						<EditOutlined /> edit
+						<EditOutlined /> Edit
 					</Button>
 					<Divider type='vertical' />
 					<Button
@@ -256,7 +256,7 @@ const vacancyDashboard = () => {
 							setCurrentVacancy(vacancy);
 						}}
 					>
-						<DeleteOutlined /> remove
+						<DeleteOutlined /> Remove
 					</Button>
 				</Space>
 			),
@@ -340,7 +340,7 @@ const vacancyDashboard = () => {
 							handleEditButtonClick(record);
 						}}
 					>
-						<EditOutlined /> edit
+						<EditOutlined /> Edit
 					</Button>
 					<Divider type='vertical' />
 					<Button
@@ -358,7 +358,7 @@ const vacancyDashboard = () => {
 						}}
 						style={{ padding: '0px' }}
 					>
-						<LinkOutlined /> copy link
+						<LinkOutlined /> Copy Link
 					</Button>
 					<Divider type='vertical' />
 					<Button
@@ -373,7 +373,7 @@ const vacancyDashboard = () => {
 						}}
 						style={{ padding: '0px' }}
 					>
-						<FieldTimeOutlined /> extend
+						<FieldTimeOutlined /> Extend
 					</Button>
 					<ExtendModal
 						extendModalVisible={extendModalVisible[vacancy.sys_id]}
@@ -428,7 +428,7 @@ const vacancyDashboard = () => {
 							handleEditButtonClick(record);
 						}}
 					>
-						<EditOutlined /> edit
+						<EditOutlined /> Edit
 					</Button>
 					<Divider type='vertical' />
 					<Button
@@ -437,7 +437,7 @@ const vacancyDashboard = () => {
 							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
 						}}
 					>
-						<UserOutlined /> view applicants
+						<UserOutlined /> View Applicants
 					</Button>
 					<Divider type='vertical' />
 					<Button
@@ -446,7 +446,7 @@ const vacancyDashboard = () => {
 							history.push(MANAGE_VACANCY + vacancy.sys_id);
 						}}
 					>
-						<FileTextOutlined /> view vacancy
+						<FileTextOutlined /> View Vacancy
 					</Button>
 				</Space>
 			),

@@ -19,7 +19,7 @@ const inputWithCheckbox = (props) => {
 			/>
 			<div className='Checkbox'>
 				<Form.Item name={props.checkboxName} noStyle valuePropName='checked'>
-					<Checkbox disabled={readOnly}>optional</Checkbox>
+					<Checkbox disabled={readOnly}>Optional</Checkbox>
 				</Form.Item>
 			</div>
 		</div>
