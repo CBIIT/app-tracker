@@ -14,7 +14,7 @@ const sectionHeader = (props) => {
 			<div className='SectionHeader'>
 				<h2 style={!props.error ? null : {color: 'red'}}>{props.error ? '! ' : null}{props.title}</h2>
 				<Button type='link' onClick={props.onClick}>
-					edit section
+					Edit Section
 				</Button>
 			</div>
 		);

@@ -160,7 +160,7 @@ const editableTable = (props) => {
 			width: '40%',
 		},
 		{
-			title: 'Action',
+			title: 'Actions',
 			dataIndex: 'operation',
 			width: '25%',
 			render: (_, record) => {

@@ -189,7 +189,7 @@ const basicInformation = (props) => {
 					name='requireFocusArea'
 					valuePropName='checked'
 				>
-					<Checkbox>Enable focus area</Checkbox>
+					<Checkbox>Enable Focus Area</Checkbox>
 				</Form.Item>
 			) : null}
 
