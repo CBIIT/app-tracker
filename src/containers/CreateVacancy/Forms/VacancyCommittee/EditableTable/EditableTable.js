@@ -173,7 +173,7 @@ const editableTable = (props) => {
 							onClick={() => save(record.key)}
 							icon={<CheckOutlined />}
 						>
-							save
+							Save
 						</Button>
 						<Button
 							className='ActionButton'
@@ -181,7 +181,7 @@ const editableTable = (props) => {
 							onClick={cancel}
 							icon={<CloseOutlined />}
 						>
-							cancel
+							Cancel
 						</Button>
 					</>
 				) : (
@@ -193,7 +193,7 @@ const editableTable = (props) => {
 							onClick={() => edit(record)}
 							icon={<EditOutlined />}
 						>
-							edit
+							Edit
 						</Button>
 						<Button
 							className='ActionButton'
@@ -202,7 +202,7 @@ const editableTable = (props) => {
 							onClick={() => removeButtonHandler(record.key)}
 							icon={<DeleteOutlined />}
 						>
-							remove
+							Remove
 						</Button>
 					</>
 				);
@@ -252,7 +252,7 @@ const editableTable = (props) => {
 				onClick={addButtonHandler}
 				disabled={editingKey !== ''}
 			>
-				<PlusOutlined /> add member
+				<PlusOutlined /> Add Member
 			</Button>
 
 			<div className='CommitteeErrorValidator'>

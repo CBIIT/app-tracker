@@ -411,7 +411,7 @@ const createVacancy = (props) => {
 								className='wider-button'
 								style={isEditingFinalizedVacancy() ? { display: 'none' } : null}
 							>
-								{currentStep === 0 ? 'cancel' : 'back'}
+								{currentStep === 0 ? 'Cancel' : 'Back'}
 							</Button>
 
 							<Tooltip
@@ -428,7 +428,7 @@ const createVacancy = (props) => {
 									className='wider-button'
 									disabled={!isCurrentStepEditable()}
 								>
-									{isCurrentStepFinalize() ? 'save and finalize' : 'save'}
+									{isCurrentStepFinalize() ? 'Save and Finalize' : 'Save'}
 								</Button>
 							</Tooltip>
 						</div>
