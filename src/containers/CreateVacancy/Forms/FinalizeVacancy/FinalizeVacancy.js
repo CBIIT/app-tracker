@@ -45,7 +45,7 @@ const finalizeVacancy = (props) => {
 				title='Basic Vacancy Information'
 				onClick={() => props.onEditButtonClick(0)}
 				showButton={props.showButton}
-				error={errors.includes('Basic Vacancy Information')}
+				error={errors?.includes('Basic Vacancy Information')}
 			/>
 			<div className='SectionContent' style={props.sectionContentStyle}>
 				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
@@ -151,7 +151,7 @@ const finalizeVacancy = (props) => {
 				title='Mandatory Statements'
 				onClick={() => props.onEditButtonClick(1)}
 				showButton={props.showButton}
-				error={errors.includes('Mandatory Statements')}
+				error={errors?.includes('Mandatory Statements')}
 			/>
 			<div className='SectionContent' style={props.sectionContentStyle}>
 				<div className='TwoColumnCheckList'>
@@ -201,7 +201,7 @@ const finalizeVacancy = (props) => {
 						title='Vacancy Committee'
 						onClick={() => props.onEditButtonClick(2)}
 						showButton={props.showButton}
-						error={errors.includes('Vacancy Committee')}
+						error={errors?.includes('Vacancy Committee')}
 					/>
 					<div className='SectionContent' style={props.sectionContentStyle}>
 						<Table
@@ -225,7 +225,7 @@ const finalizeVacancy = (props) => {
 						title='Email Templates'
 						onClick={() => props.onEditButtonClick(3)}
 						showButton={props.showButton}
-						error={errors.includes('Email Templates')}
+						error={errors?.includes('Email Templates')}
 					/>
 					<div className='SectionContent' style={props.sectionContentStyle}>
 						<div className='TwoColumnCheckList'>
