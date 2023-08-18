@@ -32,7 +32,7 @@ const requiredDocsList = (props) => {
 						))}
 						{!readOnly ? (
 							<Button type='secondary' onClick={() => add()}>
-								<PlusOutlined /> add more
+								<PlusOutlined /> Add More
 							</Button>
 						) : null}
 					</div>
