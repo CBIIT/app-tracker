@@ -36,14 +36,17 @@ const basicInformation = (props) => {
 	};
 
 	const positionClassificationT42OWMMenu = [
+		{ label: 'Science Policy Leader Tier 2', value: 'Science Policy Leader Tier 2'},
+		{ label: 'Science Program Leader Tier 2', value: 'Science Program Leader Tier 2'},
 		{ label: 'Scientific Executive', value: 'Scientific Executive' },
 		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
-		{ label: 'Scientific Policy or Program Leader – Tier 2', value: 'Scientific Policy or Program Leader – Tier 2' },
 		{ label: 'Scientific Director', value: 'Scientific Director' },
 		{ label: 'Clinical Director', value: 'Clinical Director' }
 	];
 
 	const positionClassificationMenu = [
+		{ label: 'Science Policy Leader Tier 2', value: 'Science Policy Leader Tier 2'},
+		{ label: 'Science Program Leader Tier 2', value: 'Science Program Leader Tier 2'},
 		{ label: 'Senior Investigator', value: 'Senior Investigator' },
 		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
 		{ label: 'Investigator 2', value: 'Investigator 2' },
@@ -60,7 +63,6 @@ const basicInformation = (props) => {
 		{ label: 'Staff Scientist 2 (Facility Head)', value: 'Staff Scientist 2 (Facility Head)' },
 		{ label: 'Scientific Executive', value: 'Scientific Executive' },
 		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
-		{ label: 'Scientific Policy or Program Leader – Tier 2', value: 'Scientific Policy or Program Leader – Tier 2' },
 		{ label: 'Scientific Director', value: 'Scientific Director' },
 		{ label: 'Clinical Director', value: 'Clinical Director' },
 		{ label: 'IC Deputy Director', value: 'IC Deputy Director' },
