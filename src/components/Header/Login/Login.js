@@ -18,7 +18,7 @@ const login = () => {
 
 	const nihClicked = () => {
 		location.href =
-		'https://specializedscientificjobs-dev2.nih.gov/login_with_sso.do?uri=' +
+		'https://specializedscientificjobs-dev2.nih.gov/login_with_sso.do?' +
 		'&glide_sso_id=' +
 		iTrustGlideSsoId;
 	}
