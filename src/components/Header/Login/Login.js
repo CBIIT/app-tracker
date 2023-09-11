@@ -5,7 +5,7 @@ import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { REGISTER_OKTA, VACANCY_DASHBOARD } from '../../../constants/Routes';
+import { REGISTER_OKTA, /* VACANCY_DASHBOARD */ } from '../../../constants/Routes';
 
 import './Login.css';
 
