@@ -19,10 +19,17 @@ const login = () => {
 	const nihClicked = () => {
 		location.href =
 		'/login_with_sso.do?uri=' +
-		encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
 		'&glide_sso_id=' +
 		iTrustGlideSsoId;
 	}
+
+	/* const nihClicked = () => {
+		location.href =
+		'/login_with_sso.do?uri=' +
+		encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
+		'&glide_sso_id=' +
+		iTrustGlideSsoId;
+	} */
 
 	const alreadyRegisteredClicked = () => {
 		location.href = oktaLoginAndRedirectUrl;
