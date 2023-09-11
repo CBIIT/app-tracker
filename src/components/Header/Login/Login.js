@@ -18,7 +18,7 @@ const login = () => {
 
 	const nihClicked = () => {
 		location.href =
-		'/nav_to.do?uri=' +
+		'/login_with_sso.do?uri=' +
 		encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
 		'&glide_sso_id=' +
 		iTrustGlideSsoId;
