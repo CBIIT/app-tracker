@@ -5,29 +5,25 @@ import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { REGISTER_OKTA, /* VACANCY_DASHBOARD */ } from '../../../constants/Routes';
+import { REGISTER_OKTA, } from '../../../constants/Routes';
 
 import './Login.css';
 
 const login = () => {
 	const {
-		auth: { iTrustGlideSsoId, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
 	} = useAuth();
 
 	const history = useHistory();
 
 	const nihClicked = () => {
 		location.href =
-		'https://specializedscientificjobs-dev2.nih.gov/login_with_sso.do?' +
-		'&glide_sso_id=' +
-		iTrustGlideSsoId;
+		iTrustUrl + iTrustGlideSsoId;
 	}
 
 	/* const nihClicked = () => {
 		location.href =
-		'/login_with_sso.do?uri=' +
-		encodeURIComponent('/nci-scss.do#' + VACANCY_DASHBOARD) +
-		'&glide_sso_id=' +
+		'https://specializedscientificjobs-dev2.nih.gov/login_with_sso.do?&glide_sso_id=' +
 		iTrustGlideSsoId;
 	} */
 

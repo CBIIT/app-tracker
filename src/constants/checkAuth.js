@@ -8,6 +8,7 @@ export const checkAuth = async (setIsLoading, setAuth) => {
     setAuth({
         isUserLoggedIn: data.logged_in,
         iTrustGlideSsoId: data.itrust_idp,
+        iTrustUrl: data.itrust_url,
         oktaGlideSsoId: data.okta_idp,
         sessionTimeout: data.session_timeout,
         user: {
