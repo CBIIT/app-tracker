@@ -18,7 +18,6 @@ const basicInformation = (props) => {
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
 	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
 	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' '}]);
-	const [isOWM, setIsOWM] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const formInstance = props.formInstance;
@@ -35,16 +34,15 @@ const basicInformation = (props) => {
 		3: '3',
 	};
 
-	const positionClassificationT42OWMMenu = [
-		{ label: 'Science Policy Leader Tier 2', value: 'Science Policy Leader Tier 2'},
-		{ label: 'Science Program Leader Tier 2', value: 'Science Program Leader Tier 2'},
-		{ label: 'Scientific Executive', value: 'Scientific Executive' },
-		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
-		{ label: 'Scientific Director', value: 'Scientific Director' },
-		{ label: 'Clinical Director', value: 'Clinical Director' }
-	];
-
 	const positionClassificationMenu = [
+		{ label: 'Research Fellow', value: 'Research Fellow'},
+		{ label: 'Senior Research Fellow', value: 'Senior Research Fellow'},
+		{ label: 'Staff Scientist 1', value: 'Staff Scientist 1'},
+		{ label: 'Investigator 1', value: 'Investigator 1'},
+		{ label: 'Clinical Fellow', value: 'Clinical Fellow'},
+		{ label: 'Senior Clinical Fellow', value: 'Senior Clinical Fellow'},
+		{ label: 'Assistant Clinical Investigator 1', value: 'Assistant Clinical Investigator 1'},
+		{ label: 'Staff Clinician 1', value: 'Staff Clinician 1'},
 		{ label: 'Science Policy Leader Tier 2', value: 'Science Policy Leader Tier 2'},
 		{ label: 'Science Program Leader Tier 2', value: 'Science Program Leader Tier 2'},
 		{ label: 'Senior Investigator', value: 'Senior Investigator' },
@@ -63,11 +61,6 @@ const basicInformation = (props) => {
 		{ label: 'Staff Scientist 2 (Facility Head)', value: 'Staff Scientist 2 (Facility Head)' },
 		{ label: 'Scientific Executive', value: 'Scientific Executive' },
 		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
-		{ label: 'Scientific Director', value: 'Scientific Director' },
-		{ label: 'Clinical Director', value: 'Clinical Director' },
-		{ label: 'IC Deputy Director', value: 'IC Deputy Director' },
-		{ label: 'IC Director', value: 'IC Director' },
-		{ label: 'NIH Deputy Director', value: 'NIH Deputy Director' },
 		{ label: 'SBRBPAS', value: 'SBRBPAS' },
 		{ label: 'N/A', value: 'N/A' },
 	];
@@ -78,12 +71,9 @@ const basicInformation = (props) => {
 			const vacancyOptionsResponse = await axios.get(
 				GET_VACANCY_OPTIONS
 			);
-			if (vacancyOptionsResponse.data.result.isOWM){
-				setCurrentPositionMenu(positionClassificationT42OWMMenu);
-				setIsOWM(vacancyOptionsResponse.data.result.isOWM);
-			}else{
-				setCurrentPositionMenu(positionClassificationMenu);
-			}
+
+			setCurrentPositionMenu(positionClassificationMenu);
+
 			var packageInitiators = [];
 			for(var i = 0; i < vacancyOptionsResponse.data.result.package_initiators.length; i++) {
 				var packageInitiator = vacancyOptionsResponse.data.result.package_initiators[i];
@@ -283,18 +273,11 @@ const basicInformation = (props) => {
 										Position Classification
 										<Tooltip
 											title={
-												isOWM ? (
-													<>
-														Select the Intramural or Extramural Professional
-														Designation for your vacancy.
-													</>
-												) : (
 													<>
 														Select the Intramural or Extramural Professional
 														Designation for your vacancy. Select “N/A” for
 														Stadtman positions.
 													</>
-												)
 											}
 										>
 											<Typography.Link>
@@ -349,7 +332,6 @@ const basicInformation = (props) => {
 						/>
 					</div>
 				</div>
-				{/** appInitiatorMenu.some(initiator => initiator.value === user.uid) ? (user.uid) : ('') */}
 				<div className='DatePicker'>
 					<EditableDropDown
 						name='sacCode'
@@ -357,7 +339,7 @@ const basicInformation = (props) => {
 						showSearch={true}
 						menu={sacCodes}
 						filterOption={(input, option) =>
-							(option?.label ?? '').includes(input)
+							(option?.label.toLowerCase() ?? '').includes(input.toLowerCase())
 						}
 						filterSort={(optionA, optionB) =>
 							(optionA?.label ?? '')
