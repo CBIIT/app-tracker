@@ -5,12 +5,12 @@ import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow
 const address = (props) => {
 	const { address, address2, city, stateProvince, postalCode, country } =
 		props?.address;
-
+		
 	return (
 		<InfoCard title='Address' style={props.style}>
 			<InfoCardRow>
 				<LabelValuePair label='Address Line 1' value={address} />
-				<LabelValuePair label='Address Line 2' value={address2} />
+				<LabelValuePair label='Address Line 2' value={address2 ? address2 : ''} />
 			</InfoCardRow>
 			<InfoCardRow>
 				<LabelValuePair label='City' value={city} />
