@@ -132,8 +132,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			initialValues.applicantDocuments.length > 0
 		) {
 			initialValues.applicantDocuments.forEach((applicantDocument) => {
-				applicantDocuments[applicantDocument.documentName] = {
-					...applicantDocuments[applicantDocument.documentName],
+				applicantDocuments[applicantDocument.title.label] = {
+					...applicantDocuments[applicantDocument.title.label],
 					...applicantDocument,
 				};
 			});
