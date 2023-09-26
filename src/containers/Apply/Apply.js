@@ -131,11 +131,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			initialValues.applicantDocuments &&
 			initialValues.applicantDocuments.length > 0
 		) {
+			// mlh: looks like slightly different ontologies coming back from SNow ?
 			initialValues.applicantDocuments.forEach((applicantDocument) => {
-				applicantDocuments[applicantDocument.title.label] = {
-					...applicantDocuments[applicantDocument.title.label],
-					...applicantDocument,
-				};
+				if (applicantDocument && applicantDocument.title && applicantDocument.title.label) {
+					applicantDocuments[applicantDocument.title.label] = {
+						...applicantDocuments[applicantDocument.title.label],
+						...applicantDocument,
+					};
+				} else {
+					applicantDocuments[applicantDocument.documentName] = {
+						...applicantDocuments[applicantDocument.documentName],
+						...applicantDocument,
+					};
+				}
 			});
 		}
 
