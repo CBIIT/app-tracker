@@ -136,8 +136,18 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				if (applicantDocument && applicantDocument.title && applicantDocument.title.label) {
 					applicantDocuments[applicantDocument.title.label] = {
 						...applicantDocuments[applicantDocument.title.label],
-						...applicantDocument,
+						...applicantDocument
 					};
+					var initialFiles = initialValues.applicantDocuments.filter(iv => iv.title.label === applicantDocument.title.label);
+					if (initialFiles != null && initialFiles.length > 0) {
+						applicantDocuments[applicantDocument.title.label].file = initialFiles[0].file;
+						//applicantDocuments[applicantDocument.title.label].uploadedDocument.fileName = initialFiles[0].file.fileList[0].name;
+						if (initialFiles[0].file.fileList.length > 0) {
+							applicantDocuments[applicantDocument.title.label].uploadedDocument = {
+								fileName : initialFiles[0].file.fileList[0].name
+							};
+						}
+					}
 				} else {
 					applicantDocuments[applicantDocument.documentName] = {
 						...applicantDocuments[applicantDocument.documentName],
