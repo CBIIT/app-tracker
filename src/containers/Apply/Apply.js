@@ -142,10 +142,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 						applicantDocuments[applicantDocument.title.label].file = initialFiles[0].file;
 						if (initialFiles[0].file.fileList.length > 0) {
 							applicantDocuments[applicantDocument.title.label].uploadedDocument = {
-								fileName : initialFiles[0].uploadedDocument.fileName,
-								attachSysId : initialFiles[0].uploadedDocument.attachSysId,
-								downloadLink : initialFiles[0].uploadedDocument.downloadLink,
-								markedToDelete : initialFiles[0].uploadedDocument.markedToDelete
+								fileName : initialFiles[0]?.uploadedDocument?.fileName,
+								attachSysId : initialFiles[0]?.uploadedDocument?.attachSysId,
+								downloadLink : initialFiles[0]?.uploadedDocument?.downloadLink,
+								markedToDelete : initialFiles[0]?.uploadedDocument?.markedToDelete
 							};
 						}
 					}
