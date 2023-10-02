@@ -131,7 +131,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			initialValues.applicantDocuments &&
 			initialValues.applicantDocuments.length > 0
 		) {
-			// mlh: looks like slightly different ontologies coming back from SNow ?
 			initialValues.applicantDocuments.forEach((applicantDocument) => {
 				if (applicantDocument && applicantDocument.title && applicantDocument.title.label) {
 					applicantDocuments[applicantDocument.title.label] = {
@@ -141,10 +140,12 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					var initialFiles = initialValues.applicantDocuments.filter(iv => iv.title.label === applicantDocument.title.label);
 					if (initialFiles != null && initialFiles.length > 0) {
 						applicantDocuments[applicantDocument.title.label].file = initialFiles[0].file;
-						//applicantDocuments[applicantDocument.title.label].uploadedDocument.fileName = initialFiles[0].file.fileList[0].name;
 						if (initialFiles[0].file.fileList.length > 0) {
 							applicantDocuments[applicantDocument.title.label].uploadedDocument = {
-								fileName : initialFiles[0].file.fileList[0].name
+								fileName : initialFiles[0].uploadedDocument.fileName,
+								attachSysId : initialFiles[0].uploadedDocument.attachSysId,
+								downloadLink : initialFiles[0].uploadedDocument.downloadLink,
+								markedToDelete : initialFiles[0].uploadedDocument.markedToDelete
 							};
 						}
 					}
