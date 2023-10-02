@@ -161,7 +161,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
-			questions: (initialValues) ? initialValues.questions : demographics,
+			questions: ((initialValues) && initialValues.questions) ? initialValues.questions : demographics,
 			basicInfo: basicInfo,
 			address: address
 		};
