@@ -13,6 +13,7 @@ const review = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
 	const reviewData = JSON.parse(JSON.stringify(formData));
+	console.log(reviewData)
 	const referencesColumns = [
 		{
 			title: 'Name',
@@ -181,7 +182,7 @@ const review = (props) => {
 					/>
 					<LabelValuePair
 						label='Are you a US citizen?'
-						value={reviewData.basicInfo.isUsCitizen === '1' ? 'Yes' : 'No'}
+						value={reviewData.basicInfo.isUsCitizen === 1 ? 'Yes' : 'No'}
 					/>
 				</div>
 			</div>
