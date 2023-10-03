@@ -132,17 +132,36 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			initialValues.applicantDocuments.length > 0
 		) {
 			initialValues.applicantDocuments.forEach((applicantDocument) => {
-				applicantDocuments[applicantDocument.title.label] = {
-					...applicantDocuments[applicantDocument.title.label],
-					...applicantDocument,
-				};
+				if (applicantDocument && applicantDocument.title && applicantDocument.title.label) {
+					applicantDocuments[applicantDocument.title.label] = {
+						...applicantDocuments[applicantDocument.title.label],
+						...applicantDocument
+					};
+					var initialFiles = initialValues.applicantDocuments.filter(iv => iv.title.label === applicantDocument.title.label);
+					if (initialFiles != null && initialFiles.length > 0) {
+						applicantDocuments[applicantDocument.title.label].file = initialFiles[0].file;
+						if (initialFiles[0].file.fileList.length > 0) {
+							applicantDocuments[applicantDocument.title.label].uploadedDocument = {
+								fileName : initialFiles[0]?.uploadedDocument?.fileName,
+								attachSysId : initialFiles[0]?.uploadedDocument?.attachSysId,
+								downloadLink : initialFiles[0]?.uploadedDocument?.downloadLink,
+								markedToDelete : initialFiles[0]?.uploadedDocument?.markedToDelete
+							};
+						}
+					}
+				} else {
+					applicantDocuments[applicantDocument.documentName] = {
+						...applicantDocuments[applicantDocument.documentName],
+						...applicantDocument,
+					};
+				}
 			});
 		}
 
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
-			questions: demographics,
+			questions: ((initialValues) && initialValues.questions) ? initialValues.questions : demographics,
 			basicInfo: basicInfo,
 			address: address
 		};
