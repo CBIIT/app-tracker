@@ -231,7 +231,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			strongContent:
 				'Please ensure each of your documents are unique files.',
 			dangerContent:
-				'Application documents will not be saved unless your application is submitted/finalized on the next section.',
+				'Application documents will not be saved unless your application is submitted/finalized on the Review section.',
 		});
 
 	if (formData.references?.length > 0)
