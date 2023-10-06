@@ -141,12 +141,18 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					if (initialFiles != null && initialFiles.length > 0) {
 						applicantDocuments[applicantDocument.title.label].file = initialFiles[0].file;
 						if (initialFiles[0].file.fileList.length > 0) {
-							applicantDocuments[applicantDocument.title.label].uploadedDocument = {
-								fileName : initialFiles[0]?.uploadedDocument?.fileName,
-								attachSysId : initialFiles[0]?.uploadedDocument?.attachSysId,
-								downloadLink : initialFiles[0]?.uploadedDocument?.downloadLink,
-								markedToDelete : initialFiles[0]?.uploadedDocument?.markedToDelete
-							};
+							if (initialFiles[0] && initialFiles[0].uploadedDocument) {
+								applicantDocuments[applicantDocument.title.label].uploadedDocument = {
+									fileName : initialFiles[0]?.uploadedDocument?.fileName,
+									attachSysId : initialFiles[0]?.uploadedDocument?.attachSysId,
+									downloadLink : initialFiles[0]?.uploadedDocument?.downloadLink,
+									markedToDelete : initialFiles[0]?.uploadedDocument?.markedToDelete
+								};
+							} else {
+								// its missing because this is getting rehydrated ... clear it out
+								applicantDocuments[applicantDocument.title.label].uploadedDocument = {};
+								applicantDocuments[applicantDocument.title.label].file = {fileList:[]};
+							}
 						}
 					}
 				} else {
@@ -223,7 +229,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			longDescription:
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
 			strongContent:
-				'Please ensure each of your documents are unique files.  \nApplication documents will not be saved unless your application is submitted/finalized on the next section.',
+				'Please ensure each of your documents are unique files.',
+			dangerContent:
+				'Application documents will not be saved unless your application is submitted/finalized on the next section.',
 		});
 
 	if (formData.references?.length > 0)
@@ -435,6 +443,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 							<p>{currentStepObj.longDescription}</p>
 							<span style={{ marginBottom: '0px', whiteSpace: 'pre-wrap' }}>
 								<strong>{currentStepObj.strongContent}</strong>
+							</span>
+							<br/>
+							<span style={{ marginBottom: '0px', whiteSpace: 'pre-wrap', color: 'red' }}>
+								<strong>{currentStepObj.dangerContent}</strong>
 							</span>
 							<div>
 								{!isLoading ? currentStepObj.content : null}
