@@ -106,13 +106,6 @@ const individualScoringTable = (props) => {
 				title: 'Applicant',
 				dataIndex: 'applicant_name',
 				key: 'name',
-				render: (text, record) => {
-					return (
-						<Link to={MANAGE_APPLICATION + record.sys_id}>
-							{text}
-						</Link>
-					);
-				},
 				sorter: {
 					compare: (a, b) => a.applicant_name - b.applicant_name,
 				},
