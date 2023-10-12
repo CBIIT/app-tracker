@@ -106,19 +106,42 @@ const individualScoringTable = (props) => {
 				title: 'Applicant',
 				dataIndex: 'applicant_name',
 				key: 'name',
+				render: (text, record) => {
+					return (
+						<Link to={MANAGE_APPLICATION + record.sys_id}>
+							{text}
+						</Link>
+					);
+				},
 				sorter: {
-					compare: (a, b) => a.applicant_name - b.applicant_name
+					compare: (a, b) => a.applicant_name - b.applicant_name,
 				},
 				defaultSortOrder: 'ascend',
-				width: 200,
-				...getColumnSearchProps('applicant_name', 'name', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
+				width: 250,
+				...getColumnSearchProps(
+					'applicant_name',
+					'name',
+					searchText,
+					setSearchText,
+					searchedColumn,
+					setSearchedColumn,
+					searchInput
+				),
 			},
 			{
 				title: 'Email',
 				dataIndex: 'applicant_email',
 				key: 'email',
-				width: 200,
-				...getColumnSearchProps('applicant_email', 'email', searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput),
+				width: 250,
+				...getColumnSearchProps(
+					'applicant_email',
+					'email',
+					searchText,
+					setSearchText,
+					searchedColumn,
+					setSearchedColumn,
+					searchInput
+				),
 			},
 			{
 				title: 'Average Score',
@@ -136,7 +159,7 @@ const individualScoringTable = (props) => {
 					}
 				},
 				sorter: {
-					compare: (a, b) => a.average_member_score - b.average_member_score
+					compare: (a, b) => a.average_member_score - b.average_member_score,
 				},
 			},
 		];
