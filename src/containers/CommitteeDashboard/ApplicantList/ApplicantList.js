@@ -1,10 +1,10 @@
 import { Table, Tooltip } from 'antd';
 import { useState, useRef } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
 	CheckCircleTwoTone,
 	ExclamationCircleOutlined,
-} from '@ant-design/icons';
+} from '@ant-design/icons'; 
 import { getColumnSearchProps } from '../../ManageDashboard/Util/ColumnSearchProps'
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
@@ -31,24 +31,6 @@ const applicantList = (props) => {
 	});
 
 	const applicantColumns = [
-		/* {
-			key: 'average_score',
-			width: 100,
-			render: (record) => {
-				if (record.recused == 1)
-					return (
-						<Tooltip title='Recused'>
-							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
-						</Tooltip>
-					);
-				else
-					return record.average_score != undefined ? (
-						<Tooltip title='Scoring Completed'>
-							<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
-						</Tooltip>
-					) : null;
-			},
-		}, */
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
@@ -96,8 +78,20 @@ const applicantList = (props) => {
 			dataIndex: 'average_score',
 			width: 130,
 			key: 'averagescore',
-			render: (text, record) =>
-				record.recused == 1 ? 'n/a' : renderDecision(text),
+			render: (text, record) => {
+				if (record.recused == 1)
+					return (
+						<Tooltip title='Recused'>
+							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+						</Tooltip>
+					);
+				else
+					return record.average_score != undefined ? (
+						<Tooltip title='Scoring Completed'>
+							<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
+						</Tooltip>
+					) : null;
+			},
 		},
 		{
 			title: 'Recommend Interview?',
