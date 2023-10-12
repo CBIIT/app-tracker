@@ -10,14 +10,14 @@ import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
 import './ApplicantList.css';
 
-const renderDecision = (text) =>
+/* const renderDecision = (text) =>
 	text == 'Pending' ? (
 		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
 			{text}
 		</span>
 	) : (
 		<span style={{ textTransform: 'capitalize' }}>{text}</span>
-	);
+	); */
 
 const applicantList = (props) => {
 	const history = useHistory();
