@@ -51,13 +51,6 @@ const applicantList = (props) => {
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
 			key: 'name',
-			render: (text, record) => {
-				return (
-					<Link to={MANAGE_APPLICATION + record.sys_id}>
-						{text}
-					</Link>
-				);
-			},
 			width: 250,
 			...getColumnSearchProps(
 				'applicant_name',
