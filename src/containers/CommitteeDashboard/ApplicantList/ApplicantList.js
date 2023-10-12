@@ -1,10 +1,11 @@
 import { Table, Tooltip } from 'antd';
+import { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {
 	CheckCircleTwoTone,
 	ExclamationCircleOutlined,
 } from '@ant-design/icons';
-
+import { getColumnSearchProps } from '../../ManageDashboard/Util/ColumnSearchProps'
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
 import './ApplicantList.css';
@@ -20,6 +21,9 @@ const renderDecision = (text) =>
 
 const applicantList = (props) => {
 	const history = useHistory();
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
 
 	const applicants = props.applicants;
 	applicants.map((applicant, index) => {
@@ -29,6 +33,7 @@ const applicantList = (props) => {
 	const applicantColumns = [
 		{
 			key: 'average_score',
+			width: 100,
 			render: (record) => {
 				if (record.recused == 1)
 					return (
@@ -46,34 +51,50 @@ const applicantList = (props) => {
 		},
 		{
 			title: 'Applicant',
-			dataIndex: 'applicant_last_name',
+			dataIndex: 'applicant_name',
 			key: 'name',
-			render: (text, record) => {
-				return (
-					<Link to={MANAGE_APPLICATION + record.sys_id}>
-						{text}, {record.applicant_first_name}
-					</Link>
-				);
+			sorter: {
+				compare: (a, b) => a.applicant_name - b.applicant_name,
 			},
-			sorter: true,
-			width: 400,
+			width: 250,
 			defaultSortOrder: 'ascend',
+			...getColumnSearchProps(
+				'applicant_name',
+				'name',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
 		},
 		{
 			title: 'Email',
 			dataIndex: 'applicant_email',
 			key: 'email',
+			width: 250,
+			...getColumnSearchProps(
+				'applicant_email',
+				'email',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
 		},
 		{
 			title: 'Raw Score',
 			dataIndex: 'raw_score',
 			key: 'rawscore',
+			width: 130,
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 
 		{
 			title: 'Average Score',
 			dataIndex: 'average_score',
+			width: 130,
 			key: 'averagescore',
 			render: (text, record) =>
 				record.recused == 1 ? 'n/a' : renderDecision(text),
