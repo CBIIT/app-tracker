@@ -31,7 +31,7 @@ const applicantList = (props) => {
 	});
 
 	const applicantColumns = [
-		{
+		/* {
 			key: 'average_score',
 			width: 100,
 			render: (record) => {
@@ -48,7 +48,7 @@ const applicantList = (props) => {
 						</Tooltip>
 					) : null;
 			},
-		},
+		}, */
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
