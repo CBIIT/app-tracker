@@ -35,9 +35,7 @@ const applicantList = (props) => {
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
 			key: 'name',
-			sorter: {
-				compare: (a, b) => a.applicant_name - b.applicant_name,
-			},
+			sorter: true,
 			width: 250,
 			defaultSortOrder: 'ascend',
 			...getColumnSearchProps(
