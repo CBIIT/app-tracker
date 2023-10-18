@@ -62,7 +62,15 @@ const applicantList = (props) => {
 				searchInput
 			),
 			defaultSortOrder: defaultApplicantSort,
-			sorter: true,
+			sorter: (a, b) =>{
+				if (a.applicant_name < b.applicant_name) {
+					return -1;
+				}
+				if (a.applicant_name > b.applicant_name) {
+					return 1;
+				}
+				return 0;
+			},
 		},
 		{
 			title: 'Email',
@@ -353,7 +361,6 @@ const applicantList = (props) => {
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 
 			const response = await axios.get(apiString);
-			//console.log("🚀 ~ file: ApplicantList.js:326 ~ loadApplicants ~ response:", response);
 			
 			return {
 				applicants: response.data.result.applicants,
