@@ -26,7 +26,6 @@ const applicantList = (props) => {
 	const searchInput = useRef(null);
 
 	const applicants = props.applicants;
-	console.log("🚀 ~ file: ApplicantList.js:29 ~ applicantList ~ applicants:", applicants)
 	
 	applicants.map((applicant, index) => {
 		applicant.key = index;
