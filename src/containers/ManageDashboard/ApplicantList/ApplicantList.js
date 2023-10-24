@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
-import { message, Table, Collapse } from 'antd';
+import { useEffect, useState, useContext } from 'react';
+import { message, Table, Tooltip, Collapse } from 'antd';
 import { useParams } from 'react-router-dom';
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
 
@@ -19,6 +19,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 } from '../../../constants/Roles';
 import { GET_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
+import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
 import './ApplicantList.css';
@@ -42,9 +43,14 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
-	const searchInput = useRef(null);
+	const contextValue = useContext(SearchContext);
+	const {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput
+	} = contextValue;
 
 	const applicantColumns = [
 		{
@@ -106,6 +112,43 @@ const applicantList = (props) => {
 			render: (text) => renderDecision(text),
 		},
 	];
+
+	const committeeColumns = [
+		{
+			title: 'Raw Score',
+			dataIndex: 'raw_score',
+			key: 'rawscore',
+			width: 130,
+			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
+		},
+
+		{
+			title: 'Average Score',
+			dataIndex: 'average_score',
+			width: 130,
+			key: 'averagescore',
+			render: (text, record) => {
+				if (record.recused == 1)
+					return (
+						<Tooltip title='Recused'>
+							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+						</Tooltip>
+					);
+				else
+					return record.average_score != undefined ? (
+						<Tooltip title='Scoring Completed'>
+							<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
+						</Tooltip>
+					) : null;
+			},
+		},
+		{
+			title: 'Recommend Interview?',
+			dataIndex: 'recommend',
+			key: 'recommend',
+			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
+		},
+	]
 
 	if (
 		props.vacancyTenant === 'Stadtman' &&
@@ -222,10 +265,21 @@ const applicantList = (props) => {
 	};
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
+		const getColumns = () => {
+			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING) {
+				const applicantColumnCopy = [...applicantColumns]
+				const columns = applicantColumnCopy.splice(0,2);
+				const newColumns = columns.concat(committeeColumns);
+				return newColumns;
+			} else {
+				return applicantColumns;
+			}
+		}
+
 		const table = (
 			<Table
 				dataSource={applicants}
-				columns={applicantColumns}
+				columns={getColumns()}
 				scroll={{ x: 'true' }}
 				rowKey='sys_id'
 				pagination={tablePagination}

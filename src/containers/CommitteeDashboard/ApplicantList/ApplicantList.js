@@ -1,11 +1,12 @@
 import { Table, Tooltip } from 'antd';
-import { useState, useRef } from 'react';
+import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
 	CheckCircleTwoTone,
 	ExclamationCircleOutlined,
 } from '@ant-design/icons'; 
 import { getColumnSearchProps } from '../../ManageDashboard/Util/ColumnSearchProps'
+import SearchContext from '../../ManageDashboard/Util/SearchContext';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
 import './ApplicantList.css';
@@ -21,11 +22,16 @@ import './ApplicantList.css';
 
 const applicantList = (props) => {
 	const history = useHistory();
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
-	const searchInput = useRef(null);
-
+	const contextValue = useContext(SearchContext);
+	const {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput
+	} = contextValue;
 	const applicants = props.applicants;
+	
 	applicants.map((applicant, index) => {
 		applicant.key = index;
 	});

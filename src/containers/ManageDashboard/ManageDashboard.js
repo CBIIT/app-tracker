@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { Tabs, Button, Tooltip, message } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import { useParams, useHistory } from 'react-router-dom';
+
+import SearchContext from './Util/SearchContext';
 
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
@@ -144,6 +146,17 @@ const manageDashboard = () => {
 	const [nextButtonLabel, setNextButtonLabel] = useState();
 	const [userCommitteeRole, setUserCommitteeRole] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
+
+	const searchContext = {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput,
+	};
 
 	const history = useHistory();
 	const {
@@ -227,125 +240,127 @@ const manageDashboard = () => {
 		<Loading />
 	) : (
 		<>
-			<div className='ManageHeader'>
-				<div className='HeaderTitle'>
-					<h1>{vacancyTitle}</h1>
-				</div>
-				<div className='HeaderLink'>
-					<Button
-						type='link'
-						onClick={() => {
-							if (user.isManager == true) {
-								history.push(VACANCY_DASHBOARD);
-							} else if (user.isChair == true) {
-								history.push(CHAIR_DASHBOARD);
-							} else {
-								history.push(COMMITTEE_DASHBOARD);
-							}
-						}}
-					>
-						Return to Dashboard
-					</Button>
-				</div>
-			</div>
-			<VacancyStatus state={state} />
-			{displayNextButton(vacancy.state) ? (
-				<div className='AdvanceButtonDiv'>
-					<Tooltip
-						placement='top'
-						title={
-							!nextStep ? getNextStepCannotAdvanceTooltip(vacancy.state) : ''
-						}
-					>
+			<SearchContext.Provider value={searchContext}>
+				<div className='ManageHeader'>
+					<div className='HeaderTitle'>
+						<h1>{vacancyTitle}</h1>
+					</div>
+					<div className='HeaderLink'>
 						<Button
-							type='primary'
-							ghost
-							className='AdvanceButton'
-							disabled={!nextStep}
-							onClick={handleButtonClick}
-							loading={isNextButtonLoading}
+							type='link'
+							onClick={() => {
+								if (user.isManager == true) {
+									history.push(VACANCY_DASHBOARD);
+								} else if (user.isChair == true) {
+									history.push(CHAIR_DASHBOARD);
+								} else {
+									history.push(COMMITTEE_DASHBOARD);
+								}
+							}}
 						>
-							{nextButtonLabel} <DoubleRightOutlined />
+							Return to Dashboard
 						</Button>
-					</Tooltip>
+					</div>
 				</div>
-			) : null}
-			<div className='manage-tabs'>
-				<Tabs
-					activeKey={currentTab}
-					defaultActiveKey='details'
-					onChange={onChangeTabHandler}
-				>
-					<Tabs.TabPane tab='Vacancy Details' key='details'>
-						<>
-							{user.roles.includes(OWM_TEAM) ? (
-								<div className='ManageDashboardEditButton'>
-									<Button
-										type='primary'
-										ghost
-										onClick={() => history.push(EDIT_VACANCY + sysId)}
-									>
-										Edit
-									</Button>
-								</div>
-							) : null}
-							<ViewVacancyDetails
-								allForms={vacancy}
-								hideCommitteeSection={isUserAllowedToScore()}
-								hideEmails={isUserChair() || isUserAllowedToScore()}
-							/>
+				<VacancyStatus state={state} />
+				{displayNextButton(vacancy.state) ? (
+					<div className='AdvanceButtonDiv'>
+						<Tooltip
+							placement='top'
+							title={
+								!nextStep ? getNextStepCannotAdvanceTooltip(vacancy.state) : ''
+							}
+						>
+							<Button
+								type='primary'
+								ghost
+								className='AdvanceButton'
+								disabled={!nextStep}
+								onClick={handleButtonClick}
+								loading={isNextButtonLoading}
+							>
+								{nextButtonLabel} <DoubleRightOutlined />
+							</Button>
+						</Tooltip>
+					</div>
+				) : null}
+				<div className='manage-tabs'>
+					<Tabs
+						activeKey={currentTab}
+						defaultActiveKey='details'
+						onChange={onChangeTabHandler}
+					>
+						<Tabs.TabPane tab='Vacancy Details' key='details'>
+							<>
+								{user.roles.includes(OWM_TEAM) ? (
+									<div className='ManageDashboardEditButton'>
+										<Button
+											type='primary'
+											ghost
+											onClick={() => history.push(EDIT_VACANCY + sysId)}
+										>
+											Edit
+										</Button>
+									</div>
+								) : null}
+								<ViewVacancyDetails
+									allForms={vacancy}
+									hideCommitteeSection={isUserAllowedToScore()}
+									hideEmails={isUserChair() || isUserAllowedToScore()}
+								/>
 
-							{user.roles.includes(OWM_TEAM) ? (
-								<div
-									className='RatingPlanDiv'
-									style={{
-										paddingLeft: '16px',
-										paddingBottom: '16px',
-									}}
-								>
-									<h2>Rating Plan</h2>
-									<FileUploadAndDisplay
-										buttonText='Upload Rating Plan'
-										sysId={vacancy.sysId}
-										url={SERVICE_NOW_FILE_ATTACHMENT}
-										table={ratingPlanTable}
-										afterUploadSuccess={loadLatestVacancyInfo}
-										downloadLink={vacancy.ratingPlan.downloadLink}
-										fileName={vacancy.ratingPlan.fileName}
-										fileSysId={vacancy.ratingPlan.sysId}
-										deleteUrl={
-											SERVICE_NOW_ATTACHMENT + vacancy.ratingPlan.sysId
-										}
-										onDeleteSuccess={loadLatestVacancyInfo}
-										deleteConfirmTitle='Delete the attached rating plan?'
-										deleteConfirmText='This action cannot be undone, but you will be able to upload a new rating plan afterwards.'
-										uploadSuccessMessage={'Rating plan updated.'}
-										deleteSuccessMessage={'Rating plan deleted.'}
-									/>
-								</div>
-							) : null}
-						</>
-					</Tabs.TabPane>
-					<Tabs.TabPane tab='Applicants' key='applicants'>
-						<ApplicantList
-							vacancyState={vacancy.state}
-							vacancyTenant={vacancy.basicInfo.tenant}
-							userRoles={user.roles}
-							userCommitteeRole={userCommitteeRole}
-							reloadVacancy={loadLatestVacancyInfo}
-						/>
-					</Tabs.TabPane>
-				</Tabs>
-			</div>
-			<NextStepModal
-				visible={modalVisible}
-				confirmTitle={getNextStepModalConfirmTitle()}
-				confirmDescription={getNextStepModalConfirmDescription(vacancy.state)}
-				handleCloseModal={closeModal}
-				handleOk={() => handleNextStepModalConfirm(sysId)}
-				submittedTitle={getNextStepModalSubmittedTitle(vacancy.state)}
-				steps={getNextStepModalSteps(vacancy.state)}
-			/>
+								{user.roles.includes(OWM_TEAM) ? (
+									<div
+										className='RatingPlanDiv'
+										style={{
+											paddingLeft: '16px',
+											paddingBottom: '16px',
+										}}
+									>
+										<h2>Rating Plan</h2>
+										<FileUploadAndDisplay
+											buttonText='Upload Rating Plan'
+											sysId={vacancy.sysId}
+											url={SERVICE_NOW_FILE_ATTACHMENT}
+											table={ratingPlanTable}
+											afterUploadSuccess={loadLatestVacancyInfo}
+											downloadLink={vacancy.ratingPlan.downloadLink}
+											fileName={vacancy.ratingPlan.fileName}
+											fileSysId={vacancy.ratingPlan.sysId}
+											deleteUrl={
+												SERVICE_NOW_ATTACHMENT + vacancy.ratingPlan.sysId
+											}
+											onDeleteSuccess={loadLatestVacancyInfo}
+											deleteConfirmTitle='Delete the attached rating plan?'
+											deleteConfirmText='This action cannot be undone, but you will be able to upload a new rating plan afterwards.'
+											uploadSuccessMessage={'Rating plan updated.'}
+											deleteSuccessMessage={'Rating plan deleted.'}
+										/>
+									</div>
+								) : null}
+							</>
+						</Tabs.TabPane>
+						<Tabs.TabPane tab='Applicants' key='applicants'>
+							<ApplicantList
+								vacancyState={vacancy.state}
+								vacancyTenant={vacancy.basicInfo.tenant}
+								userRoles={user.roles}
+								userCommitteeRole={userCommitteeRole}
+								reloadVacancy={loadLatestVacancyInfo}
+							/>
+						</Tabs.TabPane>
+					</Tabs>
+				</div>
+				<NextStepModal
+					visible={modalVisible}
+					confirmTitle={getNextStepModalConfirmTitle()}
+					confirmDescription={getNextStepModalConfirmDescription(vacancy.state)}
+					handleCloseModal={closeModal}
+					handleOk={() => handleNextStepModalConfirm(sysId)}
+					submittedTitle={getNextStepModalSubmittedTitle(vacancy.state)}
+					steps={getNextStepModalSteps(vacancy.state)}
+				/>
+			</SearchContext.Provider>
 		</>
 	);
 };

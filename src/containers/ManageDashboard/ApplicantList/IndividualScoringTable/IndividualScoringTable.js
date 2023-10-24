@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useContext } from 'react';
 import { Table, Select, Modal, Input, Button, message } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../../Util/ColumnSearchProps';
 import axios from 'axios';
-
+import SearchContext from '../../Util/SearchContext';
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import {
 	INTERVIEW,
@@ -54,9 +54,14 @@ const individualScoringTable = (props) => {
 	const [triageComments, setTriageComments] = useState('');
 	const [chairComments, setChairComments] = useState('');
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
-	const searchInput = useRef(null);
+	const contextValue = useContext(SearchContext);
+	const {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput
+	} = contextValue;
 
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
