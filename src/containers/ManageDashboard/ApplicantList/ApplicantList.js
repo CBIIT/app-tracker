@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { message, Table, Tooltip, Collapse } from 'antd';
 import { useParams } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, } from '@ant-design/icons';
@@ -19,6 +19,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 } from '../../../constants/Roles';
 import { GET_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
+import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
 import './ApplicantList.css';
@@ -42,9 +43,14 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
-	const searchInput = useRef(null);
+	const contextValue = useContext(SearchContext);
+	const {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput
+	} = contextValue;
 
 	const applicantColumns = [
 		{
@@ -266,7 +272,7 @@ const applicantList = (props) => {
 				const newColumns = columns.concat(committeeColumns);
 				return newColumns;
 			} else {
-				applicantColumns
+				return applicantColumns;
 			}
 		}
 
@@ -376,8 +382,14 @@ const applicantList = (props) => {
 			userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
 			userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
 		) {
-			
-			return table;
+			return (
+				<ApplicantList
+					applicants={applicants}
+					pagination={tablePagination}
+					onTableChange={loadAllApplicants}
+					loading={tableLoading}
+				/>
+			);
 		} else {
 			return table;
 		}
