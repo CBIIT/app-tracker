@@ -11,14 +11,14 @@ import { MANAGE_APPLICATION } from '../../../constants/Routes';
 
 import './ApplicantList.css';
 
-/* const renderDecision = (text) =>
+const renderDecision = (text) =>
 	text == 'Pending' ? (
 		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
 			{text}
 		</span>
 	) : (
 		<span style={{ textTransform: 'capitalize' }}>{text}</span>
-	); */
+	);
 
 const applicantList = (props) => {
 	const history = useHistory();
@@ -37,6 +37,23 @@ const applicantList = (props) => {
 	});
 
 	const applicantColumns = [
+		{
+			key: 'averagescore',
+			render: (text, record) => {
+				if (record.recused == 1)
+					return (
+						<Tooltip title='Recused'>
+							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+						</Tooltip>
+					);
+				else
+					return record.average_score != undefined ? (
+						<Tooltip title='Scoring Completed'>
+							<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
+						</Tooltip>
+					) : null;
+			},
+		},
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
@@ -84,26 +101,12 @@ const applicantList = (props) => {
 			width: 130,
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
-
 		{
 			title: 'Average Score',
 			dataIndex: 'average_score',
-			width: 130,
 			key: 'averagescore',
-			render: (text, record) => {
-				if (record.recused == 1)
-					return (
-						<Tooltip title='Recused'>
-							<ExclamationCircleOutlined style={{ color: '#faad14' }} />
-						</Tooltip>
-					);
-				else
-					return record.average_score != undefined ? (
-						<Tooltip title='Scoring Completed'>
-							<CheckCircleTwoTone twoToneColor='#60E241'></CheckCircleTwoTone>
-						</Tooltip>
-					) : null;
-			},
+			render: (text, record) =>
+				record.recused == 1 ? 'n/a' : renderDecision(text),
 		},
 		{
 			title: 'Recommend Interview?',
