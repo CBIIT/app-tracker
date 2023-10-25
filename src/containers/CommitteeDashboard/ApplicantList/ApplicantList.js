@@ -134,7 +134,8 @@ const applicantList = (props) => {
 					props.onTableChange(
 						pagination.current,
 						pagination.pageSize,
-						sorter.order
+						sorter.order,
+						sorter.field
 					);
 				}}
 				loading={props.loading}
