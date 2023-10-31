@@ -1,8 +1,13 @@
+import React from 'react';
 import { Form, Input, Slider, DatePicker, Tooltip, Checkbox, Typography, Space } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
+const Quill = ReactQuill.Quill;
+const Font = Quill.import('formats/font');
+Font.whitelist = ["Arial", "Monaco", "Montserrat", "Optima", "Georgia"];
+Quill.register(Font, true);
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
 import EditableDropDown from '../../../../components/UI/EditableDropDown/EditableDropDown';
@@ -12,6 +17,46 @@ import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
+
+class Editor extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { editorHtml: "", theme: "snow" };
+      this.handleChange = this.handleChange.bind(this);
+    }
+}
+
+Editor.modules = {
+	toolbar: [
+	  [{ 'header': "1" }, { 'header': "2" }, { 'font': Font.whitelist }],
+	  [{ size: [] }],
+	  ["bold", "italic", "underline", "strike", "blockquote"],
+	  [
+		{ 'list': "ordered" },
+		{ 'list': "bullet" },
+		{ 'indent': "-1" },
+		{ 'indent': "+1" }
+	  ],
+	  ["link"],
+	  //[{ script: "sub" }, { script: "super" }],
+	  ['clean']
+	]
+  };
+
+  Editor.formats = [
+	"header",
+	"font",
+	"size",
+	"bold",
+	"italic",
+	"underline",
+	"strike",
+	"blockquote",
+	"list",
+	"bullet",
+	"indent",
+	"link",
+  ];
 
 const basicInformation = (props) => {
 
@@ -175,7 +220,7 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{user?.tenant.trim().toLowerCase() === 'stadtman' ? (
+			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'
@@ -191,7 +236,12 @@ const basicInformation = (props) => {
 				name='description'
 				rules={[{ validator: validateDescription }]}
 			>
-				<ReactQuill className='QuillEditor' readOnly={readOnly} />
+				<ReactQuill
+					className='QuillEditor'
+					readOnly={readOnly}
+					modules={Editor.modules}
+					formats={Editor.formats}
+				/>
 			</Form.Item>
 
 			<div className='DatePickerContainer'>
@@ -263,7 +313,7 @@ const basicInformation = (props) => {
 					/>
 				</Form.Item>
 			</Form.Item>
-			<Form.Item label="ECM Integration Opt In">
+			<Form.Item label='ECM Integration Opt In'>
 				<div className='DatePickerContainer'>
 					<div className='DatePicker'>
 						<EditableDropDown
@@ -273,11 +323,11 @@ const basicInformation = (props) => {
 										Position Classification
 										<Tooltip
 											title={
-													<>
-														Select the Intramural or Extramural Professional
-														Designation for your vacancy. Select “N/A” for
-														Stadtman positions.
-													</>
+												<>
+													Select the Intramural or Extramural Professional
+													Designation for your vacancy. Select “N/A” for
+													Stadtman positions.
+												</>
 											}
 										>
 											<Typography.Link>

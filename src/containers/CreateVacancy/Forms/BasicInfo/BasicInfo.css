@@ -56,6 +56,71 @@
 	margin-bottom: 30px;
 }
 
+.ql-editor {
+	font-family: "Arial";
+}
+
+  .ql-picker.ql-font .ql-picker-item ::before{
+	content: attr(data-value) !important;
+	font-size: 14px;
+  }
+  
+  .ql-picker.ql-font .ql-active ::before{
+	content: attr(data-value) !important;
+	font-size: 14px;
+  }
+  
+  .ql-picker.ql-font .ql-picker-label[data-value="Arial"]::before, 
+  .ql-picker.ql-font .ql-picker-item[data-value="Arial"]::before
+  {
+	  font-family: "Arial", cursive;
+	  content: "Arial" !important;
+  }
+  
+  .ql-picker.ql-font .ql-picker-label[data-value="Monaco"]::before, 
+  .ql-picker.ql-font .ql-picker-item[data-value="Monaco"]::before
+  {
+	  font-family: "Monaco", cursive;
+	  content: "Monaco" !important;
+  }
+  
+  .ql-picker.ql-font .ql-picker-label[data-value="Montserrat"]::before, 
+  .ql-picker.ql-font .ql-picker-item[data-value="Montserrat"]::before
+  {
+	  font-family: "Montserrat", cursive;
+	  content: "Montserrat" !important;
+  }
+  
+  .ql-picker.ql-font .ql-picker-label[data-value="Optima"]::before, 
+  .ql-picker.ql-font .ql-picker-item[data-value="Optima"]::before
+  {
+	  font-family: "Optima", cursive;
+	  content: "Optima" !important;
+  }
+  
+  .ql-picker.ql-font .ql-picker-label[data-value="Georgia"]::before, 
+  .ql-picker.ql-font .ql-picker-item[data-value="Georgia"]::before
+  {
+	  font-family: "Georgia", cursive;
+	  content: "Georgia" !important;
+  }
+  
+  /* Set content font-families */
+  .ql-font-Arial {
+	font-family: "Arial";
+  }
+  .ql-font-Monaco {
+	font-family: "Monaco";
+  }
+  .ql-font-Montserrat {
+	font-family: "Montserrat";
+  }
+  .ql-font-Optima {
+	font-family: "Optima";
+  }
+  .ql-font-Georgia {
+	font-family: "Georgia";
+  }
 @media (max-width: 500px) {
 	.Slider {
 		margin-top: 40px;
