@@ -13,7 +13,6 @@ const review = (props) => {
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
 	const reviewData = JSON.parse(JSON.stringify(formData));
-	console.log(reviewData)
 	const referencesColumns = [
 		{
 			title: 'Name',
