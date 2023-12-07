@@ -10,9 +10,9 @@ import './ScoringWidget.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const sliderMarks = [0, 1, 2, 3];
+const sliderMarks = [0, 1, 2, 3, 4, 5];
 const sliderMin = 0;
-const sliderMax = 3;
+const sliderMax = 5;
 
 const { TextArea } = Input;
 const { Group } = Radio;
