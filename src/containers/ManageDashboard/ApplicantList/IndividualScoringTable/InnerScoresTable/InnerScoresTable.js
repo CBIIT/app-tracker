@@ -11,6 +11,7 @@ const innerScoresTable = (props) => {
 	const [page, setPage] = useState(1);
 	const [pageSize, setPageSize] = useState(5);
 	const [tableLoading, setTableLoading] = useState(false);
+	const [numOfCategories, setNumOfCategories] = useState(0);
 
 	const columns = [
 		{
@@ -23,26 +24,6 @@ const innerScoresTable = (props) => {
 			title: 'Avg Score',
 			dataIndex: 'average_score',
 			key: 'average_score',
-		},
-		{
-			title: 'Category 1',
-			dataIndex: 'category_1',
-			key: 'category_1',
-		},
-		{
-			title: 'Category 2',
-			dataIndex: 'category_2',
-			key: 'category_2',
-		},
-		{
-			title: 'Category 3',
-			dataIndex: 'category_3',
-			key: 'category_3',
-		},
-		{
-			title: 'Category 4',
-			dataIndex: 'category_4',
-			key: 'category_4',
 		},
 		{
 			title: 'Recommend?',
@@ -74,11 +55,21 @@ const innerScoresTable = (props) => {
 			const response = await axios.get(apiString);
 			setScores(response.data.result.scores);
 			setTotalCount(response.data.result.totalCount);
+			setNumOfCategories(response.data.result.numOfCategories);
 		} catch (error) {
 			message.error('Sorry! Something went wrong when loading.');
 		}
 		setTableLoading(false);
 	};
+
+	for (let i=1; i <= numOfCategories; i++) {
+		let index = 2 + i
+		columns.splice(index, 0, {
+			title: 'Category ' + i,
+			dataIndex: 'category_' + i,
+			key: 'category_' + i,
+		});
+	}
 
 	useEffect(() => {
 		loadScores(page, pageSize);
