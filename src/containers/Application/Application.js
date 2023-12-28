@@ -177,6 +177,12 @@ const application = () => {
 	useEffect(() => {
 		loadApplication();
 	}, []);
+
+	useEffect(() => {
+		if (individualScoreCategories.length === 0) {
+			addCategories();
+		}
+	});
 	
 	const openRecuseModal = (e) => {
 		e.preventDefault();
@@ -328,8 +334,10 @@ const application = () => {
 		}
 	};
 	
-	for (let i = 1; i <= numOfCategories; i++) {
-		individualScoreCategories.push({key: `category${i}`, title: `Category ${i}`})
+	const addCategories = () => {
+		for (let i = 1; i <= numOfCategories; i++) {
+			individualScoreCategories.push({key: `category${i}`, title: `Category ${i}`})
+		}
 	}
 
 	const onTriageSelect = (event) => {
@@ -635,7 +643,7 @@ const application = () => {
 									description={
 										recused == 0 ? (
 											<>
-												Please score the applicant on a scale of 0 - 3 below and
+												Please score the applicant on a scale of 0 - 5 below and
 												leave detailed notes in the comments box below.{' '}
 												{ratingPlanDownloadLink ? (
 													<>
@@ -701,6 +709,7 @@ const application = () => {
 									style={{ backgroundColor: 'white' }}
 									triageOptions={committeeMemberTriageOptions}
 									categories={individualScoreCategories}
+									numOfCategories={numOfCategories}
 									onCancelClick={onTriageWidgetCancelClick}
 									initiallyHideContent={
 										vacancyState !== INDIVIDUAL_SCORING_IN_PROGRESS

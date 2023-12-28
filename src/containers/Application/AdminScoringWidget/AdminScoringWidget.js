@@ -70,24 +70,18 @@ const adminScoringWidget = (props) => {
 				score_as: selectedCommitteeMember.sysId,
 				recommend: selectedCommitteeMember.triageChoice,
 				comments: selectedCommitteeMember.comments,
-				category_1: selectedCommitteeMember.scores.category1
-					? selectedCommitteeMember.scores.category1
-					: 0,
-				category_2: selectedCommitteeMember.scores.category2
-					? selectedCommitteeMember.scores.category2
-					: 0,
-				category_3: selectedCommitteeMember.scores.category3
-					? selectedCommitteeMember.scores.category3
-					: 0,
-				category_4: selectedCommitteeMember.scores.category4
-					? selectedCommitteeMember.scores.category4
-					: 0,
 			};
+
+			for (let i = 1; i <= props.numOfCategories; i++) {
+				const prop = "category_" + i;
+				const category = "category" + i;
+				scoresAndNotes[prop] = selectedCommitteeMember.scores[category] ? selectedCommitteeMember.scores[category] : 0
+			}
 
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
 			message.success(
 				'Feedback and notes saved for ' + selectedCommitteeMember.name + '.'
-			);
+			); 
 		} catch (error) {
 			message.error(
 				'Sorry!  An error occurred.  Save unsuccessful.  Try reloading the page and trying again.'
@@ -104,16 +98,17 @@ const adminScoringWidget = (props) => {
 		const newSelection = {
 			name: committeeMember.name,
 			sysId: committeeMember.sys_id,
-			scores: {
-				category1: committeeMember.category_1,
-				category2: committeeMember.category_2,
-				category3: committeeMember.category_3,
-				category4: committeeMember.category_4,
-			},
+			scores: {},
 			comments: committeeMember.comments ? committeeMember.comments : '',
 			triageChoice: committeeMember.recommend,
 			recused: committeeMember.recused,
 		};
+
+		for (let i = 1; i <= props.numOfCategories; i++) {
+			const category = "category_" + i;
+			const prop = "category" + i;
+			newSelection.scores[prop] = committeeMember[category]
+		}
 
 		setSelectedCommitteeMember(newSelection);
 	};
@@ -124,7 +119,7 @@ const adminScoringWidget = (props) => {
 				title="Committee Members' Rating and Feedback"
 				description={
 					<>
-						Please score the applicant on a scale of 0 - 3 below and leave
+						Please score the applicant on a scale of 5 below and leave
 						detailed notes in the comments box below.{' '}
 						<a href={props.ratingPlanDownloadLink}>See Rating Plan.</a>
 					</>
