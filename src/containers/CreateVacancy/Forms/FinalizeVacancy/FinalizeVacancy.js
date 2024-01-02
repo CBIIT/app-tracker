@@ -10,7 +10,7 @@ const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
-	const errors = props.errorSections
+	const errors = props.errorSections;
 	const vacancyCommitteeColumns = [
 		{
 			title: 'Committee Member',
@@ -22,16 +22,16 @@ const finalizeVacancy = (props) => {
 	useEffect(() => {
 		// since appointment package inititator only displays the sys_id, do a GET to figure out what the display of it should be
 		(async () => {
-			const vacancyOptionsResponse = await axios.get(
-				GET_VACANCY_OPTIONS
+			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
+			setAllPackageInitiators(
+				vacancyOptionsResponse.data.result.package_initiators
 			);
-			setAllPackageInitiators(vacancyOptionsResponse.data.result.package_initiators);
 		})();
 	}, []);
 
 	function getPackageInitiatorDisplayName() {
 		var displayName = '';
-		for(var i = 0; i < allPackageInitiators.length; i++) {
+		for (var i = 0; i < allPackageInitiators.length; i++) {
 			var packageInitiator = allPackageInitiators[i];
 			if (packageInitiator.sys_id === basicInfo.appointmentPackageIndicator)
 				displayName = packageInitiator.name;
@@ -76,7 +76,7 @@ const finalizeVacancy = (props) => {
 				<div className='DateSection'>
 					<div className='DateCard'>
 						<h2 style={basicInfo.openDate ? null : { color: 'red' }}>
-						{basicInfo.openDate ? null : '! '}Open Date
+							{basicInfo.openDate ? null : '! '}Open Date
 						</h2>
 						<p>
 							{basicInfo.openDate
@@ -88,7 +88,7 @@ const finalizeVacancy = (props) => {
 					</div>
 					<div className='DateCard'>
 						<h2 style={basicInfo.closeDate ? null : { color: 'red' }}>
-						{basicInfo.closeDate ? null : '! '}Close Date
+							{basicInfo.closeDate ? null : '! '}Close Date
 						</h2>
 						<p>
 							{basicInfo.closeDate
@@ -127,19 +127,29 @@ const finalizeVacancy = (props) => {
 						{basicInfo.numberOfRecommendations} recommendations
 					</li>
 				</ul>
-				<h2 style={basicInfo.sacCode ? null : { color: 'red' }}>
-					{basicInfo.sacCode ? null : '! '}Organizational Code</h2>
+				<h2>Number of Scoring Categories</h2>
+				<h3>How many categories does this vacancy require for scoring?</h3>
 				<ul>
-					<p>{basicInfo.sacCode}</p>
+					<li className='ListItemTrue'>
+						{basicInfo.numberOfCategories} categories
+					</li>
+				</ul>
+				<h2 style={basicInfo.sacCode ? null : { color: 'red' }}>
+					{basicInfo.sacCode ? null : '! '}Organizational Code
+				</h2>
+				<ul>
+					<p className='ListItemTrue'>{basicInfo.sacCode}</p>
 				</ul>
 				<h2 style={basicInfo.positionClassification ? null : { color: 'red' }}>
-					{basicInfo.positionClassification ? null : '! '}Position Classification</h2>
+					{basicInfo.positionClassification ? null : '! '}Position
+					Classification
+				</h2>
 				<ul>
-					<p>{basicInfo.positionClassification}</p>
+					<p className='ListItemTrue'>{basicInfo.positionClassification}</p>
 				</ul>
 				<h2>Appointment Package Initiator</h2>
 				<ul>
-					<p>
+					<p className='ListItemTrue'>
 						{getPackageInitiatorDisplayName(
 							basicInfo.appointmentPackageIndicator,
 							allPackageInitiators

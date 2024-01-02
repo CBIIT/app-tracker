@@ -26,6 +26,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			})),
 			numberOfRecommendations:
 				sourceJson.basic_info.number_of_recommendation.value,
+			numberOfCategories: sourceJson.basic_info.number_of_categories.value
 		},
 		emailTemplates: sourceJson.vacancy_emails
 			? sourceJson.vacancy_emails.map((temp) => ({

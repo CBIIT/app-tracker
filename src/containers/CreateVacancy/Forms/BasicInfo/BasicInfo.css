@@ -24,7 +24,12 @@
 
 .Slider {
 	flex: 0 1;
-	width: 50vw;
+	width: 60vw;
+}
+
+.CategorySlider {
+	flex: 0 1;
+	width: 35vw;
 }
 
 .ant-checkbox-wrapper {

@@ -30,6 +30,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		close_date: getDateFromDateTime(basicInfo.closeDate),
 		scoring_due_by_date: getDateFromDateTime(basicInfo.scoringDueByDate),
 		number_of_recommendation: basicInfo.numberOfRecommendations,
+		number_of_categories: basicInfo.numberOfCategories,
 		equal_opportunity_employment_statement:
 			mandatoryStatements.equalOpportunityEmployerText,
 		standards_of_conduct_statement: mandatoryStatements.standardsOfConductText,

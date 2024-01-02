@@ -1,6 +1,7 @@
 export const initialValues = {
 	basicInfo: {
 		numberOfRecommendations: 3,
+		numberOfCategories: 4,
 		description: '',
 		allowHrSpecialistTriage: false,
 		applicationDocuments: [
