@@ -91,6 +91,15 @@ const basicInformation = (props) => {
 		15: '15'
 	};
 
+	const categoryMarks = {
+		1: '1',
+		2: '2',
+		3: '3',
+		4: '4',
+		5: '5',
+		6: '6',
+	};
+
 	const positionClassificationMenu = [
 		{ label: 'Research Fellow', value: 'Research Fellow'},
 		{ label: 'Senior Research Fellow', value: 'Senior Research Fellow'},
@@ -324,6 +333,24 @@ const basicInformation = (props) => {
 						disabled={readOnly}
 					/>
 				</Form.Item>
+			</Form.Item>
+			{/* add number of categories selection here */}
+			<Form.Item label='Number of Scoring Categories'>
+				<p className='SmallText'>
+					How many categories does this vacancy require for scoring?
+				</p>
+
+				<Form.Item name='numberOfCategories'>
+					<Slider 
+						className='CategorySlider'
+						min={1}
+						max={6}
+						dots
+						marks={categoryMarks}
+						disabled={readOnly}
+					/>
+				</Form.Item>
+
 			</Form.Item>
 			<Form.Item label='ECM Integration Opt In'>
 				<div className='DatePickerContainer'>

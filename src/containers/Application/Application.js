@@ -56,12 +56,7 @@ import Loading from '../../components/Loading/Loading';
 
 const { confirm } = Modal;
 
-const individualScoreCategories = [
-	{ key: 'category1', title: 'Category 1' },
-	{ key: 'category2', title: 'Category 2' },
-	{ key: 'category3', title: 'Category 3' },
-	{ key: 'category4', title: 'Category 4' },
-];
+const individualScoreCategories = [];
 
 const chairTriageOptions = [
 	{
@@ -163,6 +158,7 @@ const application = () => {
 	const [userRoles, setUserRoles] = useState([]);
 	const [individualTriageChoice, setIndividualTriageChoice] = useState();
 	const [individualScores, setIndividualScores] = useState({});
+	const [numOfCategories, setNumOfCategories] = useState();
 	const [individualScoresComments, setIndividualScoresComments] = useState();
 	const [ratingPlanDownloadLink, setRatingPlanDownloadLink] = useState();
 	const [references, setReferences] = useState([]);
@@ -181,6 +177,12 @@ const application = () => {
 	useEffect(() => {
 		loadApplication();
 	}, []);
+
+	useEffect(() => {
+		if (individualScoreCategories.length === 0) {
+			addCategories();
+		}
+	});
 	
 	const openRecuseModal = (e) => {
 		e.preventDefault();
@@ -286,6 +288,7 @@ const application = () => {
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
 			setVacancyState(vacancy.data.result.basic_info.state.value);
 			setVacancyTenantType(vacancy.data.result.basic_info.tenant.label);
+			setNumOfCategories(parseInt(vacancy.data.result.basic_info.number_of_categories.value));
 
 			if (vacancy.data.result.additional_documents)
 				setAdditionalDocumentLinks(vacancy.data.result.additional_documents);
@@ -304,19 +307,22 @@ const application = () => {
 			);
 
 			if (applicationResponse.data.result.individual_scoring) {
-				const individualScores =
+				const individualScore =
 					applicationResponse.data.result.individual_scoring;
 
-				setIndividualScores({
-					category1: individualScores.category_1.value,
-					category2: individualScores.category_2.value,
-					category3: individualScores.category_3.value,
-					category4: individualScores.category_4.value,
-				});
+				const numOfCategories = parseInt(vacancy.data.result.basic_info.number_of_categories.value);
+				const currentScore = {}
+				for (let i = 1; i <= numOfCategories; i++) {
+					const prop = "category" + i;
+					const category = "category_" + i;
+					currentScore[prop] = individualScore[category].value
+				}
 
-				setRecused(individualScores.recused.value == '1' ? 1 : 0);
-				setIndividualScoresComments(individualScores.comments.value);
-				setIndividualTriageChoice(individualScores.recommend.value);
+				setIndividualScores(currentScore);
+
+				setRecused(individualScore.recused.value == '1' ? 1 : 0);
+				setIndividualScoresComments(individualScore.comments.value);
+				setIndividualTriageChoice(individualScore.recommend.value);
 			}
 
 			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
@@ -327,6 +333,12 @@ const application = () => {
 			throw error;
 		}
 	};
+	
+	const addCategories = () => {
+		for (let i = 1; i <= numOfCategories; i++) {
+			individualScoreCategories.push({key: `category${i}`, title: `Category ${i}`})
+		}
+	}
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -423,11 +435,14 @@ const application = () => {
 				app_sys_id: application.appSysId,
 				recommend: individualTriageChoice,
 				comments: individualScoresComments,
-				category_1: individualScores.category1 ? individualScores.category1 : 0,
-				category_2: individualScores.category2 ? individualScores.category2 : 0,
-				category_3: individualScores.category3 ? individualScores.category3 : 0,
-				category_4: individualScores.category4 ? individualScores.category4 : 0,
 			};
+
+			for (let i = 1; i <= numOfCategories; i++) {
+				const prop = "category_" + i;
+				const category = "category" + i;
+				scoresAndNotes[prop] = individualScores[category] ? individualScores[category] : 0
+			}
+
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
 			history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 			message.success('Feedback and notes saved.');
@@ -628,7 +643,7 @@ const application = () => {
 									description={
 										recused == 0 ? (
 											<>
-												Please score the applicant on a scale of 0 - 3 below and
+												Please score the applicant on a scale of 0 - 5 below and
 												leave detailed notes in the comments box below.{' '}
 												{ratingPlanDownloadLink ? (
 													<>
@@ -694,6 +709,7 @@ const application = () => {
 									style={{ backgroundColor: 'white' }}
 									triageOptions={committeeMemberTriageOptions}
 									categories={individualScoreCategories}
+									numOfCategories={numOfCategories}
 									onCancelClick={onTriageWidgetCancelClick}
 									initiallyHideContent={
 										vacancyState !== INDIVIDUAL_SCORING_IN_PROGRESS
