@@ -1,12 +1,22 @@
 import React from 'react';
-import { Form, Input, Slider, DatePicker, Tooltip, Checkbox, Typography, Space } from 'antd';
+import {
+	Form,
+	Input,
+	Slider,
+	DatePicker,
+	Tooltip,
+	Checkbox,
+	Select,
+	Typography,
+	Space,
+} from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
 const Quill = ReactQuill.Quill;
 const Font = Quill.import('formats/font');
-Font.whitelist = ["Arial", "Monaco", "Montserrat", "Optima", "Georgia"];
+Font.whitelist = ['Arial', 'Monaco', 'Montserrat', 'Optima', 'Georgia'];
 Quill.register(Font, true);
 import 'react-quill/dist/quill.snow.css';
 import RequiredDocsList from './RequiredDocsList/RequiredDocsList';
@@ -19,55 +29,60 @@ import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
 class Editor extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = { editorHtml: "", theme: "snow" };
-      this.handleChange = this.handleChange.bind(this);
-    }
+	constructor(props) {
+		super(props);
+		this.state = { editorHtml: '', theme: 'snow' };
+		this.handleChange = this.handleChange.bind(this);
+	}
 }
 
 Editor.modules = {
 	toolbar: [
-	  [{ 'header': "1" }, { 'header': "2" }, { 'font': Font.whitelist }],
-	  [{ size: [] }],
-	  ["bold", "italic", "underline", "strike", "blockquote"],
-	  [
-		{ 'list': "ordered" },
-		{ 'list': "bullet" },
-		{ 'indent': "-1" },
-		{ 'indent': "+1" }
-	  ],
-	  ["link"],
-	  //[{ script: "sub" }, { script: "super" }],
-	  ['clean']
-	]
-  };
+		[{ header: '1' }, { header: '2' }, { font: Font.whitelist }],
+		[{ size: [] }],
+		['bold', 'italic', 'underline', 'strike', 'blockquote'],
+		[
+			{ list: 'ordered' },
+			{ list: 'bullet' },
+			{ indent: '-1' },
+			{ indent: '+1' },
+		],
+		['link'],
+		//[{ script: "sub" }, { script: "super" }],
+		['clean'],
+	],
+};
 
-  Editor.formats = [
-	"header",
-	"font",
-	"size",
-	"bold",
-	"italic",
-	"underline",
-	"strike",
-	"blockquote",
-	"list",
-	"bullet",
-	"indent",
-	"link",
-  ];
+Editor.formats = [
+	'header',
+	'font',
+	'size',
+	'bold',
+	'italic',
+	'underline',
+	'strike',
+	'blockquote',
+	'list',
+	'bullet',
+	'indent',
+	'link',
+];
 
 const basicInformation = (props) => {
-
-	const [appInitiatorMenu, setAppInitiatorMenu] = useState([{ label: ' ', value: ' ' }]);
-	const [currentPositionMenu, setCurrentPositionMenu] = useState(positionClassificationMenu);
-	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' '}]);
+	const [appInitiatorMenu, setAppInitiatorMenu] = useState([
+		{ label: ' ', value: ' ' },
+	]);
+	const [currentPositionMenu, setCurrentPositionMenu] = useState(
+		positionClassificationMenu
+	);
+	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' ' }]);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
 	const readOnly = props.readOnly;
+
+	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
 
 	const { auth } = useAuth();
 	const { user } = auth;
@@ -88,7 +103,7 @@ const basicInformation = (props) => {
 		12: '12',
 		13: '13',
 		14: '14',
-		15: '15'
+		15: '15',
 	};
 
 	const categoryMarks = {
@@ -101,16 +116,25 @@ const basicInformation = (props) => {
 	};
 
 	const positionClassificationMenu = [
-		{ label: 'Research Fellow', value: 'Research Fellow'},
-		{ label: 'Senior Research Fellow', value: 'Senior Research Fellow'},
-		{ label: 'Staff Scientist 1', value: 'Staff Scientist 1'},
-		{ label: 'Investigator 1', value: 'Investigator 1'},
-		{ label: 'Clinical Fellow', value: 'Clinical Fellow'},
-		{ label: 'Senior Clinical Fellow', value: 'Senior Clinical Fellow'},
-		{ label: 'Assistant Clinical Investigator 1', value: 'Assistant Clinical Investigator 1'},
-		{ label: 'Staff Clinician 1', value: 'Staff Clinician 1'},
-		{ label: 'Science Policy Leader Tier 2', value: 'Science Policy Leader Tier 2'},
-		{ label: 'Science Program Leader Tier 2', value: 'Science Program Leader Tier 2'},
+		{ label: 'Research Fellow', value: 'Research Fellow' },
+		{ label: 'Senior Research Fellow', value: 'Senior Research Fellow' },
+		{ label: 'Staff Scientist 1', value: 'Staff Scientist 1' },
+		{ label: 'Investigator 1', value: 'Investigator 1' },
+		{ label: 'Clinical Fellow', value: 'Clinical Fellow' },
+		{ label: 'Senior Clinical Fellow', value: 'Senior Clinical Fellow' },
+		{
+			label: 'Assistant Clinical Investigator 1',
+			value: 'Assistant Clinical Investigator 1',
+		},
+		{ label: 'Staff Clinician 1', value: 'Staff Clinician 1' },
+		{
+			label: 'Science Policy Leader Tier 2',
+			value: 'Science Policy Leader Tier 2',
+		},
+		{
+			label: 'Science Program Leader Tier 2',
+			value: 'Science Program Leader Tier 2',
+		},
 		{ label: 'Senior Investigator', value: 'Senior Investigator' },
 		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
 		{ label: 'Investigator 2', value: 'Investigator 2' },
@@ -118,13 +142,25 @@ const basicInformation = (props) => {
 		{ label: 'Senior Clinician', value: 'Senior Clinician' },
 		{ label: 'Senior Clinician (HS)', value: 'Senior Clinician (HS)' },
 		{ label: 'Senior Scientist', value: 'Senior Scientist' },
-		{ label: 'Assistant Clinical Investigator 2', value: 'Assistant Clinical Investigator 2' },
-		{ label: 'Assistant Clinical Investigator (HS)', value: 'Assistant Clinical Investigator (HS)' },
+		{
+			label: 'Assistant Clinical Investigator 2',
+			value: 'Assistant Clinical Investigator 2',
+		},
+		{
+			label: 'Assistant Clinical Investigator (HS)',
+			value: 'Assistant Clinical Investigator (HS)',
+		},
 		{ label: 'Staff Clinician 2', value: 'Staff Clinician 2' },
 		{ label: 'Staff Clinician (HS)', value: 'Staff Clinician (HS)' },
 		{ label: 'Staff Scientist 2', value: 'Staff Scientist 2' },
-		{ label: 'Staff Scientist 2 (Clinical)', value: 'Staff Scientist 2 (Clinical)' },
-		{ label: 'Staff Scientist 2 (Facility Head)', value: 'Staff Scientist 2 (Facility Head)' },
+		{
+			label: 'Staff Scientist 2 (Clinical)',
+			value: 'Staff Scientist 2 (Clinical)',
+		},
+		{
+			label: 'Staff Scientist 2 (Facility Head)',
+			value: 'Staff Scientist 2 (Facility Head)',
+		},
 		{ label: 'Scientific Executive', value: 'Scientific Executive' },
 		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
 		{ label: 'SBRBPAS', value: 'SBRBPAS' },
@@ -134,26 +170,36 @@ const basicInformation = (props) => {
 	useEffect(() => {
 		setIsLoading(true);
 		(async () => {
-			const vacancyOptionsResponse = await axios.get(
-				GET_VACANCY_OPTIONS
-			);
+			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
 
 			setCurrentPositionMenu(positionClassificationMenu);
 
 			var packageInitiators = [];
-			for(var i = 0; i < vacancyOptionsResponse.data.result.package_initiators.length; i++) {
-				var packageInitiator = vacancyOptionsResponse.data.result.package_initiators[i];
+			for (
+				var i = 0;
+				i < vacancyOptionsResponse.data.result.package_initiators.length;
+				i++
+			) {
+				var packageInitiator =
+					vacancyOptionsResponse.data.result.package_initiators[i];
 				var packageInitiatorOption = {
-					label :  packageInitiator.name,
-					value : packageInitiator.sys_id
+					label: packageInitiator.name,
+					value: packageInitiator.sys_id,
+					email: packageInitiator.email,
 				};
 				packageInitiators.push(packageInitiatorOption);
 			}
+			console.log(
+				'🚀 ~ file: BasicInfo.js:146 ~ packageInitiators:',
+				packageInitiators
+			);
 			setAppInitiatorMenu(packageInitiators);
 			const codes = [];
-			vacancyOptionsResponse.data.result.sac_codes.forEach(code => {codes.push({label: code, value: code})});
+			vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
+				codes.push({ label: code, value: code });
+			});
 			setSacCodes(codes);
-			setIsLoading(false)
+			setIsLoading(false);
 		})();
 	}, []);
 
@@ -241,15 +287,69 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
-				<Form.Item
-					label='Focus Area Selection'
-					name='requireFocusArea'
-					valuePropName='checked'
-				>
-					<Checkbox>Enable Focus Area</Checkbox>
+			{/* TODO: put vacancy poc here */}
+			<div>
+				<Form.Item label='Vacancy Point of Contact Information'>
+					<Form.Item
+						name='isUserPoc'
+						label='Are you the point of contact for this vacancy?'
+					>
+						<Select
+							options={[
+								{ value: 'yes', label: 'Yes' },
+								{ value: 'no', label: 'No' },
+							]}
+						/>
+					</Form.Item>
+					{isUserPoc ? (
+						<Form.Item
+							name='vacancyPoc'
+							label={
+								isUserPoc === 'no'
+									? 'Who will be the point of contact for this vacancy?'
+									: ''
+							}
+						>
+							<Select
+								name='vacancyPoc'
+								rules={[
+									{
+										required: true,
+										message: 'Please select a point of contact.',
+									},
+								]}
+								defaultValue={isUserPoc === 'yes' ? user.uid : ''}
+								disabled={isUserPoc === 'yes'}
+								showSearch={true}
+								optionLabelProp='label'
+								filterOption={(input, option) =>
+									(option?.label ?? '').includes(input)
+								}
+								filterSort={(optionA, optionB) =>
+									(optionA?.label ?? '')
+										.toLowerCase()
+										.localeCompare((optionB?.label ?? '').toLowerCase())
+								}
+							>
+								<Select.OptGroup>
+									{appInitiatorMenu.map((option) => (
+											<Select.Option key={option.value} value={option.value} label={option.label}>
+												<div>
+													<span>{option.label}</span>
+													<br/>
+													<span>{option.email}</span>
+												</div>
+											</Select.Option>
+										
+									))}
+								</Select.OptGroup>
+							</Select>
+						</Form.Item>
+					) : (
+						''
+					)}
 				</Form.Item>
-			) : null}
+			</div>
 
 			<Form.Item
 				label='Vacancy Description'
@@ -314,6 +414,16 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
+			{user?.tenant?.trim().toLowerCase() === 'owm' ? (
+				<Form.Item
+					label='Focus Area Selection'
+					name='requireFocusArea'
+					valuePropName='checked'
+				>
+					<Checkbox>Enable Focus Area</Checkbox>
+				</Form.Item>
+			) : null}
+
 			<Form.Item label='Application Documents' name='applicationDocuments'>
 				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
@@ -334,14 +444,13 @@ const basicInformation = (props) => {
 					/>
 				</Form.Item>
 			</Form.Item>
-			{/* add number of categories selection here */}
+
 			<Form.Item label='Number of Scoring Categories'>
 				<p className='SmallText'>
 					How many categories does this vacancy require for scoring?
 				</p>
-
 				<Form.Item name='numberOfCategories'>
-					<Slider 
+					<Slider
 						className='CategorySlider'
 						min={1}
 						max={6}
@@ -350,8 +459,8 @@ const basicInformation = (props) => {
 						disabled={readOnly}
 					/>
 				</Form.Item>
-
 			</Form.Item>
+
 			<Form.Item label='ECM Integration Opt In'>
 				<div className='DatePickerContainer'>
 					<div className='DatePicker'>

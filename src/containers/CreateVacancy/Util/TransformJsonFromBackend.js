@@ -20,6 +20,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 					? true
 					: false,
 			description: sourceJson.basic_info.vacancy_description.value,
+			vacancyPoc: sourceJson.basic_info.vacancy_poc.value,
 			appointmentPackageIndicator: sourceJson.basic_info.package_initiator.value,
 			positionClassification: sourceJson.basic_info.title_42_position_classification.value,
 			sacCode: sourceJson.basic_info.organization_code.value,

@@ -23,6 +23,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		allow_hr_specialist_triage: basicInfo.allowHrSpecialistTriage,
 		require_focus_area: basicInfo.requireFocusArea,
 		vacancy_description: basicInfo.description,
+		vacancy_poc: basicInfo.vacancyPoc,
 		package_initiator: basicInfo.appointmentPackageIndicator,
 		title_42_position_classification: basicInfo.positionClassification,
 		organization_code: basicInfo.sacCode,
