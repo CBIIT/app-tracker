@@ -21,6 +21,7 @@ const createVacancy = (props) => {
 		basicInfo: {
 			...initialValues.basicInfo,
 			appointmentPackageIndicator: user.uid,
+			vacancyPoc: user.uid
 		},
 	};
 	const { Step } = Steps;
@@ -31,6 +32,7 @@ const createVacancy = (props) => {
 	);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
+	const isNew = props.initialValues ? false : true;
 
 	const showSubmitModal = () => {
 		setSubmitModalVisible(true);
@@ -107,6 +109,7 @@ const createVacancy = (props) => {
 					initialValues={allForms.basicInfo}
 					formInstance={basicInfoForm}
 					readOnly={restrictedEditMode}
+					isNew={isNew}
 				/>
 			),
 		},
