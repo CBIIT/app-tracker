@@ -84,7 +84,9 @@ const basicInformation = (props) => {
 
 	const readOnly = props.readOnly;
 
-	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
+	const isUserPoc = props.isNew
+		? Form.useWatch('isUserPoc', formInstance)
+		: 'maybe';
 
 	const { auth } = useAuth();
 	const { user } = auth;
@@ -302,17 +304,21 @@ const basicInformation = (props) => {
 			{/* TODO: put vacancy poc here */}
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
-					<Form.Item
-						name='isUserPoc'
-						label='Are you the point of contact for this vacancy?'
-					>
-						<Select
-							options={[
-								{ value: 'yes', label: 'Yes' },
-								{ value: 'no', label: 'No' },
-							]}
-						/>
-					</Form.Item>
+					{props.isNew ? (
+						<Form.Item
+							name='isUserPoc'
+							label='Are you the point of contact for this vacancy?'
+						>
+							<Select
+								options={[
+									{ value: 'yes', label: 'Yes' },
+									{ value: 'no', label: 'No' },
+								]}
+							/>
+						</Form.Item>
+					) : (
+						''
+					)}
 					{isLoading && isUserPoc ? (
 						<Space
 							block='true'
@@ -361,7 +367,9 @@ const basicInformation = (props) => {
 								))}
 							</Select>
 						</Form.Item>
-					) : ('')}
+					) : (
+						''
+					)}
 				</Form.Item>
 			</div>
 
