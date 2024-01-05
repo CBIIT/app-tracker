@@ -10,7 +10,8 @@ import {
 	Typography,
 	Space,
 } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+const { Option } = Select;
+import { InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
@@ -80,6 +81,7 @@ const basicInformation = (props) => {
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
+
 	const readOnly = props.readOnly;
 
 	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
@@ -189,10 +191,6 @@ const basicInformation = (props) => {
 				};
 				packageInitiators.push(packageInitiatorOption);
 			}
-			console.log(
-				'🚀 ~ file: BasicInfo.js:146 ~ packageInitiators:',
-				packageInitiators
-			);
 			setAppInitiatorMenu(packageInitiators);
 			const codes = [];
 			vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
@@ -287,6 +285,20 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
+			<Form.Item
+				label='Vacancy Description'
+				className='VacancyDescription'
+				name='description'
+				rules={[{ validator: validateDescription }]}
+			>
+				<ReactQuill
+					className='QuillEditor'
+					readOnly={readOnly}
+					modules={Editor.modules}
+					formats={Editor.formats}
+				/>
+			</Form.Item>
+
 			{/* TODO: put vacancy poc here */}
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
@@ -301,7 +313,14 @@ const basicInformation = (props) => {
 							]}
 						/>
 					</Form.Item>
-					{isUserPoc ? (
+					{isLoading && isUserPoc ? (
+						<Space
+							block='true'
+							style={{ display: 'flex', justifyContent: 'center' }}
+						>
+							<LoadingOutlined style={{ fontSize: '2rem' }} />
+						</Space>
+					) : isUserPoc ? (
 						<Form.Item
 							name='vacancyPoc'
 							label={
@@ -318,7 +337,7 @@ const basicInformation = (props) => {
 										message: 'Please select a point of contact.',
 									},
 								]}
-								defaultValue={isUserPoc === 'yes' ? user.uid : ''}
+								allowClear={true}
 								disabled={isUserPoc === 'yes'}
 								showSearch={true}
 								optionLabelProp='label'
@@ -331,39 +350,20 @@ const basicInformation = (props) => {
 										.localeCompare((optionB?.label ?? '').toLowerCase())
 								}
 							>
-								<Select.OptGroup>
-									{appInitiatorMenu.map((option) => (
-											<Select.Option key={option.value} value={option.value} label={option.label}>
-												<div>
-													<span>{option.label}</span>
-													<br/>
-													<span>{option.email}</span>
-												</div>
-											</Select.Option>
-										
-									))}
-								</Select.OptGroup>
+								{appInitiatorMenu.map((option, index) => (
+									<Option key={index} value={option.value} label={option.label}>
+										<div>
+											<span>{option.label}</span>
+											<br />
+											<span>{option.email}</span>
+										</div>
+									</Option>
+								))}
 							</Select>
 						</Form.Item>
-					) : (
-						''
-					)}
+					) : ('')}
 				</Form.Item>
 			</div>
-
-			<Form.Item
-				label='Vacancy Description'
-				className='VacancyDescription'
-				name='description'
-				rules={[{ validator: validateDescription }]}
-			>
-				<ReactQuill
-					className='QuillEditor'
-					readOnly={readOnly}
-					modules={Editor.modules}
-					formats={Editor.formats}
-				/>
-			</Form.Item>
 
 			<div className='DatePickerContainer'>
 				<div className='DatePicker'>
@@ -414,7 +414,7 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			{user?.tenant?.trim().toLowerCase() === 'owm' ? (
+			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'

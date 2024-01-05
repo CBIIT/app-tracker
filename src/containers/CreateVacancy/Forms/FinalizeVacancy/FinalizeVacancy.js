@@ -5,10 +5,14 @@ import './FinalizeVacancy.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
+import useAuth from '../../../../hooks/useAuth';
 
 const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
+	
+	const { auth } = useAuth();
+	const { user } = auth;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
 	const errors = props.errorSections;
 	const vacancyCommitteeColumns = [
@@ -20,7 +24,6 @@ const finalizeVacancy = (props) => {
 		{ title: 'Role', dataIndex: 'role', key: 'role' },
 	];
 	useEffect(() => {
-		// since appointment package inititator only displays the sys_id, do a GET to figure out what the display of it should be
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
 			setAllPackageInitiators(
@@ -30,14 +33,28 @@ const finalizeVacancy = (props) => {
 	}, []);
 
 	function getPackageInitiatorDisplayName() {
-		var displayName = '';
-		for (var i = 0; i < allPackageInitiators.length; i++) {
-			var packageInitiator = allPackageInitiators[i];
+		let displayName = '';
+		for (let i = 0; i < allPackageInitiators.length; i++) {
+			let packageInitiator = allPackageInitiators[i];
 			if (packageInitiator.sys_id === basicInfo.appointmentPackageIndicator)
 				displayName = packageInitiator.name;
 		}
 		return displayName;
 	}
+
+	function getVacancyPocDisplay() {
+		const display = {}
+		for (let i=0; i < allPackageInitiators.length; i++) {
+			let poc = allPackageInitiators[i];
+			if (poc.sys_id === basicInfo.vacancyPoc) {
+				display.name = poc.name,
+				display.email = poc.email
+			}
+		}
+		return display;
+	}
+
+	const vacancyPocDisplay = getVacancyPocDisplay();
 
 	return (
 		<>
@@ -58,12 +75,7 @@ const finalizeVacancy = (props) => {
 						<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
 					</div>
 				</div>
-				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
-					<div>
-						<h2>Focus Area</h2>
-						<p>{basicInfo.requireFocusArea ? 'Visible' : 'Not Visible'}</p>
-					</div>
-				</div>
+				
 				<h2 style={basicInfo.description ? null : { color: 'red' }}>
 					{basicInfo.description ? null : '! '}Vacancy Description
 				</h2>
@@ -73,6 +85,16 @@ const finalizeVacancy = (props) => {
 					readOnly={true}
 					theme={'bubble'}
 				/>
+				<div>
+					<h2 style={basicInfo.vacancyPoc ? null : { color: 'red' }}>
+						{basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact Information
+					</h2>
+					<p>
+						{vacancyPocDisplay.name}
+						<br/>
+						{vacancyPocDisplay.email}
+					</p>
+				</div>
 				<div className='DateSection'>
 					<div className='DateCard'>
 						<h2 style={basicInfo.openDate ? null : { color: 'red' }}>
@@ -111,6 +133,16 @@ const finalizeVacancy = (props) => {
 						</p>
 					</div>
 				</div>
+				{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
+					<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
+						<div>
+							<h2>Focus Area</h2>
+							<p>{basicInfo.requireFocusArea ? 'Visible' : 'Not Visible'}</p>
+						</div>
+					</div>
+				) : (
+					''
+				)}
 				<h2>Application Documents</h2>
 				<ul>
 					{basicInfo.applicationDocuments.map((element, index) => (

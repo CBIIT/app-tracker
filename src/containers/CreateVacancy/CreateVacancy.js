@@ -21,7 +21,7 @@ const createVacancy = (props) => {
 		basicInfo: {
 			...initialValues.basicInfo,
 			appointmentPackageIndicator: user.uid,
-			//vacancyPoc: user.uid
+			vacancyPoc: user.uid
 		},
 	};
 	const { Step } = Steps;
