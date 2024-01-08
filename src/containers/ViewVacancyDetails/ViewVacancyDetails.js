@@ -67,6 +67,7 @@ const viewVacancyDetails = () => {
 				closeDate={vacancyDetails.basic_info.close_date.value}
 				vacancyState={vacancyDetails.basic_info.state.value}
 				closeTime={getCloseTime(vacancyDetails.basic_info.closing_time.label)}
+				vacancyPOC={vacancyDetails.basic_info.vacancy_poc}
 				sysId={sysId}
 			/>
 			<div className='Content'>

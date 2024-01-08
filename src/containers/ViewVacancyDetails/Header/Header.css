@@ -5,7 +5,7 @@
 	flex-direction: row;
 	flex-wrap: wrap;
 	padding-top: 16px;
-	padding-bottom: 16px;
+	padding-bottom: 8px;
 }
 
 .TitleAndDateContainer {
@@ -26,6 +26,15 @@
 .TitleAndDateContainer label {
 	font-weight: bold;
 	margin-right: 10px;
+}
+
+.POCEmail {
+	color: white;
+	text-decoration: underline;
+}
+
+.POCEmail:hover {
+	color: rgba(200, 200, 200, 1);
 }
 
 .DateContainer {

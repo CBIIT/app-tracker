@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
@@ -92,9 +93,38 @@ const header = (props) => {
 					<div className='DateItem'>
 						<label>Close Date</label>
 						<span>
-							{`${transformDateToDisplay(props.closeDate)} ${props.closeTime} ET`}
+							{`${transformDateToDisplay(props.closeDate)} ${
+								props.closeTime
+							} ET`}
 						</span>
 					</div>
+					{props.vacancyPOC.label ? (
+						<div className='DateItem'>
+							<label>Point of Contact:</label>
+							<span>{props.vacancyPOC.label} </span>
+							<Tooltip
+								title={
+									<span>
+										If you experience any issues during the application process,
+										please reach out to the vacancy point of contact via email
+										at{' '}
+										<a
+											className='POCEmail'
+											href={`mailto: ${props.vacancyPOC.email}?subject = Issues with ${props.title} vacancy`}
+										>
+											{props.vacancyPOC.email}
+										</a>
+									</span>
+								}
+								color='rgba(80, 80, 80, 0.9)'
+								placement='bottom'
+							>
+								<DownOutlined />
+							</Tooltip>
+						</div>
+					) : (
+						''
+					)}
 				</div>
 			</div>
 			{!isLoading ? (
@@ -114,7 +144,7 @@ const header = (props) => {
 				</div>
 			) : null}
 			{showProfileDialog ? (
-				<ProfileModal handleClose={() => handleProfileDialogClose()}/>
+				<ProfileModal handleClose={() => handleProfileDialogClose()} />
 			) : null}
 		</div>
 	);
