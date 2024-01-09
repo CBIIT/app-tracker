@@ -24,7 +24,7 @@
 
 .Slider {
 	flex: 0 1;
-	width: 50vw;
+	max-width: 43vw;
 }
 
 .CategorySlider {
