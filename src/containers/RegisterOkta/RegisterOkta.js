@@ -131,7 +131,7 @@ const registerOkta = () => {
 					<Result status={error ? 'warning' : 'success'} subTitle={message} />
 				) : (
 					<>
-						<h1>Create your NIH account to access SCSS</h1>
+						<h1>Create your NIH account to access SSJ</h1>
 						<h2>
 							Already have an account?{' '}
 							<Button
@@ -231,7 +231,7 @@ const registerOkta = () => {
 										>
 											NIH Login
 										</a>{' '}
-										to sign in to SCSS.
+										to sign in to SSJ.
 									</p>
 								</Col>
 								<Col span={12}>
