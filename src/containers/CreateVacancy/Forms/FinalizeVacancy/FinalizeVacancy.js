@@ -156,7 +156,7 @@ const finalizeVacancy = (props) => {
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
 					<li className='ListItemTrue'>
-						{basicInfo.numberOfRecommendations} recommendations
+						{basicInfo.numberOfRecommendations} recommendation(s)
 					</li>
 				</ul>
 				<h2>Number of Scoring Categories</h2>
@@ -179,7 +179,7 @@ const finalizeVacancy = (props) => {
 				<ul>
 					<p className='ListItemTrue'>{basicInfo.positionClassification}</p>
 				</ul>
-				<h2>Appointment Package Initiator</h2>
+				<h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 				<ul>
 					<p className='ListItemTrue'>
 						{getPackageInitiatorDisplayName(
