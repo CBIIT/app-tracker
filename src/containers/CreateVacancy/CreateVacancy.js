@@ -33,6 +33,7 @@ const createVacancy = (props) => {
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
 	const isNew = props.initialValues ? false : true;
+	const pocDefined = allForms.basicInfo.vacancyPoc === undefined ? false : true;
 
 	const showSubmitModal = () => {
 		setSubmitModalVisible(true);
@@ -110,6 +111,7 @@ const createVacancy = (props) => {
 					formInstance={basicInfoForm}
 					readOnly={restrictedEditMode}
 					isNew={isNew}
+					pocDefined={pocDefined}
 				/>
 			),
 		},

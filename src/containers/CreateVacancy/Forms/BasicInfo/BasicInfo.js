@@ -83,13 +83,17 @@ const basicInformation = (props) => {
 	const initialValues = props.initialValues;
 
 	const readOnly = props.readOnly;
-
-	const isUserPoc = props.isNew
-		? Form.useWatch('isUserPoc', formInstance)
-		: 'maybe';
+	const isNew = props.isNew;
+	const isDefined = props.pocDefined;
+	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
 
 	const { auth } = useAuth();
 	const { user } = auth;
+
+	const newValues = {
+		...props.initialValues,
+		vacancyPoc: user.uid
+	};
 
 	const sliderMarks = {
 		0: '0',
@@ -255,7 +259,7 @@ const basicInformation = (props) => {
 			requiredMark={false}
 			name='BasicInfo'
 			form={formInstance}
-			initialValues={initialValues}
+			initialValues={(!isNew && !isDefined) ? newValues : initialValues}
 			className='BasicInfo'
 		>
 			<div className='BasicInfoFlexWrap'>
@@ -304,7 +308,7 @@ const basicInformation = (props) => {
 			{/* TODO: put vacancy poc here */}
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
-					{props.isNew ? (
+					{(!isDefined && !isNew) || (isDefined && isNew)? (
 						<Form.Item
 							name='isUserPoc'
 							label='Are you the point of contact for this vacancy?'
@@ -319,14 +323,14 @@ const basicInformation = (props) => {
 					) : (
 						''
 					)}
-					{isLoading && isUserPoc ? (
+					{isLoading && isDefined ? (
 						<Space
 							block='true'
 							style={{ display: 'flex', justifyContent: 'center' }}
 						>
 							<LoadingOutlined style={{ fontSize: '2rem' }} />
 						</Space>
-					) : isUserPoc ? (
+					) : (!isNew && isDefined) || isUserPoc ? (
 						<Form.Item
 							name='vacancyPoc'
 							label={
@@ -469,9 +473,9 @@ const basicInformation = (props) => {
 				</Form.Item>
 			</Form.Item>
 
-			<Form.Item label='ECM Integration Opt In'>
-				<div className='DatePickerContainer'>
-					<div className='DatePicker'>
+			<Form.Item label='Personnel Action Tracking Solution (PATS): Appointment Information'>
+				<div className='PATSContainer'>
+					<div className='PATSPicker'>
 						<EditableDropDown
 							label={
 								<>
@@ -498,20 +502,31 @@ const basicInformation = (props) => {
 							menu={currentPositionMenu}
 						/>
 					</div>
-					<div className='DatePicker'>
+					<div className='PATSPicker'>
 						<EditableDropDown
+							name='sacCode'
+							required={true}
+							showSearch={true}
+							menu={sacCodes}
+							filterOption={(input, option) =>
+								(option?.label.toLowerCase() ?? '').includes(
+									input.toLowerCase()
+								)
+							}
+							filterSort={(optionA, optionB) =>
+								(optionA?.label ?? '')
+									.toLowerCase()
+									.localeCompare((optionB?.label ?? '').toLowerCase())
+							}
 							label={
 								<>
 									<Space>
-										Appointment Package Initiator
+										Organizational Code
 										<Tooltip
 											title={
 												<>
-													Populate the individual who will be assembling the
-													appointment package within the Personnel Action
-													Tracking Solution (PATS). Value defaults to the SSJ
-													Vacancy Manager, but can be updated within the SSJ or
-													later in PATS.
+													Provide SAC code for organization where the position
+													will reside.
 												</>
 											}
 										>
@@ -522,45 +537,23 @@ const basicInformation = (props) => {
 									</Space>
 								</>
 							}
-							name='appointmentPackageIndicator'
-							required={true}
-							showSearch={true}
-							menu={appInitiatorMenu}
-							filterOption={(input, option) =>
-								(option?.label ?? '').includes(input)
-							}
-							filterSort={(optionA, optionB) =>
-								(optionA?.label ?? '')
-									.toLowerCase()
-									.localeCompare((optionB?.label ?? '').toLowerCase())
-							}
-							loading={isLoading}
 						/>
 					</div>
 				</div>
-				<div className='DatePicker'>
+				<div className='PATSInitiator'>
 					<EditableDropDown
-						name='sacCode'
-						required={true}
-						showSearch={true}
-						menu={sacCodes}
-						filterOption={(input, option) =>
-							(option?.label.toLowerCase() ?? '').includes(input.toLowerCase())
-						}
-						filterSort={(optionA, optionB) =>
-							(optionA?.label ?? '')
-								.toLowerCase()
-								.localeCompare((optionB?.label ?? '').toLowerCase())
-						}
 						label={
 							<>
 								<Space>
-									Organizational Code
+									Personnel Action Tracking Solution (PATS) Initiator
 									<Tooltip
 										title={
 											<>
-												Provide SAC code for organization where the position
-												will reside.
+												Populate the individual who will be assembling the
+												appointment package within the Personnel Action Tracking
+												Solution (PATS). Value defaults to the SSJ Vacancy
+												Manager, but can be updated within the SSJ or later in
+												PATS.
 											</>
 										}
 									>
@@ -571,6 +564,19 @@ const basicInformation = (props) => {
 								</Space>
 							</>
 						}
+						name='appointmentPackageIndicator'
+						required={true}
+						showSearch={true}
+						menu={appInitiatorMenu}
+						filterOption={(input, option) =>
+							(option?.label ?? '').includes(input)
+						}
+						filterSort={(optionA, optionB) =>
+							(optionA?.label ?? '')
+								.toLowerCase()
+								.localeCompare((optionB?.label ?? '').toLowerCase())
+						}
+						loading={isLoading}
 					/>
 				</div>
 			</Form.Item>

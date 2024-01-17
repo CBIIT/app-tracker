@@ -22,6 +22,27 @@
 	max-width: 320px;
 }
 
+.PATSContainer {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.PATSPicker {
+	flex-shrink: 1;
+	flex-grow: 1;
+	max-width: 330px;
+}
+
+.PATSInitiator {
+	flex-shrink: 1;
+	flex-grow: 1;
+	max-width: 330px;
+}
+
 .Slider {
 	flex: 0 1;
 	max-width: 43vw;
