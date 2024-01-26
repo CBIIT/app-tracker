@@ -105,15 +105,19 @@ const header = (props) => {
 							<Tooltip
 								title={
 									<span>
-										If you experience any issues during the application process,
-										please reach out to the vacancy point of contact via email
-										at{' '}
+										If you have any questions regarding the vacancy
+										announcement, please reach out to the vacancy point of
+										contact via email at <br />
 										<a
 											className='POCEmail'
 											href={`mailto: ${props.vacancyPOC.email}?subject = Issues with ${props.title} vacancy`}
 										>
 											{props.vacancyPOC.email}
 										</a>
+										.
+										<br />
+										If you are having technical issues, click the support button
+										found at the bottom of this page.
 									</span>
 								}
 								color='rgba(80, 80, 80, 0.9)'
