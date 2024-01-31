@@ -750,7 +750,6 @@ const application = () => {
 											: ''
 									}
 								>
-									{console.log(appDocIds)}
 									<Button disabled={appDocIds.length === 0}>
 										<a
 											href={

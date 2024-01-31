@@ -9,7 +9,7 @@ const { Paragraph } = Typography;
 const TimeoutModal = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const { auth, setAuth } = useAuth();
-	const { modalTimeout, setModalTimeout } = useTimeout();
+	const { setModalTimeout } = useTimeout();
 	let fullTimeoutDuration = auth.sessionTimeout;
 	let uiTimeout = auth.sessionTimeout * 0.9;
 	let remainingTime = auth.sessionTimeout - uiTimeout;
@@ -52,7 +52,6 @@ const TimeoutModal = () => {
 		// extend user session
 		refreshAuth();
 		setIsModalOpen(false);
-		console.log(modalTimeout);
 	};
 
 	const handleCancel = () => {
@@ -66,13 +65,15 @@ const TimeoutModal = () => {
 		setAuth({
 			isUserLoggedIn: data.logged_in,
 			iTrustGlideSsoId: data.itrust_idp,
+			iTrustUrl: data.itrust_url,
 			oktaGlideSsoId: data.okta_idp,
 			sessionTimeout: data.session_timeout,
 			user: {
 				firstName: data.user.first_name,
 				lastInitial: data.user.last_initial,
-				email: data.user.email,
+				uid: data.user.user_id,
 				hasProfile: data.has_profile,
+				tenant: data.user.tenant,
 				isChair: data.is_chair,
 				isManager: data.is_manager,
 				isExecSec: data.is_exec_sec,
