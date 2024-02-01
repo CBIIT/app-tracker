@@ -92,7 +92,7 @@ const basicInformation = (props) => {
 
 	const newValues = {
 		...props.initialValues,
-		vacancyPoc: user.uid
+		vacancyPoc: user.uid,
 	};
 
 	const sliderMarks = {
@@ -259,7 +259,7 @@ const basicInformation = (props) => {
 			requiredMark={false}
 			name='BasicInfo'
 			form={formInstance}
-			initialValues={(!isNew && !isDefined) ? newValues : initialValues}
+			initialValues={!isNew && !isDefined ? newValues : initialValues}
 			className='BasicInfo'
 		>
 			<div className='BasicInfoFlexWrap'>
@@ -308,7 +308,7 @@ const basicInformation = (props) => {
 			{/* TODO: put vacancy poc here */}
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
-					{(!isDefined && !isNew) || (isDefined && isNew)? (
+					{(!isDefined && !isNew) || (isDefined && isNew) ? (
 						<Form.Item
 							name='isUserPoc'
 							label='Are you the point of contact for this vacancy?'
@@ -352,7 +352,9 @@ const basicInformation = (props) => {
 								showSearch={true}
 								optionLabelProp='label'
 								filterOption={(input, option) =>
-									(option?.label ?? '').includes(input)
+									(option?.label ?? '')
+										.toLowerCase()
+										.includes(input.toLowerCase())
 								}
 								filterSort={(optionA, optionB) =>
 									(optionA?.label ?? '')
@@ -509,9 +511,9 @@ const basicInformation = (props) => {
 							showSearch={true}
 							menu={sacCodes}
 							filterOption={(input, option) =>
-								(option?.label.toLowerCase() ?? '').includes(
-									input.toLowerCase()
-								)
+								(option?.label ?? '')
+									.toLowerCase()
+									.includes(input.toLowerCase())
 							}
 							filterSort={(optionA, optionB) =>
 								(optionA?.label ?? '')
