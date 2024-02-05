@@ -1,4 +1,4 @@
-import { Table } from 'antd';
+import { Space, Table } from 'antd';
 import ReactQuill from 'react-quill';
 import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewSectionHeader';
 import './FinalizeVacancy.css';
@@ -6,14 +6,16 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import useAuth from '../../../../hooks/useAuth';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
-	
+
 	const { auth } = useAuth();
 	const { user } = auth;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
+	const [loading, setLoading] = useState(false);
 	const errors = props.errorSections;
 	const vacancyCommitteeColumns = [
 		{
@@ -24,11 +26,13 @@ const finalizeVacancy = (props) => {
 		{ title: 'Role', dataIndex: 'role', key: 'role' },
 	];
 	useEffect(() => {
+		setLoading(true);
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
 			setAllPackageInitiators(
 				vacancyOptionsResponse.data.result.package_initiators
 			);
+			setLoading(false);
 		})();
 	}, []);
 
@@ -48,7 +52,7 @@ const finalizeVacancy = (props) => {
 			let poc = allPackageInitiators[i];
 			if (poc.sys_id === basicInfo.vacancyPoc) {
 				display.name = poc.name,
-				display.email = poc.email
+					display.email = poc.email
 			}
 		}
 		return display;
@@ -75,7 +79,7 @@ const finalizeVacancy = (props) => {
 						<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
 					</div>
 				</div>
-				
+
 				<h2 style={basicInfo.description ? null : { color: 'red' }}>
 					{basicInfo.description ? null : '! '}Vacancy Description
 				</h2>
@@ -89,11 +93,17 @@ const finalizeVacancy = (props) => {
 					<h2 style={basicInfo.vacancyPoc ? null : { color: 'red' }}>
 						{basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact Information
 					</h2>
-					<p>
-						{vacancyPocDisplay.name}
-						<br/>
-						{vacancyPocDisplay.email}
-					</p>
+					<div>
+						{loading ? <Space block='true' style={{ display: 'flex', justifyContent: 'center' }}>
+							<LoadingOutlined style={{ fontSize: '2rem' }} />
+						</Space> : <p>
+
+							{vacancyPocDisplay.name}
+							<br />
+							{vacancyPocDisplay.email}
+						</p>}
+					</div>
+
 				</div>
 				<div className='DateSection'>
 					<div className='DateCard'>
@@ -103,8 +113,8 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo.openDate
 								? new Date(basicInfo.openDate)
-										.toLocaleString('en-us')
-										.split(',')[0]
+									.toLocaleString('en-us')
+									.split(',')[0]
 								: null}
 						</p>
 					</div>
@@ -115,8 +125,8 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo.closeDate
 								? new Date(basicInfo.closeDate)
-										.toLocaleString('en-us')
-										.split(',')[0]
+									.toLocaleString('en-us')
+									.split(',')[0]
 								: null}
 						</p>
 					</div>
@@ -127,8 +137,8 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo.scoringDueByDate
 								? new Date(basicInfo.scoringDueByDate)
-										.toLocaleString('en-us')
-										.split(',')[0]
+									.toLocaleString('en-us')
+									.split(',')[0]
 								: ''}
 						</p>
 					</div>
@@ -182,10 +192,14 @@ const finalizeVacancy = (props) => {
 				<h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 				<ul>
 					<p className='ListItemTrue'>
-						{getPackageInitiatorDisplayName(
-							basicInfo.appointmentPackageIndicator,
-							allPackageInitiators
-						)}
+						{
+							loading ? <Space block='true' style={{ display: 'flex', justifyContent: 'center' }}>
+								<LoadingOutlined style={{ fontSize: '2rem' }} />
+							</Space> :
+								getPackageInitiatorDisplayName(
+									basicInfo.appointmentPackageIndicator,
+									allPackageInitiators
+								)}
 					</p>
 				</ul>
 			</div>
