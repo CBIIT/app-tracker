@@ -290,15 +290,6 @@ const basicInformation = (props) => {
 							<Checkbox>Allow HR Specialist to Triage</Checkbox>
 						</Form.Item>
 					</Tooltip>
-					<Tooltip title='Checking this box allows the vacancy to close on the set date'>
-					<Form.Item
-						name='useCloseDate'
-						valuePropName='checked'
-						style={{ margin: '0px', paddingLeft: '20px' }}
-					>
-						<Checkbox>Utilize a Rolling Closing Date</Checkbox>
-					</Form.Item>
-				</Tooltip>
 				</div>
 			</div>
 
