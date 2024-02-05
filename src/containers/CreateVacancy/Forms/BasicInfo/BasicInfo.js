@@ -275,7 +275,9 @@ const basicInformation = (props) => {
 				<div
 					style={{
 						display: 'flex',
-						alignItems: 'center',
+						flexDirection: 'column',
+						alignItems: 'start',
+						justifyContent: 'center',
 						flex: '1 0 240px',
 					}}
 				>
@@ -283,11 +285,20 @@ const basicInformation = (props) => {
 						<Form.Item
 							name='allowHrSpecialistTriage'
 							valuePropName='checked'
-							style={{ margin: '0px', paddingLeft: '10px' }}
+							style={{ margin: '0px', paddingLeft: '20px' }}
 						>
 							<Checkbox>Allow HR Specialist to Triage</Checkbox>
 						</Form.Item>
 					</Tooltip>
+					<Tooltip title='Checking this box allows the vacancy to close on the set date'>
+					<Form.Item
+						name='useCloseDate'
+						valuePropName='checked'
+						style={{ margin: '0px', paddingLeft: '20px' }}
+					>
+						<Checkbox>Utilize a Rolling Closing Date</Checkbox>
+					</Form.Item>
+				</Tooltip>
 				</div>
 			</div>
 
@@ -305,7 +316,6 @@ const basicInformation = (props) => {
 				/>
 			</Form.Item>
 
-			{/* TODO: put vacancy poc here */}
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
 					{(!isDefined && !isNew) || (isDefined && isNew) ? (
@@ -571,7 +581,9 @@ const basicInformation = (props) => {
 						showSearch={true}
 						menu={appInitiatorMenu}
 						filterOption={(input, option) =>
-							(option?.label ?? '').includes(input)
+							(option?.label ?? '')
+								.toLowerCase()
+								.includes(input.toLowerCase())
 						}
 						filterSort={(optionA, optionB) =>
 							(optionA?.label ?? '')
