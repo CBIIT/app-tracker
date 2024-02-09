@@ -28,8 +28,9 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		title_42_position_classification: basicInfo.positionClassification,
 		organization_code: basicInfo.sacCode,
 		open_date: getDateFromDateTime(basicInfo.openDate),
-		close_date: getDateFromDateTime(basicInfo.closeDate),
-		scoring_due_by_date: getDateFromDateTime(basicInfo.scoringDueByDate),
+		use_close_date: basicInfo.useCloseDate,
+		close_date: basicInfo.useCloseDate ? getDateFromDateTime(basicInfo.closeDate) : null,
+		scoring_due_by_date: basicInfo.useCloseDate ? getDateFromDateTime(basicInfo.scoringDueByDate) : null,
 		number_of_recommendation: basicInfo.numberOfRecommendations,
 		number_of_categories: basicInfo.numberOfCategories,
 		equal_opportunity_employment_statement:

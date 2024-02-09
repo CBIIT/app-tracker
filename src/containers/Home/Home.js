@@ -24,8 +24,8 @@ const columns = [
 		title: 'Application Period',
 		dataIndex: 'applicationPeriod',
 		sorter: (a, b) => {
-			const newA = a.applicationPeriod.split(' -')[0];
-			const newB = b.applicationPeriod.split(' -')[0];
+			const newA = a.openDate;
+			const newB = b.openDate;
 			return new Date(newA) - new Date(newB);
 		},
 		defaultSortOrder: 'descend',
@@ -39,8 +39,11 @@ const transformData = (data) => {
 		key: item.sys_id,
 		vacancyTitle: item.title,
 		office: item.tenant,
-		applicationPeriod:
-			transformDate(item.open_date) + ' - ' + transformDate(item.close_date),
+		useCloseDate: item.use_close_date === '0' ? false : true,
+		openDate: item.open_date,
+		closeDate: item.close_date,
+		applicationPeriod: item.close_date ?
+			transformDate(item.open_date) + ' - ' + transformDate(item.close_date) : "Open Until Filled",
 	}));
 };
 

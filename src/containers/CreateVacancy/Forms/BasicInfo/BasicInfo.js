@@ -86,6 +86,7 @@ const basicInformation = (props) => {
 	const isNew = props.isNew;
 	const isDefined = props.pocDefined;
 	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
+	const useCloseDate = Form.useWatch('useCloseDate', formInstance);
 
 	const { auth } = useAuth();
 	const { user } = auth;
@@ -281,6 +282,15 @@ const basicInformation = (props) => {
 						flex: '1 0 240px',
 					}}
 				>
+					<Tooltip title='Selecting “Utilizing a Set Close Date” will provide the Vacancy Manager with the ability to select a set close date and extend only when the vacancy announcement is still live. If this option is not selected, the vacancy will use a rolling close date and the vacancy announcement will not close until a selection is made.'>
+						<Form.Item
+							name='useCloseDate'
+							valuePropName='checked'
+							style={{ margin: '0px', paddingLeft: '20px' }}
+						>
+							<Checkbox>Utilizing a Set Close Date</Checkbox>
+						</Form.Item>
+					</Tooltip>
 					<Tooltip title='Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage'>
 						<Form.Item
 							name='allowHrSpecialistTriage'
@@ -398,36 +408,40 @@ const basicInformation = (props) => {
 						/>
 					</Form.Item>
 				</div>
-				<div className='DatePicker'>
-					<Form.Item
-						label='Close Date'
-						name='closeDate'
-						rules={[
-							{
-								required: true,
-								message: 'Please select a close date',
-							},
-							{ validator: validateDates },
-						]}
-					>
-						<DatePicker
-							className='DatePickerInput'
-							disabledDate={disabledDate}
-							format='MM/DD/YYYY'
-							disabled={readOnly}
-							style={{ width: '100%' }}
-						/>
-					</Form.Item>
-				</div>
+				{useCloseDate && 
+					<div className='DatePicker'>
+						<Form.Item
+							label='Close Date'
+							name='closeDate'
+							rules={[
+								{
+									required: useCloseDate,
+									message: 'Please select a close date',
+								},
+								{ validator: validateDates },
+							]}
+						>
+							<DatePicker
+								className='DatePickerInput'
+								disabledDate={disabledDate}
+								format='MM/DD/YYYY'
+								disabled={readOnly}
+								style={{ width: '100%' }}
+							/>
+						</Form.Item>
+					</div>
+				}
 			</div>
 
-			<div className='DatePickerContainer'>
+			{useCloseDate && 
+				<div className='DatePickerContainer'>
 				<div className='DatePicker'>
 					<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
 						<DatePicker format='MM/DD/YYYY' style={{ width: '100%' }} />
 					</Form.Item>
 				</div>
 			</div>
+			}
 
 			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
@@ -572,9 +586,7 @@ const basicInformation = (props) => {
 						showSearch={true}
 						menu={appInitiatorMenu}
 						filterOption={(input, option) =>
-							(option?.label ?? '')
-								.toLowerCase()
-								.includes(input.toLowerCase())
+							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 						}
 						filterSort={(optionA, optionB) =>
 							(optionA?.label ?? '')
