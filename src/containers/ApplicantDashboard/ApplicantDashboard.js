@@ -88,6 +88,7 @@ const applicantDashboard = () => {
 	};
 
 	const { isLoading, data, error, setData } = useFetch(GET_USER_APPLICATIONS);
+	console.log(data)
 
 	const applicationColumns = [
 		{
@@ -126,7 +127,7 @@ const applicantDashboard = () => {
 			title: 'Vacancy Closes',
 			dataIndex: 'vacancy_closes',
 			key: 'closes',
-			render: (date) => transformDateToDisplay(date),
+			render: (date) => date ? transformDateToDisplay(date) : "Open Until Filled",
 			sorter: {
 				compare: (a, b) =>
 					new Date(a.vacancy_closes) - new Date(b.vacancy_closes),
