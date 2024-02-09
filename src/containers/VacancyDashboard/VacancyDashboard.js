@@ -225,7 +225,7 @@ const vacancyDashboard = () => {
 		{
 			title: 'Close Date',
 			dataIndex: 'close_date',
-			render: (date) => transformDateToDisplay(date),
+			render: (date) => date ? transformDateToDisplay(date) : "Open Until Filled",
 			sorter: {
 				compare: (a, b) => {
 					const dateA = a.close_date;
@@ -319,7 +319,7 @@ const vacancyDashboard = () => {
 		{
 			title: 'Close Date',
 			dataIndex: 'close_date',
-			render: (date) => transformDateToDisplay(date),
+			render: (date) => date ? transformDateToDisplay(date) : "Open Until Filled",
 			sorter: {
 				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 				multiple: 3,
