@@ -88,7 +88,6 @@ const applicantDashboard = () => {
 	};
 
 	const { isLoading, data, error, setData } = useFetch(GET_USER_APPLICATIONS);
-	console.log(data)
 
 	const applicationColumns = [
 		{
