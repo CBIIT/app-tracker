@@ -6,6 +6,8 @@ export const transformJsonFromBackend = (sourceJson) => {
 		basicInfo: {
 			sys_id: sourceJson.basic_info.sys_id.value,
 			openDate: moment(sourceJson.basic_info.open_date.value),
+			useCloseDate:
+				sourceJson.basic_info.use_close_date.value == '1' ? true : false,
 			closeDate: moment(sourceJson.basic_info.close_date.value),
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.value
 				? moment(sourceJson.basic_info.scoring_due_by_date.value)
@@ -16,13 +18,16 @@ export const transformJsonFromBackend = (sourceJson) => {
 					? true
 					: false,
 			requireFocusArea:
-				sourceJson.basic_info.require_focus_area.value == '1'
-					? true
-					: false,
+				sourceJson.basic_info.require_focus_area.value == '1' ? true : false,
 			description: sourceJson.basic_info.vacancy_description.value,
-			vacancyPoc: sourceJson.basic_info.vacancy_poc.value == 'undefined' ? undefined : sourceJson.basic_info.vacancy_poc.value,
-			appointmentPackageIndicator: sourceJson.basic_info.package_initiator.value,
-			positionClassification: sourceJson.basic_info.title_42_position_classification.value,
+			vacancyPoc:
+				sourceJson.basic_info.vacancy_poc.value == 'undefined'
+					? undefined
+					: sourceJson.basic_info.vacancy_poc.value,
+			appointmentPackageIndicator:
+				sourceJson.basic_info.package_initiator.value,
+			positionClassification:
+				sourceJson.basic_info.title_42_position_classification.value,
 			sacCode: sourceJson.basic_info.organization_code.value,
 			applicationDocuments: sourceJson.vacancy_documents.map((doc) => ({
 				sys_id: doc.sys_id.value,
@@ -31,7 +36,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			})),
 			numberOfRecommendations:
 				sourceJson.basic_info.number_of_recommendation.value,
-			numberOfCategories: sourceJson.basic_info.number_of_categories.value
+			numberOfCategories: sourceJson.basic_info.number_of_categories.value,
 		},
 		emailTemplates: sourceJson.vacancy_emails.map((temp) => ({
 			sys_id: temp.sys_id.value,

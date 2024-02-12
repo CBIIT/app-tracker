@@ -86,18 +86,27 @@ const header = (props) => {
 			<div className='TitleAndDateContainer'>
 				<h1>{props.title}</h1>
 				<div className='DateContainer'>
-					<div className='DateItem'>
-						<label>Open Date</label>
-						<span>{transformDateToDisplay(props.openDate)}</span>
-					</div>
-					<div className='DateItem'>
-						<label>Close Date</label>
-						<span>
-							{`${transformDateToDisplay(props.closeDate)} ${
-								props.closeTime
-							} ET`}
-						</span>
-					</div>
+					{props.closeDate ? (
+						<>
+							<div className='DateItem'>
+								<label>Open Date</label>
+								<span>{transformDateToDisplay(props.openDate)}</span>
+							</div>
+							<div className='DateItem'>
+								<label>Close Date</label>
+								<span>
+									{`${transformDateToDisplay(props.closeDate)} ${
+										props.closeTime
+									} ET`}
+								</span>
+							</div>
+						</>
+					) : (
+						<div className='DateItem'>
+							<label>Open Until Filled</label>
+						</div>
+					)}
+
 					{props.vacancyPOC.label ? (
 						<div className='DateItem'>
 							<label>Point of Contact:</label>
