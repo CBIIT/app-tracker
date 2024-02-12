@@ -359,7 +359,7 @@ const basicInformation = (props) => {
 									},
 								]}
 								allowClear={true}
-								disabled={isUserPoc === 'yes'}
+								disabled={isUserPoc === 'yes' || readOnly}
 								showSearch={true}
 								optionLabelProp='label'
 								filterOption={(input, option) =>
@@ -517,12 +517,14 @@ const basicInformation = (props) => {
 							name='positionClassification'
 							required={true}
 							menu={currentPositionMenu}
+							disabled={readOnly}
 						/>
 					</div>
 					<div className='PATSPicker'>
 						<EditableDropDown
 							name='sacCode'
 							required={true}
+							disabled={readOnly}
 							showSearch={true}
 							menu={sacCodes}
 							filterOption={(input, option) =>
@@ -594,6 +596,7 @@ const basicInformation = (props) => {
 								.localeCompare((optionB?.label ?? '').toLowerCase())
 						}
 						loading={isLoading}
+						disabled={readOnly}
 					/>
 				</div>
 			</Form.Item>

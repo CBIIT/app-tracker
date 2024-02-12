@@ -14,6 +14,7 @@ const editableDropDown = (props) => (
 			</Space>
 		) : (
 			<Select
+				disabled={props?.disabled}
 				showSearch={props?.showSearch}
 				options={props.menu?.map((option) => ({
 					label: option.label,
