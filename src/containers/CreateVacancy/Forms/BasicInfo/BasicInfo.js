@@ -319,7 +319,7 @@ const basicInformation = (props) => {
 
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
-					{(!isDefined && !isNew) || (isDefined && isNew) ? (
+					{(!isDefined && !isNew) || (isDefined && isNew) || !isDefined ? (
 						<Form.Item
 							name='isUserPoc'
 							label='Are you the point of contact for this vacancy?'
@@ -359,7 +359,7 @@ const basicInformation = (props) => {
 									},
 								]}
 								allowClear={true}
-								disabled={isUserPoc === 'yes' || readOnly}
+								disabled={readOnly || isUserPoc === 'yes'}
 								showSearch={true}
 								optionLabelProp='label'
 								filterOption={(input, option) =>
@@ -408,7 +408,7 @@ const basicInformation = (props) => {
 						/>
 					</Form.Item>
 				</div>
-				{useCloseDate && 
+				{useCloseDate && (
 					<div className='DatePicker'>
 						<Form.Item
 							label='Close Date'
@@ -430,18 +430,18 @@ const basicInformation = (props) => {
 							/>
 						</Form.Item>
 					</div>
-				}
+				)}
 			</div>
 
-			{useCloseDate && 
+			{useCloseDate && (
 				<div className='DatePickerContainer'>
-				<div className='DatePicker'>
-					<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
-						<DatePicker format='MM/DD/YYYY' style={{ width: '100%' }} />
-					</Form.Item>
+					<div className='DatePicker'>
+						<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
+							<DatePicker format='MM/DD/YYYY' style={{ width: '100%' }} />
+						</Form.Item>
+					</div>
 				</div>
-			</div>
-			}
+			)}
 
 			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
