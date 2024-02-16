@@ -126,7 +126,7 @@ const applicantDashboard = () => {
 			title: 'Vacancy Closes',
 			dataIndex: 'vacancy_closes',
 			key: 'closes',
-			render: (date) => transformDateToDisplay(date),
+			render: (date) => date ? transformDateToDisplay(date) : "Open Until Filled",
 			sorter: {
 				compare: (a, b) =>
 					new Date(a.vacancy_closes) - new Date(b.vacancy_closes),

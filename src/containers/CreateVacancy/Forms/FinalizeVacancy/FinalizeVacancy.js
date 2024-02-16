@@ -11,7 +11,6 @@ import { LoadingOutlined } from '@ant-design/icons';
 const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
-
 	const { auth } = useAuth();
 	const { user } = auth;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
@@ -47,12 +46,11 @@ const finalizeVacancy = (props) => {
 	}
 
 	function getVacancyPocDisplay() {
-		const display = {}
-		for (let i=0; i < allPackageInitiators.length; i++) {
+		const display = {};
+		for (let i = 0; i < allPackageInitiators.length; i++) {
 			let poc = allPackageInitiators[i];
 			if (poc.sys_id === basicInfo.vacancyPoc) {
-				display.name = poc.name,
-					display.email = poc.email
+				(display.name = poc.name), (display.email = poc.email);
 			}
 		}
 		return display;
@@ -75,11 +73,14 @@ const finalizeVacancy = (props) => {
 						<p>{basicInfo.title}</p>
 					</div>
 					<div>
-						<h2>Allow HR Specialist to Triage</h2>
-						<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
+						<h2>Utilize a Set Close Date</h2>
+						<p>{basicInfo.useCloseDate ? 'Yes' : 'No'}</p>
 					</div>
 				</div>
-
+				<div>
+					<h2>Allow HR Specialist to Triage</h2>
+					<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
+				</div>
 				<h2 style={basicInfo.description ? null : { color: 'red' }}>
 					{basicInfo.description ? null : '! '}Vacancy Description
 				</h2>
@@ -91,19 +92,26 @@ const finalizeVacancy = (props) => {
 				/>
 				<div>
 					<h2 style={basicInfo.vacancyPoc ? null : { color: 'red' }}>
-						{basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact Information
+						{basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact
+						Information
 					</h2>
+
 					<div>
-						{loading ? <Space block='true' style={{ display: 'flex', justifyContent: 'center' }}>
-							<LoadingOutlined style={{ fontSize: '2rem' }} />
-						</Space> : <p>
-
-							{vacancyPocDisplay.name}
-							<br />
-							{vacancyPocDisplay.email}
-						</p>}
+						{loading ? (
+							<Space
+								block='true'
+								style={{ display: 'flex', marginLeft: '75px' }}
+							>
+								<LoadingOutlined style={{ fontSize: '2rem' }} />
+							</Space>
+						) : (
+							<p>
+								{vacancyPocDisplay.name}
+								<br />
+								{vacancyPocDisplay.email}
+							</p>
+						)}
 					</div>
-
 				</div>
 				<div className='DateSection'>
 					<div className='DateCard'>
@@ -113,36 +121,40 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo.openDate
 								? new Date(basicInfo.openDate)
-									.toLocaleString('en-us')
-									.split(',')[0]
+										.toLocaleString('en-us')
+										.split(',')[0]
 								: null}
 						</p>
 					</div>
-					<div className='DateCard'>
-						<h2 style={basicInfo.closeDate ? null : { color: 'red' }}>
-							{basicInfo.closeDate ? null : '! '}Close Date
-						</h2>
-						<p>
-							{basicInfo.closeDate
-								? new Date(basicInfo.closeDate)
-									.toLocaleString('en-us')
-									.split(',')[0]
-								: null}
-						</p>
-					</div>
+					{basicInfo.useCloseDate && (
+						<div className='DateCard'>
+							<h2 style={basicInfo.closeDate ? null : { color: 'red' }}>
+								{basicInfo.closeDate ? null : '! '}Close Date
+							</h2>
+							<p>
+								{basicInfo.closeDate
+									? new Date(basicInfo.closeDate)
+											.toLocaleString('en-us')
+											.split(',')[0]
+									: null}
+							</p>
+						</div>
+					)}
 				</div>
-				<div className='DateSection'>
-					<div className='DateCard'>
-						<h2>Scoring Due By Date</h2>
-						<p>
-							{basicInfo.scoringDueByDate
-								? new Date(basicInfo.scoringDueByDate)
-									.toLocaleString('en-us')
-									.split(',')[0]
-								: ''}
-						</p>
+				{basicInfo.closeDate && (
+					<div className='DateSection'>
+						<div className='DateCard'>
+							<h2>Scoring Due By Date</h2>
+							<p>
+								{basicInfo.scoringDueByDate
+									? new Date(basicInfo.scoringDueByDate)
+											.toLocaleString('en-us')
+											.split(',')[0]
+									: ''}
+							</p>
+						</div>
 					</div>
-				</div>
+				)}
 				{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
 					<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
 						<div>
@@ -191,16 +203,21 @@ const finalizeVacancy = (props) => {
 				</ul>
 				<h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 				<ul>
-					<p className='ListItemTrue'>
-						{
-							loading ? <Space block='true' style={{ display: 'flex', justifyContent: 'center' }}>
-								<LoadingOutlined style={{ fontSize: '2rem' }} />
-							</Space> :
-								getPackageInitiatorDisplayName(
-									basicInfo.appointmentPackageIndicator,
-									allPackageInitiators
-								)}
-					</p>
+					{loading ? (
+						<Space
+							block='true'
+							style={{ display: 'flex', marginLeft: '75px' }}
+						>
+							<LoadingOutlined style={{ fontSize: '2rem' }} />
+						</Space>
+					) : (
+						<p className='ListItemTrue'>
+							{getPackageInitiatorDisplayName(
+								basicInfo.appointmentPackageIndicator,
+								allPackageInitiators
+							)}
+						</p>
+					)}
 				</ul>
 			</div>
 			<SectionHeader
