@@ -325,6 +325,7 @@ const basicInformation = (props) => {
 							label='Are you the point of contact for this vacancy?'
 						>
 							<Select
+								disabled={readOnly}
 								options={[
 									{ value: 'yes', label: 'Yes' },
 									{ value: 'no', label: 'No' },
