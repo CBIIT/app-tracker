@@ -65,6 +65,7 @@ const viewVacancyDetails = () => {
 				title={vacancyDetails.basic_info.vacancy_title.value}
 				openDate={vacancyDetails.basic_info.open_date.value}
 				closeDate={vacancyDetails.basic_info.close_date.value}
+				useCloseDate={vacancyDetails.basic_info.use_close_date.value == '0' ? false : true}
 				vacancyState={vacancyDetails.basic_info.state.value}
 				closeTime={getCloseTime(vacancyDetails.basic_info.closing_time.label)}
 				vacancyPOC={vacancyDetails.basic_info.vacancy_poc}

@@ -78,7 +78,7 @@ const header = (props) => {
 	}
 
 	const isVacancyClosed = () => {
-		return props.vacancyState !== LIVE;
+		return props.vacancyState !== LIVE && props.closeDate && props.useCloseDate !== false;
 	};
 
 	return (
