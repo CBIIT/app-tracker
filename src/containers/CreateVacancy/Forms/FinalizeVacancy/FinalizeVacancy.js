@@ -174,6 +174,10 @@ const finalizeVacancy = (props) => {
 						</li>
 					))}
 				</ul>
+				<div>
+					<h2>Reference Collection</h2>
+					<p>{basicInfo.referenceCollection ? 'Yes' : 'No'}</p>
+				</div>
 				<h2>Full Contact Details for References</h2>
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
