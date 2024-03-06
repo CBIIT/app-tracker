@@ -32,7 +32,7 @@ const transformBasicInfo = (basicInfo, mandatoryStatements, sysId) => {
 		close_date: basicInfo.useCloseDate ? getDateFromDateTime(basicInfo.closeDate) : null,
 		scoring_due_by_date: basicInfo.useCloseDate ? getDateFromDateTime(basicInfo.scoringDueByDate) : null,
 		number_of_recommendation: basicInfo.numberOfRecommendations,
-		reference_collection:basicInfo.referenceCollection,//Added
+		reference_collection:basicInfo.referenceCollection,
 		number_of_categories: basicInfo.numberOfCategories,
 		equal_opportunity_employment_statement:
 			mandatoryStatements.equalOpportunityEmployerText,
