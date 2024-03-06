@@ -8,6 +8,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			openDate: moment(sourceJson.basic_info.open_date.value),
 			useCloseDate:
 				sourceJson.basic_info.use_close_date.value == '1' ? true : false,
+				referenceCollection: sourceJson.basic_info.reference_collection.value == '1' ? true : false,
 			closeDate: moment(sourceJson.basic_info.close_date.value),
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.value
 				? moment(sourceJson.basic_info.scoring_due_by_date.value)

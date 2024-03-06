@@ -21,6 +21,7 @@ const servicenowConfig = {
    * User password, for DEVELOPMENT mode only
    */
   REACT_APP_PASSWORD: '',
+
   /**
    * 
    * ServiceNow path to GET resource which serves javascript files

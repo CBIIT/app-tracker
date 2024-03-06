@@ -457,7 +457,15 @@ const basicInformation = (props) => {
 			<Form.Item label='Application Documents' name='applicationDocuments'>
 				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
-
+			<Tooltip title='Check this box to enable reference collection through this system. Leave unchecked to manually collect references.'>
+				<Form.Item
+					name='referenceCollection'
+					valuePropName='checked'
+					style={{ marginY: '20px', paddingLeft: '0px' }}
+				>
+					<Checkbox disabled={readOnly}>Reference collection</Checkbox>
+				</Form.Item>
+			</Tooltip>
 			<Form.Item label='Full Contact Details for References'>
 				<p className='SmallText'>
 					How many recommendations does this vacancy require?

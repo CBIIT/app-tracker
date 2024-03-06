@@ -6,6 +6,8 @@ export const transformJsonFromBackend = (sourceJson) => {
 			openDate: sourceJson.basic_info.open_date.label,
 			useCloseDate:
 				sourceJson.basic_info.use_close_date.value == '1' ? true : false,
+			referenceCollection:
+				sourceJson.basic_info.reference_collection.value == '1' ? true : false,
 			closeDate: sourceJson.basic_info.close_date.label,
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
