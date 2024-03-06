@@ -457,7 +457,7 @@ const basicInformation = (props) => {
 			<Form.Item label='Application Documents' name='applicationDocuments'>
 				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
-			<Tooltip title=''>
+			<Tooltip title='Check this box to enable reference collection through this system. Leave unchecked to manually collect references.'>
 				<Form.Item
 					name='referenceCollection'
 					valuePropName='checked'
