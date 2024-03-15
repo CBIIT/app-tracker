@@ -8,6 +8,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 				sourceJson.basic_info.use_close_date.value == '1' ? true : false,
 			referenceCollection:
 				sourceJson.basic_info.reference_collection.value == '1' ? true : false,
+			referenceCollectionDate: sourceJson.basic_info.reference_collection_date.label,
 			closeDate: sourceJson.basic_info.close_date.label,
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
@@ -17,9 +18,9 @@ export const transformJsonFromBackend = (sourceJson) => {
 					? true
 					: false,
 			requireFocusArea:
-			sourceJson.basic_info.require_focus_area.value == '1'
-				? true
-				: false,
+				sourceJson.basic_info.require_focus_area.value == '1'
+					? true
+					: false,
 			description: sourceJson.basic_info.vacancy_description.value,
 			vacancyPoc: sourceJson.basic_info.vacancy_poc.value,
 			appointmentPackageIndicator: sourceJson.basic_info.package_initiator.value,

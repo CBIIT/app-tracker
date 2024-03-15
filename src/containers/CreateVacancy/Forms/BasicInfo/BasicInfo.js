@@ -472,6 +472,13 @@ const basicInformation = (props) => {
 					<Form.Item
 						label='Reference Collection Date'
 						name='referenceCollectionDate'
+						rules={[
+							{
+								required: referenceCollection,
+								message: 'Please select a reference collection date',
+							},
+							{ validator: validateDates },
+						]}
 					>
 						<DatePicker
 							format='MM/DD/YYYY'
