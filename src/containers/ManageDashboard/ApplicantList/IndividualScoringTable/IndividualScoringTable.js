@@ -105,6 +105,11 @@ const individualScoringTable = (props) => {
 		setIsOtherCommentsModalVisible(true);
 	};
 
+	const onCollectReferenceButtonClick = (sysId) => {
+		// call reference trigger w/ application sys id
+		console.log(sysId);
+	}
+
 	const getColumns = () => {
 		const columns = [
 			{
@@ -289,7 +294,7 @@ const individualScoringTable = (props) => {
 					</Button>
 				),
 			});
-		} else
+		} else {
 			columns.push(
 				{ title: 'Scoring Status', dataIndex: 'scoring_status', width: 125 },
 				{
@@ -305,7 +310,21 @@ const individualScoringTable = (props) => {
 						' Maybe',
 				}
 			);
-
+		}
+		columns.push(
+			{
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						onClick={() => onCollectReferenceButtonClick(record.sys_id)}
+					>
+						Collect References
+					</Button>
+				)
+			}
+		)
 		return columns;
 	};
 

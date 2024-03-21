@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse } from 'antd';
+import { message, Table, Tooltip, Collapse, Button } from 'antd';
 import { useParams } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
@@ -18,7 +18,7 @@ import {
 	COMMITTEE_MEMBER_VOTING,
 	COMMITTEE_MEMBER_NON_VOTING,
 } from '../../../constants/Roles';
-import { GET_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
+import { GET_APPLICANT_LIST, COLLECT_REFERENCES } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
@@ -51,6 +51,21 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput
 	} = contextValue;
+
+	const onCollectReferenceButtonClick = async (sysId) => {
+		// call reference trigger w/ application sys id
+		try {
+			// TODO: create modal to ask users if they want to re-send references
+			const response = await axios.get(COLLECT_REFERENCES + sysId);
+			message.success(
+				response.data.result.message
+			);
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+			);
+		}
+	}
 
 	const applicantColumns = [
 		{
@@ -110,7 +125,7 @@ const applicantList = (props) => {
 			dataIndex: 'chair_triage_status',
 			key: 'ChairStatus',
 			render: (text) => renderDecision(text),
-		},
+		}
 	];
 
 	const committeeColumns = [
@@ -166,6 +181,23 @@ const applicantList = (props) => {
 				);
 			},
 		});
+	}
+
+	if (props.referenceCollection) {
+		applicantColumns.push(
+			{
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						onClick={() => onCollectReferenceButtonClick(record.sys_id)}
+					>
+						Collect References
+					</Button>
+				)
+			}
+		)
 	}
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);

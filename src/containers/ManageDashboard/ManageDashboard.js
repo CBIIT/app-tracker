@@ -344,6 +344,7 @@ const manageDashboard = () => {
 							<ApplicantList
 								vacancyState={vacancy.state}
 								vacancyTenant={vacancy.basicInfo.tenant}
+								referenceCollection={vacancy.basicInfo.referenceCollection}
 								userRoles={user.roles}
 								userCommitteeRole={userCommitteeRole}
 								reloadVacancy={loadLatestVacancyInfo}
