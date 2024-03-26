@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { message, Table, Tooltip, Collapse, Button, Modal } from 'antd';
 import { useParams } from 'react-router-dom';
 // TODO: add warning icon from antd
-import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
 
@@ -44,6 +44,7 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const {
 		searchText,
@@ -52,22 +53,35 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput
 	} = contextValue;
-	const onCollectReferenceButtonClick = async (sysId) => {
+	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		// TODO: trigger modal when button is clicked
-		// call reference trigger w/ application sys id
-		try {
-			const response = await axios.get(COLLECT_REFERENCES + sysId);
-			message.success(
-				response.data.result.message
-			);
-		} catch (e) {
-			message.error(
-				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
-			);
+		if (referencesSent == '0') {
+			try {
+				const response = await axios.get(COLLECT_REFERENCES + sysId);
+				message.success(
+					response.data.result.message
+				);
+			} catch (e) {
+				message.error(
+					'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+				);
+			}
+		} else {
+			setShowModal(true);
+
 		}
+		// call reference trigger w/ application sys id
+		
 	}
 
 	// TODO: add OK modal function & add cancel modal function
+	const handleReferenceSubmit = () => {
+
+	}
+
+	const handleReferenceCancel = () => {
+
+	}
 
 	const applicantColumns = [
 		{
@@ -193,7 +207,7 @@ const applicantList = (props) => {
 				width: 200,
 				render: (_, record) => (
 					<Button
-						onClick={() => onCollectReferenceButtonClick(record.sys_id)}
+						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
 					>
 						Collect References
 					</Button>
@@ -474,7 +488,20 @@ const applicantList = (props) => {
 		props.userCommitteeRole
 	);
 	// TODO: add reference collection confirmation modal
-	return <div className='applicant-table'>{table}</div>;
+	return (
+		<>
+			<div className='applicant-table'>{table}</div>
+			<Modal 
+				title={ 
+					<>
+					<WarningOutlined />
+					
+					</> 
+				}
+			>
+			</Modal>
+		</>
+	);
 };
 
 export default applicantList;
