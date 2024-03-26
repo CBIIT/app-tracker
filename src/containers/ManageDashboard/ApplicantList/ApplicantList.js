@@ -45,6 +45,7 @@ const applicantList = (props) => {
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
+	const [appSysId, setAppSysId] = useState();
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const {
@@ -56,6 +57,7 @@ const applicantList = (props) => {
 	} = contextValue;
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		// TODO: trigger modal when button is clicked
+		setAppSysId(sysId);
 		if (referencesSent == '0') {
 			try {
 				const response = await axios.get(COLLECT_REFERENCES + sysId);
@@ -69,21 +71,20 @@ const applicantList = (props) => {
 			}
 		} else {
 			setShowModal(true);
-
 		}
 		// call reference trigger w/ application sys id
 		
 	}
 
 	// TODO: add OK modal function & add cancel modal function
-	const handleReferenceSubmit = (e) => {
-		console.log("🚀 ~ handleReferenceSubmit ~ e:", e)
+	const handleReferenceSubmit = () => {
+		console.log(appSysId)
 		
 
 	}
 
 	const handleReferenceCancel = () => {
-
+		setShowModal(false);
 	}
 
 	const applicantColumns = [
