@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from 'react';
 import { message, Table, Tooltip, Collapse, Button, Modal, Typography } from 'antd';
 const { Paragraph } = Typography;
 import { useParams } from 'react-router-dom';
-// TODO: add warning icon from antd
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
@@ -55,32 +54,32 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput
 	} = contextValue;
+	
+	const sendReferences = async (sysId) => {
+		try {
+			const response = await axios.get(COLLECT_REFERENCES + sysId);
+			message.success(
+				response.data.result.message
+			);
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+			);
+		}
+	}
+
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
-		// TODO: trigger modal when button is clicked
 		setAppSysId(sysId);
-		if (referencesSent == '0') {
-			try {
-				const response = await axios.get(COLLECT_REFERENCES + sysId);
-				message.success(
-					response.data.result.message
-				);
-			} catch (e) {
-				message.error(
-					'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
-				);
-			}
+		if (referencesSent === '0') {
+			sendReferences(appSysId)
 		} else {
 			setShowModal(true);
 		}
-		// call reference trigger w/ application sys id
-		
 	}
 
-	// TODO: add OK modal function & add cancel modal function
 	const handleReferenceSubmit = () => {
-		console.log(appSysId)
-		
-
+		sendReferences(appSysId);
+		setShowModal(false);
 	}
 
 	const handleReferenceCancel = () => {
@@ -467,7 +466,6 @@ const applicantList = (props) => {
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 
 			const response = await axios.get(apiString);
-			console.log("🚀 ~ loadApplicants ~ response:", response);
 			
 			return {
 				applicants: response.data.result.applicants,
@@ -491,16 +489,16 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
-	// TODO: add reference collection confirmation modal
+	
 	return (
 		<>
 			<div className='applicant-table'>{table}</div>
 			<Modal 
 				title={ 
 					<>
-						<WarningOutlined />
 						<Paragraph>
-							Reference Notifications Have Already Been Sent
+							<WarningOutlined />
+							{" "}Reference Notifications Have Been Sent
 						</Paragraph>
 					</>
 				}
@@ -518,7 +516,7 @@ const applicantList = (props) => {
 				]}
 			>
 				<Paragraph>
-					Blah blah instructions
+					Notifications to this applicant's references have already been sent out. Would you like to send the notifications again?
 				</Paragraph>
 			</Modal>
 		</>
