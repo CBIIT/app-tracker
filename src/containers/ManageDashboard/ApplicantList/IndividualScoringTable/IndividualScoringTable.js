@@ -5,6 +5,7 @@ import { getColumnSearchProps } from '../../Util/ColumnSearchProps';
 import axios from 'axios';
 import SearchContext from '../../Util/SearchContext';
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
+import ReferenceModal from '../ReferenceModal/ReferenceModal';
 import {
 	INTERVIEW,
 	SELECTED,
@@ -47,6 +48,7 @@ const expandedRowRender = (applicationSysId) => (
 
 const individualScoringTable = (props) => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [committeeComments, setCommitteeComments] = useState('');
 	const [applicantSysId, setAppicantSysId] = useState();
 	const [isOtherCommentsModalVisible, setIsOtherCommentsModalVisible] =
@@ -105,9 +107,26 @@ const individualScoringTable = (props) => {
 		setIsOtherCommentsModalVisible(true);
 	};
 
-	const onCollectReferenceButtonClick = (sysId) => {
-		// call reference trigger w/ application sys id
-		console.log(sysId);
+	const sendReferences = async (sysId) => {
+		try {
+			const response = await axios.get(COLLECT_REFERENCES + sysId);
+			message.success(
+				response.data.result.message
+			);
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+			);
+		}
+	}
+
+	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
+		setAppicantSysId(sysId);
+		if (referencesSent === '0') {
+			sendReferences(sysId)
+		} else {
+			setShowReferenceModal(true);
+		}
 	}
 
 	const getColumns = () => {
@@ -318,7 +337,7 @@ const individualScoringTable = (props) => {
 				width: 200,
 				render: (_, record) => (
 					<Button
-						onClick={() => onCollectReferenceButtonClick(record.sys_id)}
+						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.referencesSent)}
 					>
 						Collect References
 					</Button>
@@ -394,6 +413,12 @@ const individualScoringTable = (props) => {
 					})}
 				</>
 			</Modal>
+			<ReferenceModal
+				appSysId={applicantSysId}
+				showModal={showReferenceModal}
+				setShowModal={setShowReferenceModal}
+				sendReferences={sendReferences}
+			/>
 		</>
 	);
 };

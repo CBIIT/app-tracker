@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse, Button, Modal, Typography } from 'antd';
-const { Paragraph } = Typography;
+import { message, Table, Tooltip, Collapse, Button } from 'antd';
 import { useParams } from 'react-router-dom';
-import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
 
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
+import ReferenceModal from './ReferenceModal/ReferenceModal';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -75,15 +75,6 @@ const applicantList = (props) => {
 		} else {
 			setShowModal(true);
 		}
-	}
-
-	const handleReferenceSubmit = () => {
-		sendReferences(appSysId);
-		setShowModal(false);
-	}
-
-	const handleReferenceCancel = () => {
-		setShowModal(false);
 	}
 
 	const applicantColumns = [
@@ -493,32 +484,12 @@ const applicantList = (props) => {
 	return (
 		<>
 			<div className='applicant-table'>{table}</div>
-			<Modal 
-				title={ 
-					<>
-						<Paragraph>
-							<WarningOutlined />
-							{" "}Reference Notifications Have Been Sent
-						</Paragraph>
-					</>
-				}
-				open={showModal}
-				onOk={handleReferenceSubmit}
-				onCancel={handleReferenceCancel}
-				closable={false}
-				footer={[
-					<Button key='modal-button' onClick={handleReferenceSubmit}>
-						Send References Again
-					</Button>,
-					<Button key='modal-continue' onClick={handleReferenceCancel}>
-						Cancel
-					</Button>
-				]}
-			>
-				<Paragraph>
-					Notifications to this applicant's references have already been sent out. Would you like to send the notifications again?
-				</Paragraph>
-			</Modal>
+			<ReferenceModal
+				appSysId={appSysId}
+				showModal={showModal}
+				setShowModal={setShowModal}
+				sendReferences={sendReferences}
+			/>
 		</>
 	);
 };
