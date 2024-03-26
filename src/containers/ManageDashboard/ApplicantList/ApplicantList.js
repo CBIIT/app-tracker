@@ -76,7 +76,9 @@ const applicantList = (props) => {
 	}
 
 	// TODO: add OK modal function & add cancel modal function
-	const handleReferenceSubmit = () => {
+	const handleReferenceSubmit = (e) => {
+		console.log("🚀 ~ handleReferenceSubmit ~ e:", e)
+		
 
 	}
 
