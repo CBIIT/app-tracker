@@ -499,9 +499,24 @@ const applicantList = (props) => {
 						<Paragraph>
 							Reference Notifications Have Already Been Sent
 						</Paragraph>
-					</> 
+					</>
 				}
+				open={showModal}
+				onOk={handleReferenceSubmit}
+				onCancel={handleReferenceCancel}
+				closable={false}
+				footer={[
+					<Button key='modal-button' onClick={handleReferenceSubmit}>
+						Send References Again
+					</Button>,
+					<Button key='modal-continue' onClick={handleReferenceCancel}>
+						Cancel
+					</Button>
+				]}
 			>
+				<Paragraph>
+					Blah blah instructions
+				</Paragraph>
 			</Modal>
 		</>
 	);
