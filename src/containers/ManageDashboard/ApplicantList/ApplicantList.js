@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse, Button, Modal } from 'antd';
+import { message, Table, Tooltip, Collapse, Button, Modal, Typography } from 'antd';
+const { Paragraph } = Typography;
 import { useParams } from 'react-router-dom';
 // TODO: add warning icon from antd
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
@@ -494,8 +495,10 @@ const applicantList = (props) => {
 			<Modal 
 				title={ 
 					<>
-					<WarningOutlined />
-					
+						<WarningOutlined />
+						<Paragraph>
+							Reference Notifications Have Already Been Sent
+						</Paragraph>
 					</> 
 				}
 			>
