@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse, Button } from 'antd';
+import { message, Table, Tooltip, Collapse, Button, Modal } from 'antd';
 import { useParams } from 'react-router-dom';
+// TODO: add warning icon from antd
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined, } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
@@ -51,11 +52,10 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput
 	} = contextValue;
-
 	const onCollectReferenceButtonClick = async (sysId) => {
+		// TODO: trigger modal when button is clicked
 		// call reference trigger w/ application sys id
 		try {
-			// TODO: create modal to ask users if they want to re-send references
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
 			message.success(
 				response.data.result.message
@@ -66,6 +66,8 @@ const applicantList = (props) => {
 			);
 		}
 	}
+
+	// TODO: add OK modal function & add cancel modal function
 
 	const applicantColumns = [
 		{
@@ -183,7 +185,7 @@ const applicantList = (props) => {
 		});
 	}
 
-	if (props.referenceCollection) {
+	if (props.referenceCollection && props.userRoles.includes(OWM_TEAM)) {
 		applicantColumns.push(
 			{
 				title: '',
@@ -447,6 +449,7 @@ const applicantList = (props) => {
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 
 			const response = await axios.get(apiString);
+			console.log("🚀 ~ loadApplicants ~ response:", response);
 			
 			return {
 				applicants: response.data.result.applicants,
@@ -470,7 +473,7 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
-
+	// TODO: add reference collection confirmation modal
 	return <div className='applicant-table'>{table}</div>;
 };
 
