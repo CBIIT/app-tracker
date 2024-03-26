@@ -39,12 +39,12 @@ export const initialValues = {
 		{
 			type: 'Application saved',
 			active: true,
-			text: '<p>Dear Dr. #APP_LAST_NAME#,<br><br></p><p>Thank you for your application for the position of #POSITION# at the #IC#, National Institutes of Health. Your application has been saved and is available at #APP_URL#.<br><br></p><p>Please ensure that all application materials are submitted by the review date/application deadline. Incomplete applications will not be considered. You may view the status of your application materials. If you should have any questions, please contact #VACANCY POC#.<br><br></p><p>Thank you for your interest in the National Institutes of Health.<br></p>',
+			text: '<p>Dear Dr. #APP_LAST_NAME#,<br><br></p><p>Thank you for your application for the position of #POSITION# at the #IC#, National Institutes of Health. Your application has been saved and is available at #APP_URL#.<br><br></p><p>Please ensure that all application materials are submitted by the review date/application deadline. Incomplete applications will not be considered. You may view the status of your application materials. If you should have any questions, please contact #VACANCY_POC_NAME#.<br><br></p><p>Thank you for your interest in the National Institutes of Health.<br></p>',
 		},
 		{
 			type: 'Application submitted confirmation',
 			active: true,
-			text: "<p>Dear Dr. #APP_LAST_NAME#, <br><br></p><p>Good news! Your application for the position of #POSITION# at the #IC#, National Institutes of Health <b>has been submitted.</b></p><p>You may view the status of your application at any time by following #APP_URL#.</p><p>If you should have any questions, please contact #VACANCY POC#.  </p><p>Thank you for your interest in the National Institutes of Health.</p>",
+			text: "<p>Dear Dr. #APP_LAST_NAME#, <br><br></p><p>Good news! Your application for the position of #POSITION# at the #IC#, National Institutes of Health <b>has been submitted.</b></p><p>You may view the status of your application at any time by following #APP_URL#.</p><p>If you should have any questions, please contact #VACANCY_POC_NAME#.  </p><p>Thank you for your interest in the National Institutes of Health.</p>",
 		},
 	],
 };
