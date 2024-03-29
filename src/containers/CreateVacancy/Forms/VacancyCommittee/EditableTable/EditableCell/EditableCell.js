@@ -7,6 +7,7 @@ import {
 	COMMITTEE_HR_SPECIALIST,
 	COMMITTEE_EDI_REPRESENTATIVE,
 	COMMITTEE_EXEC_SEC,
+	COMMITTEE_MEMBER_VOTING_READ_ONLY,
 } from '../../../../../../constants/Roles';
 
 const editableCell = ({
@@ -36,6 +37,9 @@ const editableCell = ({
 						</Option>
 						<Option value={COMMITTEE_EXEC_SEC}>
 							Executive Secretary (non-voting)
+						</Option>
+						<Option value={COMMITTEE_MEMBER_VOTING_READ_ONLY}>
+							Member Voting (read-only)
 						</Option>
 					</Select>
 				);
