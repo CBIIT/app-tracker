@@ -34,7 +34,6 @@ const editVacancy = () => {
 			console.log(userArray[i].role)
 			if (userArray[i].user.sys_id.value === currentUser && userArray[i].role == "Member Voting (read-only)") {
 				setReadOnlyMember(true);
-				console.log("THIS IS A READ ONLY USER")
 			}
 		}
 	}
