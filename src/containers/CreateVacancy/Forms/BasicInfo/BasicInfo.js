@@ -83,6 +83,7 @@ const basicInformation = (props) => {
 	const initialValues = props.initialValues;
 
 	const readOnly = props.readOnly;
+	const readOnlyMember = props.readOnlyMember;
 	const isNew = props.isNew;
 	const isDefined = props.pocDefined;
 	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
@@ -270,7 +271,7 @@ const basicInformation = (props) => {
 						name='title'
 						rules={[{ required: true, message: 'Please enter a title' }]}
 					>
-						<Input placeholder='Please enter' disabled={readOnly} />
+						<Input placeholder='Please enter' disabled={readOnly || readOnlyMember} />
 					</Form.Item>
 				</div>
 				<div
@@ -297,7 +298,7 @@ const basicInformation = (props) => {
 							valuePropName='checked'
 							style={{ margin: '0px', paddingLeft: '20px' }}
 						>
-							<Checkbox>Allow HR Specialist to Triage</Checkbox>
+							<Checkbox disabled={readOnlyMember} >Allow HR Specialist to Triage</Checkbox>
 						</Form.Item>
 					</Tooltip>
 				</div>
@@ -311,7 +312,7 @@ const basicInformation = (props) => {
 			>
 				<ReactQuill
 					className='QuillEditor'
-					readOnly={readOnly}
+					readOnly={readOnly || readOnlyMember}
 					modules={Editor.modules}
 					formats={Editor.formats}
 				/>
@@ -404,7 +405,7 @@ const basicInformation = (props) => {
 						<DatePicker
 							disabledDate={disabledDate}
 							format='MM/DD/YYYY'
-							disabled={readOnly}
+							disabled={readOnly || readOnlyMember}
 							style={{ width: '100%' }}
 						/>
 					</Form.Item>
@@ -426,7 +427,7 @@ const basicInformation = (props) => {
 								className='DatePickerInput'
 								disabledDate={disabledDate}
 								format='MM/DD/YYYY'
-								disabled={readOnly}
+								disabled={readOnly || readOnlyMember}
 								style={{ width: '100%' }}
 							/>
 						</Form.Item>
@@ -438,7 +439,7 @@ const basicInformation = (props) => {
 				<div className='DatePickerContainer'>
 					<div className='DatePicker'>
 						<Form.Item label='Scoring Due By Date' name='scoringDueByDate'>
-							<DatePicker format='MM/DD/YYYY' style={{ width: '100%' }} />
+							<DatePicker disabled={readOnlyMember} format='MM/DD/YYYY' style={{ width: '100%' }} />
 						</Form.Item>
 					</div>
 				</div>
@@ -447,15 +448,16 @@ const basicInformation = (props) => {
 			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
+					readOnly={readOnlyMember}
 					name='requireFocusArea'
 					valuePropName='checked'
 				>
-					<Checkbox>Enable Focus Area</Checkbox>
+					<Checkbox> Enable Focus Area</Checkbox>
 				</Form.Item>
 			) : null}
 
 			<Form.Item label='Application Documents' name='applicationDocuments'>
-				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
+				<RequiredDocsList name='applicationDocuments' readOnly={readOnly || readOnlyMember} />
 			</Form.Item>
 			<Tooltip title='Check this box to enable reference collection through this system. Leave unchecked to manually collect references.'>
 				<Form.Item
@@ -526,14 +528,14 @@ const basicInformation = (props) => {
 							name='positionClassification'
 							required={true}
 							menu={currentPositionMenu}
-							disabled={readOnly}
+							disabled={readOnly || readOnlyMember}
 						/>
 					</div>
 					<div className='PATSPicker'>
 						<EditableDropDown
 							name='sacCode'
 							required={true}
-							disabled={readOnly}
+							disabled={readOnly || readOnlyMember}
 							showSearch={true}
 							menu={sacCodes}
 							filterOption={(input, option) =>
@@ -605,7 +607,7 @@ const basicInformation = (props) => {
 								.localeCompare((optionB?.label ?? '').toLowerCase())
 						}
 						loading={isLoading}
-						disabled={readOnly}
+						disabled={readOnly || readOnlyMember}
 					/>
 				</div>
 			</Form.Item>

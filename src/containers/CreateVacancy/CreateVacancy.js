@@ -62,6 +62,7 @@ const createVacancy = (props) => {
 	const [emailTemplatesForm] = Form.useForm();
 
 	const restrictedEditMode = props.restrictedEditMode;
+	const readOnlyUser = props.readOnlyMember;
 
 	const validateAllFormsAndDisplayModal = async () => {
 		const errorForms = [];
@@ -110,6 +111,7 @@ const createVacancy = (props) => {
 					initialValues={allForms.basicInfo}
 					formInstance={basicInfoForm}
 					readOnly={restrictedEditMode}
+					readOnlyMember={readOnlyUser}
 					isNew={isNew}
 					pocDefined={pocDefined}
 				/>
@@ -126,6 +128,7 @@ const createVacancy = (props) => {
 					initialValues={allForms.mandatoryStatements}
 					formInstance={mandatoryStatementsForm}
 					readOnly={restrictedEditMode}
+					readOnlyMember={readOnlyUser}
 				/>
 			),
 		},
