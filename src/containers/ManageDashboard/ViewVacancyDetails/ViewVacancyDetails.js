@@ -6,10 +6,12 @@ const viewVacancyDetails = (props) => {
 	const allForms = props.allForms;
 	const hideCommitteeSection = props.hideCommitteeSection;
 	const hideEmails = props.hideEmails;
+	const hideForReadOnly = props.readOnlyMember;
 
 	return (
 		<>
 			<FinalizeVacancy
+				hideForReadOnly={hideForReadOnly}
 				allForms={allForms}
 				hideCommitteeSection={hideCommitteeSection}
 				hideEmails={hideEmails}

@@ -31,6 +31,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 	OWM_TEAM,
 	COMMITTEE_CHAIR,
+	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../constants/Roles';
 import {
 	OWM_TRIAGE,
@@ -149,6 +150,7 @@ const manageDashboard = () => {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
+	const [readOnlyMember, setReadOnlyMember] = useState(false);
 
 	const searchContext = {
 		searchText,
@@ -165,6 +167,7 @@ const manageDashboard = () => {
 
 	useEffect(() => {
 		loadLatestVacancyInfo();
+		
 	}, []);
 
 	const handleButtonClick = () => {
@@ -191,6 +194,7 @@ const manageDashboard = () => {
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
 		setVacancy(vacancy);
+		checkForReadOnlyMember(vacancyResponse.data.result.committee, user.uid, vacancyResponse.data.result.user)
 		setState(vacancyResponse.data.result.basic_info.state.label);
 		setNextButtonLabel(
 			getNextStepButtonLabel(vacancyResponse.data.result.basic_info.state.value)
@@ -200,6 +204,14 @@ const manageDashboard = () => {
 		setIsLoading(false);
 	};
 
+	const checkForReadOnlyMember = (userArray, currentUser, userRole) => {
+		// check for current user
+		for (let i = 0; i < userArray.length; i++) {
+			if (userArray[i].user.sys_id === currentUser && userRole.committee_role_of_current_vacancy == COMMITTEE_MEMBER_READ_ONLY) {
+				setReadOnlyMember(true);
+			}
+		}
+	}
 	const closeModal = async () => {
 		setModalVisible(false);
 		loadLatestVacancyInfo();
@@ -292,7 +304,7 @@ const manageDashboard = () => {
 					>
 						<Tabs.TabPane tab='Vacancy Details' key='details'>
 							<>
-								{user.roles.includes(OWM_TEAM) ? (
+								{user.roles.includes(OWM_TEAM) && !readOnlyMember ? (
 									<div className='ManageDashboardEditButton'>
 										<Button
 											type='primary'
@@ -304,12 +316,13 @@ const manageDashboard = () => {
 									</div>
 								) : null}
 								<ViewVacancyDetails
+									readOnlyMember={readOnlyMember}
 									allForms={vacancy}
 									hideCommitteeSection={isUserAllowedToScore()}
 									hideEmails={isUserChair() || isUserAllowedToScore()}
 								/>
 
-								{user.roles.includes(OWM_TEAM) ? (
+								{user.roles.includes(OWM_TEAM) && !readOnlyMember ? (
 									<div
 										className='RatingPlanDiv'
 										style={{

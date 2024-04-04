@@ -6,6 +6,7 @@ import CreateVacancy from './CreateVacancy';
 import { FINAL, LIVE } from '../../constants/VacancyStates';
 import { GET_VACANCY_MANAGER_VIEW } from '../../constants/ApiEndpoints';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
+import { COMMITTEE_MEMBER_READ_ONLY } from '../../constants/Roles';
 
 const editVacancy = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -31,8 +32,8 @@ const editVacancy = () => {
 	const checkForReadOnlyMember = (userArray, currentUser) => {
 		// check for current user
 		for (let i = 0; i < userArray.length; i++) {
-			console.log(userArray[i].role)
-			if (userArray[i].user.sys_id.value === currentUser && userArray[i].role == "Member Voting (read-only)") {
+			console.log(userArray[i].role);
+			if (userArray[i].user.sys_id.value === currentUser && userArray[i].role == COMMITTEE_MEMBER_READ_ONLY) {
 				setReadOnlyMember(true);
 			}
 		}
