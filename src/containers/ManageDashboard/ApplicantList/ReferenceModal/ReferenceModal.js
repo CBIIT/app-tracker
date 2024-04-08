@@ -35,7 +35,7 @@ const referenceModal = (props) => {
 			]}
 		>
 			<Paragraph>
-				Notifications to this applicant's selected references have already been
+				Notifications to this applicant&apos;s selected references have already been
 				sent. Would you like to send the notifications again?
 			</Paragraph>
 		</Modal>
