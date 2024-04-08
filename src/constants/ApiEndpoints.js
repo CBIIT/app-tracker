@@ -76,6 +76,9 @@ export const CHECK_USER_ALREADY_APPLIED =
 export const APPLICANT_GET_APPLICATION =
 	'/api/x_g_nci_app_tracke/application/get_application_applicant/';
 
+export const COLLECT_REFERENCES = 
+	'/api/x_g_nci_app_tracke/application/collect_references/';
+
 export const SCORES = '/api/x_g_nci_app_tracke/application/scores/';
 export const RECUSE = '/api/x_g_nci_app_tracke/scoring/recuse';
 export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/counts/';

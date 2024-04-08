@@ -179,6 +179,18 @@ const finalizeVacancy = (props) => {
 					<h2>Reference Collection</h2>
 					<p>{basicInfo.referenceCollection ? 'Yes' : 'No'}</p>
 				</div>
+				{basicInfo.referenceCollection && (
+					<div className='DateCard'>
+						<h2>Reference Collection Date</h2>
+						<p>
+							{basicInfo.referenceCollectionDate
+								? new Date(basicInfo.referenceCollectionDate)
+										.toLocaleString('en-us')
+										.split(',')[0]
+								: ''}
+						</p>
+					</div>
+				)}
 				<h2>Full Contact Details for References</h2>
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
@@ -210,10 +222,7 @@ const finalizeVacancy = (props) => {
 				<h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 				<ul>
 					{loading ? (
-						<Space
-							block='true'
-							style={{ display: 'flex', marginLeft: '75px' }}
-						>
+						<Space block='true' style={{ display: 'flex', marginLeft: '75px' }}>
 							<LoadingOutlined style={{ fontSize: '2rem' }} />
 						</Space>
 					) : (

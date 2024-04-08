@@ -87,6 +87,7 @@ const basicInformation = (props) => {
 	const isDefined = props.pocDefined;
 	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
 	const useCloseDate = Form.useWatch('useCloseDate', formInstance);
+	const referenceCollection = Form.useWatch('referenceCollection', formInstance);
 
 	const { auth } = useAuth();
 	const { user } = auth;
@@ -409,8 +410,8 @@ const basicInformation = (props) => {
 						/>
 					</Form.Item>
 				</div>
-				{useCloseDate && (
-					<div className='DatePicker'>
+				<div className='DatePicker'>
+					{useCloseDate && (
 						<Form.Item
 							label='Close Date'
 							name='closeDate'
@@ -430,8 +431,8 @@ const basicInformation = (props) => {
 								style={{ width: '100%' }}
 							/>
 						</Form.Item>
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 
 			{useCloseDate && (
@@ -457,29 +458,50 @@ const basicInformation = (props) => {
 			<Form.Item label='Application Documents' name='applicationDocuments'>
 				<RequiredDocsList name='applicationDocuments' readOnly={readOnly} />
 			</Form.Item>
-			<Tooltip title='Check this box to enable reference collection through this system. Leave unchecked to manually collect references.'>
-				<Form.Item
-					name='referenceCollection'
-					valuePropName='checked'
-					style={{ marginY: '20px', paddingLeft: '0px' }}
-				>
-					<Checkbox disabled={readOnly}>Reference collection</Checkbox>
-				</Form.Item>
-			</Tooltip>
-			<Form.Item label='Full Contact Details for References'>
-				<p className='SmallText'>
-					How many recommendations does this vacancy require?
-				</p>
 
-				<Form.Item name='numberOfRecommendations'>
-					<Slider
-						className='Slider'
-						min={0}
-						max={15}
-						dots
-						marks={sliderMarks}
-						disabled={readOnly}
-					/>
+			<Form.Item label='Method of Reference Collection'>
+				<Tooltip
+					title='Check this box to enable reference collection through this system. Leave the box unchecked to manually collect references.'
+					placement='topLeft'
+				>
+					<Form.Item name='referenceCollection' valuePropName='checked'>
+						<Checkbox disabled={readOnly}>Enable Reference Collection</Checkbox>
+					</Form.Item>
+				</Tooltip>
+				{referenceCollection && (
+					<Form.Item
+						label='Reference Collection Date'
+						name='referenceCollectionDate'
+						rules={[
+							{
+								required: referenceCollection,
+								message: 'Please select a reference collection date',
+							},
+							{ validator: validateDates },
+						]}
+					>
+						<DatePicker
+							format='MM/DD/YYYY'
+							style={{ width: '40%' }}
+							disabledDate={disabledDate}
+						/>
+					</Form.Item>
+				)}
+
+				<Form.Item label='Full Contact Details for References'>
+					<p className='SmallText'>
+						How many recommendations does this vacancy require?
+					</p>
+					<Form.Item name='numberOfRecommendations'>
+						<Slider
+							className='Slider'
+							min={0}
+							max={15}
+							dots
+							marks={sliderMarks}
+							disabled={readOnly}
+						/>
+					</Form.Item>
 				</Form.Item>
 			</Form.Item>
 

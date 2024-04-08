@@ -4,6 +4,7 @@ export const initialValues = {
 		numberOfCategories: 4,
 		description: '',
 		allowHrSpecialistTriage: false,
+		referenceCollection: false,
 		applicationDocuments: [
 			{
 				document: 'Curriculum Vitae (CV)',
