@@ -71,7 +71,7 @@ const applicantList = (props) => {
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
 		if (referencesSent === '0') {
-			sendReferences(appSysId)
+			sendReferences(sysId)
 		} else {
 			setShowModal(true);
 		}
