@@ -31,6 +31,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 	OWM_TEAM,
 	COMMITTEE_CHAIR,
+	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../constants/Roles';
 import {
 	OWM_TRIAGE,
@@ -149,6 +150,7 @@ const manageDashboard = () => {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
+	const [isReadOnlyMember, setisReadOnlyMember] = useState(false);
 
 	const searchContext = {
 		searchText,
@@ -187,6 +189,8 @@ const manageDashboard = () => {
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);
+		const responseData = vacancyResponse.data.result;
+		checkForReadOnly(responseData, user);
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
@@ -199,7 +203,17 @@ const manageDashboard = () => {
 
 		setIsLoading(false);
 	};
-
+	
+	const checkForReadOnly = (vacancyResponseObj, id) => {
+		const committeeArray = vacancyResponseObj.committee;
+		const currentUserRole = vacancyResponseObj.user.committee_role_of_current_vacancy;
+		const currentUserId = id.uid;
+		for (let i = 0; i < committeeArray.length; i++) {
+			if (committeeArray[i].user.value === currentUserId && currentUserRole === COMMITTEE_MEMBER_READ_ONLY) {
+				setisReadOnlyMember(true);
+			}
+		}
+	}
 	const closeModal = async () => {
 		setModalVisible(false);
 		loadLatestVacancyInfo();
@@ -304,6 +318,7 @@ const manageDashboard = () => {
 									</div>
 								) : null}
 								<ViewVacancyDetails
+									isReadOnlyMember = {isReadOnlyMember}
 									allForms={vacancy}
 									hideCommitteeSection={isUserAllowedToScore()}
 									hideEmails={isUserChair() || isUserAllowedToScore()}
