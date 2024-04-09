@@ -13,6 +13,7 @@ const finalizeVacancy = (props) => {
 		props.allForms;
 	const { auth } = useAuth();
 	const { user } = auth;
+	const readOnlyMember = props.readOnlyMember;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
 	const [loading, setLoading] = useState(false);
 	const errors = props.errorSections;
@@ -121,8 +122,8 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo.openDate
 								? new Date(basicInfo.openDate)
-										.toLocaleString('en-us')
-										.split(',')[0]
+									.toLocaleString('en-us')
+									.split(',')[0]
 								: null}
 						</p>
 					</div>
@@ -134,8 +135,8 @@ const finalizeVacancy = (props) => {
 							<p>
 								{basicInfo.closeDate
 									? new Date(basicInfo.closeDate)
-											.toLocaleString('en-us')
-											.split(',')[0]
+										.toLocaleString('en-us')
+										.split(',')[0]
 									: null}
 							</p>
 						</div>
@@ -148,8 +149,8 @@ const finalizeVacancy = (props) => {
 							<p>
 								{basicInfo.scoringDueByDate
 									? new Date(basicInfo.scoringDueByDate)
-											.toLocaleString('en-us')
-											.split(',')[0]
+										.toLocaleString('en-us')
+										.split(',')[0]
 									: ''}
 							</p>
 						</div>
@@ -178,6 +179,18 @@ const finalizeVacancy = (props) => {
 					<h2>Reference Collection</h2>
 					<p>{basicInfo.referenceCollection ? 'Yes' : 'No'}</p>
 				</div>
+				{basicInfo.referenceCollection && (
+					<div className='DateCard'>
+						<h2>Reference Collection Date</h2>
+						<p>
+							{basicInfo.referenceCollectionDate
+								? new Date(basicInfo.referenceCollectionDate)
+										.toLocaleString('en-us')
+										.split(',')[0]
+								: ''}
+						</p>
+					</div>
+				)}
 				<h2>Full Contact Details for References</h2>
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
@@ -185,13 +198,14 @@ const finalizeVacancy = (props) => {
 						{basicInfo.numberOfRecommendations} recommendation(s)
 					</li>
 				</ul>
-				<h2>Number of Scoring Categories</h2>
-				<h3>How many categories does this vacancy require for scoring?</h3>
-				<ul>
-					<li className='ListItemTrue'>
-						{basicInfo.numberOfCategories} categories
-					</li>
-				</ul>
+
+				{readOnlyMember ? null : <div>	<h2>Number of Scoring Categories</h2>
+					<h3>How many categories does this vacancy require for scoring?</h3>
+					<ul>
+						<li className='ListItemTrue'>
+							{basicInfo.numberOfCategories} categories
+						</li>
+					</ul></div>}
 				<h2 style={basicInfo.sacCode ? null : { color: 'red' }}>
 					{basicInfo.sacCode ? null : '! '}Organizational Code
 				</h2>
@@ -208,10 +222,7 @@ const finalizeVacancy = (props) => {
 				<h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 				<ul>
 					{loading ? (
-						<Space
-							block='true'
-							style={{ display: 'flex', marginLeft: '75px' }}
-						>
+						<Space block='true' style={{ display: 'flex', marginLeft: '75px' }}>
 							<LoadingOutlined style={{ fontSize: '2rem' }} />
 						</Space>
 					) : (
@@ -224,55 +235,57 @@ const finalizeVacancy = (props) => {
 					)}
 				</ul>
 			</div>
-			<SectionHeader
-				title='Mandatory Statements'
-				onClick={() => props.onEditButtonClick(1)}
-				showButton={props.showButton}
-				error={errors?.includes('Mandatory Statements')}
-			/>
-			<div className='SectionContent' style={props.sectionContentStyle}>
-				<div className='TwoColumnCheckList'>
-					<ul>
-						<li
-							className={
-								mandatoryStatements.equalOpportunityEmployer
-									? 'ListItemTrue'
-									: 'ListItemFalse'
-							}
-						>
-							Equal Opportunity Employment
-						</li>
-						<li
-							className={
-								mandatoryStatements.standardsOfConduct
-									? 'ListItemTrue'
-									: 'ListItemFalse'
-							}
-						>
-							Standards of Conduct/Financial Disclosure
-						</li>
-						<li
-							className={
-								mandatoryStatements.foreignEducation
-									? 'ListItemTrue'
-									: 'ListItemFalse'
-							}
-						>
-							Foreign Education
-						</li>
-						<li
-							className={
-								mandatoryStatements.reasonableAccomodation
-									? 'ListItemTrue'
-									: 'ListItemFalse'
-							}
-						>
-							Reasonable Accomodation
-						</li>
-					</ul>
+			{readOnlyMember ? null : <div>
+				<SectionHeader
+					title='Mandatory Statements'
+					onClick={() => props.onEditButtonClick(1)}
+					showButton={props.showButton}
+					error={errors?.includes('Mandatory Statements')}
+				/>
+				<div className='SectionContent' style={props.sectionContentStyle}>
+					<div className='TwoColumnCheckList'>
+						<ul>
+							<li
+								className={
+									mandatoryStatements.equalOpportunityEmployer
+										? 'ListItemTrue'
+										: 'ListItemFalse'
+								}
+							>
+								Equal Opportunity Employment
+							</li>
+							<li
+								className={
+									mandatoryStatements.standardsOfConduct
+										? 'ListItemTrue'
+										: 'ListItemFalse'
+								}
+							>
+								Standards of Conduct/Financial Disclosure
+							</li>
+							<li
+								className={
+									mandatoryStatements.foreignEducation
+										? 'ListItemTrue'
+										: 'ListItemFalse'
+								}
+							>
+								Foreign Education
+							</li>
+							<li
+								className={
+									mandatoryStatements.reasonableAccomodation
+										? 'ListItemTrue'
+										: 'ListItemFalse'
+								}
+							>
+								Reasonable Accomodation
+							</li>
+						</ul>
+					</div>
 				</div>
-			</div>
-			{props.hideCommitteeSection ? null : (
+			</div>}
+			{props.hideCommitteeSection || readOnlyMember ? null : (
 				<>
 					<SectionHeader
 						title='Vacancy Committee'
@@ -296,7 +309,7 @@ const finalizeVacancy = (props) => {
 					</div>
 				</>
 			)}
-			{props.hideEmails ? null : (
+			{props.hideEmails || readOnlyMember ? null : (
 				<>
 					<SectionHeader
 						title='Email Templates'

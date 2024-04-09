@@ -152,6 +152,7 @@ const createVacancy = (props) => {
 				<EmailTemplates
 					initialValues={allForms.emailTemplates}
 					formInstance={emailTemplatesForm}
+					basicInfo={basicInfoForm.getFieldsValue()}
 				/>
 			),
 		},

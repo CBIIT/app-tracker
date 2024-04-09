@@ -4,6 +4,7 @@ export const initialValues = {
 		numberOfCategories: 4,
 		description: '',
 		allowHrSpecialistTriage: false,
+		referenceCollection: false,
 		applicationDocuments: [
 			{
 				document: 'Curriculum Vitae (CV)',
@@ -39,12 +40,12 @@ export const initialValues = {
 		{
 			type: 'Application saved',
 			active: true,
-			text: '<p>Dear Dr. #APP_LAST_NAME#,</p><p>Thank you for your application for the position of #POSITION# at the ***DOC*** National Institutes of Health (NIH).</p><p>Your application has been saved and is available at #APP_URL#.&nbsp;</p><p>Please ensure that all application materials are submitted by the review date/application deadline. Incomplete applications will not be considered. You may view the status of your application materials -- If you should have any questions, please contact #VACANCY_POC_NAME# at #VACANCY_POC_EMAIL#. Thank you for your interest in the National Institutes of Health.</p>',
+			text: '<p>Dear Dr. #APP_LAST_NAME#,<br><br></p><p>Thank you for your application for the position of #POSITION# at the #IC#, National Institutes of Health. Your application has been saved and is available at #APP_URL#.<br><br></p><p>Please ensure that all application materials are submitted by the review date/application deadline. Incomplete applications will not be considered. You may view the status of your application materials. If you should have any questions, please contact #VACANCY_POC_NAME#.<br><br></p><p>Thank you for your interest in the National Institutes of Health.<br></p>',
 		},
 		{
 			type: 'Application submitted confirmation',
 			active: true,
-			text: "<p><span>Dear Dr. #APP_LAST_NAME#,</span></p><p><span>Good news! Your application for the position of #POSITION# at the ***DOC*** National Institutes of Health (NIH) </span><strong>has been submitted.</strong></p><p><span>You may view the status of your application at any time by following #APP_URL#.</span></p><p><span>If you should have any questions, please contact #VACANCY_POC_NAME# at #VACANCY_POC_EMAIL#. Thank you for your interest in the National Institutes of Health.</span></p>",
+			text: "<p>Dear Dr. #APP_LAST_NAME#, <br><br></p><p>Good news! Your application for the position of #POSITION# at the #IC#, National Institutes of Health <b>has been submitted.</b></p><p>You may view the status of your application at any time by following #APP_URL#.</p><p>If you should have any questions, please contact #VACANCY_POC_NAME#.  </p><p>Thank you for your interest in the National Institutes of Health.</p>",
 		},
 	],
 };
