@@ -12,12 +12,16 @@ import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	VOTING_COMPLETE,
+	OWM_TRIAGE,
+	CHAIR_TRIAGE,
+	COMMITTEE_REVIEW_COMPLETE,
 } from '../../../constants/VacancyStates';
 import {
 	OWM_TEAM,
 	COMMITTEE_CHAIR,
 	COMMITTEE_MEMBER_VOTING,
 	COMMITTEE_MEMBER_NON_VOTING,
+	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../../constants/Roles';
 import { GET_APPLICANT_LIST, COLLECT_REFERENCES } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
@@ -54,7 +58,7 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput
 	} = contextValue;
-	
+
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
@@ -93,7 +97,7 @@ const applicantList = (props) => {
 				searchInput
 			),
 			defaultSortOrder: defaultApplicantSort,
-			sorter: (a, b) =>{
+			sorter: (a, b) => {
 				if (a.applicant_name < b.applicant_name) {
 					return -1;
 				}
@@ -308,9 +312,19 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
+			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE]
+			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
+				const newColumns = applicantColumns.filter((val) => {
+					if (val.title === 'Applicant')
+						return true;
+					if (val.title === 'Email')
+						return true;
+				})
+				return newColumns;
+			}
 			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING) {
 				const applicantColumnCopy = [...applicantColumns]
-				const columns = applicantColumnCopy.splice(0,2);
+				const columns = applicantColumnCopy.splice(0, 2);
 				const newColumns = columns.concat(committeeColumns);
 				return newColumns;
 			} else {
@@ -457,7 +471,7 @@ const applicantList = (props) => {
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 
 			const response = await axios.get(apiString);
-			
+
 			return {
 				applicants: response.data.result.applicants,
 				totalCount: response.data.result.totalCount,
@@ -480,7 +494,7 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
-	
+
 	return (
 		<>
 			<div className='applicant-table'>{table}</div>
