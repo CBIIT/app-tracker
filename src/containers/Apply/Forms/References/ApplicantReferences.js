@@ -2,13 +2,13 @@ import { useContext, useEffect, useState } from 'react';
 import { Form, Input, Collapse, Select, Pagination } from 'antd';
 
 import FormContext from '../../Context';
-import { displayReferenceContactQuestion } from '../../../../components/Util/Application/Application';
+//import { displayReferenceContactQuestion } from '../../../../components/Util/Application/Application';
 
 import './ApplicantReferences.css';
 
 const { Panel } = Collapse;
 const { Option } = Select;
-const applicantReferences = (props) => {
+const applicantReferences = () => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
 	const { formData } = contextValue;
