@@ -219,7 +219,7 @@ const finalizeVacancy = (props) => {
 				<ul>
 					<p className='ListItemTrue'>{basicInfo.positionClassification}</p>
 				</ul>
-				{readOnlyMember ? null : <div><h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
+				<div><h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 					<ul>
 						{loading ? (
 							<Space block='true' style={{ display: 'flex', marginLeft: '75px' }}>
@@ -233,7 +233,7 @@ const finalizeVacancy = (props) => {
 								)}
 							</p>
 						)}
-					</ul></div>}
+					</ul></div>
 			</div>
 			{readOnlyMember ? null : <div>
 				<SectionHeader
