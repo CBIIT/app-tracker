@@ -8,7 +8,6 @@ import './ApplicantReferences.css';
 
 const { Panel } = Collapse;
 const { Option } = Select;
-
 const applicantReferences = (props) => {
 	const [formInstance] = Form.useForm();
 	const contextValue = useContext(FormContext);
@@ -183,7 +182,7 @@ const applicantReferences = (props) => {
 												/>
 											</Form.Item>
 										</div>
-										{displayReferenceContactQuestion(
+										{/* {displayReferenceContactQuestion(
 											props.vacancyTenantType
 										) ? (
 											<div>
@@ -209,7 +208,7 @@ const applicantReferences = (props) => {
 											</div>
 										) : (
 											<></>
-										)}
+										)} */}
 									</Panel>
 								))}
 							</Collapse>
