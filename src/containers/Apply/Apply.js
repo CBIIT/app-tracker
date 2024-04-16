@@ -253,15 +253,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				</>
 			),
 		});
-		/* steps.splice(2, 0, {
-			key: 'references',
-			title: 'References',
-			content: <ApplicantReferences vacancyTenantType={vacancyTenantType} />,
-			description: 'References to support the application',
-			longDescription:
-				'Please provide professional references that can submit a recommendation on your behalf.',
-		}); */
-	
 
 	steps.push({
 		key: 'additionalQuestions',
