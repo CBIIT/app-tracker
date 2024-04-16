@@ -312,7 +312,7 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE]
+			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE]
 			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
 				const newColumns = applicantColumns.filter((val) => {
 					if (val.title === 'Applicant')
