@@ -27,18 +27,6 @@ const review = (props) => {
 		{ title: 'Organization', dataIndex: 'organization' },
 	];
 
-	if (displayReferenceContactQuestion(props.vacancyTenantType))
-		referencesColumns.push({
-			title: 'Contact',
-			render: (record) => {
-				return (
-					<span>
-						{record.contact[0].toUpperCase() + record.contact.slice(1)}
-					</span>
-				);
-			},
-		});
-
 	const references = formData.references.map((reference, index) => ({
 		key: index,
 		...reference,
