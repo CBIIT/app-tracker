@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { Table } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
 
-import { displayReferenceContactQuestion } from '../../../../components/Util/Application/Application';
 import FormContext from '../../Context';
 import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewSectionHeader';
 import LabelValuePair from '../../../../components/UI/LabelValuePair/LabelValuePair';
