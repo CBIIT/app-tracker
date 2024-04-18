@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { Form, Input, Collapse, Select, Pagination } from 'antd';
 
 import FormContext from '../../Context';
-//import { displayReferenceContactQuestion } from '../../../../components/Util/Application/Application';
 
 import './ApplicantReferences.css';
 
@@ -182,33 +181,6 @@ const applicantReferences = () => {
 												/>
 											</Form.Item>
 										</div>
-										{/* {displayReferenceContactQuestion(
-											props.vacancyTenantType
-										) ? (
-											<div>
-												<Form.Item
-													name={[field.name, 'contact']}
-													key={field.key + 'contact'}
-													label='Is it okay for the Hiring Team to contact the reference
-											directly?'
-													labelAlign='left'
-													colon={false}
-													rules={[
-														{
-															required: true,
-															message: 'Please select an answer',
-														},
-													]}
-												>
-													<Select placeholder='Please Select'>
-														<Option value='yes'>Yes</Option>
-														<Option value='no'>No</Option>
-													</Select>
-												</Form.Item>
-											</div>
-										) : (
-											<></>
-										)} */}
 									</Panel>
 								))}
 							</Collapse>
