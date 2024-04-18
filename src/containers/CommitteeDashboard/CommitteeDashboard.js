@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
+import { CHECK_AUTH, GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty, message } from 'antd';
 import './CommitteeDashboard.css';
 import axios from 'axios';
@@ -18,7 +18,7 @@ const renderDecision = (text) =>
 const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-
+	const [readOnly, setreadOnly] = useState(false);
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
 			<Empty
@@ -32,6 +32,8 @@ const committeeDashboard = () => {
 		(async () => {
 			setIsLoading(true);
 			try {
+				const response = await axios.get(CHECK_AUTH);
+				setreadOnly(response.data.result.is_read_only_user);
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
 				setData(currentData.data.result);
 			} catch (err) {
@@ -56,7 +58,7 @@ const committeeDashboard = () => {
 						pagination={{ hideOnSinglePage: true }}
 						rowKey={(record) => record.vacancy_id}
 						dataSource={data}
-						columns={committeeColumns}
+						columns={readOnly ? committeeColumns.slice(0,3) : committeeColumns}
 						scroll={{ x: 'true' }}
 						key='CommitteeVacancies'
 						style={{
