@@ -27,7 +27,7 @@ const review = (props) => {
 		{ title: 'Organization', dataIndex: 'organization' },
 	];
 
-	if (displayReferenceContactQuestion(props.vacancyTenantType))
+	/* if (displayReferenceContactQuestion(props.vacancyTenantType))
 		referencesColumns.push({
 			title: 'Contact',
 			render: (record) => {
@@ -37,7 +37,7 @@ const review = (props) => {
 					</span>
 				);
 			},
-		});
+		}); */
 
 	const references = formData.references.map((reference, index) => ({
 		key: index,
