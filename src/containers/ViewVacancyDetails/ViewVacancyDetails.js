@@ -11,43 +11,10 @@ import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
 
-const numberToWordMap = {
-	0: 'Zero',
-	1: 'One',
-	2: 'Two',
-	3: 'Three',
-	4: 'Four',
-	5: 'Five',
-	6: 'Six',
-	7: 'Seven',
-	8: 'Eight',
-	9: 'Nine',
-	10: 'Ten',
-	11: 'Eleven',
-	12: 'Twelve',
-	13: 'Thirteen',
-	14: 'Fourteen',
-	15: 'Fifteen'
-};
-
 const viewVacancyDetails = () => {
 	const [vacancyDetails, setVacancyDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const { sysId } = useParams();
-
-	const getCloseTime = (time) => {
-		const timeArr = time.split(':');
-		let hours = timeArr[0];
-		let minutes = timeArr[1];
-		if (hours > 12) {
-			hours -= 12;
-			return `${hours}:${minutes}PM`
-		} else if(hours == 12) {
-			return `${hours}:${minutes}PM`
-		} else if(hours < 12) {
-			return `${hours}:${minutes}AM`
-		}
-	}
 
 	useEffect(() => {
 		(async () => {
@@ -67,7 +34,6 @@ const viewVacancyDetails = () => {
 				closeDate={vacancyDetails.basic_info.close_date.value}
 				useCloseDate={vacancyDetails.basic_info.use_close_date.value == '0' ? false : true}
 				vacancyState={vacancyDetails.basic_info.state.value}
-				closeTime={getCloseTime(vacancyDetails.basic_info.closing_time.label)}
 				vacancyPOC={vacancyDetails.basic_info.vacancy_poc}
 				sysId={sysId}
 			/>

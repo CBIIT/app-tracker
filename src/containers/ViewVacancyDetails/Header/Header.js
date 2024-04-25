@@ -95,9 +95,7 @@ const header = (props) => {
 							<div className='DateItem'>
 								<label>Close Date</label>
 								<span>
-									{`${transformDateToDisplay(props.closeDate)} ${
-										props.closeTime
-									} ET`}
+									{`${transformDateToDisplay(props.closeDate)} ET`}
 								</span>
 							</div>
 						</>
