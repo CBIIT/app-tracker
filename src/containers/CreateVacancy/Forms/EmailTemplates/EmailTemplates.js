@@ -31,6 +31,9 @@ const emailTemplates = (props) => {
 		if (basicInfo.referenceCollection === true && initialValues.emailTemplates.length === 2) {
 			initialValues = initialValues.emailTemplates.concat(referenceEmailTemplates);
 			formInstance.setFieldValue('emailTemplates', initialValues);
+		} else if (basicInfo.referenceCollection === false && initialValues.emailTemplates.length > 2) {
+			initialValues = initialValues.emailTemplates.filter(template => !referenceEmailTemplates.find(email => email.type === template.type))
+			formInstance.setFieldValue('emailTemplates', initialValues);
 		}
 	}, [basicInfo.referenceCollection])
 

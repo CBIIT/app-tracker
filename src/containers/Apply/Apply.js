@@ -240,8 +240,18 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			title: 'References',
 			content: <ApplicantReferences vacancyTenantType={vacancyTenantType} />,
 			description: 'References to support the application',
-			longDescription:
-				'Please provide professional references that can submit a recommendation on your behalf.',
+			longDescription: (
+				<>
+					<p>
+						Please provide professional references that can submit a
+						recommendation on your behalf. <br />{' '}
+						<span style={{color: 'red', fontWeight: 'bold', fontSize: '16px'}}>
+							Any reference provided can be contacted at any point in the
+							recruitment process.
+						</span>
+					</p>
+				</>
+			),
 		});
 
 	steps.push({

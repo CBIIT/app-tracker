@@ -219,21 +219,21 @@ const finalizeVacancy = (props) => {
 				<ul>
 					<p className='ListItemTrue'>{basicInfo.positionClassification}</p>
 				</ul>
-				<h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
-				<ul>
-					{loading ? (
-						<Space block='true' style={{ display: 'flex', marginLeft: '75px' }}>
-							<LoadingOutlined style={{ fontSize: '2rem' }} />
-						</Space>
-					) : (
-						<p className='ListItemTrue'>
-							{getPackageInitiatorDisplayName(
-								basicInfo.appointmentPackageIndicator,
-								allPackageInitiators
-							)}
-						</p>
-					)}
-				</ul>
+				<div><h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
+					<ul>
+						{loading ? (
+							<Space block='true' style={{ display: 'flex', marginLeft: '75px' }}>
+								<LoadingOutlined style={{ fontSize: '2rem' }} />
+							</Space>
+						) : (
+							<p className='ListItemTrue'>
+								{getPackageInitiatorDisplayName(
+									basicInfo.appointmentPackageIndicator,
+									allPackageInitiators
+								)}
+							</p>
+						)}
+					</ul></div>
 			</div>
 			{readOnlyMember ? null : <div>
 				<SectionHeader
