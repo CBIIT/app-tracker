@@ -26,9 +26,6 @@ const editableCell = ({
 					<Select>
 						<Option value={COMMITTEE_CHAIR}>Chair</Option>
 						<Option value={COMMITTEE_MEMBER_VOTING}>Member (voting)</Option>
-						<Option value={COMMITTEE_MEMBER_NON_VOTING}>
-							Member (non-voting)
-						</Option>
 						<Option value={COMMITTEE_HR_SPECIALIST}>
 							HR Specialist (non-voting)
 						</Option>
