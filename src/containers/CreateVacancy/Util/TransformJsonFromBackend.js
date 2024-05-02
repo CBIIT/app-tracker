@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { COMMITTEE_MEMBER_VOTING } from '../../../constants/Roles';
 export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
 		sysId: sourceJson.basic_info.sys_id.value,
@@ -83,7 +84,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 const transformVacancyCommittee = (vacancyCommittee) => {
 	return vacancyCommittee.map((member, index) => {
 		const transformedCommitteeMember = {
-			role: member.role.value,
+			role: member.role.value === "Member (voting)" ? COMMITTEE_MEMBER_VOTING : member.role.value,
 			user: {
 				sys_id: { value: member.user.value, display_value: member.user.value },
 				name: { value: member.user.label, display_value: member.user.label },

@@ -1,3 +1,5 @@
+import { COMMITTEE_MEMBER_VOTING } from "../../../constants/Roles";
+
 export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
 		sysId: sourceJson.basic_info.sys_id.value,
@@ -42,7 +44,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			: [],
 		vacancyCommittee: sourceJson.committee
 			? sourceJson.committee.map((member) => ({
-					role: member.role.value,
+					role: member.role.value  === "Member (voting)" ? COMMITTEE_MEMBER_VOTING : member.role.value,
 					user: { name: { value: member.user.label } },
 					key: member.sys_id.value,
 			  }))

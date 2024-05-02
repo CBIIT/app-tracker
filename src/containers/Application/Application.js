@@ -483,9 +483,8 @@ const application = () => {
 	} else {
 		const allowHrSpecialistTriage =
 			vacancyData?.basic_info?.allow_hr_specialist_triage;
-
-		const userVacancyCommitteeRole =
-			vacancyData?.user?.committee_role_of_current_vacancy;
+		const currentRole = vacancyData?.user?.committee_role_of_current_vacancy;
+		const userVacancyCommitteeRole = currentRole === "Member (voting)" ? COMMITTEE_MEMBER_VOTING : currentRole;
 		const userConsolidatedRoles = [...userRoles, userVacancyCommitteeRole];
 
 		return (
