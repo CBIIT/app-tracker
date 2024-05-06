@@ -113,7 +113,7 @@ const vacancyDashboard = () => {
 	const getFilteredData = (filter) => {
 		if (filter === 'all') {
 			return data;
-		} else if (tab === tabs.CLOSED || tab === tabs.ROLLING) {
+		} else if (tab === tabs.CLOSED) {
 			return data.filter((res) => {
 				let newState = '';
 				switch (res.state) {
@@ -143,6 +143,19 @@ const vacancyDashboard = () => {
 						break;
 				}
 				return newState == filter;
+			});
+		} else if (tab === tabs.ROLLING) {
+			return data.filter((res) => {
+				let newStatus = '';
+				switch (res.status) {
+					case 'open':
+						newStatus = 'open';
+						break;
+					case 'closed':
+						newStatus = 'closed';
+						break;
+				}
+				return newStatus == filter;
 			});
 		} else if (filter === 'extended') {
 			return data.filter((res) => res.extended == 1);
@@ -663,16 +676,8 @@ const vacancyDashboard = () => {
 									value={filter}
 								>
 									<Radio.Button value='all'>All</Radio.Button>
-									<Radio.Button value='triaged'>Triage</Radio.Button>
-									<Radio.Button value='individual_scored'>
-										Individual Scoring
-									</Radio.Button>
-									<Radio.Button value='committee_review'>
-										Committee Review
-									</Radio.Button>
-									<Radio.Button value='voting_complete'>
-										Voting Complete
-									</Radio.Button>
+									<Radio.Button value='open'>Open</Radio.Button>
+									<Radio.Button value='closed'>Closed</Radio.Button>
 								</Radio.Group>
 							</div>
 							<div style={{ backgroundColor: 'white' }}>
