@@ -391,7 +391,7 @@ const application = () => {
 					message.success('Feedback and notes saved.');
 				}
 			} else {
-				if (vacancy.data.basic_info.use_close_date.label == 'false') {
+				if (vacancyData.basic_info.use_close_date.label == 'false') {
 					triage = {
 						app_sys_id: application.appSysId,
 						executive_triage: triageChoice,
@@ -404,7 +404,7 @@ const application = () => {
 						OWM_triage_comments: triageComments,
 					};
 				}
-
+				
 				await axios.post(SUBMIT_TRIAGE, triage);
 				message.success('Feedback and notes saved.');
 			}
