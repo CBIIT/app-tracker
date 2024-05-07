@@ -1,5 +1,5 @@
 const COMMITTEE_CHAIR = 'Chair';
-const COMMITTEE_MEMBER_VOTING = 'Member (voting)';
+const COMMITTEE_MEMBER_VOTING = 'Member';
 const COMMITTEE_MEMBER_NON_VOTING = 'Member (non-voting)';
 const COMMITTEE_EXEC_SEC = 'Executive Secretary (non-voting)';
 const COMMITTEE_HR_SPECIALIST = 'HR Specialist (non-voting)';

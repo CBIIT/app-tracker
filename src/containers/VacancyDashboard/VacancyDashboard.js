@@ -56,6 +56,7 @@ const vacancyDashboard = () => {
 	const tabs = {
 		PREFLIGHT: 'preflight',
 		LIVE: 'live',
+		ROLLING: 'rolling',
 		CLOSED: 'closed',
 	};
 
@@ -142,6 +143,19 @@ const vacancyDashboard = () => {
 						break;
 				}
 				return newState == filter;
+			});
+		} else if (tab === tabs.ROLLING) {
+			return data.filter((res) => {
+				let newStatus = '';
+				switch (res.status) {
+					case 'open':
+						newStatus = 'open';
+						break;
+					case 'closed':
+						newStatus = 'closed';
+						break;
+				}
+				return newStatus == filter;
 			});
 		} else if (filter === 'extended') {
 			return data.filter((res) => res.extended == 1);
@@ -389,6 +403,86 @@ const vacancyDashboard = () => {
 		},
 	];
 
+	const rollingColumns = [
+		{
+			title: 'Vacancy Title',
+			dataIndex: 'title',
+			render: (title, record) => (
+				<Link to={MANAGE_VACANCY + record.sys_id}>{title}</Link>
+			),
+		},
+		{
+			title: 'Applicants',
+			dataIndex: 'applicants',
+			sorter: {
+				compare: (a, b) => a.applicants - b.applicants,
+			},
+		},
+		{
+			title: 'Open Date',
+			dataIndex: 'open_date',
+			render: (date) => transformDateToDisplay(date),
+			sorter: {
+				compare: (a, b) => new Date(a.open_date) - new Date(b.open_date),
+				multiple: 2,
+			},
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			width: '5px',
+			render: (vacancy, record) => (
+				<Space size={0}>
+					<Button
+						type='text'
+						style={{ padding: '0px' }}
+						onClick={() => {
+							handleEditButtonClick(record);
+						}}
+					>
+						<EditOutlined /> Edit
+					</Button>
+					<Divider type='vertical' />
+					<Button
+						type='text'
+						onClick={() => {
+							const copyLink = document.getElementById(vacancy.sys_id).href;
+							const copyInput = document.createElement('input');
+							copyInput.id = 'copy_link_' + vacancy.sys_id;
+							copyInput.value = copyLink;
+							document.body.append(copyInput);
+							document.getElementById(`copy_link_${vacancy.sys_id}`).select();
+							document.execCommand('copy');
+							document.getElementById(`copy_link_${vacancy.sys_id}`).remove();
+							copyLinkMessage();
+						}}
+						style={{ padding: '0px' }}
+					>
+						<LinkOutlined /> Copy Link
+					</Button>
+					<Divider type='vertical' />
+					<Button
+						type='text'
+						onClick={() => {
+							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
+						}}
+					>
+						<UserOutlined /> View Applicants
+					</Button>
+					<Divider type='vertical' />
+					<Button
+						type='text'
+						onClick={() => {
+							history.push(MANAGE_VACANCY + vacancy.sys_id);
+						}}
+					>
+						<FileTextOutlined /> View Vacancy
+					</Button>
+				</Space>
+			),
+		},
+	]
+
 	const closedColumns = [
 		{
 			title: 'Vacancy Title',
@@ -552,6 +646,46 @@ const vacancyDashboard = () => {
 										rowKey='sys_id'
 										dataSource={filteredData}
 										columns={liveColumns}
+										scroll={{ x: 'true' }}
+										style={{
+											width: '1170px',
+											display: 'block',
+											paddingLeft: '20px',
+											paddingRight: '20px',
+										}}
+										loading={isLoading}
+									/>
+								</ConfigProvider>
+							</div>
+						</Tabs.TabPane>
+						<Tabs.TabPane
+							tab={
+								<CountTile
+									title='rolling close vacancies'
+									apiUrl={VACANCY_COUNTS + tabs.ROLLING}
+								/>
+							}
+							key={tabs.ROLLING}
+						>
+							<div className='tabs-div'>
+								<p style={{ display: 'inline-block' }}>Filter Vacancies: </p>
+								<Radio.Group
+									defaultValue='all'
+									style={{ display: 'inline-block', paddingLeft: '10px' }}
+									onChange={filterChangeHandler}
+									value={filter}
+								>
+									<Radio.Button value='all'>All</Radio.Button>
+									<Radio.Button value='open'>Open</Radio.Button>
+									<Radio.Button value='closed'>Closed</Radio.Button>
+								</Radio.Group>
+							</div>
+							<div style={{ backgroundColor: 'white' }}>
+								<ConfigProvider renderEmpty={customizeRenderEmpty}>
+									<Table
+										rowKey='sys_id'
+										dataSource={filteredData}
+										columns={rollingColumns}
 										scroll={{ x: 'true' }}
 										style={{
 											width: '1170px',
