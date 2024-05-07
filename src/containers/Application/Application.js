@@ -391,12 +391,20 @@ const application = () => {
 					message.success('Feedback and notes saved.');
 				}
 			} else {
-				triage = {
-					app_sys_id: application.appSysId,
-					OWM_triage: triageChoice,
-					OWM_triage_comments: triageComments,
-				};
-
+				if (vacancyData.basic_info.use_close_date.label == 'false') {
+					triage = {
+						app_sys_id: application.appSysId,
+						executive_triage: triageChoice,
+						executive_triage_comments: triageComments,
+					};
+				} else {
+					triage = {
+						app_sys_id: application.appSysId,
+						OWM_triage: triageChoice,
+						OWM_triage_comments: triageComments,
+					};
+				}
+				
 				await axios.post(SUBMIT_TRIAGE, triage);
 				message.success('Feedback and notes saved.');
 			}
