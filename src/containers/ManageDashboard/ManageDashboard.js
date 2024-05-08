@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { Tabs, Button, Tooltip, message } from 'antd';
-import { DoubleRightOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import { useParams, useHistory } from 'react-router-dom';
@@ -173,6 +173,10 @@ const manageDashboard = () => {
 		setModalVisible(true);
 	};
 
+	const handleStatusButtonClick = () => {
+		// opens status modal to confirm closing modal
+	};
+
 	const isUserAllowedToScore = () => {
 		return (
 			userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
@@ -192,6 +196,7 @@ const manageDashboard = () => {
 		const responseData = vacancyResponse.data.result;
 		checkForReadOnly(responseData, user);
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
+		console.log('🚀 ~ loadLatestVacancyInfo ~ vacancy:', vacancy);
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
 		setVacancy(vacancy);
@@ -203,17 +208,21 @@ const manageDashboard = () => {
 
 		setIsLoading(false);
 	};
-	
+
 	const checkForReadOnly = (vacancyResponseObj, id) => {
 		const committeeArray = vacancyResponseObj.committee;
-		const currentUserRole = vacancyResponseObj.user.committee_role_of_current_vacancy;
+		const currentUserRole =
+			vacancyResponseObj.user.committee_role_of_current_vacancy;
 		const currentUserId = id.uid;
 		for (let i = 0; i < committeeArray.length; i++) {
-			if (committeeArray[i].user.value === currentUserId && currentUserRole === COMMITTEE_MEMBER_READ_ONLY) {
+			if (
+				committeeArray[i].user.value === currentUserId &&
+				currentUserRole === COMMITTEE_MEMBER_READ_ONLY
+			) {
 				setisReadOnlyMember(true);
 			}
 		}
-	}
+	};
 	const closeModal = async () => {
 		setModalVisible(false);
 		loadLatestVacancyInfo();
@@ -276,28 +285,70 @@ const manageDashboard = () => {
 						</Button>
 					</div>
 				</div>
-				<VacancyStatus state={state} />
-				{displayNextButton(vacancy.state) ? (
-					<div className='AdvanceButtonDiv'>
-						<Tooltip
-							placement='top'
-							title={
-								!nextStep ? getNextStepCannotAdvanceTooltip(vacancy.state) : ''
-							}
-						>
-							<Button
-								type='primary'
-								ghost
-								className='AdvanceButton'
-								disabled={!nextStep}
-								onClick={handleButtonClick}
-								loading={isNextButtonLoading}
+				{vacancy.state != 'rolling_close' &&
+				vacancy.basicInfo.useCloseDate != 'false' ? (
+					<>
+						<VacancyStatus state={state} />
+						{displayNextButton(vacancy.state) ? (
+							<div className='AdvanceButtonDiv'>
+								<Tooltip
+									placement='top'
+									title={
+										!nextStep
+											? getNextStepCannotAdvanceTooltip(vacancy.state)
+											: ''
+									}
+								>
+									<Button
+										type='primary'
+										ghost
+										className='AdvanceButton'
+										disabled={!nextStep}
+										onClick={handleButtonClick}
+										loading={isNextButtonLoading}
+									>
+										{nextButtonLabel} <DoubleRightOutlined />
+									</Button>
+								</Tooltip>
+							</div>
+						) : null}
+					</>
+				) : (
+					<>
+						<div className='AdvanceButtonDiv'>
+							<Tooltip
+								placement='top'
+								title={
+									vacancy.status == 'open'
+										? 'The vacancy will be closed and no other applicants may apply for the position.'
+										: 'The vacancy will be opened and applicants may submit their applications.'
+								}
 							>
-								{nextButtonLabel} <DoubleRightOutlined />
-							</Button>
-						</Tooltip>
-					</div>
-				) : null}
+								<Button
+									type='primary'
+									ghost
+									className='AdvanceButton'
+									onClick={handleStatusButtonClick}
+									//loading={isStatusButtonLoading}
+								>
+									{/* {nextButtonLabel} <DoubleRightOutlined /> */}
+									{vacancy.status == 'open' ? (
+										<>
+											Close Vacancy{' '}
+											<LockOutlined />
+											{/* <DoubleRightOutlined /> */}
+										</>
+									) : (
+										<>
+											Open Vacancy
+											<UnlockOutlined />
+										</>
+									)}
+								</Button>
+							</Tooltip>
+						</div>
+					</>
+				)}
 				<div className='manage-tabs'>
 					<Tabs
 						activeKey={currentTab}
@@ -318,7 +369,7 @@ const manageDashboard = () => {
 									</div>
 								) : null}
 								<ViewVacancyDetails
-									isReadOnlyMember = {isReadOnlyMember}
+									isReadOnlyMember={isReadOnlyMember}
 									allForms={vacancy}
 									hideCommitteeSection={isUserAllowedToScore()}
 									hideEmails={isUserChair() || isUserAllowedToScore()}

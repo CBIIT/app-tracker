@@ -2,6 +2,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
 		sysId: sourceJson.basic_info.sys_id.value,
 		state: sourceJson.basic_info.state.value,
+		status: sourceJson.basic_info.status.value,
 		basicInfo: {
 			openDate: sourceJson.basic_info.open_date.label,
 			useCloseDate:
@@ -9,6 +10,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			referenceCollection:
 				sourceJson.basic_info.reference_collection.value == '1' ? true : false,
 			referenceCollectionDate: sourceJson.basic_info.reference_collection_date.label,
+			useCloseDate: sourceJson.basic_info.use_close_date.label,
 			closeDate: sourceJson.basic_info.close_date.label,
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.label,
 			title: sourceJson.basic_info.vacancy_title.value,
