@@ -3,6 +3,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 	const targetJson = {
 		sysId: sourceJson.basic_info.sys_id.value,
 		state: sourceJson.basic_info.state.value,
+		status: sourceJson.basic_info.status.value,
 		basicInfo: {
 			sys_id: sourceJson.basic_info.sys_id.value,
 			openDate: moment(sourceJson.basic_info.open_date.value),

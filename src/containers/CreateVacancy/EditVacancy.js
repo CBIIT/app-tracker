@@ -31,7 +31,7 @@ const editVacancy = () => {
 			initialValues={data}
 			sysId={data.sysId}
 			editFinalizedVacancy={true}
-			restrictedEditMode={data.state !== LIVE && data.state !== FINAL}
+			restrictedEditMode={data.status !== 'open' && (data.state !== LIVE && data.state !== FINAL)}
 		/>
 	);
 };
