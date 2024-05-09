@@ -12,6 +12,7 @@ import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';
+import StatusModal from './StatusModal/StatusModal.js';
 import FileUploadAndDisplay from '../../components/UI/FileUploadAndDisplay/FileUploadAndDisplay';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
@@ -147,6 +148,7 @@ const manageDashboard = () => {
 	const [nextButtonLabel, setNextButtonLabel] = useState();
 	const [userCommitteeRole, setUserCommitteeRole] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
+	const [statusModalOpen, setStatusModalOpen] = useState(false);
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
@@ -174,7 +176,7 @@ const manageDashboard = () => {
 	};
 
 	const handleStatusButtonClick = () => {
-		// opens status modal to confirm closing modal
+		setStatusModalOpen(true)
 	};
 
 	const isUserAllowedToScore = () => {
@@ -336,11 +338,10 @@ const manageDashboard = () => {
 										<>
 											Close Vacancy{' '}
 											<LockOutlined />
-											{/* <DoubleRightOutlined /> */}
 										</>
 									) : (
 										<>
-											Open Vacancy
+											Open Vacancy{' '}
 											<UnlockOutlined />
 										</>
 									)}
@@ -426,6 +427,12 @@ const manageDashboard = () => {
 					handleOk={() => handleNextStepModalConfirm(sysId)}
 					submittedTitle={getNextStepModalSubmittedTitle(vacancy.state)}
 					steps={getNextStepModalSteps(vacancy.state)}
+				/>
+				<StatusModal
+					sysId={sysId}
+					status={vacancy.status}
+					openModal={statusModalOpen}
+					setModal={setStatusModalOpen}
 				/>
 			</SearchContext.Provider>
 		</>
