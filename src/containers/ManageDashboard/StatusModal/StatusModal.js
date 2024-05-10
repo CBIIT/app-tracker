@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Modal, Typography, message } from 'antd';
 const { Title, Paragraph } = Typography;
-import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 import { CHANGE_VACANCY_STATUS } from '../../../constants/ApiEndpoints';
 
 const StatusModal = (props) => {
@@ -16,7 +16,6 @@ const StatusModal = (props) => {
             await axios.post(CHANGE_VACANCY_STATUS + props.sysId);
             message.success('Status changed!');
         } catch (error) {
-            console.log(error);
             message.error('Sorry! There was an error processing the request.');
         }
         setIsLoading(false);
