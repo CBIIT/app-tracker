@@ -1,17 +1,32 @@
 import { useState } from 'react';
-import { Modal, Typography } from 'antd';
+import axios from 'axios';
+import { Modal, Typography, message } from 'antd';
 const { Title, Paragraph } = Typography;
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
+import { CHANGE_VACANCY_STATUS } from '../../../constants/ApiEndpoints';
 
 const StatusModal = (props) => {
     const status = props.status;
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleOk = () => {
+    const handleOk = async () => {
         // send call to back end to change
+        setIsLoading(true);
+        try {
+            await axios.post(CHANGE_VACANCY_STATUS + props.sysId);
+            message.success('Status changed!');
+        } catch (error) {
+            console.log(error);
+            message.error('Sorry! There was an error processing the request.');
+        }
+        setIsLoading(false);
+        props.setModal(false);
+        props.loadVacancy();
     }
 
     const handleClose = () => {
-        props.setModal(false)
+        props.setModal(false);
+        props.loadVacancy();
     }
 
     return (
@@ -33,6 +48,7 @@ const StatusModal = (props) => {
 				onOk={handleOk}
 				onCancel={handleClose}
 				closeable={false}
+                confirmLoading={isLoading}
 			>
 				{status == 'open' ? (
 					<Paragraph>

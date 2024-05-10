@@ -52,6 +52,9 @@ export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/save_draft';
 export const ADVANCE_VACANCY_TO_NEXT_STEP =
 	'/api/x_g_nci_app_tracke/vacancy/next_step/';
 
+export const CHANGE_VACANCY_STATUS =
+	'/api/x_g_nci_app_tracke/vacancy/change_status/';
+
 export const REQUEST_CHAIR_TRIAGE =
 	'/api/x_g_nci_app_tracke/vacancy/request_chair_triage/';
 
