@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { Tabs, Button, Tooltip, message } from 'antd';
-import { DoubleRightOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import { useParams, useHistory } from 'react-router-dom';
@@ -12,6 +12,7 @@ import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';
+import StatusModal from './StatusModal/StatusModal.js';
 import FileUploadAndDisplay from '../../components/UI/FileUploadAndDisplay/FileUploadAndDisplay';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
@@ -147,6 +148,7 @@ const manageDashboard = () => {
 	const [nextButtonLabel, setNextButtonLabel] = useState();
 	const [userCommitteeRole, setUserCommitteeRole] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
+	const [statusModalOpen, setStatusModalOpen] = useState(false);
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
@@ -171,6 +173,10 @@ const manageDashboard = () => {
 
 	const handleButtonClick = () => {
 		setModalVisible(true);
+	};
+
+	const handleStatusButtonClick = () => {
+		setStatusModalOpen(true)
 	};
 
 	const isUserAllowedToScore = () => {
@@ -203,17 +209,21 @@ const manageDashboard = () => {
 
 		setIsLoading(false);
 	};
-	
+
 	const checkForReadOnly = (vacancyResponseObj, id) => {
 		const committeeArray = vacancyResponseObj.committee;
-		const currentUserRole = vacancyResponseObj.user.committee_role_of_current_vacancy;
+		const currentUserRole =
+			vacancyResponseObj.user.committee_role_of_current_vacancy;
 		const currentUserId = id.uid;
 		for (let i = 0; i < committeeArray.length; i++) {
-			if (committeeArray[i].user.value === currentUserId && currentUserRole === COMMITTEE_MEMBER_READ_ONLY) {
+			if (
+				committeeArray[i].user.value === currentUserId &&
+				currentUserRole === COMMITTEE_MEMBER_READ_ONLY
+			) {
 				setisReadOnlyMember(true);
 			}
 		}
-	}
+	};
 	const closeModal = async () => {
 		setModalVisible(false);
 		loadLatestVacancyInfo();
@@ -276,28 +286,69 @@ const manageDashboard = () => {
 						</Button>
 					</div>
 				</div>
-				<VacancyStatus state={state} />
-				{displayNextButton(vacancy.state) ? (
-					<div className='AdvanceButtonDiv'>
-						<Tooltip
-							placement='top'
-							title={
-								!nextStep ? getNextStepCannotAdvanceTooltip(vacancy.state) : ''
-							}
-						>
-							<Button
-								type='primary'
-								ghost
-								className='AdvanceButton'
-								disabled={!nextStep}
-								onClick={handleButtonClick}
-								loading={isNextButtonLoading}
+				{vacancy.state != 'rolling_close' &&
+				vacancy.basicInfo.useCloseDate != 'false' ? (
+					<>
+						<VacancyStatus state={state} />
+						{displayNextButton(vacancy.state) ? (
+							<div className='AdvanceButtonDiv'>
+								<Tooltip
+									placement='top'
+									title={
+										!nextStep
+											? getNextStepCannotAdvanceTooltip(vacancy.state)
+											: ''
+									}
+								>
+									<Button
+										type='primary'
+										ghost
+										className='AdvanceButton'
+										disabled={!nextStep}
+										onClick={handleButtonClick}
+										loading={isNextButtonLoading}
+									>
+										{nextButtonLabel} <DoubleRightOutlined />
+									</Button>
+								</Tooltip>
+							</div>
+						) : null}
+					</>
+				) : (
+					<>
+						<div className='AdvanceButtonDiv'>
+							<Tooltip
+								placement='top'
+								title={
+									vacancy.status == 'open'
+										? 'The vacancy will be closed and no other applicants may apply for the position.'
+										: 'The vacancy will be opened and applicants may submit their applications.'
+								}
 							>
-								{nextButtonLabel} <DoubleRightOutlined />
-							</Button>
-						</Tooltip>
-					</div>
-				) : null}
+								<Button
+									type='primary'
+									ghost
+									className='AdvanceButton'
+									onClick={handleStatusButtonClick}
+									//loading={isStatusButtonLoading}
+								>
+									{/* {nextButtonLabel} <DoubleRightOutlined /> */}
+									{vacancy.status == 'open' ? (
+										<>
+											Close Vacancy{' '}
+											<LockOutlined />
+										</>
+									) : (
+										<>
+											Open Vacancy{' '}
+											<UnlockOutlined />
+										</>
+									)}
+								</Button>
+							</Tooltip>
+						</div>
+					</>
+				)}
 				<div className='manage-tabs'>
 					<Tabs
 						activeKey={currentTab}
@@ -318,7 +369,7 @@ const manageDashboard = () => {
 									</div>
 								) : null}
 								<ViewVacancyDetails
-									isReadOnlyMember = {isReadOnlyMember}
+									isReadOnlyMember={isReadOnlyMember}
 									allForms={vacancy}
 									hideCommitteeSection={isUserAllowedToScore()}
 									hideEmails={isUserChair() || isUserAllowedToScore()}
@@ -375,6 +426,13 @@ const manageDashboard = () => {
 					handleOk={() => handleNextStepModalConfirm(sysId)}
 					submittedTitle={getNextStepModalSubmittedTitle(vacancy.state)}
 					steps={getNextStepModalSteps(vacancy.state)}
+				/>
+				<StatusModal
+					sysId={sysId}
+					status={vacancy.status}
+					openModal={statusModalOpen}
+					setModal={setStatusModalOpen}
+					loadVacancy={loadLatestVacancyInfo}
 				/>
 			</SearchContext.Provider>
 		</>
