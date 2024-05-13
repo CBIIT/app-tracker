@@ -363,6 +363,8 @@ const applicantList = (props) => {
 									pagination={recommendedApplicantsTablePagination}
 									loading={recommendedApplicantsTableLoading}
 									onTableChange={loadRecommendedApplicants}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -371,6 +373,8 @@ const applicantList = (props) => {
 									pagination={nonRecommendedApplicantsTablePagination}
 									loading={nonRecommendedApplicantsTableLoading}
 									onTableChange={loadNonRecommendedApplicants}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 								/>
 							</Panel>
 						</Collapse>
@@ -389,6 +393,8 @@ const applicantList = (props) => {
 									postChangeHandler={loadVacancyAndApplicants}
 									displayAllComments={vacancyState === VOTING_COMPLETE}
 									vacancyState={vacancyState}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -401,6 +407,8 @@ const applicantList = (props) => {
 									postChangeHandler={loadVacancyAndApplicants}
 									displayAllComments={vacancyState === VOTING_COMPLETE}
 									vacancyState={vacancyState}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 								/>
 							</Panel>
 						</Collapse>

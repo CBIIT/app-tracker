@@ -48,6 +48,7 @@ const expandedRowRender = (applicationSysId) => (
 );
 
 const individualScoringTable = (props) => {
+	console.log(props)
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [committeeComments, setCommitteeComments] = useState('');
@@ -123,6 +124,7 @@ const individualScoringTable = (props) => {
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppicantSysId(sysId);
+		console.log(referencesSent)
 		if (referencesSent === '0') {
 			sendReferences(sysId)
 		} else {
@@ -331,20 +333,23 @@ const individualScoringTable = (props) => {
 				}
 			);
 		}
-		columns.push(
-			{
-				title: '',
-				align: 'center',
-				width: 200,
-				render: (_, record) => (
-					<Button
-						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.referencesSent)}
-					>
-						Collect References
-					</Button>
-				)
-			}
-		)
+		if (props.isVacancyManager && props.refCollection) {
+			columns.push(
+				{
+					title: '',
+					align: 'center',
+					width: 200,
+					render: (_, record) => (
+						<Button
+							onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
+						>
+							Collect References
+						</Button>
+					)
+				}
+			)
+		}
+		
 		return columns;
 	};
 
