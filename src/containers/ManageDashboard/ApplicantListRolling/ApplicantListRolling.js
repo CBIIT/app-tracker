@@ -7,7 +7,7 @@ import axios from 'axios';
 
 // TODO: create individual scoring component for rolling close?
 // TODO: use committee member applicant list
-import ReferenceModal from './ReferenceModal/ReferenceModal';
+import ReferenceModal from '../ApplicantList/ReferenceModal/ReferenceModal';
 import {
 	OWM_TEAM,
 	COMMITTEE_CHAIR,
@@ -34,7 +34,7 @@ const renderDecision = (text) =>
 
 const defaultApplicantSort = 'ascend';
 
-const applicantList = (props) => {
+const rollingApplicantList = (props) => {
     const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
 	const [pageSize, setPageSize] = useState(10);
@@ -239,7 +239,7 @@ const applicantList = (props) => {
 
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
-	}, [props.vacancyState, searchText]);
+	}, [searchText]);
 
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
@@ -262,6 +262,7 @@ const applicantList = (props) => {
 	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
+		console.log("🚀 ~ loadAllApplicants ~ data:", data);
 		setTableLoading(false);
 		setApplicants(data.applicants);
 		setTotalCount(data.totalCount);
@@ -283,27 +284,18 @@ const applicantList = (props) => {
 		}
 	};
 
-	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
+	const getTable = (userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS]
-			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
-				const newColumns = applicantColumns.filter((val) => {
-					if (val.title === 'Applicant')
-						return true;
-					if (val.title === 'Email')
-						return true;
-				})
-				return newColumns;
-			}
 			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING) {
 				const applicantColumnCopy = [...applicantColumns]
-				const columns = applicantColumnCopy.splice(0, 2);
+				const columns = applicantColumnCopy.splice(0,2);
 				const newColumns = columns.concat(committeeColumns);
 				return newColumns;
 			} else {
 				return applicantColumns;
 			}
 		}
+		console.log(getColumns())
 
 		const table = (
 			<Table
@@ -323,9 +315,10 @@ const applicantList = (props) => {
 				}}
 			></Table>
 		);
-
+		// TODO: alter switch case to include application state filter
 		if (userRoles.includes(OWM_TEAM)) {
-			switch (vacancyState) {
+			return table;
+			/* switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
 					return (
 						<Collapse defaultActiveKey={['0']} ghost>
@@ -428,8 +421,8 @@ const applicantList = (props) => {
 				/>
 			);
 		} else {
-			return table;
-		}
+			return table;*/
+		} 
 	};
 
 	const loadApplicants = async (page, pageSize, orderBy, orderColumn, recommended) => {
@@ -437,7 +430,7 @@ const applicantList = (props) => {
 		const limit = pageSize;
 		try {
 			let apiString =
-				GET_APPLICANT_LIST +
+				GET_ROLLING_APPLICANT_LIST +
 				sysId +
 				'?offset=' +
 				offset +
@@ -452,6 +445,7 @@ const applicantList = (props) => {
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 
 			const response = await axios.get(apiString);
+			//console.log("🚀 ~ loadApplicants ~ response:", response);
 
 			return {
 				applicants: response.data.result.applicants,
@@ -464,6 +458,30 @@ const applicantList = (props) => {
 			);
 		}
 	};
+
+	const loadVacancyAndApplicants = () => {
+		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
+		props.reloadVacancy();
+	};
+
+	const table = getTable(
+		props.userRoles,
+		props.userCommitteeRole
+	);
+
+	return (
+		<>
+			<div className='applicant-table'>{table}</div>
+			<ReferenceModal
+				appSysId={appSysId}
+				showModal={showModal}
+				setShowModal={setShowModal}
+				sendReferences={sendReferences}
+			/>
+		</>
+	);
+
+
 };
 
-export default applicantList;
+export default rollingApplicantList;

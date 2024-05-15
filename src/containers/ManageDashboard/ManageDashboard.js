@@ -9,6 +9,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import SearchContext from './Util/SearchContext';
 
 import ApplicantList from './ApplicantList/ApplicantList';
+import RollingApplicantList from './ApplicantListRolling/ApplicantListRolling.js';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';
@@ -198,6 +199,7 @@ const manageDashboard = () => {
 		const responseData = vacancyResponse.data.result;
 		checkForReadOnly(responseData, user);
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
+		//console.log("🚀 ~ loadLatestVacancyInfo ~ vacancy:", vacancy);
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
 		setVacancy(vacancy);
@@ -335,13 +337,11 @@ const manageDashboard = () => {
 									{/* {nextButtonLabel} <DoubleRightOutlined /> */}
 									{vacancy.status == 'open' ? (
 										<>
-											Close Vacancy{' '}
-											<LockOutlined />
+											Close Vacancy <LockOutlined />
 										</>
 									) : (
 										<>
-											Open Vacancy{' '}
-											<UnlockOutlined />
+											Open Vacancy <UnlockOutlined />
 										</>
 									)}
 								</Button>
@@ -407,14 +407,24 @@ const manageDashboard = () => {
 							</>
 						</Tabs.TabPane>
 						<Tabs.TabPane tab='Applicants' key='applicants'>
-							<ApplicantList
-								vacancyState={vacancy.state}
-								vacancyTenant={vacancy.basicInfo.tenant}
-								referenceCollection={vacancy.basicInfo.referenceCollection}
-								userRoles={user.roles}
-								userCommitteeRole={userCommitteeRole}
-								reloadVacancy={loadLatestVacancyInfo}
-							/>
+							{vacancy.basicInfo.useCloseDate ? (
+								<ApplicantList
+									vacancyState={vacancy.state}
+									vacancyTenant={vacancy.basicInfo.tenant}
+									referenceCollection={vacancy.basicInfo.referenceCollection}
+									userRoles={user.roles}
+									userCommitteeRole={userCommitteeRole}
+									reloadVacancy={loadLatestVacancyInfo}
+								/>
+							) : (
+								<RollingApplicantList
+									vacancyTenant={vacancy.basicInfo.tenant}
+									referenceCollection={vacancy.basicInfo.referenceCollection}
+									userRoles={user.roles}
+									userCommitteeRole={userCommitteeRole}
+									reloadVacancy={loadLatestVacancyInfo}
+								/>
+							)}
 						</Tabs.TabPane>
 					</Tabs>
 				</div>
