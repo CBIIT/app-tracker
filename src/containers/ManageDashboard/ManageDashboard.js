@@ -417,6 +417,7 @@ const manageDashboard = () => {
 									reloadVacancy={loadLatestVacancyInfo}
 								/>
 							) : (
+		
 								<RollingApplicantList
 									vacancyTenant={vacancy.basicInfo.tenant}
 									referenceCollection={vacancy.basicInfo.referenceCollection}

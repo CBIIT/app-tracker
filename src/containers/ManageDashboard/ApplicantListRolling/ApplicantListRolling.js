@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse, Button } from 'antd';
+import { message, Table, Tooltip, Collapse, Button, Radio } from 'antd';
 import { useParams } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
@@ -43,6 +43,7 @@ const rollingApplicantList = (props) => {
 	const [appSysId, setAppSysId] = useState();
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
+	const [filter, setFilter] = useState('triage');
 	const {
 		searchText,
 		setSearchText,
@@ -123,7 +124,7 @@ const rollingApplicantList = (props) => {
 		},
 		{
 			title: 'Vacancy Manager Triage Decision',
-			dataIndex: 'owm_triage_status',
+			dataIndex: 'triage_status',
 			key: 'OWMStatus',
 			render: (text) => renderDecision(text),
 		},
@@ -238,8 +239,20 @@ const rollingApplicantList = (props) => {
 	};
 
 	useEffect(() => {
+		setFilter('triage');
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [searchText]);
+
+	const filterChangeHandler = async (e) => {
+		setFilter(e.target.value);
+	};
+
+/* 	getFilterData = (filter) => {
+		return data;
+		switch () {
+			case 'triage':
+		}
+	} */
 
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
@@ -270,7 +283,8 @@ const rollingApplicantList = (props) => {
 	};
 
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
-		if (
+		loadAllApplicants(1, pageSize, orderBy, orderColumn);
+		/* if (
 			props.userRoles.includes(OWM_TEAM)
 		) {
 			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
@@ -281,7 +295,7 @@ const rollingApplicantList = (props) => {
 			);
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
-		}
+		} */
 	};
 
 	const getTable = (userRoles, userCommitteeRole) => {
@@ -471,7 +485,22 @@ const rollingApplicantList = (props) => {
 
 	return (
 		<>
-			<div className='applicant-table'>{table}</div>
+			<div>
+				<Radio.Group
+					defaultValue='triage'
+					style={{ display: 'inline-block', paddingLeft: '10px'}}
+					onChange={filterChangeHandler}
+					value={filter}
+				>
+					<Radio.Button value='triage'>Triage</Radio.Button>
+					<Radio.Button value='scoring'>Individual Scoring</Radio.Button>
+					<Radio.Button value='in_review'>Committee Review</Radio.Button>
+					<Radio.Button value='completed'>Selected</Radio.Button>
+				</Radio.Group>
+			</div>
+			<div className='applicant-table'>
+				{table}
+			</div>
 			<ReferenceModal
 				appSysId={appSysId}
 				showModal={showModal}
