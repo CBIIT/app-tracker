@@ -20,6 +20,8 @@ import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
 // TODO: use OG applicantlist css?
+import '../ApplicantList/ApplicantList.css';
+//import './ApplicantListRolling.css';
 
 const { Panel } = Collapse;
 
@@ -247,12 +249,26 @@ const rollingApplicantList = (props) => {
 		setFilter(e.target.value);
 	};
 
-/* 	getFilterData = (filter) => {
-		return data;
-		switch () {
-			case 'triage':
-		}
-	} */
+	const getFilterData = (filter) => {
+		return applicants.filter((applicant) => {
+			let newState = '';
+			switch (applicant.state) {
+				case 'triage':
+					newState = 'triage';
+					break;
+				case 'scoring':
+					newState = 'scoring';
+					break;
+				case 'in_review':
+					newState = 'in_review';
+					break;
+				case 'completed':
+					newState = 'completed';
+					break;
+			}
+			return newState == filter;
+		});
+	} 
 
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
@@ -309,11 +325,12 @@ const rollingApplicantList = (props) => {
 				return applicantColumns;
 			}
 		}
-		console.log(getColumns())
+
+		const filteredApplicants = getFilterData(filter);
 
 		const table = (
 			<Table
-				dataSource={applicants}
+				dataSource={filteredApplicants}
 				columns={getColumns()}
 				scroll={{ x: 'true' }}
 				rowKey='sys_id'
@@ -332,6 +349,9 @@ const rollingApplicantList = (props) => {
 		// TODO: alter switch case to include application state filter
 		if (userRoles.includes(OWM_TEAM)) {
 			return table;
+			// switch case for filter
+			//case filter is triage return table
+			// case filter is scoring return indv scoring table
 			/* switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
 					return (
@@ -485,7 +505,8 @@ const rollingApplicantList = (props) => {
 
 	return (
 		<>
-			<div>
+			<div className='tabs-div'>
+				<p style={{ display: 'inline-block' }}>Filter Vacancies: </p>
 				<Radio.Group
 					defaultValue='triage'
 					style={{ display: 'inline-block', paddingLeft: '10px'}}
