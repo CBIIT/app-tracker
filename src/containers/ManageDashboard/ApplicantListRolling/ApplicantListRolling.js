@@ -172,6 +172,298 @@ const applicantList = (props) => {
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 	]
+
+	if (props.referenceCollection && props.userRoles.includes(OWM_TEAM)) {
+		applicantColumns.push(
+			{
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
+					>
+						Collect References
+					</Button>
+				)
+			}
+		)
+	}
+
+	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
+	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
+		useState(10);
+	const [recommendedApplicantsTotalCount, setRecommendedApplicantsTotalCount] =
+		useState(0);
+	const [
+		recommendedApplicantsTableLoading,
+		setRecommendedApplicantsTableLoading,
+	] = useState([]);
+
+	const [nonRecommendedApplicants, setNonRecommendedApplicants] = useState([]);
+	const [
+		nonRecommendedApplicantsPageSize,
+		setNonRecommendedApplicantsPageSize,
+	] = useState(10);
+	const [
+		nonRecommendedApplicantsTotalCount,
+		setNonRecommendedApplicantsTotalCount,
+	] = useState(0);
+	const [
+		nonRecommendedApplicantsTableLoading,
+		setNonRecommendedApplicantsTableLoading,
+	] = useState([]);
+
+	const pageSizeOptions = [10, 25];
+
+	const tablePagination = {
+		pageSizeOptions: pageSizeOptions,
+		pageSize: pageSize,
+		total: totalCount,
+		hideOnSinglePage: true,
+	};
+
+	const recommendedApplicantsTablePagination = {
+		pageSizeOptions: pageSizeOptions,
+		pageSize: recommendedApplicantsPageSize,
+		total: recommendedApplicantsTotalCount,
+		hideOnSinglePage: true,
+	};
+
+	const nonRecommendedApplicantsTablePagination = {
+		pageSizeOptions: pageSizeOptions,
+		pageSize: nonRecommendedApplicantsPageSize,
+		total: nonRecommendedApplicantsTotalCount,
+		hideOnSinglePage: true,
+	};
+
+	useEffect(() => {
+		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
+	}, [props.vacancyState, searchText]);
+
+	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
+		setRecommendedApplicantsTableLoading(true);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes');
+		setRecommendedApplicantsTableLoading(false);
+		setRecommendedApplicants(data.applicants);
+		setRecommendedApplicantsTotalCount(data.totalCount);
+		setRecommendedApplicantsPageSize(data.pageSize);
+	};
+
+	const loadNonRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
+		setNonRecommendedApplicantsTableLoading(true);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no');
+		setNonRecommendedApplicantsTableLoading(false);
+		setNonRecommendedApplicants(data.applicants);
+		setNonRecommendedApplicantsTotalCount(data.totalCount);
+		setNonRecommendedApplicantsPageSize(data.pageSize);
+	};
+
+	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn) => {
+		setTableLoading(true);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
+		setTableLoading(false);
+		setApplicants(data.applicants);
+		setTotalCount(data.totalCount);
+		setPageSize(data.pageSize);
+	};
+
+	const updateData = async (page, pageSize, orderBy, orderColumn) => {
+		if (
+			props.userRoles.includes(OWM_TEAM)
+		) {
+			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
+			loadNonRecommendedApplicants(
+				1,
+				nonRecommendedApplicantsPageSize,
+				orderBy, orderColumn
+			);
+		} else {
+			loadAllApplicants(1, pageSize, orderBy, orderColumn);
+		}
+	};
+
+	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
+		const getColumns = () => {
+			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS]
+			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
+				const newColumns = applicantColumns.filter((val) => {
+					if (val.title === 'Applicant')
+						return true;
+					if (val.title === 'Email')
+						return true;
+				})
+				return newColumns;
+			}
+			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING) {
+				const applicantColumnCopy = [...applicantColumns]
+				const columns = applicantColumnCopy.splice(0, 2);
+				const newColumns = columns.concat(committeeColumns);
+				return newColumns;
+			} else {
+				return applicantColumns;
+			}
+		}
+
+		const table = (
+			<Table
+				dataSource={applicants}
+				columns={getColumns()}
+				scroll={{ x: 'true' }}
+				rowKey='sys_id'
+				pagination={tablePagination}
+				loading={tableLoading}
+				onChange={(pagination, _, sorter) => {
+					loadAllApplicants(
+						pagination.current,
+						pagination.pageSize,
+						sorter.order,
+						sorter.field
+					);
+				}}
+			></Table>
+		);
+
+		if (userRoles.includes(OWM_TEAM)) {
+			switch (vacancyState) {
+				case INDIVIDUAL_SCORING_IN_PROGRESS:
+					return (
+						<Collapse defaultActiveKey={['0']} ghost>
+							<Panel header='Recommended Applicants'>
+								<IndividualScoringTable
+									applicants={recommendedApplicants}
+									pagination={recommendedApplicantsTablePagination}
+									loading={recommendedApplicantsTableLoading}
+									onTableChange={loadRecommendedApplicants}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+								/>
+							</Panel>
+							<Panel header='Non-Recommended Applicants'>
+								<IndividualScoringTable
+									applicants={nonRecommendedApplicants}
+									pagination={nonRecommendedApplicantsTablePagination}
+									loading={nonRecommendedApplicantsTableLoading}
+									onTableChange={loadNonRecommendedApplicants}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+								/>
+							</Panel>
+						</Collapse>
+					);
+				case VOTING_COMPLETE:
+				case COMMITTEE_REVIEW_IN_PROGRESS:
+					return (
+						<Collapse defaultActiveKey={['0']} ghost>
+							<Panel header='Recommended Applicants'>
+								<IndividualScoringTable
+									applicants={recommendedApplicants}
+									pagination={recommendedApplicantsTablePagination}
+									loading={recommendedApplicantsTableLoading}
+									onTableChange={loadRecommendedApplicants}
+									committeeVoting={true}
+									postChangeHandler={loadVacancyAndApplicants}
+									displayAllComments={vacancyState === VOTING_COMPLETE}
+									vacancyState={vacancyState}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+								/>
+							</Panel>
+							<Panel header='Non-Recommended Applicants'>
+								<IndividualScoringTable
+									applicants={nonRecommendedApplicants}
+									pagination={nonRecommendedApplicantsTablePagination}
+									loading={nonRecommendedApplicantsTableLoading}
+									onTableChange={loadNonRecommendedApplicants}
+									committeeVoting={true}
+									postChangeHandler={loadVacancyAndApplicants}
+									displayAllComments={vacancyState === VOTING_COMPLETE}
+									vacancyState={vacancyState}
+									refCollection={props.referenceCollection}
+									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+								/>
+							</Panel>
+						</Collapse>
+					);
+				default:
+					return table;
+			}
+		} else if (userCommitteeRole === COMMITTEE_CHAIR) {
+			switch (vacancyState) {
+				case INDIVIDUAL_SCORING_IN_PROGRESS:
+					return (
+						<IndividualScoringTable
+							applicants={applicants}
+							pagination={tablePagination}
+							onTableChange={loadAllApplicants}
+							loading={tableLoading}
+						/>
+					);
+				case VOTING_COMPLETE:
+				case COMMITTEE_REVIEW_IN_PROGRESS:
+					return (
+						<IndividualScoringTable
+							applicants={applicants}
+							pagination={tablePagination}
+							onTableChange={loadAllApplicants}
+							committeeVoting={true}
+							postChangeHandler={loadVacancyAndApplicants}
+							displayAllComments={vacancyState === VOTING_COMPLETE}
+							loading={tableLoading}
+						/>
+					);
+				default:
+					return table;
+			}
+		} else if (
+			userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+			userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING
+		) {
+			return (
+				<ApplicantList
+					applicants={applicants}
+					pagination={tablePagination}
+					onTableChange={loadAllApplicants}
+					loading={tableLoading}
+				/>
+			);
+		} else {
+			return table;
+		}
+	};
+
+	const loadApplicants = async (page, pageSize, orderBy, orderColumn, recommended) => {
+		const offset = page;
+		const limit = pageSize;
+		try {
+			let apiString =
+				GET_APPLICANT_LIST +
+				sysId +
+				'?offset=' +
+				offset +
+				'&limit=' +
+				limit +
+				'&orderBy=' +
+				orderBy +
+				'&orderColumn=' +
+				orderColumn;
+
+			if (recommended) apiString += '&recommended=' + recommended;
+			if (searchText) apiString += '&search=' + searchText.toLowerCase();
+
+			const response = await axios.get(apiString);
+
+			return {
+				applicants: response.data.result.applicants,
+				totalCount: response.data.result.totalCount,
+				pageSize: pageSize,
+			};
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred while loading the page.  Try reloading.'
+			);
+		}
+	};
 };
 
 export default applicantList;
