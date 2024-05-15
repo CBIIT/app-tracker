@@ -15,7 +15,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../../constants/Roles';
-import { GET_APPLICANT_LIST, COLLECT_REFERENCES } from '../../../constants/ApiEndpoints';
+import { GET_ROLLING_APPLICANT_LIST, COLLECT_REFERENCES } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
