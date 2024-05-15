@@ -48,7 +48,6 @@ const expandedRowRender = (applicationSysId) => (
 );
 
 const individualScoringTable = (props) => {
-	console.log(props)
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [committeeComments, setCommitteeComments] = useState('');
