@@ -15,7 +15,7 @@ const editableField = (props) =>
 				}
 			]}
 		>
-			<Input />
+			<Input required={props.required} />
 		</Form.Item>
 	) : (
 		<Form.Item
@@ -25,7 +25,7 @@ const editableField = (props) =>
 				{ required: props.required, message: 'Please provide an answer.' },
 			]}
 		>
-			<Input />
+			<Input required={props.required} />
 		</Form.Item>
 	);
 
