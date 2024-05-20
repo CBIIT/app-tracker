@@ -361,11 +361,13 @@ const individualScoringTable = (props) => {
 
 	const columns = getColumns();
 
+	const data = props.vacancyState == ROLLING_CLOSE ? props.getFilterData(props.filter) : props.applicants;
+
 	return (
 		<>
 			<Table
 				pagination={props.pagination}
-				dataSource={props.applicants}
+				dataSource={data}
 				loading={props.loading}
 				onChange={(pagination, _, sorter) => {
 					props.onTableChange(

@@ -303,8 +303,10 @@ const applicantList = (props) => {
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes');
+		console.log("🚀 ~ loadRecommendedApplicants ~ data:", data)
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
+		console.log('recommendedApplicants ' + recommendedApplicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
@@ -312,8 +314,10 @@ const applicantList = (props) => {
 	const loadNonRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setNonRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no');
+		console.log("🚀 ~ loadNonRecommendedApplicants ~ data:", data);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
+		console.log('nonRecommendedApplicants ' + nonRecommendedApplicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
@@ -334,7 +338,7 @@ const applicantList = (props) => {
 			(props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 				props.vacancyState === VOTING_COMPLETE ||
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
-				(props.vacancyState === ROLLING_CLOSE && filter == SCORING)
+				(props.vacancyState === ROLLING_CLOSE && (filter == SCORING || filter == IN_REVIEW))
 			)
 		) {
 			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
@@ -470,6 +474,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											getFilterData={getFilterData}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -481,6 +486,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											getFilterData={getFilterData}
 										/>
 									</Panel>
 								</Collapse>
@@ -502,6 +508,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											getFilterData={getFilterData}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -517,6 +524,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											getFilterData={getFilterData}
 										/>
 									</Panel>
 								</Collapse>
