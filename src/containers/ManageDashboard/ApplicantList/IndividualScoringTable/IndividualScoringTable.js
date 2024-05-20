@@ -125,7 +125,6 @@ const individualScoringTable = (props) => {
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppicantSysId(sysId);
-		console.log(referencesSent)
 		if (referencesSent === '0') {
 			sendReferences(sysId)
 		} else {
@@ -361,13 +360,11 @@ const individualScoringTable = (props) => {
 
 	const columns = getColumns();
 
-	const data = props.vacancyState == ROLLING_CLOSE ? props.getFilterData(props.filter) : props.applicants;
-
 	return (
 		<>
 			<Table
 				pagination={props.pagination}
-				dataSource={data}
+				dataSource={props.applicants}
 				loading={props.loading}
 				onChange={(pagination, _, sorter) => {
 					props.onTableChange(

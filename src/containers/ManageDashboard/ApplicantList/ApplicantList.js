@@ -279,8 +279,8 @@ const applicantList = (props) => {
 		setFilter(e.target.value);
 	};
 
-	const getFilterData = (filter) => {
-		return applicants.filter((applicant) => {
+	const getFilterData = (filter, apps) => {
+		return apps.filter((applicant) => {
 			let newState = '';
 			switch (applicant.state) {
 				case 'triage':
@@ -303,10 +303,8 @@ const applicantList = (props) => {
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes');
-		console.log("🚀 ~ loadRecommendedApplicants ~ data:", data)
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
-		console.log('recommendedApplicants ' + recommendedApplicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
@@ -314,10 +312,8 @@ const applicantList = (props) => {
 	const loadNonRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setNonRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no');
-		console.log("🚀 ~ loadNonRecommendedApplicants ~ data:", data);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
-		console.log('nonRecommendedApplicants ' + nonRecommendedApplicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
@@ -325,7 +321,6 @@ const applicantList = (props) => {
 	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
-		console.log("🚀 ~ loadAllApplicants ~ data:", data)
 		setTableLoading(false);
 		setApplicants(data.applicants);
 		setTotalCount(data.totalCount);
@@ -338,14 +333,20 @@ const applicantList = (props) => {
 			(props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 				props.vacancyState === VOTING_COMPLETE ||
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
-				(props.vacancyState === ROLLING_CLOSE && (filter == SCORING || filter == IN_REVIEW))
-			)
+				(props.vacancyState === ROLLING_CLOSE &&
+					(filter == SCORING || filter == IN_REVIEW || filter == COMPLETED)))
 		) {
-			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
+			loadRecommendedApplicants(
+				1,
+				recommendedApplicantsPageSize,
+				orderBy,
+				orderColumn
+			);
 			loadNonRecommendedApplicants(
 				1,
 				nonRecommendedApplicantsPageSize,
-				orderBy, orderColumn
+				orderBy,
+				orderColumn
 			);
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
@@ -374,7 +375,7 @@ const applicantList = (props) => {
 			}
 		}
 
-		const data = vacancyState == ROLLING_CLOSE ? getFilterData(filter) : applicants;
+		const data = vacancyState == ROLLING_CLOSE ? getFilterData(filter, applicants) : applicants;
 
 		const table = (
 			<Table
@@ -467,7 +468,7 @@ const applicantList = (props) => {
 								<Collapse defaultActiveKey={['0']} ghost>
 									<Panel header='Recommended Applicants'>
 										<IndividualScoringTable
-											applicants={recommendedApplicants}
+											applicants={getFilterData(filter, recommendedApplicants)}
 											pagination={recommendedApplicantsTablePagination}
 											loading={recommendedApplicantsTableLoading}
 											onTableChange={loadRecommendedApplicants}
@@ -479,7 +480,7 @@ const applicantList = (props) => {
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
 										<IndividualScoringTable
-											applicants={nonRecommendedApplicants}
+											applicants={getFilterData(filter, nonRecommendedApplicants)}
 											pagination={nonRecommendedApplicantsTablePagination}
 											loading={nonRecommendedApplicantsTableLoading}
 											onTableChange={loadNonRecommendedApplicants}
@@ -497,7 +498,7 @@ const applicantList = (props) => {
 								<Collapse defaultActiveKey={['0']} ghost>
 									<Panel header='Recommended Applicants'>
 										<IndividualScoringTable
-											applicants={recommendedApplicants}
+											applicants={getFilterData(filter, recommendedApplicants)}
 											pagination={recommendedApplicantsTablePagination}
 											loading={recommendedApplicantsTableLoading}
 											onTableChange={loadRecommendedApplicants}
@@ -513,7 +514,7 @@ const applicantList = (props) => {
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
 										<IndividualScoringTable
-											applicants={nonRecommendedApplicants}
+											applicants={getFilterData(filter, nonRecommendedApplicants)}
 											pagination={nonRecommendedApplicantsTablePagination}
 											loading={nonRecommendedApplicantsTableLoading}
 											onTableChange={loadNonRecommendedApplicants}
@@ -598,9 +599,7 @@ const applicantList = (props) => {
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
-			console.log(apiString);
 			const response = await axios.get(apiString);
-			//console.log("🚀 ~ loadApplicants ~ response :", response );
 
 			return {
 				applicants: response.data.result.applicants,
@@ -624,8 +623,6 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
-
-	// const table = vacancyState != 'rolling_close' ? nonGetTable() : rollingGetTable()
 
 	return (
 		<>
