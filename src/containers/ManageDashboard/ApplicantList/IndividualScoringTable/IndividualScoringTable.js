@@ -15,8 +15,10 @@ import {
 } from '../../../../constants/ApiEndpoints';
 import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
+	ROLLING_CLOSE,
 	VOTING_COMPLETE,
 } from '../../../../constants/VacancyStates';
+import { IN_REVIEW, SCORING, COMPLETED } from '../../../../constants/ApplicationStates';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -195,6 +197,7 @@ const individualScoringTable = (props) => {
 		];
 
 		if (
+			(props.vacancyState === ROLLING_CLOSE && (props.filter === IN_REVIEW || props.filter === COMPLETED)) ||
 			props.vacancyState === VOTING_COMPLETE ||
 			props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS
 		) {

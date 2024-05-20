@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse, Button } from 'antd';
+import { message, Table, Tooltip, Collapse, Button, Radio } from 'antd';
 import { useParams } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
@@ -16,7 +16,15 @@ import {
 	CHAIR_TRIAGE,
 	COMMITTEE_REVIEW_COMPLETE,
 	INDIVIDUAL_SCORING_COMPLETE,
+	ROLLING_CLOSE,
 } from '../../../constants/VacancyStates';
+import {
+	TRIAGE,
+	SCORING,
+	IN_REVIEW,
+	REVIEW_COMPLETE,
+	COMPLETED,
+} from '../../../constants/ApplicationStates';
 import {
 	OWM_TEAM,
 	COMMITTEE_CHAIR,
@@ -24,7 +32,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../../constants/Roles';
-import { GET_APPLICANT_LIST, COLLECT_REFERENCES } from '../../../constants/ApiEndpoints';
+import { GET_APPLICANT_LIST, COLLECT_REFERENCES, GET_ROLLING_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
@@ -52,6 +60,7 @@ const applicantList = (props) => {
 	const [appSysId, setAppSysId] = useState();
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
+	const [filter, setFilter] = useState('triage');
 	const {
 		searchText,
 		setSearchText,
@@ -263,8 +272,34 @@ const applicantList = (props) => {
 	};
 
 	useEffect(() => {
+		setFilter(TRIAGE);
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText]);
+
+	const filterChangeHandler = async (e) => {
+		setFilter(e.target.value);
+	};
+
+	const getFilterData = (filter) => {
+		return applicants.filter((applicant) => {
+			let newState = '';
+			switch (applicant.state) {
+				case 'triage':
+					newState = 'triage';
+					break;
+				case 'scoring':
+					newState = 'scoring';
+					break;
+				case 'in_review':
+					newState = 'in_review';
+					break;
+				case 'completed':
+					newState = 'completed';
+					break;
+			}
+			return newState == filter;
+		});
+	} 
 
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
@@ -333,9 +368,11 @@ const applicantList = (props) => {
 			}
 		}
 
+		const data = vacancyState == ROLLING_CLOSE ? getFilterData(filter) : applicants;
+
 		const table = (
 			<Table
-				dataSource={applicants}
+				dataSource={data}
 				columns={getColumns()}
 				scroll={{ x: 'true' }}
 				rowKey='sys_id'
@@ -365,6 +402,7 @@ const applicantList = (props) => {
 									onTableChange={loadRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									filter={filter}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -375,6 +413,7 @@ const applicantList = (props) => {
 									onTableChange={loadNonRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									filter={filter}
 								/>
 							</Panel>
 						</Collapse>
@@ -395,6 +434,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									filter={filter}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -409,6 +449,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									filter={filter}
 								/>
 							</Panel>
 						</Collapse>
@@ -463,9 +504,11 @@ const applicantList = (props) => {
 	const loadApplicants = async (page, pageSize, orderBy, orderColumn, recommended) => {
 		const offset = page;
 		const limit = pageSize;
+		const api = props.vacancyState == ROLLING_CLOSE ? GET_ROLLING_APPLICANT_LIST : GET_APPLICANT_LIST;
 		try {
 			let apiString =
-				GET_APPLICANT_LIST +
+				api
+				 +
 				sysId +
 				'?offset=' +
 				offset +
@@ -478,8 +521,9 @@ const applicantList = (props) => {
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
-
+			console.log(apiString);
 			const response = await axios.get(apiString);
+			console.log("🚀 ~ loadApplicants ~ response :", response );
 
 			return {
 				applicants: response.data.result.applicants,
@@ -504,8 +548,26 @@ const applicantList = (props) => {
 		props.userCommitteeRole
 	);
 
+	// const table = vacancyState != 'rolling_close' ? nonGetTable() : rollingGetTable()
+
 	return (
 		<>
+			{props.vacancyState == 'rolling_close' && (
+				<div className='tabs-div'>
+					<p style={{ display: 'inline-block' }}>Filter Applications: </p>
+					<Radio.Group
+						defaultValue={TRIAGE}
+						style={{ display: 'inline-block', paddingLeft: '10px'}}
+						onChange={filterChangeHandler}
+						value={filter}
+					>
+						<Radio.Button value={TRIAGE}>Triage</Radio.Button>
+						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
+						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
+						<Radio.Button value={COMPLETED}>Selected</Radio.Button>
+					</Radio.Group>
+				</div>
+			)}
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}

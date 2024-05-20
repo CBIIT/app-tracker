@@ -506,7 +506,7 @@ const rollingApplicantList = (props) => {
 	return (
 		<>
 			<div className='tabs-div'>
-				<p style={{ display: 'inline-block' }}>Filter Vacancies: </p>
+				<p style={{ display: 'inline-block' }}>Filter Applications: </p>
 				<Radio.Group
 					defaultValue='triage'
 					style={{ display: 'inline-block', paddingLeft: '10px'}}

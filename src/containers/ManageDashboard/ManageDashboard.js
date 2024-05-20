@@ -407,7 +407,6 @@ const manageDashboard = () => {
 							</>
 						</Tabs.TabPane>
 						<Tabs.TabPane tab='Applicants' key='applicants'>
-							{vacancy.basicInfo.useCloseDate ? (
 								<ApplicantList
 									vacancyState={vacancy.state}
 									vacancyTenant={vacancy.basicInfo.tenant}
@@ -416,16 +415,6 @@ const manageDashboard = () => {
 									userCommitteeRole={userCommitteeRole}
 									reloadVacancy={loadLatestVacancyInfo}
 								/>
-							) : (
-		
-								<RollingApplicantList
-									vacancyTenant={vacancy.basicInfo.tenant}
-									referenceCollection={vacancy.basicInfo.referenceCollection}
-									userRoles={user.roles}
-									userCommitteeRole={userCommitteeRole}
-									reloadVacancy={loadLatestVacancyInfo}
-								/>
-							)}
 						</Tabs.TabPane>
 					</Tabs>
 				</div>
