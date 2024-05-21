@@ -641,7 +641,6 @@ const application = () => {
 									/>
 								</>
 							) : null}
-							{console.log("🚀 ~ loadApplication ~ application:", application)}
 
 							{(isUserAllowedToScore(userVacancyCommitteeRole) &&
 								!isChair(userVacancyCommitteeRole)) ||

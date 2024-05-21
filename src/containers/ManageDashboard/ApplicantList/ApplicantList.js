@@ -61,9 +61,8 @@ const applicantList = (props) => {
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
-		props.userCommitteeRole !== COMMITTEE_MEMBER_VOTING &&
-			props.userCommitteeRole !== COMMITTEE_MEMBER_NON_VOTING &&
-			props.userCommitteeRole !== COMMITTEE_MEMBER_READ_ONLY
+		props.userCommitteeRole === COMMITTEE_CHAIR ||
+			props.userCommitteeRole === OWM_TEAM
 			? TRIAGE
 			: SCORING
 	);
@@ -146,7 +145,7 @@ const applicantList = (props) => {
 		},
 		{
 			title: 'Vacancy Manager Triage Decision',
-			dataIndex: 'triage_status',
+			dataIndex: 'owm_triage_status',
 			key: 'OWMStatus',
 			render: (text) => renderDecision(text),
 		},
@@ -481,7 +480,6 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
-											getFilterData={getFilterData}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -493,7 +491,6 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
-											getFilterData={getFilterData}
 										/>
 									</Panel>
 								</Collapse>
@@ -670,9 +667,8 @@ const applicantList = (props) => {
 						onChange={filterChangeHandler}
 						value={filter}
 					>
-						{props.userCommitteeRole !== COMMITTEE_MEMBER_VOTING &&
-						props.userCommitteeRole !== COMMITTEE_MEMBER_NON_VOTING &&
-						props.userCommitteeRole !== COMMITTEE_MEMBER_READ_ONLY ? (
+						{props.userCommitteeRole === COMMITTEE_CHAIR ||
+						props.userCommitteeRole === OWM_TEAM ? (
 							<Radio.Button value={TRIAGE}>Triage</Radio.Button>
 						) : (
 							''

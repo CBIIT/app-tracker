@@ -199,7 +199,6 @@ const manageDashboard = () => {
 		const responseData = vacancyResponse.data.result;
 		checkForReadOnly(responseData, user);
 		const vacancy = transformJsonFromBackend(vacancyResponse.data.result);
-		//console.log("🚀 ~ loadLatestVacancyInfo ~ vacancy:", vacancy);
 		setNextStep(vacancyResponse.data.result.basic_info.next_step.value);
 		setVacancyTitle(vacancy.basicInfo.title);
 		setVacancy(vacancy);

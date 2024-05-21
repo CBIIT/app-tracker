@@ -36,7 +36,6 @@ const committeeDashboard = () => {
 				setreadOnly(response.data.result.is_read_only_user);
 				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
 				setData(currentData.data.result);
-				console.log("🚀 ~setData(currentData.data.result:" ,currentData.data.result)
 			} catch (err) {
 				message.error('Sorry!  An error occurred.');
 			}
