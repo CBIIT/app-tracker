@@ -60,7 +60,13 @@ const applicantList = (props) => {
 	const [appSysId, setAppSysId] = useState();
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
-	const [filter, setFilter] = useState(TRIAGE);
+	const [filter, setFilter] = useState(
+		props.userCommitteeRole !== COMMITTEE_MEMBER_VOTING &&
+			props.userCommitteeRole !== COMMITTEE_MEMBER_NON_VOTING &&
+			props.userCommitteeRole !== COMMITTEE_MEMBER_READ_ONLY
+			? TRIAGE
+			: SCORING
+	);
 	const {
 		searchText,
 		setSearchText,
@@ -355,7 +361,7 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS]
+			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS, ROLLING_CLOSE]
 			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
 				const newColumns = applicantColumns.filter((val) => {
 					if (val.title === 'Applicant')
@@ -596,10 +602,11 @@ const applicantList = (props) => {
 		) {
 			return (
 				<ApplicantList
-					applicants={applicants}
+					applicants={getFilterData(filter, applicants)}
 					pagination={tablePagination}
 					onTableChange={loadAllApplicants}
 					loading={tableLoading}
+					filter={filter}
 				/>
 			);
 		} else {
@@ -659,11 +666,18 @@ const applicantList = (props) => {
 					<p style={{ display: 'inline-block' }}>Filter Applications: </p>
 					<Radio.Group
 						defaultValue={TRIAGE}
-						style={{ display: 'inline-block', paddingLeft: '10px'}}
+						style={{ display: 'inline-block', paddingLeft: '10px' }}
 						onChange={filterChangeHandler}
 						value={filter}
 					>
-						<Radio.Button value={TRIAGE}>Triage</Radio.Button>
+						{props.userCommitteeRole !== COMMITTEE_MEMBER_VOTING &&
+						props.userCommitteeRole !== COMMITTEE_MEMBER_NON_VOTING &&
+						props.userCommitteeRole !== COMMITTEE_MEMBER_READ_ONLY ? (
+							<Radio.Button value={TRIAGE}>Triage</Radio.Button>
+						) : (
+							''
+						)}
+
 						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
 						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
 						<Radio.Button value={COMPLETED}>Selected</Radio.Button>
