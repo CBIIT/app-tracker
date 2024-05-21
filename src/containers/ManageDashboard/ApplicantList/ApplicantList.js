@@ -559,6 +559,34 @@ const applicantList = (props) => {
 							loading={tableLoading}
 						/>
 					);
+				case ROLLING_CLOSE:
+					switch(filter) {
+						case SCORING:
+							return(
+								<IndividualScoringTable
+									applicants={getFilterData(filter, applicants)}
+									pagination={tablePagination}
+									onTableChange={loadAllApplicants}
+									loading={tableLoading}
+									filter={filter}
+								/>
+							);
+						case IN_REVIEW:
+						case COMPLETED:
+							return(
+								<IndividualScoringTable
+									applicants={getFilterData(filter, applicants)}
+									pagination={tablePagination}
+									onTableChange={loadAllApplicants}
+									committeeVoting={true}
+									postChangeHandler={loadVacancyAndApplicants}
+									displayAllComments={vacancyState === VOTING_COMPLETE}
+									loading={tableLoading}
+									filter={filter}
+								/>
+							);
+						default: table;
+					}
 				default:
 					return table;
 			}

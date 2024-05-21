@@ -46,6 +46,7 @@ import {
 	VOTING_COMPLETE,
 	OWM_TRIAGE,
 	CHAIR_TRIAGE,
+	ROLLING_CLOSE,
 } from '../../constants/VacancyStates.js';
 
 import './Application.css';
@@ -53,6 +54,7 @@ import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import { displayReferenceContactQuestion } from '../../components/Util/Application/Application';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 import Loading from '../../components/Loading/Loading';
+import { TRIAGE } from '../../constants/ApplicationStates.js';
 
 const { confirm } = Modal;
 
@@ -470,7 +472,8 @@ const application = () => {
 			vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 			vacancyState === INDIVIDUAL_SCORING_COMPLETE ||
 			vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
-			vacancyState === COMMITTEE_REVIEW_COMPLETE
+			vacancyState === COMMITTEE_REVIEW_COMPLETE ||
+			(vacancyState === ROLLING_CLOSE && application.state != TRIAGE)
 		);
 	};
 
@@ -638,6 +641,7 @@ const application = () => {
 									/>
 								</>
 							) : null}
+							{console.log("🚀 ~ loadApplication ~ application:", application)}
 
 							{(isUserAllowedToScore(userVacancyCommitteeRole) &&
 								!isChair(userVacancyCommitteeRole)) ||
