@@ -100,9 +100,16 @@ const header = (props) => {
 							</div>
 						</>
 					) : (
-						<div className='DateItem'>
-							<label>Open Until Filled</label>
-						</div>
+						<>
+							<div className='DateItem'>
+								<label>Open Date</label>
+								<span>{transformDateToDisplay(props.openDate)}</span>
+								<span style={{marginLeft:'25px'}}>
+									<label>Open Until Filled</label>
+								</span>
+							</div>
+						</>
+						
 					)}
 
 					{props.vacancyPOC.label ? (

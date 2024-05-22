@@ -44,7 +44,7 @@ import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	COMMITTEE_REVIEW_COMPLETE,
 	VOTING_COMPLETE,
-	OWM_TRIAGE,
+	TRIAGE,
 	CHAIR_TRIAGE,
 	ROLLING_CLOSE,
 } from '../../constants/VacancyStates.js';
@@ -54,7 +54,7 @@ import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import { displayReferenceContactQuestion } from '../../components/Util/Application/Application';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 import Loading from '../../components/Loading/Loading';
-import { TRIAGE } from '../../constants/ApplicationStates.js';
+import { APP_TRIAGE } from '../../constants/ApplicationStates.js';
 
 const { confirm } = Modal;
 
@@ -393,19 +393,11 @@ const application = () => {
 					message.success('Feedback and notes saved.');
 				}
 			} else {
-				if (vacancyData.basic_info.use_close_date.label == 'false') {
-					triage = {
-						app_sys_id: application.appSysId,
-						executive_triage: triageChoice,
-						executive_triage_comments: triageComments,
-					};
-				} else {
-					triage = {
-						app_sys_id: application.appSysId,
-						OWM_triage: triageChoice,
-						OWM_triage_comments: triageComments,
-					};
-				}
+				triage = {
+					app_sys_id: application.appSysId,
+					triage: triageChoice,
+					triage_comments: triageComments,
+				};
 				
 				await axios.post(SUBMIT_TRIAGE, triage);
 				message.success('Feedback and notes saved.');
@@ -473,7 +465,7 @@ const application = () => {
 			vacancyState === INDIVIDUAL_SCORING_COMPLETE ||
 			vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
 			vacancyState === COMMITTEE_REVIEW_COMPLETE ||
-			(vacancyState === ROLLING_CLOSE && application.state != TRIAGE)
+			(vacancyState === ROLLING_CLOSE && application.state != APP_TRIAGE)
 		);
 	};
 
@@ -610,7 +602,7 @@ const application = () => {
 											)
 										}
 										initiallyHideContent={
-											vacancyState === OWM_TRIAGE ? false : true
+											vacancyState === TRIAGE ? false : true
 										}
 										maxCommentLength={10000}
 									/>

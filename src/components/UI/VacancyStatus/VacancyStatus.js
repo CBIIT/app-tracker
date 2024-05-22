@@ -7,7 +7,7 @@ const VacancyStatus = (props) => {
 
 	let currentStatus = '';
 	switch (state) {
-		case 'OWM Team Triage':
+		case 'Triage':
 			currentStatus = 0;
 			break;
 		case 'Chair Triage':
