@@ -1,7 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { Tabs, Button, Tooltip, message } from 'antd';
-import { DoubleRightOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import {
+	DoubleRightOutlined,
+	LockOutlined,
+	UnlockOutlined,
+} from '@ant-design/icons';
 import axios from 'axios';
 
 import { useParams, useHistory } from 'react-router-dom';
@@ -176,7 +180,7 @@ const manageDashboard = () => {
 	};
 
 	const handleStatusButtonClick = () => {
-		setStatusModalOpen(true)
+		setStatusModalOpen(true);
 	};
 
 	const isUserAllowedToScore = () => {
@@ -316,35 +320,35 @@ const manageDashboard = () => {
 					</>
 				) : (
 					<>
-						<div className='AdvanceButtonDiv'>
-							<Tooltip
-								placement='top'
-								title={
-									vacancy.status == 'open'
-										? 'The vacancy will be closed and no other applicants may apply for the position.'
-										: 'The vacancy will be opened and applicants may submit their applications.'
-								}
-							>
-								<Button
-									type='primary'
-									ghost
-									className='AdvanceButton'
-									onClick={handleStatusButtonClick}
-									//loading={isStatusButtonLoading}
+						{user.isManager == true && (
+							<div className='AdvanceButtonDiv'>
+								<Tooltip
+									placement='top'
+									title={
+										vacancy.status == 'open'
+											? 'The vacancy will be closed and no other applicants may apply for the position.'
+											: 'The vacancy will be opened and applicants may submit their applications.'
+									}
 								>
-									{/* {nextButtonLabel} <DoubleRightOutlined /> */}
-									{vacancy.status == 'open' ? (
-										<>
-											Close Vacancy <LockOutlined />
-										</>
-									) : (
-										<>
-											Open Vacancy <UnlockOutlined />
-										</>
-									)}
-								</Button>
-							</Tooltip>
-						</div>
+									<Button
+										type='primary'
+										ghost
+										className='AdvanceButton'
+										onClick={handleStatusButtonClick}
+									>
+										{vacancy.status == 'open' ? (
+											<>
+												Close Vacancy <LockOutlined />
+											</>
+										) : (
+											<>
+												Open Vacancy <UnlockOutlined />
+											</>
+										)}
+									</Button>
+								</Tooltip>
+							</div>
+						)}
 					</>
 				)}
 				<div className='manage-tabs'>
@@ -405,14 +409,14 @@ const manageDashboard = () => {
 							</>
 						</Tabs.TabPane>
 						<Tabs.TabPane tab='Applicants' key='applicants'>
-								<ApplicantList
-									vacancyState={vacancy.state}
-									vacancyTenant={vacancy.basicInfo.tenant}
-									referenceCollection={vacancy.basicInfo.referenceCollection}
-									userRoles={user.roles}
-									userCommitteeRole={userCommitteeRole}
-									reloadVacancy={loadLatestVacancyInfo}
-								/>
+							<ApplicantList
+								vacancyState={vacancy.state}
+								vacancyTenant={vacancy.basicInfo.tenant}
+								referenceCollection={vacancy.basicInfo.referenceCollection}
+								userRoles={user.roles}
+								userCommitteeRole={userCommitteeRole}
+								reloadVacancy={loadLatestVacancyInfo}
+							/>
 						</Tabs.TabPane>
 					</Tabs>
 				</div>
