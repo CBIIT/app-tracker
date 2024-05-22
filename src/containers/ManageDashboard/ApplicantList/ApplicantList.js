@@ -297,6 +297,9 @@ const applicantList = (props) => {
 				case 'in_review':
 					newState = 'in_review';
 					break;
+				case 'review_complete':
+					newState = 'review_complete';
+					break;
 				case 'completed':
 					newState = 'completed';
 					break;
@@ -339,7 +342,7 @@ const applicantList = (props) => {
 				props.vacancyState === VOTING_COMPLETE ||
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
 				(props.vacancyState === ROLLING_CLOSE &&
-					(filter == SCORING || filter == IN_REVIEW || filter == COMPLETED)))
+					filter !== TRIAGE))
 		) {
 			loadRecommendedApplicants(
 				1,
@@ -492,6 +495,7 @@ const applicantList = (props) => {
 								</Collapse>
 							);
 						case IN_REVIEW:
+						case REVIEW_COMPLETE:
            				case COMPLETED:
 							return (
 								<Collapse defaultActiveKey={['0']} ghost>
@@ -503,7 +507,7 @@ const applicantList = (props) => {
 											onTableChange={loadRecommendedApplicants}
 											committeeVoting={true}
 											postChangeHandler={loadVacancyAndApplicants}
-											displayAllComments={vacancyState === VOTING_COMPLETE}
+											displayAllComments={filter === 'review_complete'}
 											vacancyState={vacancyState}
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
@@ -518,7 +522,7 @@ const applicantList = (props) => {
 											onTableChange={loadNonRecommendedApplicants}
 											committeeVoting={true}
 											postChangeHandler={loadVacancyAndApplicants}
-											displayAllComments={vacancyState === VOTING_COMPLETE}
+											displayAllComments={filter === 'review_complete'}
 											vacancyState={vacancyState}
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
@@ -569,6 +573,7 @@ const applicantList = (props) => {
 								/>
 							);
 						case IN_REVIEW:
+						case REVIEW_COMPLETE:
 						case COMPLETED:
 							return(
 								<IndividualScoringTable
@@ -577,7 +582,7 @@ const applicantList = (props) => {
 									onTableChange={loadAllApplicants}
 									committeeVoting={true}
 									postChangeHandler={loadVacancyAndApplicants}
-									displayAllComments={vacancyState === VOTING_COMPLETE}
+									displayAllComments={filter === 'review_complete'}
 									loading={tableLoading}
 									filter={filter}
 								/>
@@ -670,7 +675,7 @@ const applicantList = (props) => {
 
 						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
 						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
-						<Radio.Button value={COMPLETED}>Selected</Radio.Button>
+						<Radio.Button value={REVIEW_COMPLETE}>Selected</Radio.Button>
 					</Radio.Group>
 				</div>
 			)}
