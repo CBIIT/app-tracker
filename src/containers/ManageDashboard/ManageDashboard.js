@@ -9,7 +9,6 @@ import { useParams, useHistory } from 'react-router-dom';
 import SearchContext from './Util/SearchContext';
 
 import ApplicantList from './ApplicantList/ApplicantList';
-import RollingApplicantList from './ApplicantListRolling/ApplicantListRolling.js';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';

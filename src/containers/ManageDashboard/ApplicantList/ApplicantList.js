@@ -61,8 +61,8 @@ const applicantList = (props) => {
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
-		props.userCommitteeRole === COMMITTEE_CHAIR ||
-			props.userCommitteeRole === OWM_TEAM
+		(props.userCommitteeRole === COMMITTEE_CHAIR ||
+			props.userRoles.includes(OWM_TEAM))
 			? TRIAGE
 			: SCORING
 	);
@@ -414,7 +414,6 @@ const applicantList = (props) => {
 									onTableChange={loadRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
-									filter={filter}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -425,7 +424,6 @@ const applicantList = (props) => {
 									onTableChange={loadNonRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
-									filter={filter}
 								/>
 							</Panel>
 						</Collapse>
@@ -446,7 +444,6 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
-									filter={filter}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -461,7 +458,6 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
-									filter={filter}
 								/>
 							</Panel>
 						</Collapse>
@@ -512,7 +508,6 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
-											getFilterData={getFilterData}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -528,7 +523,6 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
-											getFilterData={getFilterData}
 										/>
 									</Panel>
 								</Collapse>
@@ -667,8 +661,8 @@ const applicantList = (props) => {
 						onChange={filterChangeHandler}
 						value={filter}
 					>
-						{props.userCommitteeRole === COMMITTEE_CHAIR ||
-						props.userCommitteeRole === OWM_TEAM ? (
+						{(props.userCommitteeRole === COMMITTEE_CHAIR ||
+						props.userRoles.includes(OWM_TEAM)) ? (
 							<Radio.Button value={TRIAGE}>Triage</Radio.Button>
 						) : (
 							''
