@@ -12,14 +12,14 @@ import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	VOTING_COMPLETE,
-	OWM_TRIAGE,
+	TRIAGE,
 	CHAIR_TRIAGE,
 	COMMITTEE_REVIEW_COMPLETE,
 	INDIVIDUAL_SCORING_COMPLETE,
 	ROLLING_CLOSE,
 } from '../../../constants/VacancyStates';
 import {
-	TRIAGE,
+	APP_TRIAGE,
 	SCORING,
 	IN_REVIEW,
 	REVIEW_COMPLETE,
@@ -63,7 +63,7 @@ const applicantList = (props) => {
 	const [filter, setFilter] = useState(
 		(props.userCommitteeRole === COMMITTEE_CHAIR ||
 			props.userRoles.includes(OWM_TEAM))
-			? TRIAGE
+			? APP_TRIAGE
 			: SCORING
 	);
 	const {
@@ -146,7 +146,7 @@ const applicantList = (props) => {
 		{
 			title: 'Vacancy Manager Triage Decision',
 			dataIndex: 'triage_status',
-			key: 'OWMStatus',
+			key: 'TriageStatus',
 			render: (text) => renderDecision(text),
 		},
 		{
@@ -363,7 +363,7 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS, ROLLING_CLOSE]
+			const hideColumnStateArray = [TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS, ROLLING_CLOSE]
 			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
 				const newColumns = applicantColumns.filter((val) => {
 					if (val.title === 'Applicant')
@@ -661,14 +661,14 @@ const applicantList = (props) => {
 				<div className='tabs-div'>
 					<p style={{ display: 'inline-block' }}>Filter Applications: </p>
 					<Radio.Group
-						defaultValue={TRIAGE}
+						defaultValue={APP_TRIAGE}
 						style={{ display: 'inline-block', paddingLeft: '10px' }}
 						onChange={filterChangeHandler}
 						value={filter}
 					>
 						{(props.userCommitteeRole === COMMITTEE_CHAIR ||
 						props.userRoles.includes(OWM_TEAM)) ? (
-							<Radio.Button value={TRIAGE}>Triage</Radio.Button>
+							<Radio.Button value={APP_TRIAGE}>Triage</Radio.Button>
 						) : (
 							''
 						)}
