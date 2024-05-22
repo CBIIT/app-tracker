@@ -226,7 +226,7 @@ const individualScoringTable = (props) => {
 				),
 			});
 
-			if (props.vacancyState === VOTING_COMPLETE) {
+			if (props.vacancyState === VOTING_COMPLETE || (props.vacancyState === ROLLING_CLOSE && props.filter === REVIEW_COMPLETE)) {
 				columns.push({
 					title: 'Referred to Selecting Official',
 					dataIndex: 'referred_to_selecting_official',
