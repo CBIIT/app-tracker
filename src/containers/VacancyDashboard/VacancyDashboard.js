@@ -120,7 +120,7 @@ const vacancyDashboard = () => {
 					case 'closed':
 						newState = 'closed';
 						break;
-					case 'owm_triage':
+					case 'triage':
 						newState = 'triaged';
 						break;
 					case 'chair_triage':

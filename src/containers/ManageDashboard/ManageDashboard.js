@@ -35,7 +35,7 @@ import {
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../constants/Roles';
 import {
-	OWM_TRIAGE,
+	TRIAGE,
 	CHAIR_TRIAGE,
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -50,7 +50,7 @@ import './ManageDashboard.css';
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			return 'Request Chair Triage';
 		case CHAIR_TRIAGE:
 			return 'Request Individual Scoring';
@@ -69,7 +69,7 @@ const getNextStepModalConfirmTitle = () => {
 
 const getNextStepModalSubmittedTitle = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			return 'Requested Committee Chair Triage';
 		case CHAIR_TRIAGE:
 			return 'Requested Individual Scoring';
@@ -84,7 +84,7 @@ const getNextStepModalSubmittedTitle = (currentStep) => {
 
 const getNextStepModalConfirmDescription = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			return 'The vacancy will be advanced to the committee chair triage stage and the chair will receive a notification.';
 		case CHAIR_TRIAGE:
 			return 'The vacancy will be advanced to the individual scoring stage and the vacancy manager will receive a notification.';
@@ -99,7 +99,7 @@ const getNextStepModalConfirmDescription = (currentStep) => {
 
 const getNextStepCannotAdvanceTooltip = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 		case CHAIR_TRIAGE:
 			return 'Not all applications have been triaged or vacancy is still open.';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
@@ -114,7 +114,7 @@ const getNextStepCannotAdvanceTooltip = (currentStep) => {
 const getNextStepModalSteps = (currentStep) => {
 	const steps = [];
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			steps.push({ title: 'Request Chair Triage?' });
 			break;
 		case CHAIR_TRIAGE:
