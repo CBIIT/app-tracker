@@ -598,7 +598,7 @@ const applicantList = (props) => {
 		) {
 			return (
 				<ApplicantList
-					applicants={getFilterData(filter, applicants)}
+					applicants={vacancyState === ROLLING_CLOSE ? getFilterData(filter, applicants) : applicants}
 					pagination={tablePagination}
 					onTableChange={loadAllApplicants}
 					loading={tableLoading}
@@ -628,9 +628,11 @@ const applicantList = (props) => {
 				'&orderColumn=' +
 				orderColumn;
 
+			console.log("🚀 ~ loadApplicants ~ apiString:", apiString)
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 			const response = await axios.get(apiString);
+			console.log("🚀 ~ loadApplicants ~ response:", response)
 
 			return {
 				applicants: response.data.result.applicants,
