@@ -485,7 +485,7 @@ const application = () => {
 		return <Loading />;
 	} else {
 		const allowHrSpecialistTriage =
-			vacancyData?.basic_info?.allow_hr_specialist_triage;
+			vacancyData?.basic_info?.allow_hr_specialist_triage.value === '0' ? false : true;
 
 		const userVacancyCommitteeRole =
 			vacancyData?.user?.committee_role_of_current_vacancy;
@@ -524,26 +524,31 @@ const application = () => {
 									marginBottom: '0px',
 								}}
 							/>
-							{(requireFocusArea !== '0') ?
-								<InfoCard title='Focus Areas'
+							{requireFocusArea !== '0' ? (
+								<InfoCard
+									title='Focus Areas'
 									style={{
 										backgroundColor: 'white',
 										minHeight: '60px',
 									}}
 								>
-									{(requireFocusArea !== '0') ? focusArea?.map((area, index) => {
-										return (
-											<InfoCardRow key={index}
-												style={{ paddingBottom: '5px'}}
-												>
-												<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
-											</InfoCardRow>
-										);
-									}) : null}
+									{requireFocusArea !== '0'
+										? focusArea?.map((area, index) => {
+												return (
+													<InfoCardRow
+														key={index}
+														style={{ paddingBottom: '5px' }}
+													>
+														<LabelValuePair
+															value={area}
+															style={{ marginBottom: '5px' }}
+														/>
+													</InfoCardRow>
+												);
+										  })
+										: null}
 								</InfoCard>
-								:
-								null
-							}
+							) : null}
 
 							<Address
 								address={application?.address}
