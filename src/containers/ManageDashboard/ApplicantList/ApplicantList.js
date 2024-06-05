@@ -628,11 +628,9 @@ const applicantList = (props) => {
 				'&orderColumn=' +
 				orderColumn;
 
-			console.log("🚀 ~ loadApplicants ~ apiString:", apiString)
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 			const response = await axios.get(apiString);
-			console.log("🚀 ~ loadApplicants ~ response:", response)
 
 			return {
 				applicants: response.data.result.applicants,

@@ -725,7 +725,7 @@ const application = () => {
 								/>
 							) : null}
 
-							{(isChair(userVacancyCommitteeRole) ||
+							{/* {(isChair(userVacancyCommitteeRole) ||
 								userRoles.includes(OWM_TEAM)) &&
 							displayCommitteeReview(vacancyState) ? (
 								<InfoCard
@@ -747,7 +747,7 @@ const application = () => {
 										/>
 									</InfoCardRow>
 								</InfoCard>
-							) : null}
+							) : null} */}
 
 							<div className='ApplicationContainerDownloadButtonGroup'>
 								<Tooltip
