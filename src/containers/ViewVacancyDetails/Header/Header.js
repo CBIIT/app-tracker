@@ -93,7 +93,7 @@ const header = (props) => {
 			} else {
 				history.push(link);
 			}
-		} //history.push(link);{}
+		} 
 	};
 
 	const handleProfileDialogClose = () => {
