@@ -70,7 +70,7 @@ const header = (props) => {
 	const checkHasDraft = async () => {
 		try {
 			const response = await axios.get(CHECK_APPLICATION_DRAFT + props.sysId);
-			console.log(response, "Jay");
+
 			if (response.data.result.exists === true) {
 				setUserHasApplicationDraft(true);
 				setapplicationDraftSysId(response.data.result.Application);
