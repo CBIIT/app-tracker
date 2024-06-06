@@ -16,7 +16,7 @@ const columns = [
 		sortDirections: ['descend'],
 	},
 	{
-		title: 'Institute/Office/Program',
+		title: 'Institute',
 		dataIndex: 'office',
 		sorter: (a, b) => a.office.length - b.office.length,
 	},
