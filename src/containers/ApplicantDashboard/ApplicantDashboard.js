@@ -115,7 +115,7 @@ const applicantDashboard = () => {
 			},
 		},
 		{
-			title: 'State',
+			title: 'Status',
 			dataIndex: 'state',
 			key: 'state',
 			render: (state) => {
