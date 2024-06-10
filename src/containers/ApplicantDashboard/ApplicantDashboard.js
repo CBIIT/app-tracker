@@ -119,7 +119,7 @@ const applicantDashboard = () => {
 			dataIndex: 'state',
 			key: 'state',
 			render: (state) => {
-				return <span style={{ textTransform: 'capitalize' }}>{state}</span>;
+				return <span style={{ textTransform: 'capitalize' }}>{state === 'draft' ? state : 'Submitted'}</span>;
 			},
 		},
 		{

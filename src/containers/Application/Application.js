@@ -133,7 +133,7 @@ const owmTriageOptions = [
 	},
 ];
 
-const displayCommitteeReview = (vacancyState) => {
+/* const displayCommitteeReview = (vacancyState) => {
 	switch (vacancyState) {
 		case COMMITTEE_REVIEW_IN_PROGRESS:
 		case COMMITTEE_REVIEW_COMPLETE:
@@ -142,7 +142,7 @@ const displayCommitteeReview = (vacancyState) => {
 		default:
 			return false;
 	}
-};
+}; */
 
 const application = () => {
 	const [vacancyData, setVacancyData] = useState();
