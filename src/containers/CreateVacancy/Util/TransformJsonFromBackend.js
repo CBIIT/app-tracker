@@ -6,14 +6,14 @@ export const transformJsonFromBackend = (sourceJson) => {
 		status: sourceJson.basic_info.status.value,
 		basicInfo: {
 			sys_id: sourceJson.basic_info.sys_id.value,
-			openDate: moment(sourceJson.basic_info.open_date.value),
+			openDate: sourceJson.basic_info.open_date.value ? moment(sourceJson.basic_info.open_date.value) : null,
 			useCloseDate:
 				sourceJson.basic_info.use_close_date.value == '1' ? true : false,
 			referenceCollection: sourceJson.basic_info.reference_collection.value == '1' ? true : false,
 			referenceCollectionDate: sourceJson.basic_info.reference_collection_date.value
 				? moment(sourceJson.basic_info.reference_collection_date.value)
 				: null,
-			closeDate: moment(sourceJson.basic_info.close_date.value),
+			closeDate: sourceJson.basic_info.close_date.value ? moment(sourceJson.basic_info.close_date.value) : null,
 			scoringDueByDate: sourceJson.basic_info.scoring_due_by_date.value
 				? moment(sourceJson.basic_info.scoring_due_by_date.value)
 				: null,
