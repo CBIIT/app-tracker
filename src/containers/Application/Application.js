@@ -249,12 +249,12 @@ const application = () => {
 			const application = transformJsonFromBackend(
 				applicationResponse.data.result
 			);
-			setCommitteeComments(
-				applicationResponse.data.result.basic_info.committee_comments.label
-			);
-			setCommitteeDecision(
-				applicationResponse.data.result.basic_info.committee_decision.label
-			);
+			// setCommitteeComments(
+			// 	applicationResponse.data.result.basic_info.committee_comments.label
+			// );
+			// setCommitteeDecision(
+			// 	applicationResponse.data.result.basic_info.committee_decision.label
+			// );
 
 			setReferences(application.references);
 

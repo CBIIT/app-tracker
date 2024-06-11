@@ -533,6 +533,7 @@ const applicantList = (props) => {
 							);
 						default: table;
 					}
+					break;
 				default:
 					return table;
 			}
@@ -589,6 +590,7 @@ const applicantList = (props) => {
 							);
 						default: table;
 					}
+					break;
 				default:
 					return table;
 			}
