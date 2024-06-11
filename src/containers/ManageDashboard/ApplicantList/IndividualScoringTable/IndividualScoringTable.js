@@ -18,7 +18,7 @@ import {
 	ROLLING_CLOSE,
 	VOTING_COMPLETE,
 } from '../../../../constants/VacancyStates';
-import { IN_REVIEW, SCORING, COMPLETED, REVIEW_COMPLETE } from '../../../../constants/ApplicationStates';
+import { IN_REVIEW, COMPLETED, REVIEW_COMPLETE } from '../../../../constants/ApplicationStates';
 
 const { Option } = Select;
 const { TextArea } = Input;

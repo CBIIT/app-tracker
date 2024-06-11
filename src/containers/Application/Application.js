@@ -43,7 +43,6 @@ import {
 	INDIVIDUAL_SCORING_COMPLETE,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	COMMITTEE_REVIEW_COMPLETE,
-	VOTING_COMPLETE,
 	TRIAGE,
 	CHAIR_TRIAGE,
 	ROLLING_CLOSE,
@@ -153,8 +152,8 @@ const application = () => {
 	const [triageComments, setTriageComments] = useState();
 	const [chairTriageChoice, setChairTriageChoice] = useState();
 	const [chairTriageComments, setChairTriageComments] = useState();
-	const [committeeDecision, setCommitteeDecision] = useState();
-	const [committeeComments, setCommitteeComments] = useState();
+	//const [committeeDecision, setCommitteeDecision] = useState();
+	//const [committeeComments, setCommitteeComments] = useState();
 	const [displayReferences, setDisplayReferences] = useState();
 	const [appDocIds, setAppDocIds] = useState([]);
 	const [userRoles, setUserRoles] = useState([]);
