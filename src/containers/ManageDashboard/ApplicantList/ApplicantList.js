@@ -532,8 +532,8 @@ const applicantList = (props) => {
 								</Collapse>
 							);
 						default: table;
+						break;
 					}
-					break;
 				default:
 					return table;
 			}
@@ -589,8 +589,8 @@ const applicantList = (props) => {
 								/>
 							);
 						default: table;
+						break;
 					}
-					break;
 				default:
 					return table;
 			}
