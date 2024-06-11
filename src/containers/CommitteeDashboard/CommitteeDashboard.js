@@ -39,7 +39,6 @@ const committeeDashboard = () => {
 			} catch (err) {
 				message.error('Sorry!  An error occurred.');
 			}
-
 			setIsLoading(false);
 		})();
 	}, []);

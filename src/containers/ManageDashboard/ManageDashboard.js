@@ -1,7 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { Tabs, Button, Tooltip, message } from 'antd';
-import { DoubleRightOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import {
+	DoubleRightOutlined,
+	LockOutlined,
+	UnlockOutlined,
+} from '@ant-design/icons';
 import axios from 'axios';
 
 import { useParams, useHistory } from 'react-router-dom';
@@ -35,7 +39,7 @@ import {
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../constants/Roles';
 import {
-	OWM_TRIAGE,
+	TRIAGE,
 	CHAIR_TRIAGE,
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -50,7 +54,7 @@ import './ManageDashboard.css';
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			return 'Request Chair Triage';
 		case CHAIR_TRIAGE:
 			return 'Request Individual Scoring';
@@ -69,7 +73,7 @@ const getNextStepModalConfirmTitle = () => {
 
 const getNextStepModalSubmittedTitle = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			return 'Requested Committee Chair Triage';
 		case CHAIR_TRIAGE:
 			return 'Requested Individual Scoring';
@@ -84,7 +88,7 @@ const getNextStepModalSubmittedTitle = (currentStep) => {
 
 const getNextStepModalConfirmDescription = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			return 'The vacancy will be advanced to the committee chair triage stage and the chair will receive a notification.';
 		case CHAIR_TRIAGE:
 			return 'The vacancy will be advanced to the individual scoring stage and the vacancy manager will receive a notification.';
@@ -99,7 +103,7 @@ const getNextStepModalConfirmDescription = (currentStep) => {
 
 const getNextStepCannotAdvanceTooltip = (currentStep) => {
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 		case CHAIR_TRIAGE:
 			return 'Not all applications have been triaged or vacancy is still open.';
 		case INDIVIDUAL_SCORING_IN_PROGRESS:
@@ -114,7 +118,7 @@ const getNextStepCannotAdvanceTooltip = (currentStep) => {
 const getNextStepModalSteps = (currentStep) => {
 	const steps = [];
 	switch (currentStep) {
-		case OWM_TRIAGE:
+		case TRIAGE:
 			steps.push({ title: 'Request Chair Triage?' });
 			break;
 		case CHAIR_TRIAGE:
@@ -176,7 +180,7 @@ const manageDashboard = () => {
 	};
 
 	const handleStatusButtonClick = () => {
-		setStatusModalOpen(true)
+		setStatusModalOpen(true);
 	};
 
 	const isUserAllowedToScore = () => {
@@ -316,37 +320,35 @@ const manageDashboard = () => {
 					</>
 				) : (
 					<>
-						<div className='AdvanceButtonDiv'>
-							<Tooltip
-								placement='top'
-								title={
-									vacancy.status == 'open'
-										? 'The vacancy will be closed and no other applicants may apply for the position.'
-										: 'The vacancy will be opened and applicants may submit their applications.'
-								}
-							>
-								<Button
-									type='primary'
-									ghost
-									className='AdvanceButton'
-									onClick={handleStatusButtonClick}
-									//loading={isStatusButtonLoading}
+						{user.isManager == true && (
+							<div className='AdvanceButtonDiv'>
+								<Tooltip
+									placement='top'
+									title={
+										vacancy.status == 'open'
+											? 'The vacancy will be closed and no other applicants may apply for the position.'
+											: 'The vacancy will be opened and applicants may submit their applications.'
+									}
 								>
-									{/* {nextButtonLabel} <DoubleRightOutlined /> */}
-									{vacancy.status == 'open' ? (
-										<>
-											Close Vacancy{' '}
-											<LockOutlined />
-										</>
-									) : (
-										<>
-											Open Vacancy{' '}
-											<UnlockOutlined />
-										</>
-									)}
-								</Button>
-							</Tooltip>
-						</div>
+									<Button
+										type='primary'
+										ghost
+										className='AdvanceButton'
+										onClick={handleStatusButtonClick}
+									>
+										{vacancy.status == 'open' ? (
+											<>
+												Close Vacancy <LockOutlined />
+											</>
+										) : (
+											<>
+												Open Vacancy <UnlockOutlined />
+											</>
+										)}
+									</Button>
+								</Tooltip>
+							</div>
+						)}
 					</>
 				)}
 				<div className='manage-tabs'>

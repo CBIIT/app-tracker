@@ -15,8 +15,10 @@ import {
 } from '../../../../constants/ApiEndpoints';
 import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
+	ROLLING_CLOSE,
 	VOTING_COMPLETE,
 } from '../../../../constants/VacancyStates';
+import { IN_REVIEW, SCORING, COMPLETED, REVIEW_COMPLETE } from '../../../../constants/ApplicationStates';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -48,7 +50,6 @@ const expandedRowRender = (applicationSysId) => (
 );
 
 const individualScoringTable = (props) => {
-	console.log(props)
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [committeeComments, setCommitteeComments] = useState('');
@@ -124,7 +125,6 @@ const individualScoringTable = (props) => {
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppicantSysId(sysId);
-		console.log(referencesSent)
 		if (referencesSent === '0') {
 			sendReferences(sysId)
 		} else {
@@ -196,6 +196,7 @@ const individualScoringTable = (props) => {
 		];
 
 		if (
+			(props.vacancyState === ROLLING_CLOSE && (props.filter === IN_REVIEW || props.filter === COMPLETED || props.filter === REVIEW_COMPLETE)) ||
 			props.vacancyState === VOTING_COMPLETE ||
 			props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS
 		) {
@@ -225,7 +226,7 @@ const individualScoringTable = (props) => {
 				),
 			});
 
-			if (props.vacancyState === VOTING_COMPLETE) {
+			if (props.vacancyState === VOTING_COMPLETE || (props.vacancyState === ROLLING_CLOSE && props.filter === REVIEW_COMPLETE)) {
 				columns.push({
 					title: 'Referred to Selecting Official',
 					dataIndex: 'referred_to_selecting_official',

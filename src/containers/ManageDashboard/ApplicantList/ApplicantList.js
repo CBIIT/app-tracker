@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { message, Table, Tooltip, Collapse, Button } from 'antd';
+import { message, Table, Tooltip, Collapse, Button, Radio } from 'antd';
 import { useParams } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
@@ -12,11 +12,19 @@ import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	VOTING_COMPLETE,
-	OWM_TRIAGE,
+	TRIAGE,
 	CHAIR_TRIAGE,
 	COMMITTEE_REVIEW_COMPLETE,
 	INDIVIDUAL_SCORING_COMPLETE,
+	ROLLING_CLOSE,
 } from '../../../constants/VacancyStates';
+import {
+	APP_TRIAGE,
+	SCORING,
+	IN_REVIEW,
+	REVIEW_COMPLETE,
+	COMPLETED,
+} from '../../../constants/ApplicationStates';
 import {
 	OWM_TEAM,
 	COMMITTEE_CHAIR,
@@ -24,7 +32,7 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../../constants/Roles';
-import { GET_APPLICANT_LIST, COLLECT_REFERENCES } from '../../../constants/ApiEndpoints';
+import { GET_APPLICANT_LIST, COLLECT_REFERENCES, GET_ROLLING_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
@@ -52,6 +60,12 @@ const applicantList = (props) => {
 	const [appSysId, setAppSysId] = useState();
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
+	const [filter, setFilter] = useState(
+		(props.userCommitteeRole === COMMITTEE_CHAIR ||
+			props.userRoles.includes(OWM_TEAM))
+			? APP_TRIAGE
+			: SCORING
+	);
 	const {
 		searchText,
 		setSearchText,
@@ -131,8 +145,8 @@ const applicantList = (props) => {
 		},
 		{
 			title: 'Vacancy Manager Triage Decision',
-			dataIndex: 'owm_triage_status',
-			key: 'OWMStatus',
+			dataIndex: 'triage_status',
+			key: 'TriageStatus',
 			render: (text) => renderDecision(text),
 		},
 		{
@@ -264,7 +278,35 @@ const applicantList = (props) => {
 
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
-	}, [props.vacancyState, searchText]);
+	}, [props.vacancyState, searchText, filter]);
+
+	const filterChangeHandler = async (e) => {
+		setFilter(e.target.value);
+	};
+
+	const getFilterData = (filter, apps) => {
+		return apps.filter((applicant) => {
+			let newState = '';
+			switch (applicant.state) {
+				case 'triage':
+					newState = 'triage';
+					break;
+				case 'scoring':
+					newState = 'scoring';
+					break;
+				case 'in_review':
+					newState = 'in_review';
+					break;
+				case 'review_complete':
+					newState = 'review_complete';
+					break;
+				case 'completed':
+					newState = 'completed';
+					break;
+			}
+			return newState == filter;
+		});
+	} 
 
 	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
 		setRecommendedApplicantsTableLoading(true);
@@ -298,13 +340,21 @@ const applicantList = (props) => {
 			props.userRoles.includes(OWM_TEAM) &&
 			(props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 				props.vacancyState === VOTING_COMPLETE ||
-				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS)
+				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
+				(props.vacancyState === ROLLING_CLOSE &&
+					filter !== TRIAGE))
 		) {
-			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
+			loadRecommendedApplicants(
+				1,
+				recommendedApplicantsPageSize,
+				orderBy,
+				orderColumn
+			);
 			loadNonRecommendedApplicants(
 				1,
 				nonRecommendedApplicantsPageSize,
-				orderBy, orderColumn
+				orderBy,
+				orderColumn
 			);
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
@@ -313,7 +363,7 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			const hideColumnStateArray = [OWM_TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS]
+			const hideColumnStateArray = [TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS, ROLLING_CLOSE]
 			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
 				const newColumns = applicantColumns.filter((val) => {
 					if (val.title === 'Applicant')
@@ -333,9 +383,11 @@ const applicantList = (props) => {
 			}
 		}
 
+		const data = vacancyState == ROLLING_CLOSE ? getFilterData(filter, applicants) : applicants;
+
 		const table = (
 			<Table
-				dataSource={applicants}
+				dataSource={data}
 				columns={getColumns()}
 				scroll={{ x: 'true' }}
 				rowKey='sys_id'
@@ -413,6 +465,74 @@ const applicantList = (props) => {
 							</Panel>
 						</Collapse>
 					);
+				case ROLLING_CLOSE:
+					switch (filter) {
+						case SCORING:
+							return (
+								<Collapse defaultActiveKey={['0']} ghost>
+									<Panel header='Recommended Applicants'>
+										<IndividualScoringTable
+											applicants={getFilterData(filter, recommendedApplicants)}
+											pagination={recommendedApplicantsTablePagination}
+											loading={recommendedApplicantsTableLoading}
+											onTableChange={loadRecommendedApplicants}
+											refCollection={props.referenceCollection}
+											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+											filter={filter}
+										/>
+									</Panel>
+									<Panel header='Non-Recommended Applicants'>
+										<IndividualScoringTable
+											applicants={getFilterData(filter, nonRecommendedApplicants)}
+											pagination={nonRecommendedApplicantsTablePagination}
+											loading={nonRecommendedApplicantsTableLoading}
+											onTableChange={loadNonRecommendedApplicants}
+											refCollection={props.referenceCollection}
+											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+											filter={filter}
+										/>
+									</Panel>
+								</Collapse>
+							);
+						case IN_REVIEW:
+						case REVIEW_COMPLETE:
+           				case COMPLETED:
+							return (
+								<Collapse defaultActiveKey={['0']} ghost>
+									<Panel header='Recommended Applicants'>
+										<IndividualScoringTable
+											applicants={getFilterData(filter, recommendedApplicants)}
+											pagination={recommendedApplicantsTablePagination}
+											loading={recommendedApplicantsTableLoading}
+											onTableChange={loadRecommendedApplicants}
+											committeeVoting={true}
+											postChangeHandler={loadVacancyAndApplicants}
+											displayAllComments={filter === 'review_complete'}
+											vacancyState={vacancyState}
+											refCollection={props.referenceCollection}
+											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+											filter={filter}
+										/>
+									</Panel>
+									<Panel header='Non-Recommended Applicants'>
+										<IndividualScoringTable
+											applicants={getFilterData(filter, nonRecommendedApplicants)}
+											pagination={nonRecommendedApplicantsTablePagination}
+											loading={nonRecommendedApplicantsTableLoading}
+											onTableChange={loadNonRecommendedApplicants}
+											committeeVoting={true}
+											postChangeHandler={loadVacancyAndApplicants}
+											displayAllComments={filter === 'review_complete'}
+											vacancyState={vacancyState}
+											refCollection={props.referenceCollection}
+											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+											filter={filter}
+										/>
+									</Panel>
+								</Collapse>
+							);
+						default: table;
+					}
 				default:
 					return table;
 			}
@@ -440,6 +560,35 @@ const applicantList = (props) => {
 							loading={tableLoading}
 						/>
 					);
+				case ROLLING_CLOSE:
+					switch(filter) {
+						case SCORING:
+							return(
+								<IndividualScoringTable
+									applicants={getFilterData(filter, applicants)}
+									pagination={tablePagination}
+									onTableChange={loadAllApplicants}
+									loading={tableLoading}
+									filter={filter}
+								/>
+							);
+						case IN_REVIEW:
+						case REVIEW_COMPLETE:
+						case COMPLETED:
+							return(
+								<IndividualScoringTable
+									applicants={getFilterData(filter, applicants)}
+									pagination={tablePagination}
+									onTableChange={loadAllApplicants}
+									committeeVoting={true}
+									postChangeHandler={loadVacancyAndApplicants}
+									displayAllComments={filter === 'review_complete'}
+									loading={tableLoading}
+									filter={filter}
+								/>
+							);
+						default: table;
+					}
 				default:
 					return table;
 			}
@@ -449,10 +598,11 @@ const applicantList = (props) => {
 		) {
 			return (
 				<ApplicantList
-					applicants={applicants}
+					applicants={vacancyState === ROLLING_CLOSE ? getFilterData(filter, applicants) : applicants}
 					pagination={tablePagination}
 					onTableChange={loadAllApplicants}
 					loading={tableLoading}
+					filter={filter}
 				/>
 			);
 		} else {
@@ -463,9 +613,11 @@ const applicantList = (props) => {
 	const loadApplicants = async (page, pageSize, orderBy, orderColumn, recommended) => {
 		const offset = page;
 		const limit = pageSize;
+		const api = props.vacancyState == ROLLING_CLOSE ? GET_ROLLING_APPLICANT_LIST : GET_APPLICANT_LIST;
 		try {
 			let apiString =
-				GET_APPLICANT_LIST +
+				api
+				 +
 				sysId +
 				'?offset=' +
 				offset +
@@ -478,7 +630,6 @@ const applicantList = (props) => {
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
-
 			const response = await axios.get(apiString);
 
 			return {
@@ -506,6 +657,28 @@ const applicantList = (props) => {
 
 	return (
 		<>
+			{props.vacancyState == 'rolling_close' && (
+				<div className='tabs-div'>
+					<p style={{ display: 'inline-block' }}>Filter Applications: </p>
+					<Radio.Group
+						defaultValue={APP_TRIAGE}
+						style={{ display: 'inline-block', paddingLeft: '10px' }}
+						onChange={filterChangeHandler}
+						value={filter}
+					>
+						{(props.userCommitteeRole === COMMITTEE_CHAIR ||
+						props.userRoles.includes(OWM_TEAM)) ? (
+							<Radio.Button value={APP_TRIAGE}>Triage</Radio.Button>
+						) : (
+							''
+						)}
+
+						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
+						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
+						<Radio.Button value={REVIEW_COMPLETE}>Selected</Radio.Button>
+					</Radio.Group>
+				</div>
+			)}
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}

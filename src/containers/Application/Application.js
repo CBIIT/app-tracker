@@ -44,8 +44,9 @@ import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	COMMITTEE_REVIEW_COMPLETE,
 	VOTING_COMPLETE,
-	OWM_TRIAGE,
+	TRIAGE,
 	CHAIR_TRIAGE,
+	ROLLING_CLOSE,
 } from '../../constants/VacancyStates.js';
 
 import './Application.css';
@@ -53,6 +54,7 @@ import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import { displayReferenceContactQuestion } from '../../components/Util/Application/Application';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 import Loading from '../../components/Loading/Loading';
+import { APP_TRIAGE } from '../../constants/ApplicationStates.js';
 
 const { confirm } = Modal;
 
@@ -131,7 +133,7 @@ const owmTriageOptions = [
 	},
 ];
 
-const displayCommitteeReview = (vacancyState) => {
+/* const displayCommitteeReview = (vacancyState) => {
 	switch (vacancyState) {
 		case COMMITTEE_REVIEW_IN_PROGRESS:
 		case COMMITTEE_REVIEW_COMPLETE:
@@ -140,7 +142,7 @@ const displayCommitteeReview = (vacancyState) => {
 		default:
 			return false;
 	}
-};
+}; */
 
 const application = () => {
 	const [vacancyData, setVacancyData] = useState();
@@ -391,19 +393,11 @@ const application = () => {
 					message.success('Feedback and notes saved.');
 				}
 			} else {
-				if (vacancyData.basic_info.use_close_date.label == 'false') {
-					triage = {
-						app_sys_id: application.appSysId,
-						executive_triage: triageChoice,
-						executive_triage_comments: triageComments,
-					};
-				} else {
-					triage = {
-						app_sys_id: application.appSysId,
-						OWM_triage: triageChoice,
-						OWM_triage_comments: triageComments,
-					};
-				}
+				triage = {
+					app_sys_id: application.appSysId,
+					triage: triageChoice,
+					triage_comments: triageComments,
+				};
 				
 				await axios.post(SUBMIT_TRIAGE, triage);
 				message.success('Feedback and notes saved.');
@@ -470,7 +464,8 @@ const application = () => {
 			vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 			vacancyState === INDIVIDUAL_SCORING_COMPLETE ||
 			vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
-			vacancyState === COMMITTEE_REVIEW_COMPLETE
+			vacancyState === COMMITTEE_REVIEW_COMPLETE ||
+			(vacancyState === ROLLING_CLOSE && application.state != APP_TRIAGE)
 		);
 	};
 
@@ -490,7 +485,7 @@ const application = () => {
 		return <Loading />;
 	} else {
 		const allowHrSpecialistTriage =
-			vacancyData?.basic_info?.allow_hr_specialist_triage;
+			vacancyData?.basic_info?.allow_hr_specialist_triage.value === '0' ? false : true;
 
 		const userVacancyCommitteeRole =
 			vacancyData?.user?.committee_role_of_current_vacancy;
@@ -529,26 +524,31 @@ const application = () => {
 									marginBottom: '0px',
 								}}
 							/>
-							{(requireFocusArea !== '0') ?
-								<InfoCard title='Focus Areas'
+							{requireFocusArea !== '0' ? (
+								<InfoCard
+									title='Focus Areas'
 									style={{
 										backgroundColor: 'white',
 										minHeight: '60px',
 									}}
 								>
-									{(requireFocusArea !== '0') ? focusArea?.map((area, index) => {
-										return (
-											<InfoCardRow key={index}
-												style={{ paddingBottom: '5px'}}
-												>
-												<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
-											</InfoCardRow>
-										);
-									}) : null}
+									{requireFocusArea !== '0'
+										? focusArea?.map((area, index) => {
+												return (
+													<InfoCardRow
+														key={index}
+														style={{ paddingBottom: '5px' }}
+													>
+														<LabelValuePair
+															value={area}
+															style={{ marginBottom: '5px' }}
+														/>
+													</InfoCardRow>
+												);
+										  })
+										: null}
 								</InfoCard>
-								:
-								null
-							}
+							) : null}
 
 							<Address
 								address={application?.address}
@@ -607,7 +607,7 @@ const application = () => {
 											)
 										}
 										initiallyHideContent={
-											vacancyState === OWM_TRIAGE ? false : true
+											vacancyState === TRIAGE ? false : true
 										}
 										maxCommentLength={10000}
 									/>
@@ -725,7 +725,7 @@ const application = () => {
 								/>
 							) : null}
 
-							{(isChair(userVacancyCommitteeRole) ||
+							{/* {(isChair(userVacancyCommitteeRole) ||
 								userRoles.includes(OWM_TEAM)) &&
 							displayCommitteeReview(vacancyState) ? (
 								<InfoCard
@@ -747,7 +747,7 @@ const application = () => {
 										/>
 									</InfoCardRow>
 								</InfoCard>
-							) : null}
+							) : null} */}
 
 							<div className='ApplicationContainerDownloadButtonGroup'>
 								<Tooltip

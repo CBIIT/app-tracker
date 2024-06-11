@@ -119,7 +119,7 @@ const applicantDashboard = () => {
 			dataIndex: 'state',
 			key: 'state',
 			render: (state) => {
-				return <span style={{ textTransform: 'capitalize' }}>{state}</span>;
+				return <span style={{ textTransform: 'capitalize' }}>{state === 'draft' ? state : 'Submitted'}</span>;
 			},
 		},
 		{
@@ -151,9 +151,9 @@ const applicantDashboard = () => {
 			title: 'Actions',
 			key: 'action',
 			render: (application) => {
-				if (application.state == 'submitted') {
+				if (application.state == 'submitted' || application.state == 'triage') {
 					let buttons = [];
-					if (application.vacancy_state === 'live')
+					if (application.vacancy_state === 'live' || application.vacancy_state == 'rolling_close') {
 						buttons.push(
 							<Button
 								key='edit'
@@ -166,6 +166,7 @@ const applicantDashboard = () => {
 							</Button>,
 							<Divider key='divider' type='vertical' />
 						);
+					}
 					buttons.push(
 						<Button
 							key='withdraw'
@@ -192,6 +193,20 @@ const applicantDashboard = () => {
 							View Vacancy
 						</Button>
 					);
+				} else if (application.vacancy_state == 'rolling_close' && application.state != 'triage') {
+					return (
+						<Button
+							key='withdraw'
+							type='text'
+							onClick={async () => {
+								setWithdrawAppModalVisible(true);
+								setCurrentApplication(application);
+							}}
+						>
+							<MinusCircleOutlined />
+							Withdraw
+						</Button>
+					)
 				} else {
 					return (
 						<Space size='middle'>

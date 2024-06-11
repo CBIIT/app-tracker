@@ -22,6 +22,9 @@ export const GET_USER_APPLICATIONS =
 export const GET_APPLICANT_LIST =
 	'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/';
 
+export const GET_ROLLING_APPLICANT_LIST = 
+	'/api/x_g_nci_app_tracke/vacancy/get_applicants_list_rolling_close/'
+
 export const GET_APPLICATION_SCORES =
 	'/api/x_g_nci_app_tracke/application/get_scores/';
 
