@@ -531,8 +531,8 @@ const applicantList = (props) => {
 									</Panel>
 								</Collapse>
 							);
-						default: table;
-						break;
+						default: 
+							return table;
 					}
 				default:
 					return table;
@@ -588,8 +588,8 @@ const applicantList = (props) => {
 									filter={filter}
 								/>
 							);
-						default: table;
-						break;
+						default: 
+							return table;
 					}
 				default:
 					return table;
