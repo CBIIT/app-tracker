@@ -10,9 +10,6 @@ export const GET_APPLICATION =
 export const GET_APPLICATION_DRAFT =
 	'/api/x_g_nci_app_tracke/application/app_draft/';
 
-export const CHECK_APPLICATION_DRAFT =
-	'/api/x_g_nci_app_tracke/application/check_app_draft/';
-
 export const GET_APPLICATION_TRIAGE_INFO =
 	'/api/x_g_nci_app_tracke/vacancy/get_vacancy_state/';
 

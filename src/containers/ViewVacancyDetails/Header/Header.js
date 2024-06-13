@@ -4,11 +4,10 @@ import { DownOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { CHECK_USER_ALREADY_APPLIED, CHECK_HAS_PROFILE, CHECK_APPLICATION_DRAFT } from '../../../constants/ApiEndpoints';
+import { CHECK_USER_ALREADY_APPLIED, CHECK_HAS_PROFILE } from '../../../constants/ApiEndpoints';
 import {
 	APPLICANT_DASHBOARD,
 	APPLY,
-	EDIT_APPLICATION,
 	REGISTER_OKTA,
 } from '../../../constants/Routes';
 import { LIVE } from '../../../constants/VacancyStates';
@@ -25,8 +24,6 @@ const header = (props) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasProfile, setHasProfile] = useState(false);
 	const [showProfileDialog, setShowProfileDialog] = useState(false);
-	const [userHasApplicationDraft, setUserHasApplicationDraft] = useState(false);
-	const [applicationDraftSysId, setapplicationDraftSysId] = useState("");
 	const {
 		auth: { isUserLoggedIn, user },
 	} = useAuth();
@@ -40,7 +37,6 @@ const header = (props) => {
 			} else {
 				setHasProfile(true);
 			}
-			checkHasDraft();
 			setIsLoading(false);
 		})();
 	}, []);
@@ -52,7 +48,6 @@ const header = (props) => {
 					CHECK_USER_ALREADY_APPLIED + props.sysId
 				);
 				setUserAlreadyApplied(response.data.result.exists);
-
 			}
 		} catch (error) {
 			message.error('Sorry!  An error occurred while loading.');
@@ -67,18 +62,7 @@ const header = (props) => {
 			console.log('Failed to find user profile.');
 		}
 	}
-	const checkHasDraft = async () => {
-		try {
-			const response = await axios.get(CHECK_APPLICATION_DRAFT + props.sysId);
 
-			if (response.data.result.exists === true) {
-				setUserHasApplicationDraft(true);
-				setapplicationDraftSysId(response.data.result.Application);
-			}
-		} catch (e) {
-			console.log('Failed to find user application draft.');
-		}
-	}
 	const onButtonClick = (link) => {
 		if (!hasProfile) {
 			setShowProfileDialog(true);
@@ -86,14 +70,7 @@ const header = (props) => {
 		else if (userAlreadyApplied) {
 			history.push(APPLICANT_DASHBOARD);
 			message.info('You have already applied for this position.');
-		} else {
-
-			if (userHasApplicationDraft) {
-				history.push(EDIT_APPLICATION + "draft/" + applicationDraftSysId);
-			} else {
-				history.push(link);
-			}
-		} 
+		} else history.push(link);
 	};
 
 	const handleProfileDialogClose = () => {
