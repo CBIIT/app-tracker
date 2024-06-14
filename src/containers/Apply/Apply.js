@@ -24,6 +24,7 @@ import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
 import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
+import { checkAuth } from '../../constants/checkAuth.js';
 
 const { Step } = Steps;
 
@@ -174,7 +175,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		setFormData(formData);
 	};
 
-	const {auth: {user}} = useAuth();
+	const {auth: {user}, setAuth} = useAuth();
 	
 	const instantiateNewApplication = async () => {
 
@@ -400,6 +401,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					setDraftId(saveDraftResponse.data.result.draft_id);
 			} catch (error) {
 				message.error('Sorry!  There was an error saving.');
+			} finally {
+				checkAuth(setIsLoading, setAuth);
 			}
 		}
 	};

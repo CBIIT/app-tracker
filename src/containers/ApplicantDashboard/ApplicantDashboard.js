@@ -28,6 +28,8 @@ import axios from 'axios';
 import Error from '../../components/UI/Error/Error';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import { useFetch } from '../../hooks/useFetch';
+import useAuth from '../../hooks/useAuth';
+import { checkAuth } from '../../constants/checkAuth';
 import './ApplicantDashboard.css';
 
 const applicantDashboard = () => {
@@ -35,6 +37,7 @@ const applicantDashboard = () => {
 	const [removeDraftModalVisible, setRemoveDraftModalVisible] = useState(false);
 	const [withdrawAppModalVisible, setWithdrawAppModalVisible] = useState(false);
 	const [currentApplication, setCurrentApplication] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
@@ -53,6 +56,8 @@ const applicantDashboard = () => {
 		setWithdrawAppModalVisible(false);
 	};
 
+	const { setAuth } = useAuth();
+
 	const removeDraft = async () => {
 		try {
 			await axios.post(
@@ -68,6 +73,7 @@ const applicantDashboard = () => {
 		} catch (error) {
 			message.error('Sorry, an error occurred while trying to remove draft');
 		} finally {
+			checkAuth(setLoading, setAuth);
 			setRemoveDraftModalVisible(false);
 		}
 	};
