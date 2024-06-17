@@ -225,11 +225,19 @@ const basicInformation = (props) => {
 			formInstance.getFieldValue('closeDate')
 		).setHours(0, 0, 0, 0);
 
-		if (formItem.field == 'openDate' && closeDate && openDate >= closeDate) {
-			throw new Error(
-				'Please pick an open date that is before the close date.'
-			);
-		}
+		if (useCloseDate == true) {
+            if (formItem.field == 'openDate' && closeDate && openDate >= closeDate) {
+                throw new Error(
+                    'Please pick an open date that is before the close date.'
+                );
+            }
+        } else {
+            if (formItem.field == 'openDate' && !openDate) {
+                throw new Error(
+                    'Please pick an open date.'
+                )
+            }
+        }
 
 		if (formItem.field == 'closeDate' && openDate && closeDate <= openDate) {
 			throw new Error('Please pick a close date that is after the open date.');
