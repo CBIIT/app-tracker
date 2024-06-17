@@ -27,6 +27,7 @@ import {
 } from '../../../constants/ApplicationStates';
 import {
 	OWM_TEAM,
+	COMMITTEE_HR_SPECIALIST,
 	COMMITTEE_CHAIR,
 	COMMITTEE_MEMBER_VOTING,
 	COMMITTEE_MEMBER_NON_VOTING,
@@ -49,6 +50,18 @@ const renderDecision = (text) =>
 		<span style={{ textTransform: 'capitalize' }}>{text}</span>
 	);
 
+const displayTriage = (userRole, committeeRole) => {
+	if (
+		committeeRole === COMMITTEE_CHAIR ||
+		committeeRole === COMMITTEE_HR_SPECIALIST ||
+		userRole.includes(OWM_TEAM)
+	) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
 const defaultApplicantSort = 'ascend';
 
 const applicantList = (props) => {
@@ -61,10 +74,7 @@ const applicantList = (props) => {
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
-		(props.userCommitteeRole === COMMITTEE_CHAIR ||
-			props.userRoles.includes(OWM_TEAM))
-			? APP_TRIAGE
-			: SCORING
+		displayTriage(props.userRoles, props.userCommitteeRole) ? APP_TRIAGE : SCORING
 	);
 	const {
 		searchText,
@@ -668,8 +678,7 @@ const applicantList = (props) => {
 						onChange={filterChangeHandler}
 						value={filter}
 					>
-						{(props.userCommitteeRole === COMMITTEE_CHAIR ||
-						props.userRoles.includes(OWM_TEAM)) ? (
+						{displayTriage(props.userRoles, props.userCommitteeRole) ? (
 							<Radio.Button value={APP_TRIAGE}>Triage</Radio.Button>
 						) : (
 							''
