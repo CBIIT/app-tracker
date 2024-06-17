@@ -37,7 +37,6 @@ const applicantDashboard = () => {
 	const [removeDraftModalVisible, setRemoveDraftModalVisible] = useState(false);
 	const [withdrawAppModalVisible, setWithdrawAppModalVisible] = useState(false);
 	const [currentApplication, setCurrentApplication] = useState([]);
-	const [loading, setLoading] = useState(false);
 
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
@@ -57,6 +56,7 @@ const applicantDashboard = () => {
 	};
 
 	const { setAuth } = useAuth();
+	const { isLoading, data, error, setData, setLoading } = useFetch(GET_USER_APPLICATIONS);
 
 	const removeDraft = async () => {
 		try {
@@ -92,8 +92,6 @@ const applicantDashboard = () => {
 			);
 		}
 	};
-
-	const { isLoading, data, error, setData } = useFetch(GET_USER_APPLICATIONS);
 
 	const applicationColumns = [
 		{
