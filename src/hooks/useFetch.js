@@ -25,5 +25,5 @@ export const useFetch = (url, transformFunction) => {
 		fetchData();
 	}, [url]);
 
-	return { data, setData, error, isLoading };
+	return { data, setData, error, isLoading, setLoading };
 };
