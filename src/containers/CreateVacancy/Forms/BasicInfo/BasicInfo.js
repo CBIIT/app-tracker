@@ -138,12 +138,12 @@ const basicInformation = (props) => {
 		},
 		{ label: 'Staff Clinician 1', value: 'Staff Clinician 1' },
 		{
-			label: 'Science Policy Leader Tier 2',
-			value: 'Science Policy Leader Tier 2',
+			label: 'Science Policy Leader - Tier 2',
+			value: 'Science Policy Leader - Tier 2',
 		},
 		{
-			label: 'Science Program Leader Tier 2',
-			value: 'Science Program Leader Tier 2',
+			label: 'Science Program Leader - Tier 2',
+			value: 'Science Program Leader - Tier 2',
 		},
 		{ label: 'Senior Investigator', value: 'Senior Investigator' },
 		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
