@@ -128,7 +128,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				: { ...document, file: { fileList: [] } };
 		});
 
-		if (
+		if (editSubmitted &&
 			initialValues.applicantDocuments &&
 			initialValues.applicantDocuments.length > 0
 		) {

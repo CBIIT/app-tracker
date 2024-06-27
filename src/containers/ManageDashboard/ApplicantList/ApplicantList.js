@@ -308,10 +308,8 @@ const applicantList = (props) => {
 					newState = 'in_review';
 					break;
 				case 'review_complete':
-					newState = 'review_complete';
-					break;
 				case 'completed':
-					newState = 'completed';
+					newState = 'review_complete';
 					break;
 			}
 			return newState == filter;
