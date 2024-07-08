@@ -371,19 +371,12 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			const hideColumnStateArray = [TRIAGE, CHAIR_TRIAGE, COMMITTEE_REVIEW_IN_PROGRESS, COMMITTEE_REVIEW_COMPLETE, VOTING_COMPLETE, INDIVIDUAL_SCORING_COMPLETE, INDIVIDUAL_SCORING_IN_PROGRESS, ROLLING_CLOSE]
-			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY && hideColumnStateArray.includes(vacancyState)) {
-				const newColumns = applicantColumns.filter((val) => {
-					if (val.title === 'Applicant')
-						return true;
-					if (val.title === 'Email')
-						return true;
-				})
-				return newColumns;
-			}
-			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING) {
+			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING || userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
 				const applicantColumnCopy = [...applicantColumns]
 				const columns = applicantColumnCopy.splice(0, 2);
+				if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
+					return columns;
+				}
 				const newColumns = columns.concat(committeeColumns);
 				return newColumns;
 			} else {
