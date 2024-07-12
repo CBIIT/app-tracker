@@ -55,6 +55,12 @@ const applicantDashboard = () => {
 		setWithdrawAppModalVisible(false);
 	};
 
+	const dateCompare = (dateA, dateB) => {
+		if (dateA == '--' || dateA == '') dateA = null;
+		if (dateB == '--' || dateB == '') dateB = null;
+		return new Date(dateA) - new Date(dateB);
+	};
+
 	const { setAuth } = useAuth();
 	const { isLoading, data, error, setData, setLoading } = useFetch(GET_USER_APPLICATIONS);
 
@@ -100,7 +106,6 @@ const applicantDashboard = () => {
 			key: 'title',
 			sorter: {
 				compare: (a, b) => a.vacancy.localeCompare(b.vacancy),
-				multiple: 1,
 			},
 			defaultSortOrder: 'ascend',
 			render: (title, record) => {
@@ -132,9 +137,11 @@ const applicantDashboard = () => {
 			key: 'closes',
 			render: (date) => date ? transformDateToDisplay(date) : "Open Until Filled",
 			sorter: {
-				compare: (a, b) =>
-					new Date(a.vacancy_closes) - new Date(b.vacancy_closes),
-				multiple: 2,
+				compare: (a, b) => {
+					const dateA = a.vacancy_closes;
+					const dateB = b.vacancy_closes;
+					return dateCompare(dateA, dateB);
+				}
 			},
 			defaultSortOrder: 'ascend',
 		},
@@ -147,7 +154,6 @@ const applicantDashboard = () => {
 			sorter: {
 				compare: (a, b) =>
 					new Date(a.vacancy_submitted) - new Date(b.vacancy_submitted),
-				multiple: 3,
 			},
 			defaultSortOrder: 'ascend',
 		},
