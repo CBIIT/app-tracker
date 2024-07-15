@@ -75,7 +75,7 @@ const ApplicantDocuments = (props) => {
 
 	const validateFile = async (fileList, isOptional, uploadedDocument) => {
 		if (
-			fileList.length === 0 &&
+			(fileList.length === 0  || fileList.length > 1) &&
 			+isOptional !== 1 &&
 			(!uploadedDocument || uploadedDocument.markedToDelete === true)
 		)
@@ -199,10 +199,10 @@ const ApplicantDocuments = (props) => {
 															}
 														>
 															<Button
-																disabled={
+																/* disabled={
 																	applicantDocuments[index].file.fileList
 																		.length >= 1
-																}
+																} */
 															>
 																<UploadOutlined /> Upload
 															</Button>
