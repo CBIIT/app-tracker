@@ -167,7 +167,11 @@ const applicantDashboard = () => {
 			render: (application) => {
 				if (application.state == 'submitted' || application.state == 'triage') {
 					let buttons = [];
-					if (application.vacancy_state === 'live' || application.vacancy_state == 'rolling_close') {
+					if (
+						application.vacancy_state === 'live' ||
+						(application.vacancy_state == 'rolling_close' &&
+							application.vacancy_status === 'open')
+					) {
 						buttons.push(
 							<Button
 								key='edit'
