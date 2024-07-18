@@ -228,17 +228,21 @@ const applicantDashboard = () => {
 				} else {
 					return (
 						<Space size='middle'>
-							<Button
-								type='text'
-								onClick={() => {
-									history.push(
-										EDIT_APPLICATION + 'draft/' + application.draft_id
-									);
-								}}
-							>
-								<EditOutlined /> Edit
-							</Button>
-							<Divider type='vertical' />
+							{application.vacancy_status === 'open' && (
+								<>
+									<Button
+										type='text'
+										onClick={() => {
+											history.push(
+												EDIT_APPLICATION + 'draft/' + application.draft_id
+											);
+										}}
+									>
+										<EditOutlined /> Edit
+									</Button>
+									<Divider type='vertical' />
+								</>
+							)}
 							<Button
 								type='text'
 								onClick={async () => {
