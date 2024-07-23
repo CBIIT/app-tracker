@@ -78,7 +78,15 @@ const header = (props) => {
 	}
 
 	const isVacancyClosed = () => {
-		return props.vacancyState !== LIVE && props.closeDate && props.useCloseDate !== false;
+		//return props.vacancyState !== LIVE && props.closeDate && props.useCloseDate !== false;
+		return (
+			(props.useCloseDate === true &&
+				props.vacancyStatus != 'open' &&
+				props.vacancyState != LIVE) ||
+			(props.useCloseDate === false &&
+				props.vacancyStatus != 'open' &&
+				props.vacancyState === 'rolling_close')
+		);
 	};
 
 	return (
