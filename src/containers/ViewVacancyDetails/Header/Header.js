@@ -78,7 +78,6 @@ const header = (props) => {
 	}
 
 	const isVacancyClosed = () => {
-		console.log(props);
 		//return props.vacancyState !== LIVE && props.closeDate && props.useCloseDate !== false;
 		return (
 			(props.useCloseDate === true &&
