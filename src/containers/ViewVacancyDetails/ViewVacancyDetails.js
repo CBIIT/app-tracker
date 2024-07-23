@@ -53,6 +53,7 @@ const viewVacancyDetails = () => {
 				closeDate={vacancyDetails.basic_info.close_date.value}
 				useCloseDate={vacancyDetails.basic_info.use_close_date.value == '0' ? false : true}
 				vacancyState={vacancyDetails.basic_info.state.value}
+				vacancyStatus={vacancyDetails.basic_info.status.value}
 				vacancyPOC={vacancyDetails.basic_info.vacancy_poc}
 				sysId={sysId}
 			/>
