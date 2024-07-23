@@ -110,16 +110,18 @@ const applicantDashboard = () => {
 			defaultSortOrder: 'ascend',
 			render: (title, record) => {
 				switch (record.state) {
-					case 'submitted':
-						return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
+					case 'withdrawn':
+						return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
 					case 'draft':
-						return (
+						return record.vacancy_status === 'open' ? (
 							<Link to={EDIT_APPLICATION + 'draft/' + record.draft_id}>
 								{title}
 							</Link>
+						) : (
+							<Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>
 						);
 					default:
-						return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
+						return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
 				}
 			},
 		},
