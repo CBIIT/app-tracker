@@ -17,7 +17,6 @@
 		"antd": "^4.12.3",
 		"axios": "^0.21.1",
 		"ncp": "^2.0.0",
-		"package.json": "^2.0.1",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
 		"react-highlight-words": "^0.20.0",
