@@ -110,7 +110,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		);
 		const profileResponse = await axios.get(
 			GET_PROFILE + user.uid
-		).catch(function (error) {
+		).catch(function () {
 			notification.error({
 				message: "Sorry! There was an error retrieving your profile.",                        
 				description: 'Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov',
