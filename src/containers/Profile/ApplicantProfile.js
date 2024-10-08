@@ -6,7 +6,7 @@ const { Title } = Typography;
 
 import ProfileContext, { initialData } from './Util/FormContext';
 import Loading from '../../components/Loading/Loading';
-import { GET_PROFILE } from '../../constants/ApiEndpoints';
+import { CHECK_HAS_PROFILE, GET_PROFILE } from '../../constants/ApiEndpoints';
 import { convertDataFromBackend } from './Util/ConvertDataFromBackend';
 import BasicInfoTab from './ApplicantCard/Tabs/BasicInfoTab';
 import DemographicTab from './ApplicantCard/Tabs/DemographicTab';
@@ -54,13 +54,18 @@ const ApplicantProfile = () => {
 
 	const getProfileInfo = async () => {
 		try {
-			setIsLoading(true);
-			const response = await axios.get(GET_PROFILE + sysId);
-			if (response.data.result.status !== 400) {
-				setProfile(convertDataFromBackend(response.data.result.response));
+			setIsLoading(true)
+			const response = await axios.get(CHECK_HAS_PROFILE);
+			
+			if (response.data.result.exists == true) {
+				const profileResponse = await axios.get(GET_PROFILE + sysId);
+				setProfile(convertDataFromBackend(profileResponse.data.result.response));
 				setHasProfile(true);
+			} else {
+				setHasProfile(false);
 			}
 			setIsLoading(false);
+			
 		} catch (e) {
 			console.log(e);
 			message.error(

@@ -110,7 +110,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		);
 		const profileResponse = await axios.get(
 			GET_PROFILE + user.uid
-		);
+		).catch(function (error) {
+			notification.error({
+				message: "Sorry! There was an error retrieving your profile.",                        
+				description: 'Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov',
+				duration: 20,
+				style: {
+					height: "25vh",
+					display: 'flex',
+					alignItems: 'center'
+				}
+			});
+			history.goBack();
+		});
 
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		const {basicInfo, demographics} = profileData;
@@ -184,7 +196,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		);
 		const profileResponse = await axios.get(
 			GET_PROFILE + user.uid
-		);
+		).catch(function (error) {
+			notification.error({
+				message: "Sorry! There was an error retrieving your profile.",                        
+				description: 'Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov',
+				duration: 20,
+				style: {
+					height: "25vh",
+					display: 'flex',
+					alignItems: 'center'
+				}
+			});
+			history.goBack();
+		});
 
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		const {basicInfo, demographics} = profileData;
