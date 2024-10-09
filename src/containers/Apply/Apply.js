@@ -122,8 +122,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				style: {
 					height: "25vh",
 					display: 'flex',
-					alignItems: 'center',
-					border: 'red',
+					alignItems: 'center'
 				}
 			});
 			history.goBack();
@@ -213,7 +212,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				style: {
 					height: "25vh",
 					display: 'flex',
-					alignItems: 'center',
+					alignItems: 'center'
 				}
 			});
 			history.goBack();
