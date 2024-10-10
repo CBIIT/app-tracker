@@ -113,8 +113,12 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		).catch(function () {
 			notification.error({
 				message: "Sorry! There was an error retrieving your profile.",                        
-				description: 'Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov',
-				duration: 20,
+				description: <>
+				<p>
+				Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
+				</p>
+			</>,
+			duration: 30,
 				style: {
 					height: "25vh",
 					display: 'flex',
@@ -199,8 +203,12 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		).catch(function () {
 			notification.error({
 				message: "Sorry! There was an error retrieving your profile.",                        
-				description: 'Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov',
-				duration: 20,
+				description: <>
+					<p>
+					Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
+					</p>
+				</>,
+				duration: 30,
 				style: {
 					height: "25vh",
 					display: 'flex',
