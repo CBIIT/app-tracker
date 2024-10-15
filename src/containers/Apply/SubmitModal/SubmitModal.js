@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Modal, message } from 'antd';
+import { Modal, message, Progress } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
@@ -26,6 +26,7 @@ const submitModal = ({
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
 	const [submitted, setSubmitted] = useState(false);
+	const [percent, setPercent] = useState(false);
 
 	const history = useHistory();
 
@@ -37,9 +38,9 @@ const submitModal = ({
 			const dataToSend = transformJsonToBackend(data);
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
-
+				setSubmitted(true);
 				await axios.put(APPLICATION_SUBMISSION, dataToSend);
-
+				setPercent(50)
 				const documentsToDelete = dataToSend.vacancy_documents.map(
 					(document) => {
 						if (document?.uploadedDocument?.markedToDelete) {
@@ -74,8 +75,9 @@ const submitModal = ({
 				setAppSysId(submittedAppSysId);
 			} else {
 				if (draftId) dataToSend['draft_id'] = draftId;
-
+				setSubmitted(true);
 				const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
+				setPercent(50);
 
 				const requests = [];
 				const documents = response.data.result.vacancy_documents;
@@ -110,13 +112,13 @@ const submitModal = ({
 
 				await Promise.all(requests);
 			}
-			setSubmitted(true);
 		} catch (error) {
 			message.error(
 				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
 			);
 		} finally {
 			setConfirmLoading(false);
+			setPercent(100);
 			checkAuth(setConfirmLoading, setAuth);
 		}
 	};
@@ -129,7 +131,6 @@ const submitModal = ({
 		<Modal
 			visible={visible}
 			onOk={handleOk}
-			confirmLoading={confirmLoading}
 			onCancel={onCancel}
 			closable={false}
 			okText='Ok'
@@ -159,13 +160,25 @@ const submitModal = ({
 			className='ModalConfirmed'
 			okText='Done'
 		>
-			<div className='Confirmed'>
-				<CheckCircleFilled className='ConfirmedIcon' />
-				<h2>Application Submitted</h2>
-				<p>
-					View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
-				</p>
-			</div>
+			{percent < 100 ? (
+				<div className='Confirmed'>
+					<CheckCircleFilled className='ConfirmedIcon' />
+					<h2>Application is being submitted</h2>
+					<p>
+						Please do not close or refresh the browser window while the system
+						is uploading your application.
+					</p>
+					<Progress type='circle' percent={percent} />
+				</div>
+			) : (
+				<div className='Confirmed'>
+					<h2>Application Submitted</h2>
+					<p>
+						View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
+					</p>
+					<Progress type='circle' percent={percent} />
+				</div>
+			)}
 		</Modal>
 	);
 };
