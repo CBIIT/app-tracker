@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { checkAuth } from '../checkAuth';
+import { checkAuth } from './checkAuth';
 
 // Mocking axios module
 jest.mock('axios');
