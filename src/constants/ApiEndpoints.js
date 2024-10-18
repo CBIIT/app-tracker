@@ -111,3 +111,7 @@ export const SAVE_PROFILE = '/api/x_g_nci_app_tracke/user/save_user_profile';
 export const CHECK_HAS_PROFILE = '/api/x_g_nci_app_tracke/user/check_profile';
 
 export const GET_VACANCY_OPTIONS = '/api/x_g_nci_app_tracke/vacancy/get_vacancy_options';
+
+export const CREATE_APP_DOCS = '/api/x_g_nci_app_tracke/application/createApplicationDocument';
+
+export const ATTACHMENT_CHECK = '/api/x_g_nci_app_tracke/application/attachment_check/';

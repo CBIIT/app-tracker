@@ -343,6 +343,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					message.error('Please fill out all required fields.');
 				}
 			}
+			// IF currentStep.key === applicantDocuments
+			// save draft and upload documents
 		} else {
 			setSubmitModalVisible(true);
 		}
@@ -412,7 +414,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 				if (draftId) data['sys_id'] = draftId;
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-
+				// upload attachments
 				message.info({
 					successKey,
 					content: [
