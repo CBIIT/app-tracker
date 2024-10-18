@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import Header from './Header';
 import Logo from './Logo/Logo';
 import Login from './Login/Login';
@@ -15,7 +15,7 @@ jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
         },
     };
 }));
-
+// Functionality of Imported Components will be tested in their respective test files
 describe('Header Component', () => {
     it('should render without crashing', () => {
 
@@ -24,7 +24,7 @@ describe('Header Component', () => {
     });
 
     it('should render the Logo component', () => {
-        const { getByTestId } = render(<Header />);
+        const { getByTestId } = render(<Logo />);
         expect(getByTestId('logo')).toBeInTheDocument();
     });
 
