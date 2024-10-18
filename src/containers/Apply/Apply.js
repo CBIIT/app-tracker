@@ -459,6 +459,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 
 		if (blankFields.length > 0) {
+
 			message.error({
 				errorKey,
 				content:
@@ -470,8 +471,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			await requiredFieldNames.map((field) => {
 				currentFormInstance.validateFields([field]);
 			});
+
 		} else {
+
 			try {
+
 				let data = {
 					jsonobj: JSON.stringify(updatedFormData),
 				};
@@ -542,9 +546,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					duration: 3,
 				});
 			} catch (error) {
+
 				message.error('Sorry!  There was an error saving.');
+
 			} finally {
+
 				checkAuth(setIsLoading, setAuth);
+
 			}
 		}
 	};

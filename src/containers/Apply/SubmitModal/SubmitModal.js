@@ -10,6 +10,7 @@ import {
 	APPLICATION_SUBMISSION,
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
+	ATTACHMENT_CHECK,
 } from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
@@ -32,9 +33,12 @@ const submitModal = ({
 	const { setAuth } = useAuth();
 
 	const handleOk = async () => {
+
 		setConfirmLoading(true);
+
 		try {
 			const dataToSend = transformJsonToBackend(data);
+
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
 
@@ -73,46 +77,62 @@ const submitModal = ({
 				// verify mandatory documents have been uploaded
 				
 				await Promise.all([...documentsToDelete, ...documentsToUpload]);
+
 				setAppSysId(submittedAppSysId);
+
 			} else {
-				if (draftId) dataToSend['draft_id'] = draftId;
+				if (draftId) {
+					dataToSend['draft_id'] = draftId;
+				}
 
 				const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
-
 				const requests = [];
-				const documents = response.data.result.vacancy_documents;
-				setAppSysId(response.data.result.application_sys_id);
+				// const documents = response.data.result.vacancy_documents;
+				
+				// setAppSysId(response.data.result.application_sys_id);
 
-				const filesHashMap = new Map();
-				dataToSend.vacancy_documents.forEach((document) =>
-					document.file.fileList.forEach((file) =>
-						filesHashMap.set(file.uid, file.originFileObj)
-					)
-				);
 
-				documents.forEach((document) => {
-					if (document.uid) {
-						const file = filesHashMap.get(document.uid);
+				// const filesHashMap = new Map();
+				// dataToSend.vacancy_documents.forEach((document) =>
+				// 	document.file.fileList.forEach((file) =>
+				// 		filesHashMap.set(file.uid, file.originFileObj)
+				// 	)
+				// );
 
-						const options = {
-							params: {
-								file_name: document.file_name,
-								table_name: document.table_name,
-								table_sys_id: document.table_sys_id,
-							},
-							headers: {
-								'Content-Type': file.type,
-							},
-						};
-						requests.push(
-							axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-						);
-					}
-				});
+				// documents.forEach((document) => {
+				// 	if (document.uid) {
+				// 		const file = filesHashMap.get(document.uid);
 
-				await Promise.all(requests);
+				// 		const options = {
+				// 			params: {
+				// 				file_name: document.file_name,
+				// 				table_name: document.table_name,
+				// 				table_sys_id: document.table_sys_id,
+				// 			},
+				// 			headers: {
+				// 				'Content-Type': file.type,
+				// 			},
+				// 		};
+				// 		requests.push(
+				// 			axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+				// 		);
+				// 	}
+				// });
+
+				const appDocResponse = await axios.get(ATTACHMENT_CHECK + draftId);
+
+				if (appDocResponse.data.messages.exist == true) {
+					setAppSysId(response.data.result.application_sys_id);
+					await Promise.all(requests);
+				} else {
+					message.error('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
+					history.goBack();
+				}
+
 			}
+
 			setSubmitted(true);
+
 		} catch (error) {
 			message.error(
 				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
@@ -121,6 +141,7 @@ const submitModal = ({
 			setConfirmLoading(false);
 			checkAuth(setConfirmLoading, setAuth);
 		}
+
 	};
 
 	const handleClose = () => {
