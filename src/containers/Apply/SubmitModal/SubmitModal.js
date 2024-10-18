@@ -38,6 +38,7 @@ const submitModal = ({
 
 		try {
 			const dataToSend = transformJsonToBackend(data);
+			console.log(dataToSend)
 
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
@@ -81,9 +82,8 @@ const submitModal = ({
 				setAppSysId(submittedAppSysId);
 
 			} else {
-				if (draftId) {
-					dataToSend['draft_id'] = draftId;
-				}
+				if (draftId) dataToSend['draft_id'] = draftId;
+				console.log(draftId)
 
 				const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 				const requests = [];
@@ -120,6 +120,7 @@ const submitModal = ({
 				// });
 
 				const appDocResponse = await axios.get(ATTACHMENT_CHECK + draftId);
+				console.log("appDocResponse" + (JSON.stringify(appDocResponse)))
 
 				if (appDocResponse.data.messages.exist == true) {
 					setAppSysId(response.data.result.application_sys_id);
@@ -134,6 +135,7 @@ const submitModal = ({
 			setSubmitted(true);
 
 		} catch (error) {
+			console.log(error)
 			message.error(
 				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
 			);
