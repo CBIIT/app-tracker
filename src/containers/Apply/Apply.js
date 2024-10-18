@@ -404,8 +404,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				}
 			}
 			// IF currentStep.key === applicantDocuments
-			if (currentStep.key === 'applicantDocuments') {
-
+			if (steps[currentStep].key === 'applicantDocuments') {
+				save()
 			}
 			// save draft and upload documents
 		} else {
@@ -475,6 +475,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				let data = {
 					jsonobj: JSON.stringify(updatedFormData),
 				};
+				
+				console.log("Data " + JSON.stringify(data));
 
 				if (draftId) data['sys_id'] = draftId;
 
@@ -484,8 +486,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					setDraftId(saveDraftResponse.data.result.draft_id);
 
 				// IF currentStep === applicantDocuments
-				if (currentStep === 'applicantDocuments') {
+				if (steps[currentStep].key === 'applicantDocuments') {
+
 					const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
+					console.log("saveDraftDocs " + JSON.stringify(saveDraftDocs));
 
 					// upload attachments
 					const requests = [];
