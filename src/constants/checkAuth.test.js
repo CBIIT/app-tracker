@@ -5,7 +5,7 @@ import { checkAuth } from './checkAuth';
 jest.mock('axios');
 
 describe('checkAuth', () => {
-  it('sets loading state and updates auth state correctly', async () => {
+  it('sets loading state and updates auth state correctly for applicant', async () => {
     // Mocking axios response
     const mockData = {
       result: {

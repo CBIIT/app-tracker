@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { message, Avatar, Card, Typography } from 'antd';
 const { Title } = Typography;
-
+import { getProfileInfo } from './getProfileInfo';
 import ProfileContext, { initialData } from './Util/FormContext';
 import Loading from '../../components/Loading/Loading';
 import { CHECK_HAS_PROFILE, GET_PROFILE } from '../../constants/ApiEndpoints';
@@ -48,31 +48,31 @@ const ApplicantProfile = () => {
 
 	useEffect(() => {
 		(async () => {
-			await getProfileInfo();
+			await getProfileInfo(sysId, setIsLoading, setProfile, setHasProfile);
 		})();
 	}, []);
 
-	const getProfileInfo = async () => {
-		try {
-			setIsLoading(true)
-			const response = await axios.get(CHECK_HAS_PROFILE);
+	// const getProfileInfo = async () => {
+	// 	try {
+	// 		setIsLoading(true)
+	// 		const response = await axios.get(CHECK_HAS_PROFILE);
 			
-			if (response.data.result.exists == true) {
-				const profileResponse = await axios.get(GET_PROFILE + sysId);
-				setProfile(convertDataFromBackend(profileResponse.data.result.response));
-				setHasProfile(true);
-			} else {
-				setHasProfile(false);
-			}
-			setIsLoading(false);
+	// 		if (response.data.result.exists == true) {
+	// 			const profileResponse = await axios.get(GET_PROFILE + sysId);
+	// 			setProfile(convertDataFromBackend(profileResponse.data.result.response));
+	// 			setHasProfile(true);
+	// 		} else {
+	// 			setHasProfile(false);
+	// 		}
+	// 		setIsLoading(false);
 			
-		} catch (e) {
-			console.log(e);
-			message.error(
-				'Sorry! There was an error loading your profile. Try refreshing the browser.'
-			);
-		}
-	};
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 		message.error(
+	// 			'Sorry! There was an error loading your profile. Try refreshing the browser.'
+	// 		);
+	// 	}
+	// };
 
 	const getFirstInitial = (first) => {
 		const firstName = first.split('');
