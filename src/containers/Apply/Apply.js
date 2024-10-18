@@ -160,8 +160,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		setVacancyDocuments(vacancyDocuments.push(response.data.result.vacancy_documents));
-		//vacancyDocuments.push(response.data.result.vacancy_documents)
+		//setVacancyDocuments([...response.data.result.vacancy_documents]);
+		vacancyDocuments.push(response.data.result.vacancy_documents)
 		if (!editSubmitted) setDraftId(appSysId);
 
 		//("vacancyDocuments: " + vacancyDocuments)
@@ -283,6 +283,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		vacancyDocuments.push(response.data.result.vacancy_documents);
 
 		const references = [];
 
@@ -431,7 +432,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				};
 				
 				//console.log("new data" + newData);
-				console.log("Data " + JSON.stringify(newData));
+				//console.log("Data " + JSON.stringify(data));
 
 				if (draftId) data['sys_id'] = draftId;
 
@@ -451,7 +452,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 					// upload attachments
 					const requests = [];
-					const documents = saveDraftDocs.data.result.response;
+					const documents = saveDraftDocs.data.result.response.vacancy_documents;
+					console.log(saveDraftDocs.data.result.response.vacancy_documents)
 
 					const filesHashMap = new Map();
 					updatedFormData.vacancy_documents.forEach((document) =>
@@ -480,7 +482,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 						}
 					});
 
-					await Promise.all(requests);
+					await Promise.all(requests)
 				}
 
 				message.info({
@@ -500,7 +502,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					duration: 3,
 				});
 			} catch (error) {
-
+				console.log(error);
 				message.error('Sorry!  There was an error saving.');
 
 			} finally {
