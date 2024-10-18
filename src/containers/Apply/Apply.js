@@ -343,7 +343,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					message.error('Please fill out all required fields.');
 				}
 			}
-			// IF currentStep.key === applicantDocuments
+			// IF steps[currentStep].key === applicantDocuments
 			// save draft and upload documents
 		} else {
 			setSubmitModalVisible(true);
@@ -395,6 +395,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 
 		if (blankFields.length > 0) {
+
 			message.error({
 				errorKey,
 				content:
@@ -406,15 +407,27 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			await requiredFieldNames.map((field) => {
 				currentFormInstance.validateFields([field]);
 			});
+
 		} else {
+
 			try {
+
 				let data = {
 					jsonobj: JSON.stringify(updatedFormData),
 				};
 
-				if (draftId) data['sys_id'] = draftId;
+				if (draftId) {
+					data['sys_id'] = draftId;
+				};
+
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+
+				if (!draftId && saveDraftResponse.data.result.draft_id) {
+					setDraftId(saveDraftResponse.data.result.draft_id);
+				};
+
 				// upload attachments
+
 				message.info({
 					successKey,
 					content: [
@@ -432,12 +445,14 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					duration: 3,
 				});
 
-				if (!draftId && saveDraftResponse.data.result.draft_id)
-					setDraftId(saveDraftResponse.data.result.draft_id);
 			} catch (error) {
+
 				message.error('Sorry!  There was an error saving.');
+
 			} finally {
+
 				checkAuth(setIsLoading, setAuth);
+
 			}
 		}
 	};
