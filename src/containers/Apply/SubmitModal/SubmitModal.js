@@ -138,6 +138,7 @@ const submitModal = ({
 				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
 			);
 		} finally {
+			setSubmitted(true);
 			setConfirmLoading(false);
 			checkAuth(setConfirmLoading, setAuth);
 		}

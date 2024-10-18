@@ -455,8 +455,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					const documents = saveDraftDocs.data.result.response.vacancy_documents;
 					console.log(saveDraftDocs.data.result.response.vacancy_documents)
 
+					console.log("updated Form:" + updatedFormData.appli)
 					const filesHashMap = new Map();
-					updatedFormData.vacancy_documents.forEach((document) =>
+					updatedFormData.applicantDocuments.forEach((document) =>
 						document.file.fileList.forEach((file) =>
 							filesHashMap.set(file.uid, file.originFileObj)
 						)
@@ -514,6 +515,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	};
 
 	const next = async () => {
+		if (steps[currentStep].key === 'applicantDocuments') {
+			if (steps[currentStep].key === 'applicantDocuments') {
+				save()
+			}
+		}
 		if (currentStep < steps.length - 1) {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
@@ -538,9 +544,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				}
 			}
 			// IF currentStep.key === applicantDocuments
-			if (steps[currentStep].key === 'applicantDocuments') {
-				save()
-			}
 			// save draft and upload documents
 		} else {
 			setSubmitModalVisible(true);
