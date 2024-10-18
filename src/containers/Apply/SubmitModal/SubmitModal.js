@@ -69,6 +69,7 @@ const submitModal = ({
 						}
 					}
 				);
+				
 				// verify mandatory documents have been uploaded
 				
 				await Promise.all([...documentsToDelete, ...documentsToUpload]);
