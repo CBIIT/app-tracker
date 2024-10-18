@@ -80,6 +80,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
+	const [vacancyDocuments, setVacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
@@ -123,6 +124,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
 		);
+		//("🚀 ~ loadExistingApplication ~ VACANCY_DETAILS_FOR_APPLICANTS:", response)
 		const profileResponse = await axios
 			.get(GET_PROFILE + user.uid)
 			.catch(function () {
@@ -158,7 +160,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		setVacancyDocuments(vacancyDocuments.push(response.data.result.vacancy_documents));
+		//vacancyDocuments.push(response.data.result.vacancy_documents)
 		if (!editSubmitted) setDraftId(appSysId);
+
+		//("vacancyDocuments: " + vacancyDocuments)
 
 		let applicantDocuments = {};
 
@@ -379,6 +385,132 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		return updatedForm;
 	};
 
+	const save = async () => {
+		const fieldsValues = currentFormInstance.getFieldsValue();
+		const updatedFormData = await saveCurrentForm(fieldsValues);
+		//console.log("vacancyDocuments: " + vacancyDocuments)
+
+		const successKey = 'success';
+		const errorKey = 'error';
+
+		const requiredFields = [
+			updatedFormData.basicInfo.firstName,
+			updatedFormData.basicInfo.lastName,
+			updatedFormData.basicInfo.email,
+		];
+
+		const requiredFieldNames = ['firstName', 'lastName', 'email'];
+
+		let blankFields = [];
+		requiredFields.map((field) => {
+			if (field == undefined || field == '') {
+				blankFields.push(field);
+			}
+		});
+
+		if (blankFields.length > 0) {
+
+			message.error({
+				errorKey,
+				content:
+					'First Name, Last Name, and Email are required to save. Please fill out required fields.',
+				className: 'save-error',
+				duration: 3,
+			});
+
+			await requiredFieldNames.map((field) => {
+				currentFormInstance.validateFields([field]);
+			});
+
+		} else {
+
+			try {
+				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
+				let data = {
+					jsonobj: JSON.stringify(newData),
+				};
+				
+				//console.log("new data" + newData);
+				console.log("Data " + JSON.stringify(newData));
+
+				if (draftId) data['sys_id'] = draftId;
+
+				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+				//console.log("🚀 ~ save ~ saveDraftResponse:", saveDraftResponse)
+				
+				if (!draftId && saveDraftResponse.data.result.draft_id)
+					setDraftId(saveDraftResponse.data.result.draft_id);
+
+				//console.log("draftId" + draftId);
+
+				// IF currentStep === applicantDocuments
+				if (steps[currentStep].key === 'applicantDocuments') {
+
+					const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
+					console.log("saveDraftDocs " + JSON.stringify(saveDraftDocs));
+
+					// upload attachments
+					const requests = [];
+					const documents = saveDraftDocs.data.result.response;
+
+					const filesHashMap = new Map();
+					updatedFormData.vacancy_documents.forEach((document) =>
+						document.file.fileList.forEach((file) =>
+							filesHashMap.set(file.uid, file.originFileObj)
+						)
+					);
+
+					documents.forEach((document) => {
+						if (document.uid) {
+							const file = filesHashMap.get(document.uid);
+
+							const options = {
+								params: {
+									file_name: document.file_name,
+									table_name: document.table_name,
+									table_sys_id: document.table_sys_id,
+								},
+								headers: {
+									'Content-Type': file.type,
+								},
+							};
+							requests.push(
+								axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+							);
+						}
+					});
+
+					await Promise.all(requests);
+				}
+
+				message.info({
+					successKey,
+					content: [
+						'Application successfully saved ',
+						saveLink,
+						<Button
+							key='saveButton'
+							className='save-X-button'
+							onClick={() => message.destroy()}
+						>
+							x
+						</Button>,
+					],
+					className: 'save-message',
+					duration: 3,
+				});
+			} catch (error) {
+
+				message.error('Sorry!  There was an error saving.');
+
+			} finally {
+
+				checkAuth(setIsLoading, setAuth);
+
+			}
+		}
+	};
+
 	const next = async () => {
 		if (currentStep < steps.length - 1) {
 			try {
@@ -435,127 +567,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			Back to Applications Home?
 		</Button>
 	);
-
-	const save = async () => {
-		const fieldsValues = currentFormInstance.getFieldsValue();
-		const updatedFormData = await saveCurrentForm(fieldsValues);
-
-		const successKey = 'success';
-		const errorKey = 'error';
-
-		const requiredFields = [
-			updatedFormData.basicInfo.firstName,
-			updatedFormData.basicInfo.lastName,
-			updatedFormData.basicInfo.email,
-		];
-
-		const requiredFieldNames = ['firstName', 'lastName', 'email'];
-
-		let blankFields = [];
-		requiredFields.map((field) => {
-			if (field == undefined || field == '') {
-				blankFields.push(field);
-			}
-		});
-
-		if (blankFields.length > 0) {
-
-			message.error({
-				errorKey,
-				content:
-					'First Name, Last Name, and Email are required to save. Please fill out required fields.',
-				className: 'save-error',
-				duration: 3,
-			});
-
-			await requiredFieldNames.map((field) => {
-				currentFormInstance.validateFields([field]);
-			});
-
-		} else {
-
-			try {
-
-				let data = {
-					jsonobj: JSON.stringify(updatedFormData),
-				};
-				
-				console.log("Data " + JSON.stringify(data));
-
-				if (draftId) data['sys_id'] = draftId;
-
-				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-
-				if (!draftId && saveDraftResponse.data.result.draft_id)
-					setDraftId(saveDraftResponse.data.result.draft_id);
-
-				// IF currentStep === applicantDocuments
-				if (steps[currentStep].key === 'applicantDocuments') {
-
-					const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
-					console.log("saveDraftDocs " + JSON.stringify(saveDraftDocs));
-
-					// upload attachments
-					const requests = [];
-					const documents = saveDraftDocs.data.result.vacancy_documents;
-
-					const filesHashMap = new Map();
-					dataToSend.vacancy_documents.forEach((document) =>
-						document.file.fileList.forEach((file) =>
-							filesHashMap.set(file.uid, file.originFileObj)
-						)
-					);
-
-					documents.forEach((document) => {
-						if (document.uid) {
-							const file = filesHashMap.get(document.uid);
-
-							const options = {
-								params: {
-									file_name: document.file_name,
-									table_name: document.table_name,
-									table_sys_id: document.table_sys_id,
-								},
-								headers: {
-									'Content-Type': file.type,
-								},
-							};
-							requests.push(
-								axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-							);
-						}
-					});
-
-					await Promise.all(requests);
-				}
-
-				message.info({
-					successKey,
-					content: [
-						'Application successfully saved ',
-						saveLink,
-						<Button
-							key='saveButton'
-							className='save-X-button'
-							onClick={() => message.destroy()}
-						>
-							x
-						</Button>,
-					],
-					className: 'save-message',
-					duration: 3,
-				});
-			} catch (error) {
-
-				message.error('Sorry!  There was an error saving.');
-
-			} finally {
-
-				checkAuth(setIsLoading, setAuth);
-
-			}
-		}
-	};
 
 	const handleSubmitModalCancel = () => {
 		setSubmitModalVisible(false);
