@@ -15,12 +15,12 @@ const servicenowConfig = {
    * it is being used for sending REST calls in DEVELOPMENT mode only
    * no need to provide credentials for PRODUCTION
    */
-  REACT_APP_USER: 'cristina.yang@test.com',
+  REACT_APP_USER: '',
   /**
   * 
   * User password, for DEVELOPMENT mode only
   */
-  REACT_APP_PASSWORD: 'RxkJIO9,v%+',
+  REACT_APP_PASSWORD: '',
   /**
    * 
    * ServiceNow path to GET resource which serves javascript files
