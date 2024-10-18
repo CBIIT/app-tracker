@@ -162,7 +162,6 @@ const submitModal = ({
 		>
 			{percent < 100 ? (
 				<div className='Confirmed'>
-					<CheckCircleFilled className='ConfirmedIcon' />
 					<h2>Application is being submitted</h2>
 					<p>
 						Please do not close or refresh the browser window while the system
