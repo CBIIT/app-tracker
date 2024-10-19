@@ -20,10 +20,10 @@ import HeaderWithLink from '../../components/UI/HeaderWithLink/HeaderWithLink';
 import {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	SAVE_APP_DRAFT,
+	APPLICATION_SUBMISSION,
 	GET_PROFILE,
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
-	CREATE_APP_DOC,
 	CREATE_APP_DOCS,
 } from '../../constants/ApiEndpoints';
 
@@ -33,6 +33,7 @@ import ApplicantReferences from './Forms/References/ApplicantReferences.js';
 import Review from './Forms/Review/Review';
 import SubmitModal from './SubmitModal/SubmitModal';
 import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
+import { transformJsonToBackend } from './Util/TransformJsonToBackend.js';
 
 import './Apply.css';
 import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
@@ -78,6 +79,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [vacancyTitle, setVacancyTitle] = useState();
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isUploading, setIsUploading] = useState(false);
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [vacancyDocuments, setVacancyDocuments] = useState([]);
@@ -426,90 +428,103 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		} else {
 
 			try {
-				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
-				let data = {
-					jsonobj: JSON.stringify(newData),
-				};
 				
+				setIsUploading(true);
 				//console.log("new data" + newData);
 				//console.log("Data " + JSON.stringify(data));
+				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
 
-				if (draftId) {
-					data['sys_id'] = draftId;
-				};
+				if (!editSubmitted) {
+					
+					let data = {
+						jsonobj: JSON.stringify(newData),
+					};
+					
 
-				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-				//console.log("🚀 ~ save ~ saveDraftResponse:", saveDraftResponse)
-				
-				if (!draftId && saveDraftResponse.data.result.draft_id) {
-					setDraftId(saveDraftResponse.data.result.draft_id);
-				};
-				//console.log("draftId" + draftId);
+					if (draftId) {
+						data['sys_id'] = draftId;
+					}
 
-				// IF currentStep === applicantDocuments
-				if (steps[currentStep].key === 'applicantDocuments') {
+					const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+					//console.log("🚀 ~ save ~ saveDraftResponse:", saveDraftResponse)
 
-					const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-					console.log("saveDraftDocs " + JSON.stringify(saveDraftDocs));
+					if (!draftId && saveDraftResponse.data.result.draft_id) {
+						setDraftId(saveDraftResponse.data.result.draft_id);
+					}
+					//console.log("draftId" + draftId);
 
-					// upload attachments
-					const requests = [];
-					const documents = saveDraftDocs.data.result.response.vacancy_documents;
-					console.log(saveDraftDocs.data.result.response.vacancy_documents)
+					// IF currentStep is applicantDocuments
+					if (steps[currentStep].key === 'applicantDocuments') {
+						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
+						console.log('saveDraftDocs ' + JSON.stringify(saveDraftDocs));
 
-					console.log("updated Form:" + updatedFormData.appli)
-					const filesHashMap = new Map();
-					updatedFormData.applicantDocuments.forEach((document) =>
-						document.file.fileList.forEach((file) =>
-							filesHashMap.set(file.uid, file.originFileObj)
-						)
-					);
+						// upload attachments
+						const requests = [];
+						const documents =
+							saveDraftDocs.data.result.response.vacancy_documents;
+						console.log(saveDraftDocs.data.result.response.vacancy_documents);
 
-					documents.forEach((document) => {
-						if (document.uid) {
-							const file = filesHashMap.get(document.uid);
+						const filesHashMap = new Map();
+						updatedFormData.applicantDocuments.forEach((document) =>
+							document.file.fileList.forEach((file) =>
+								filesHashMap.set(file.uid, file.originFileObj)
+							)
+						);
 
-							const options = {
-								params: {
-									file_name: document.file_name,
-									table_name: document.table_name,
-									table_sys_id: document.table_sys_id,
-								},
-								headers: {
-									'Content-Type': file.type,
-								},
-							};
-							requests.push(
-								axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-							);
-						}
-					});
+						documents.forEach((document) => {
+							if (document.uid) {
+								const file = filesHashMap.get(document.uid);
 
-					await Promise.all(requests)
+								const options = {
+									params: {
+										file_name: document.file_name,
+										table_name: document.table_name,
+										table_sys_id: document.table_sys_id,
+									},
+									headers: {
+										'Content-Type': file.type,
+									},
+								};
+								requests.push(
+									axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+								);
+							}
+						});
+
+						await Promise.all(requests);
+
+						message.info({
+							successKey,
+							content: [
+								'Application successfully saved ',
+								saveLink,
+								<Button
+									key='saveButton'
+									className='save-X-button'
+									onClick={() => message.destroy()}
+								>
+									x
+								</Button>,
+							],
+							className: 'save-message',
+							duration: 3,
+						});
+
+						
+					}
+				} else {
+					// update attachments for edited applications
+					const dataToSend = transformJsonToBackend(newData);
+					console.log("dataToSend: " + JSON.stringify(dataToSend));
+
 				}
 
-				message.info({
-					successKey,
-					content: [
-						'Application successfully saved ',
-						saveLink,
-						<Button
-							key='saveButton'
-							className='save-X-button'
-							onClick={() => message.destroy()}
-						>
-							x
-						</Button>,
-					],
-					className: 'save-message',
-					duration: 3,
-				});
 			} catch (error) {
 				console.log(error);
 				message.error('Sorry!  There was an error saving.');
 
 			} finally {
-
+				setIsUploading(false);
 				checkAuth(setIsLoading, setAuth);
 
 			}
@@ -526,7 +541,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
-				setCurrentStep(currentStep + 1);
+				if (!isUploading) {
+					setCurrentStep(currentStep + 1);
+				}
 				window.scrollTo(0, 0);
 			} catch (error) {
 				if (steps[currentStep].key === 'additionalQuestions') {
@@ -551,7 +568,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			setSubmitModalVisible(true);
 		}
 	};
-	// TODO: create function to check for mandatory docs; if none are mandatory show next button and save link; otherwise disable next button and save link
 
 	const prev = async () => {
 		try {
@@ -675,6 +691,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 										type='primary'
 										onClick={next}
 										className='wider-button'
+										loading={isUploading}
 									>
 										{currentStep == steps.length - 1
 											? 'Submit Application'

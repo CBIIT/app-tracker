@@ -38,7 +38,6 @@ const submitModal = ({
 
 		try {
 			const dataToSend = transformJsonToBackend(data);
-			console.log(dataToSend)
 
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
