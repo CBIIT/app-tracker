@@ -434,14 +434,16 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				//console.log("new data" + newData);
 				//console.log("Data " + JSON.stringify(data));
 
-				if (draftId) data['sys_id'] = draftId;
+				if (draftId) {
+					data['sys_id'] = draftId;
+				};
 
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 				//console.log("🚀 ~ save ~ saveDraftResponse:", saveDraftResponse)
 				
-				if (!draftId && saveDraftResponse.data.result.draft_id)
+				if (!draftId && saveDraftResponse.data.result.draft_id) {
 					setDraftId(saveDraftResponse.data.result.draft_id);
-
+				};
 				//console.log("draftId" + draftId);
 
 				// IF currentStep === applicantDocuments

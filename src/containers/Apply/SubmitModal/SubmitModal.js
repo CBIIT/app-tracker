@@ -85,49 +85,27 @@ const submitModal = ({
 				if (draftId) dataToSend['draft_id'] = draftId;
 				console.log(draftId)
 
-				const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 				const requests = [];
-				// const documents = response.data.result.vacancy_documents;
-				
-				// setAppSysId(response.data.result.application_sys_id);
-
-
-				// const filesHashMap = new Map();
-				// dataToSend.vacancy_documents.forEach((document) =>
-				// 	document.file.fileList.forEach((file) =>
-				// 		filesHashMap.set(file.uid, file.originFileObj)
-				// 	)
-				// );
-
-				// documents.forEach((document) => {
-				// 	if (document.uid) {
-				// 		const file = filesHashMap.get(document.uid);
-
-				// 		const options = {
-				// 			params: {
-				// 				file_name: document.file_name,
-				// 				table_name: document.table_name,
-				// 				table_sys_id: document.table_sys_id,
-				// 			},
-				// 			headers: {
-				// 				'Content-Type': file.type,
-				// 			},
-				// 		};
-				// 		requests.push(
-				// 			axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-				// 		);
-				// 	}
-				// });
 
 				const appDocResponse = await axios.get(ATTACHMENT_CHECK + draftId);
-				console.log("appDocResponse" + (JSON.stringify(appDocResponse)))
 
-				if (appDocResponse.data.messages.exist == true) {
+				const checkattachments = () => {
+					for (let i = 0; i < appDocResponse.data.result.messages.length; i++) {
+						if (appDocResponse.data.result.messages[i].exists == true) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				};
+
+				if (checkattachments() == true) {
+					const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
 				} else {
-					message.error('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
-					history.goBack();
+					//message.error('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
+					console.log('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
 				}
 
 			}
