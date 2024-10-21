@@ -41,42 +41,44 @@ const submitModal = ({
 
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
+				
+				// TODO: check mandatory documents
 
 				await axios.put(APPLICATION_SUBMISSION, dataToSend);
 
-				const documentsToDelete = dataToSend.vacancy_documents.map(
-					(document) => {
-						if (document?.uploadedDocument?.markedToDelete) {
-							return axios.delete(
-								SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-							);
-						}
-					}
-				);
+				// const documentsToDelete = dataToSend.vacancy_documents.map(
+				// 	(document) => {
+				// 		if (document?.uploadedDocument?.markedToDelete) {
+				// 			return axios.delete(
+				// 				SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
+				// 			);
+				// 		}
+				// 	}
+				// );
 
-				const documentsToUpload = dataToSend.vacancy_documents.map(
-					(document) => {
-						if (document.file.file) {
-							const file = document.file.file;
-							const options = {
-								params: {
-									file_name: document.file.file.name,
-									table_name: document.table_name,
-									table_sys_id: document.table_sys_id,
-								},
-								headers: {
-									'Content-Type': document.file.file.type,
-								},
-							};
+				// const documentsToUpload = dataToSend.vacancy_documents.map(
+				// 	(document) => {
+				// 		if (document.file.file) {
+				// 			const file = document.file.file;
+				// 			const options = {
+				// 				params: {
+				// 					file_name: document.file.file.name,
+				// 					table_name: document.table_name,
+				// 					table_sys_id: document.table_sys_id,
+				// 				},
+				// 				headers: {
+				// 					'Content-Type': document.file.file.type,
+				// 				},
+				// 			};
 
-							return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
-						}
-					}
-				);
+				// 			return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+				// 		}
+				// 	}
+				// );
 				
 				// verify mandatory documents have been uploaded
 				
-				await Promise.all([...documentsToDelete, ...documentsToUpload]);
+				//await Promise.all([...documentsToDelete, ...documentsToUpload]);
 
 				setAppSysId(submittedAppSysId);
 

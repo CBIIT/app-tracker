@@ -74,6 +74,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [formData, setFormData] = useState(
 		initialValues ? initialValues : defaultFormData
 	);
+	
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [vacancyTitle, setVacancyTitle] = useState();
@@ -435,11 +436,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
 
 				if (!editSubmitted) {
-					
 					let data = {
 						jsonobj: JSON.stringify(newData),
 					};
-					
 
 					if (draftId) {
 						data['sys_id'] = draftId;
@@ -492,32 +491,67 @@ const Apply = ({ initialValues, editSubmitted }) => {
 						});
 
 						await Promise.all(requests);
-
-						message.info({
-							successKey,
-							content: [
-								'Application successfully saved ',
-								saveLink,
-								<Button
-									key='saveButton'
-									className='save-X-button'
-									onClick={() => message.destroy()}
-								>
-									x
-								</Button>,
-							],
-							className: 'save-message',
-							duration: 3,
-						});
-
-						
 					}
 				} else {
 					// update attachments for edited applications
 					const dataToSend = transformJsonToBackend(newData);
-					console.log("dataToSend: " + JSON.stringify(dataToSend));
+					console.log('dataToSend: ' + JSON.stringify(dataToSend));
 
+					dataToSend['app_sys_id'] = appSysId;
+
+					await axios.put(APPLICATION_SUBMISSION, dataToSend);
+
+					const documentsToDelete = dataToSend.vacancy_documents.map(
+						(document) => {
+							if (document?.uploadedDocument?.markedToDelete) {
+								return axios.delete(
+									SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
+								);
+							}
+						}
+					);
+
+					const documentsToUpload = dataToSend.vacancy_documents.map(
+						(document) => {
+							if (document.file.file) {
+								const file = document.file.file;
+								const options = {
+									params: {
+										file_name: document.file.file.name,
+										table_name: document.table_name,
+										table_sys_id: document.table_sys_id,
+									},
+									headers: {
+										'Content-Type': document.file.file.type,
+									},
+								};
+
+								return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+							}
+						}
+					);
+
+					await Promise.all([...documentsToDelete, ...documentsToUpload]);
+
+					//setAppSysId(submittedAppSysId);
 				}
+
+				message.info({
+					successKey,
+					content: [
+						'Application successfully saved ',
+						saveLink,
+						<Button
+							key='saveButton'
+							className='save-X-button'
+							onClick={() => message.destroy()}
+						>
+							x
+						</Button>,
+					],
+					className: 'save-message',
+					duration: 3,
+				});
 
 			} catch (error) {
 				console.log(error);
