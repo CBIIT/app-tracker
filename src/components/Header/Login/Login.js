@@ -18,7 +18,7 @@ const login = () => {
 
 	const nihClicked = () => {
 		location.href =
-		iTrustUrl + iTrustGlideSsoId;
+			iTrustUrl + iTrustGlideSsoId;
 	}
 
 	const alreadyRegisteredClicked = () => {
@@ -51,8 +51,8 @@ const login = () => {
 						<Menu.Item
 							key='itrust'
 							icon={<img className='CustomIcon' src={iTrustIcon} />}
-							style={{ width: "170px"}}
-							
+							style={{ width: "170px" }}
+
 						>
 							NIH Login
 						</Menu.Item>
@@ -62,26 +62,26 @@ const login = () => {
 			<div>
 				<div className="login-container">
 					<div className="login-text-header2">
-						NON-NIH EMPLOYEES 
+						NON-NIH EMPLOYEES
 					</div>
 					<div className="login-text">
 						<div onClick={alreadyRegisteredClicked}>
 							<span className='MenuTextSpan'>Already registered ?</span>
-						
+
 							<Menu.Item
 								key='okta'
-								style={{ width: "100px"}}
+								style={{ width: "100px" }}
 							>
 								Click here
 							</Menu.Item>
 						</div>
-						<div style={{width : "300px", height : "1px"}}>&nbsp;</div>
-						<Divider/>
+						<div style={{ width: "300px", height: "1px" }}>&nbsp;</div>
+						<Divider />
 						<div onClick={notRegistered}>
 							<span className='MenuTextSpan'>Not registered ?</span>
 							<Menu.Item
 								key='register-okta'
-								style={{ width: "120px"}}
+								style={{ width: "120px" }}
 							>
 								Register here
 							</Menu.Item>
@@ -93,7 +93,7 @@ const login = () => {
 	);
 
 	const logoutMenu = (
-		<Menu className='LoginMenu'onClick={handleMenuClick}>
+		<Menu className='LoginMenu' onClick={handleMenuClick}>
 			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);

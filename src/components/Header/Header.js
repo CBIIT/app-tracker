@@ -9,8 +9,10 @@ import './Header.css';
 const header = () => (
 	<header className='Header'>
 		<div className='Content HeaderContent'>
-			<Logo />
-			<Login />
+			{/* <Logo /> */}
+			{/* <Login />	 */}
+			<Logo data-testid="logo" />
+			<Login data-testid="login" />
 		</div>
 	</header>
 );
