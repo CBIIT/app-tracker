@@ -8,9 +8,8 @@ import './SubmitModal.css';
 import {
 	SUBMIT_APPLICATION,
 	APPLICATION_SUBMISSION,
-	SERVICE_NOW_FILE_ATTACHMENT,
-	SERVICE_NOW_ATTACHMENT,
 	ATTACHMENT_CHECK,
+	ATTACHMENT_CHECK_FOR_APPLICATIONS,
 } from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
@@ -41,10 +40,42 @@ const submitModal = ({
 
 			if (editSubmitted) {
 				dataToSend['app_sys_id'] = submittedAppSysId;
+
+				setAppSysId(submittedAppSysId);
 				
 				// TODO: check mandatory documents
+				const checkMandatoryDocuments = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId);
+				console.log('mandatory documents: ', checkMandatoryDocuments.data.result.messages);
 
-				await axios.put(APPLICATION_SUBMISSION, dataToSend);
+				const checkattachments = () => {
+					for (let i = 0; i < checkMandatoryDocuments.data.result.messages.length; i++) {
+						if (checkMandatoryDocuments.data.result.messages[i].exists == true) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				};
+
+				const requests = [];
+
+				if (checkMandatoryDocuments.data.result.messages.length > 0) {
+					if (checkattachments() == true) {
+						await axios.put(APPLICATION_SUBMISSION, dataToSend);
+						setAppSysId(submittedAppSysId);
+						await Promise.all(requests);
+					} else {
+						notification.error('Sorry! There was an error with submitting the attachments. Please re-upload the attachment(s) and try again.');
+						console.log('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
+						history.goBack();
+					}
+				} else {
+					await axios.put(APPLICATION_SUBMISSION, dataToSend);
+					setAppSysId(submittedAppSysId);
+					await Promise.all(requests);
+				};
+
+				// await axios.put(APPLICATION_SUBMISSION, dataToSend);
 
 				// const documentsToDelete = dataToSend.vacancy_documents.map(
 				// 	(document) => {
@@ -80,11 +111,12 @@ const submitModal = ({
 				
 				//await Promise.all([...documentsToDelete, ...documentsToUpload]);
 
-				setAppSysId(submittedAppSysId);
+				// setAppSysId(submittedAppSysId);
 
 			} else {
-				if (draftId) dataToSend['draft_id'] = draftId;
-				console.log(draftId)
+				if (draftId) {
+					dataToSend['draft_id'] = draftId;
+				};
 
 				const requests = [];
 
