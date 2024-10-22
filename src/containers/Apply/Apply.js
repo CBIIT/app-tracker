@@ -80,7 +80,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [vacancyTitle, setVacancyTitle] = useState();
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isUploading, setIsUploading] = useState(false);
+	const [isUploading, setIsUploading] = useState(null);
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [vacancyDocuments, setVacancyDocuments] = useState([]);
@@ -390,6 +390,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	};
 
 	const save = async () => {
+		setIsUploading(true);
+
 		const fieldsValues = currentFormInstance.getFieldsValue();
 		const updatedFormData = await saveCurrentForm(fieldsValues);
 		//console.log("vacancyDocuments: " + vacancyDocuments)
@@ -430,9 +432,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 			try {
 				
-				setIsUploading(true);
-				//console.log("new data" + newData);
-				//console.log("Data " + JSON.stringify(data));
 				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
 
 				if (!editSubmitted) {
@@ -455,13 +454,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-						console.log('saveDraftDocs ' + JSON.stringify(saveDraftDocs));
+						//console.log('saveDraftDocs ' + JSON.stringify(saveDraftDocs));
 
 						// upload attachments
 						const requests = [];
 						const documents =
 							saveDraftDocs.data.result.response.vacancy_documents;
-						console.log(saveDraftDocs.data.result.response.vacancy_documents);
+						//console.log(saveDraftDocs.data.result.response.vacancy_documents);
 
 						const filesHashMap = new Map();
 						updatedFormData.applicantDocuments.forEach((document) =>
@@ -560,7 +559,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			} finally {
 				setIsUploading(false);
 				checkAuth(setIsLoading, setAuth);
-
 			}
 		}
 	};
@@ -570,14 +568,12 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			if (steps[currentStep].key === 'applicantDocuments') {
 				save()
 			}
-		}
-		if (currentStep < steps.length - 1) {
+		} else if (currentStep < steps.length - 1) {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
-				if (!isUploading) {
-					setCurrentStep(currentStep + 1);
-				}
+				
+				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
 				if (steps[currentStep].key === 'additionalQuestions') {
@@ -596,12 +592,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					message.error('Please fill out all required fields.');
 				}
 			}
-			// IF currentStep.key === applicantDocuments
-			// save draft and upload documents
 		} else {
 			setSubmitModalVisible(true);
 		}
 	};
+
+	useEffect(() => {
+		if (isUploading === false) {
+			setCurrentStep(currentStep + 1);
+			window.scrollTo(0, 0);
+		}	
+	}, [isUploading]);
 
 	const prev = async () => {
 		try {
@@ -725,7 +726,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 										type='primary'
 										onClick={next}
 										className='wider-button'
-										loading={isUploading}
+										loading={isUploading === true}
 									>
 										{currentStep == steps.length - 1
 											? 'Submit Application'
