@@ -327,7 +327,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
 			strongContent: 'Please ensure each of your documents are unique files.',
 			dangerContent:
-				'Application documents will not be saved unless your application is submitted/finalized on the Review section.',
+				// 'Application documents will not be saved unless your application is submitted/finalized on the Review section.',
+				'Application documents will begin uploading once the Next button has been clicked on this page.',
 		});
 
 	if (formData.references?.length > 0)

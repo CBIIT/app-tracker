@@ -47,50 +47,49 @@ const submitModal = ({
 				const checkMandatoryDocuments = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId);
 				const mandatoryDocuments = checkMandatoryDocuments.data.result.messages;
 
-				const checkattachments = () => {
-					const filterByExists = mandatoryDocuments.filter((doc) => doc.exists == false);
+				const checkAttachments = () => {
+					// Filters out optional documents
+					const filterOutOptional = mandatoryDocuments.filter((doc) => doc.is_optional == 'false');
+
+					// Filters out the documents that return exists as false
+					const filterByFalse = filterOutOptional.filter((doc) => doc.exists == false);
 					
-					if (filterByExists.length > 0) {
+					// If the length of the filterByFalse is greater than 0, return false, else return true
+					if (filterByFalse.length > 0) {
 						return false;
 					} else {
 						return true;
 					}
 				};
 
-				if (checkMandatoryDocuments.data.result.messages.length > 0) {
-					if (checkattachments() == true) {
-						await axios.put(APPLICATION_SUBMISSION, dataToSend);
-						setAppSysId(submittedAppSysId);
-						await Promise.all(requests);
-					} else {
-						setSubmitted(false);
-						notification.error({
-							message:'Sorry! There was an error with submitting the attachments.',
-							description:(
-								<>
-									<p>
-										Please re-upload the attachment(s) and try again. If the issue
-										continues, contact the Help Desk by emailing{' '}
-										<a href='mailto:NCIAppSupport@mail.nih.gov'>
-											NCIAppSupport@mail.nih.gov
-										</a>
-									</p>
-								</>
-							),
-							duration: 30,
-							style: {
-								height: '25vh',
-								display: 'flex',
-								alignItems: 'center',
-							},
-						});
-						history.goBack();
-					}
-				} else {
+				if (checkAttachments() == true) {
 					await axios.put(APPLICATION_SUBMISSION, dataToSend);
 					setAppSysId(submittedAppSysId);
 					await Promise.all(requests);
-				};
+				} else {
+					setSubmitted(false);
+					notification.error({
+						message:'Sorry! There was an error with submitting the attachments.',
+						description:(
+							<>
+								<p>
+									Please re-upload the attachment(s) and try again. If the issue
+									continues, contact the Help Desk by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '25vh',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
+					history.goBack();
+				}
 
 			} else {
 				if (draftId) {
@@ -100,55 +99,53 @@ const submitModal = ({
 				const requests = [];
 
 				const appDocResponse = await axios.get(ATTACHMENT_CHECK + draftId);
+				console.log('appDocResponse : ', appDocResponse);
 				const documents = appDocResponse.data.result.messages;
+				console.log("🚀 ~ handleOk ~ documents:", documents);
 
 				const checkAttachments = () => {
-					const filterByExists = documents.filter((doc) => doc.exists == false);
-					console.log('filterByExists : ', filterByExists);
+					// Filters out optional documents
+					const filterOutOptional = documents.filter((doc) => doc.is_optional == 'false');
+
+					// Filters out the documents that return exists as false
+					const filterByFalse = filterOutOptional.filter((doc) => doc.exists == false);
 					
-					if (filterByExists.length > 0) {
+					// If the length of the filterByFalse is greater than 0, return false, else return true
+					if (filterByFalse.length > 0) {
 						return false;
 					} else {
 						return true;
 					}
 				};
 
-				if (appDocResponse.data.result.messages.length > 0) {
-					if (checkAttachments() == true) {
-						const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
-						setAppSysId(response.data.result.application_sys_id);
-						await Promise.all(requests);
-					} else {
-						setSubmitted(false);
-						notification.error({
-							message:'Sorry! There was an error with submitting the attachments.',
-							description:(
-								<>
-									<p>
-										Please re-upload the attachment(s) and try again. If the issue
-										continues, contact the Help Desk by emailing{' '}
-										<a href='mailto:NCIAppSupport@mail.nih.gov'>
-											NCIAppSupport@mail.nih.gov
-										</a>
-									</p>
-								</>
-							),
-							duration: 30,
-							style: {
-								height: '25vh',
-								display: 'flex',
-								alignItems: 'center',
-							},
-						});
-						history.goBack();
-					}
-
-				} else {
+				if (checkAttachments() == true) {
 					const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
-				};
-
+				} else {
+					setSubmitted(false);
+					notification.error({
+						message:'Sorry! There was an error with submitting the attachments.',
+						description:(
+							<>
+								<p>
+									Please re-upload the attachment(s) and try again. If the issue
+									continues, contact the Help Desk by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '25vh',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
+					history.goBack();
+				}
 			}
 
 			setSubmitted(true);
