@@ -431,8 +431,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			try {
 				
 				setIsUploading(true);
-				//console.log("new data" + newData);
-				//console.log("Data " + JSON.stringify(data));
+
 				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
 
 				if (!editSubmitted) {
@@ -445,17 +444,14 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					}
 
 					const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-					//console.log("🚀 ~ save ~ saveDraftResponse:", saveDraftResponse)
 
 					if (!draftId && saveDraftResponse.data.result.draft_id) {
 						setDraftId(saveDraftResponse.data.result.draft_id);
 					}
-					//console.log("draftId" + draftId);
 
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-						console.log('saveDraftDocs ' + JSON.stringify(saveDraftDocs));
 
 						// upload attachments
 						const requests = [];
