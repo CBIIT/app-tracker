@@ -100,14 +100,21 @@ const submitModal = ({
 					}
 				};
 
-				if (checkattachments() == true) {
+				if (appDocResponse.data.result.messages.length > 0) {
+					if (checkattachments() == true) {
+						const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
+						setAppSysId(response.data.result.application_sys_id);
+						await Promise.all(requests);
+					} else {
+						notification.error('Sorry! There was an error with submitting the attachments. Please re-upload the attachment(s) and try again.');
+						console.log('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
+						history.goBack();
+					}
+				} else {
 					const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
-				} else {
-					//message.error('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
-					console.log('Sorry! There was an error with submitting attachment. Please re-upload the attachment(s) and try again.');
-				}
+				};
 
 			}
 
