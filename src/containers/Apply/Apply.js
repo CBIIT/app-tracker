@@ -127,7 +127,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
 		);
-		//("🚀 ~ loadExistingApplication ~ VACANCY_DETAILS_FOR_APPLICANTS:", response)
+    
 		const profileResponse = await axios
 			.get(GET_PROFILE + user.uid)
 			.catch(function () {
@@ -163,11 +163,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		//setVacancyDocuments([...response.data.result.vacancy_documents]);
 		vacancyDocuments.push(response.data.result.vacancy_documents)
 		if (!editSubmitted) setDraftId(appSysId);
-
-		//("vacancyDocuments: " + vacancyDocuments)
 
 		let applicantDocuments = {};
 
@@ -394,7 +391,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		const fieldsValues = currentFormInstance.getFieldsValue();
 		const updatedFormData = await saveCurrentForm(fieldsValues);
-		//console.log("vacancyDocuments: " + vacancyDocuments)
 
 		const successKey = 'success';
 		const errorKey = 'error';
@@ -444,23 +440,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					}
 
 					const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-					//console.log("🚀 ~ save ~ saveDraftResponse:", saveDraftResponse)
 
 					if (!draftId && saveDraftResponse.data.result.draft_id) {
 						setDraftId(saveDraftResponse.data.result.draft_id);
 					}
-					//console.log("draftId" + draftId);
 
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-						//console.log('saveDraftDocs ' + JSON.stringify(saveDraftDocs));
 
 						// upload attachments
 						const requests = [];
 						const documents =
 							saveDraftDocs.data.result.response.vacancy_documents;
-						//console.log(saveDraftDocs.data.result.response.vacancy_documents);
 
 						const filesHashMap = new Map();
 						updatedFormData.applicantDocuments.forEach((document) =>
@@ -532,7 +524,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 					await Promise.all([...documentsToDelete, ...documentsToUpload]);
 
-					//setAppSysId(submittedAppSysId);
 				}
 
 				message.info({
