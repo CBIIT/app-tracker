@@ -175,7 +175,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 
 		if (
-			editSubmitted &&
+			//editSubmitted &&
 			initialValues.applicantDocuments &&
 			initialValues.applicantDocuments.length > 0
 		) {
