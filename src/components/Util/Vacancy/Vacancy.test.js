@@ -41,7 +41,7 @@ describe('extractAndTransformMandatoryStatements', () => {
         ]);
     });
 
-    it('should handle missing statements correctly', () => {
+    it('should set display to false if statement is empty, and display to true if populated', () => {
         const incompleteVacancyDetails = {
             basic_info: {
                 equal_opportunity_employment_statement: { value: 'EOE Statement' },
@@ -81,7 +81,7 @@ describe('extractAndTransformMandatoryStatements', () => {
         ]);
     });
 
-    it('should handle empty vacancy details correctly', () => {
+    it('should handle empty vacancy details correctly by setting display to false', () => {
         const emptyVacancyDetails = {
             basic_info: {
                 equal_opportunity_employment_statement: { value: '' },
