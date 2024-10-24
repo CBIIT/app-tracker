@@ -387,6 +387,46 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		return updatedForm;
 	};
 
+	const updateAttachments = async (transformedData) => {	
+		try {
+			const documentsToDelete = transformedData.vacancy_documents.map(
+				(document) => {
+					console.log("Line 394: ", document)
+					if (document?.uploadedDocument?.markedToDelete) {
+						return axios.delete(
+							SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
+						);
+					}
+				}
+			);
+
+			const documentsToUpload = transformedData.vacancy_documents.map(
+				(document) => {
+					console.log("Line 406: ", document)
+					if (document.file.file) {
+						const file = document.file.file;
+						const options = {
+							params: {
+								file_name: document.file.file.name,
+								table_name: document.table_name,
+								table_sys_id: document.table_sys_id,
+							},
+							headers: {
+								'Content-Type': document.file.file.type,
+							},
+						};
+
+						return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+					}
+				}
+			);
+
+			await Promise.all([...documentsToDelete, ...documentsToUpload]);
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	const save = async () => {
 		setIsUploading(true);
 
@@ -449,12 +489,14 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-
+						console.log("saveDraftDocs: ", saveDraftDocs)
+						console.log("transformed new data: ", transformJsonToBackend(newData))
+						const transformNewData = transformJsonToBackend(newData)
 						// upload attachments
 						const requests = [];
 						const documents =
 							saveDraftDocs.data.result.response.vacancy_documents;
-
+						console.log("documents: ", documents)
 						const filesHashMap = new Map();
 						updatedFormData.applicantDocuments.forEach((document) =>
 							document.file.fileList.forEach((file) =>
@@ -462,37 +504,50 @@ const Apply = ({ initialValues, editSubmitted }) => {
 							)
 						);
 
-						documents.forEach((document) => {
-							if (document.uid) {
-								const file = filesHashMap.get(document.uid);
-
-								const options = {
-									params: {
-										file_name: document.file_name,
-										table_name: document.table_name,
-										table_sys_id: document.table_sys_id,
-									},
-									headers: {
-										'Content-Type': file.type,
-									},
-								};
-								requests.push(
-									axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-								);
+						//await updateAttachments(transformNewData);
+						const documentsToDelete = transformNewData.vacancy_documents.map(
+							(document) => {
+								console.log("Line 509, edited app, document: ", document)
+								if (document?.uploadedDocument?.markedToDelete) {
+									return axios.delete(
+										SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
+									);
+								}
 							}
-						});
-
-						await Promise.all(requests);
+						);
+	
+						const documentsToUpload = transformNewData.vacancy_documents.map(
+							(document) => {
+								if (document.file.file) {
+									const file = document.file.file;
+									const options = {
+										params: {
+											file_name: document.file.file.name,
+											table_name: document.table_name,
+											table_sys_id: document.table_sys_id,
+										},
+										headers: {
+											'Content-Type': document.file.file.type,
+										},
+									};
+	
+									return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+								}
+							}
+						);
+	
+						await Promise.all([...documentsToDelete, ...documentsToUpload]);
 					}
 				} else {
 					// update attachments for edited applications
 					const dataToSend = transformJsonToBackend(newData);
-					console.log('dataToSend: ' + JSON.stringify(dataToSend));
+					console.log('dataToSend: ', dataToSend);
 
 					dataToSend['app_sys_id'] = appSysId;
 
 					await axios.put(APPLICATION_SUBMISSION, dataToSend);
 
+					//await updateAttachments(dataToSend);
 					const documentsToDelete = dataToSend.vacancy_documents.map(
 						(document) => {
 							if (document?.uploadedDocument?.markedToDelete) {

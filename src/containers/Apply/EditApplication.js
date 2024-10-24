@@ -13,9 +13,8 @@ const editApplication = () => {
 	const { draft, appSysId } = useParams();
 
 	const transformDraftJson = (response) => {
-		console.log(response);
 		const basicInfo = JSON.parse(response.jsonobj.value);
-		console.log(response.app_documents)
+		//console.log(response.app_documents)
 		basicInfo.applicantDocuments = response.app_documents.map((document) => {
 			const applicantDocument = {
 				documentName: document.doc_name,
@@ -46,7 +45,7 @@ const editApplication = () => {
 			? (response) => transformDraftJson(response)
 			: (response) => transformJsonFromBackend(response)
 	);
-	console.log(application)
+	//console.log(application)
 	return !isLoading ? (
 		!error ? (
 			<Apply

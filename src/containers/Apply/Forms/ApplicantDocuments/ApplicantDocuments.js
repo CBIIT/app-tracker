@@ -23,6 +23,8 @@ const ApplicantDocuments = (props) => {
 		setIsLoading(false);
 	}, []);
 
+	console.log(applicantDocuments)
+
 	const loadApplication = async () => {
 		try {
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);
@@ -96,7 +98,7 @@ const ApplicantDocuments = (props) => {
 			formInstance.setFieldsValue({
 				applicantDocuments: newApplicantDocuments,
 			});
-
+			console.log("AppDocs, Line 99, appDocs: ", newApplicantDocuments)
 			return newApplicantDocuments;
 		});
 	};
