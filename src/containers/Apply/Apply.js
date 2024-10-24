@@ -70,11 +70,12 @@ const updateFormData = (currentForm, newValues, step) => {
 	}
 };
 
-const Apply = ({ initialValues, editSubmitted }) => {
+const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	const [formData, setFormData] = useState(
 		initialValues ? initialValues : defaultFormData
 	);
-	
+	// console.log(editDraft)
+
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [vacancyTitle, setVacancyTitle] = useState();
@@ -127,7 +128,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
 		);
-    
+
 		const profileResponse = await axios
 			.get(GET_PROFILE + user.uid)
 			.catch(function () {
@@ -163,7 +164,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		vacancyDocuments.push(response.data.result.vacancy_documents)
+		vacancyDocuments.push(response.data.result.vacancy_documents);
 		if (!editSubmitted) setDraftId(appSysId);
 
 		let applicantDocuments = {};
@@ -387,11 +388,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		return updatedForm;
 	};
 
-	const updateAttachments = async (transformedData) => {	
+	const updateAttachments = async (transformedData) => {
 		try {
 			const documentsToDelete = transformedData.vacancy_documents.map(
 				(document) => {
-					console.log("Line 394: ", document)
+					// console.log('Line 394: ', document);
 					if (document?.uploadedDocument?.markedToDelete) {
 						return axios.delete(
 							SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
@@ -402,7 +403,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 			const documentsToUpload = transformedData.vacancy_documents.map(
 				(document) => {
-					console.log("Line 406: ", document)
+					// console.log('Line 406: ', document);
 					if (document.file.file) {
 						const file = document.file.file;
 						const options = {
@@ -423,9 +424,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 			await Promise.all([...documentsToDelete, ...documentsToUpload]);
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 		}
-	}
+	};
 
 	const save = async () => {
 		setIsUploading(true);
@@ -452,7 +453,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 
 		if (blankFields.length > 0) {
-
 			message.error({
 				errorKey,
 				content:
@@ -464,13 +464,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			await requiredFieldNames.map((field) => {
 				currentFormInstance.validateFields([field]);
 			});
-
 		} else {
-
 			try {
+				const newData = {
+					...updatedFormData,
+					vacancyDocuments: vacancyDocuments,
+				};
 				
-				const newData = {...updatedFormData, vacancyDocuments: vacancyDocuments}
-
 				if (!editSubmitted) {
 					let data = {
 						jsonobj: JSON.stringify(newData),
@@ -489,54 +489,89 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-						console.log("saveDraftDocs: ", saveDraftDocs)
-						console.log("transformed new data: ", transformJsonToBackend(newData))
-						const transformNewData = transformJsonToBackend(newData)
+						//console.log('saveDraftDocs: ', saveDraftDocs);
+						console.log("newData: ", newData)
+						// console.log(
+						// 	'transformed new data: ',
+						// 	transformJsonToBackend(newData)
+						// );
+						const transformNewData = transformJsonToBackend(newData);
 						// upload attachments
-						const requests = [];
-						const documents =
-							saveDraftDocs.data.result.response.vacancy_documents;
-						console.log("documents: ", documents)
+						const documents = saveDraftDocs.data.result.response.vacancy_documents;
+						//console.log('documents: ', documents);
 						const filesHashMap = new Map();
+
 						updatedFormData.applicantDocuments.forEach((document) =>
 							document.file.fileList.forEach((file) =>
 								filesHashMap.set(file.uid, file.originFileObj)
 							)
 						);
 
-						//await updateAttachments(transformNewData);
-						const documentsToDelete = transformNewData.vacancy_documents.map(
-							(document) => {
-								console.log("Line 509, edited app, document: ", document)
-								if (document?.uploadedDocument?.markedToDelete) {
-									return axios.delete(
-										SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-									);
-								}
-							}
-						);
-	
-						const documentsToUpload = transformNewData.vacancy_documents.map(
-							(document) => {
-								if (document.file.file) {
-									const file = document.file.file;
+						if (!editDraft) {
+							const requests = [];
+
+							documents.forEach((document) => {
+								console.log(document)
+								if (document.uid) {
+									const file = filesHashMap.get(document.uid);
+
 									const options = {
 										params: {
-											file_name: document.file.file.name,
+											file_name: document.file_name,
 											table_name: document.table_name,
 											table_sys_id: document.table_sys_id,
 										},
 										headers: {
-											'Content-Type': document.file.file.type,
+											'Content-Type': file.type,
 										},
 									};
-	
-									return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+									requests.push(
+										axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+									);
 								}
-							}
-						);
-	
-						await Promise.all([...documentsToDelete, ...documentsToUpload]);
+							});
+
+							await Promise.all(requests);
+						} else {
+							//await updateAttachments(transformNewData);
+							const documentsToDelete = transformNewData.vacancy_documents.map(
+								(document) => {
+									//console.log('Line 509, edited app, document: ', document);
+									if (document?.uploadedDocument?.markedToDelete) {
+										return axios.delete(
+											SERVICE_NOW_ATTACHMENT +
+												document.uploadedDocument.attachSysId
+										);
+									}
+								}
+							);
+
+							const documentsToUpload = transformNewData.vacancy_documents.map(
+								(document) => {
+									if (document.file.file) {
+										const file = document.file.file;
+										const options = {
+											params: {
+												file_name: document.file.file.name,
+												table_name: document.table_name,
+												table_sys_id: document.table_sys_id,
+											},
+											headers: {
+												'Content-Type': document.file.file.type,
+											},
+										};
+
+										return axios.post(
+											SERVICE_NOW_FILE_ATTACHMENT,
+											file,
+											options
+										);
+									}
+								}
+							);
+
+							await Promise.all([...documentsToDelete, ...documentsToUpload]);
+						}
 					}
 				} else {
 					// update attachments for edited applications
@@ -579,7 +614,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					);
 
 					await Promise.all([...documentsToDelete, ...documentsToUpload]);
-
 				}
 
 				message.info({
@@ -598,11 +632,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					className: 'save-message',
 					duration: 3,
 				});
-
 			} catch (error) {
 				console.log(error);
 				message.error('Sorry!  There was an error saving.');
-
 			} finally {
 				setIsUploading(false);
 				checkAuth(setIsLoading, setAuth);
@@ -613,13 +645,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const next = async () => {
 		if (steps[currentStep].key === 'applicantDocuments') {
 			if (steps[currentStep].key === 'applicantDocuments') {
-				save()
+				save();
 			}
 		} else if (currentStep < steps.length - 1) {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
-				
+
 				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
@@ -648,7 +680,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		if (isUploading === false) {
 			setCurrentStep(currentStep + 1);
 			window.scrollTo(0, 0);
-		}	
+		}
 	}, [isUploading]);
 
 	const prev = async () => {

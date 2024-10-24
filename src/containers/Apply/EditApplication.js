@@ -50,6 +50,7 @@ const editApplication = () => {
 		!error ? (
 			<Apply
 				initialValues={application}
+				editDraft={draft ? true : false}
 				editSubmitted={!draft ? true : false}
 			/>
 		) : (
