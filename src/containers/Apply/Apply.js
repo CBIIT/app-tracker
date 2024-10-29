@@ -576,7 +576,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 				} else {
 					// update attachments for edited applications
 					const dataToSend = transformJsonToBackend(newData);
-					console.log('dataToSend: ', dataToSend);
+					console.log('line 579 dataToSend: ', dataToSend);
 
 					dataToSend['app_sys_id'] = appSysId;
 
@@ -688,6 +688,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
+			// if step === applicantDocuments, retrieve app draft docs
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
