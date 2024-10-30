@@ -59,9 +59,22 @@ describe('ApplicantProfile', () => {
 				result: {
 					response: {
                         basic_info: {
+							address: '123 Main St',
+							address_2: null,
+							business_phone: '+1',
+							city: 'tes',
+							country: 'United States',
+							email: 'luke.skywalker@TheForce.com',
 						    first_name: 'Luke',
+							highest_level_of_education: 'Doctorate',
 						    last_name: 'Skywalker',
+							middle_name: null,
+							number: 'USR0000001',
 						    phone: '+11234567890',
+							state_province: 'MD',
+							sys_id: '123',
+							us_citizen: 'Yes',
+							zip_code: '20855'
                         }
 					},
 				},
@@ -72,6 +85,12 @@ describe('ApplicantProfile', () => {
 
 		await waitFor(() => {
 			expect(screen.getByText(/Luke Skywalker/i)).toBeInTheDocument();
+			expect(screen.getByText(/luke.skywalker@TheForce.com/i)).toBeInTheDocument();
+			expect(screen.getByText(/123 Main St/i)).toBeInTheDocument();
+			expect(screen.getByText(/tes/i)).toBeInTheDocument();
+			expect(screen.getByText(/MD/i)).toBeInTheDocument();
+			expect(screen.getByText(/20855/i)).toBeInTheDocument();
+			expect(screen.getByText(/United States/i)).toBeInTheDocument();
 			expect(screen.getByText(/basic information/i)).toBeInTheDocument();
 		});
 	});
