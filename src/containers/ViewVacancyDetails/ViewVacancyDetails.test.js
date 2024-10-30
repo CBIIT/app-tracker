@@ -6,7 +6,6 @@ import ViewVacancyDetails from './ViewVacancyDetails';
 import Header from './Header/Header';
 import Divider from './Divider/Divider';
 import useAuth from '../../hooks/useAuth';
-import { describe } from 'optimist';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -23,4 +22,31 @@ jest.mock('antd', () => ({
     }
 }));
 
-describe('ViewVacancyDetails', () => {});
+describe('ViewVacancyDetails', () => {
+    const mockUser = {
+        hasProfile: true,
+    };
+
+    beforeEach(() => {
+        useParams.mockReturnValue({ sysId: '123'});
+        useAuth.mockReturnValue({ auth: { user: mockUser}});
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('successfully clicks Apply button and checks for profile', async () => {
+        // mock hasProfile to true mock call
+        axios.get.mockResolvedValue({ data: { result: { exists: true }}});
+
+        // render the header (apply button exists here)
+        render(<Header />);
+
+        // click the apply button
+
+        // Apply.js functionality should appear
+    });
+
+    // Test case for handling error when checking if user has profile
+});
