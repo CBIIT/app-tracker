@@ -7,6 +7,11 @@ import useAuth from '../../../hooks/useAuth';
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn()
 }));
+// const mockedUsedNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockedUsedNavigate,
+}));
 
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
@@ -68,30 +73,34 @@ describe('Login Component', () => {
 
     test('logs out user when logout is clicked', async () => {
 
-        const mockedFunction = jest.fn();
+        const mockedFunction = jest.fn(() => location.href = '/logout.do');
         mockUseAuth.auth.isUserLoggedIn = true;
-        render(<Login onClick={mockedFunction} />);
+        render(<Login onClick={mockedFunction()} />);
         fireEvent.mouseOver(screen.getByText(/John D./i));
-        await waitFor(() => screen.getByText(/Logout/i));
-        const button = screen.getByTestId('nih-logout');
-        fireEvent.click(button);
+        await waitFor(() => screen.getByRole('menuitem', { name: /Logout/i }));
+        fireEvent.click(screen.getByRole('menuitem', { name: /Logout/i }));
         expect(mockedFunction).toHaveBeenCalled();
-        // expect(window.location.assign).toHaveBeenCalledWith('/logout');
+        expect(window.location.href).toEqual('/logout.do');
     });
+    test('redirects to Okta login when already registered is clicked', async () => {
+        render(<Login />);
+
+        mockUseAuth.auth.isUserLoggedIn = false;
+        fireEvent.mouseOver(screen.getByText(/Login/i));
+        await waitFor(() => screen.getByTestId('nih-already-item'));
+        fireEvent.click(screen.getByTestId('nih-already-item'));
+        expect(window.location.href).toBe('https://test.okta.com');
+    });
+
+    test('redirects to registration page when not registered is clicked', async () => {
+        render(<Login />);
+        mockUseAuth.auth.isUserLoggedIn = false;
+        fireEvent.mouseOver(screen.getByText(/Login/i));
+        await waitFor(() => screen.getByTestId('nih-register-item'));
+        fireEvent.click(screen.getByTestId('nih-register-item'));
+        expect(mockHistoryPush).toHaveBeenCalledWith('/register-okta');
+    });
+
 });
 
-// test('redirects to Okta login when already registered is clicked', () => {
-//     render(<Login />);
 
-//     mockUseAuth.auth.isUserLoggedIn = false;
-
-//     const alreadyRegisteredButton = screen.getByText(/Already registered/i);
-//     fireEvent.click(alreadyRegisteredButton);
-//     expect(window.location.href).toBe('https://test.okta.com');
-// });
-
-// test('redirects to registration page when not registered is clicked', () => {
-//     render(<Login />);
-//     fireEvent.click(screen.getByText(/Not registered \?/i));
-//     expect(mockHistoryPush).toHaveBeenCalledWith('/register-okta');
-// });

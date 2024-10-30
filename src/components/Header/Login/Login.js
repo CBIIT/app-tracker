@@ -96,8 +96,8 @@ const login = () => {
 	);
 
 	const logoutMenu = (
-		<Menu className='LoginMenu'  onClick={handleMenuClick}>
-			<Menu.Item data-testid="nih-logout" key='logout'>Logout</Menu.Item>
+		<Menu className='LoginMenu' data-testid="nih-logout" onClick={handleMenuClick}>
+			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);
 
