@@ -49,6 +49,7 @@ const login = () => {
 					<div className="login-text" onClick={nihClicked}>
 						<span className='MenuTextSpan'>Employee/ Contractor only</span>
 						<Menu.Item
+							data-testid="nih-login-item"
 							key='itrust'
 							icon={<img className='CustomIcon' src={iTrustIcon} />}
 							style={{ width: "170px" }}
@@ -69,6 +70,7 @@ const login = () => {
 							<span className='MenuTextSpan'>Already registered ?</span>
 
 							<Menu.Item
+								data-testid="nih-already-item"
 								key='okta'
 								style={{ width: "100px" }}
 							>
@@ -80,6 +82,7 @@ const login = () => {
 						<div onClick={notRegistered}>
 							<span className='MenuTextSpan'>Not registered ?</span>
 							<Menu.Item
+								data-testid="nih-register-item"
 								key='register-okta'
 								style={{ width: "120px" }}
 							>
@@ -93,7 +96,7 @@ const login = () => {
 	);
 
 	const logoutMenu = (
-		<Menu className='LoginMenu' onClick={handleMenuClick}>
+		<Menu className='LoginMenu' data-testid="nih-logout" onClick={handleMenuClick}>
 			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);
