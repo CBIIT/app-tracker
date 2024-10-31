@@ -1,15 +1,16 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import Header from './Header/Header';
-import useAuth from '../../hooks/useAuth';
+import { useParams, useHistory } from 'react-router-dom';
+import Header from './Header';
+import useAuth from '../../../hooks/useAuth';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
     useParams: jest.fn(),
+    useHistory: jest.fn(),
 }));
-jest.mock('../../hooks/useAuth', () => ({
+jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
     default: jest.fn(), 
 }));
