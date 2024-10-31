@@ -1,6 +1,7 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import React, { useEffect } from 'react';
+import { render, screen, waitFor, act, findByText } from '@testing-library/react';
 import axios from 'axios';
+import { Button, message, Tooltip } from 'antd';
 import { useParams, useHistory } from 'react-router-dom';
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
@@ -21,9 +22,15 @@ jest.mock('antd', () => ({
     }
 }));
 
-describe('ViewVacancyDetails', () => {
-    const mockUser = {
+describe('Header', () => {
+    let mockUseAuth;
+
+    const mockProfileTrue = {
         hasProfile: true,
+    };
+
+    const mockProfileFalse = {
+        hasProfile: false,
     };
 
     const mockProps = {
@@ -40,29 +47,39 @@ describe('ViewVacancyDetails', () => {
         vacancyStatus: 'open',
     };
 
-    const mockAppliedAlreadyFalse = {
-        userAlreadyApplied: false,
-    };
-
-    const mockAppliedAlreadyTrue = {
-        userAlreadyApplied: true,
-    };
-
     beforeEach(() => {
-        useParams.mockReturnValue({ sysId: '123'});
-        useAuth.mockReturnValue({ auth: { user: mockUser}});
-    });
+        mockUseAuth = {
+            auth: {
+                iTrustGlideSsoId: 'testSsoId',
+                iTrustUrl: 'https://test.itrust.com',
+                isUserLoggedIn: false,
+                user: { firstName: 'John', lastInitial: 'D' },
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',
+
+            },
+        };
+    })
+
+    // beforeEach(() => {
+    //     useParams.mockReturnValue({ sysId: '123'});
+    //     useAuth.mockReturnValue({ auth: { user: mockUser}});
+    // });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it('successfully clicks Apply button and checks for profile', async () => {
-        // mock hasProfile to true mock call
-        axios.get.mockResolvedValue({ data: { result: { exists: true }}});
+        mockUseAuth.auth.isUserLoggedIn = true;
+        useParams.mockReturnValue({ sysId: '123'});
+        useAuth.mockReturnValue({ auth: { user: mockProfileTrue } });
 
         // render the header (apply button exists here)
-        render(<Header { ...mockProps } />);
+        render(<Header { ...mockProps } { ...mockUseAuth } setHasProfile={ mockProfileTrue } />);
+        render(<Button />);
+
+        expect(screen.getByRole('button')).toBeInTheDocument();
+
 
         // click the apply button
 

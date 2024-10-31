@@ -159,6 +159,7 @@ const header = (props) => {
 						<Button
 							onClick={() => onButtonClick(APPLY + props.sysId)}
 							type='primary'
+							data-testid='apply-button'
 						>
 							Apply
 						</Button>
