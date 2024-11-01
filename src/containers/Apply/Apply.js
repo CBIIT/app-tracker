@@ -74,7 +74,6 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	const [formData, setFormData] = useState(
 		initialValues ? initialValues : defaultFormData
 	);
-	// console.log(editDraft)
 
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
@@ -392,7 +391,6 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 		try {
 			const documentsToDelete = transformedData.vacancy_documents.map(
 				(document) => {
-					// console.log('Line 394: ', document);
 					if (document?.uploadedDocument?.markedToDelete) {
 						return axios.delete(
 							SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
@@ -403,7 +401,6 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 			const documentsToUpload = transformedData.vacancy_documents.map(
 				(document) => {
-					// console.log('Line 406: ', document);
 					if (document.file.file) {
 						const file = document.file.file;
 						const options = {
@@ -424,7 +421,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 			await Promise.all([...documentsToDelete, ...documentsToUpload]);
 		} catch (e) {
-			console.log(e);
+			console.log("This is a documents error: ", e);
 		}
 	};
 
@@ -482,6 +479,8 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 					const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
+					console.log("saveDraftResponse: ", saveDraftResponse)
+
 					if (!draftId && saveDraftResponse.data.result.draft_id) {
 						setDraftId(saveDraftResponse.data.result.draft_id);
 					}
@@ -489,16 +488,11 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
-						//console.log('saveDraftDocs: ', saveDraftDocs);
-						console.log("newData: ", newData)
-						// console.log(
-						// 	'transformed new data: ',
-						// 	transformJsonToBackend(newData)
-						// );
+
 						const transformNewData = transformJsonToBackend(newData);
-						// upload attachments
+						
 						const documents = saveDraftDocs.data.result.response.vacancy_documents;
-						//console.log('documents: ', documents);
+						
 						const filesHashMap = new Map();
 
 						updatedFormData.applicantDocuments.forEach((document) =>
@@ -508,10 +502,10 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 						);
 
 						if (!editDraft) {
+							// new apps
 							const requests = [];
 
 							documents.forEach((document) => {
-								console.log(document)
 								if (document.uid) {
 									const file = filesHashMap.get(document.uid);
 
@@ -533,87 +527,23 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 							await Promise.all(requests);
 						} else {
-							//await updateAttachments(transformNewData);
-							const documentsToDelete = transformNewData.vacancy_documents.map(
-								(document) => {
-									//console.log('Line 509, edited app, document: ', document);
-									if (document?.uploadedDocument?.markedToDelete) {
-										return axios.delete(
-											SERVICE_NOW_ATTACHMENT +
-												document.uploadedDocument.attachSysId
-										);
-									}
-								}
-							);
+							
+							await updateAttachments(transformNewData);
 
-							const documentsToUpload = transformNewData.vacancy_documents.map(
-								(document) => {
-									if (document.file.file) {
-										const file = document.file.file;
-										const options = {
-											params: {
-												file_name: document.file.file.name,
-												table_name: document.table_name,
-												table_sys_id: document.table_sys_id,
-											},
-											headers: {
-												'Content-Type': document.file.file.type,
-											},
-										};
-
-										return axios.post(
-											SERVICE_NOW_FILE_ATTACHMENT,
-											file,
-											options
-										);
-									}
-								}
-							);
-
-							await Promise.all([...documentsToDelete, ...documentsToUpload]);
 						}
 					}
 				} else {
 					// update attachments for edited applications
 					const dataToSend = transformJsonToBackend(newData);
-					console.log('dataToSend: ', dataToSend);
 
 					dataToSend['app_sys_id'] = appSysId;
 
-					await axios.put(APPLICATION_SUBMISSION, dataToSend);
+					const editedAppResponse = await axios.put(APPLICATION_SUBMISSION, dataToSend);
+					
+					console.log("editedAppResponse: ", editedAppResponse)
 
-					//await updateAttachments(dataToSend);
-					const documentsToDelete = dataToSend.vacancy_documents.map(
-						(document) => {
-							if (document?.uploadedDocument?.markedToDelete) {
-								return axios.delete(
-									SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-								);
-							}
-						}
-					);
+					await updateAttachments(dataToSend);
 
-					const documentsToUpload = dataToSend.vacancy_documents.map(
-						(document) => {
-							if (document.file.file) {
-								const file = document.file.file;
-								const options = {
-									params: {
-										file_name: document.file.file.name,
-										table_name: document.table_name,
-										table_sys_id: document.table_sys_id,
-									},
-									headers: {
-										'Content-Type': document.file.file.type,
-									},
-								};
-
-								return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
-							}
-						}
-					);
-
-					await Promise.all([...documentsToDelete, ...documentsToUpload]);
 				}
 
 				message.info({
@@ -644,9 +574,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 	const next = async () => {
 		if (steps[currentStep].key === 'applicantDocuments') {
-			if (steps[currentStep].key === 'applicantDocuments') {
-				save();
-			}
+			save();
 		} else if (currentStep < steps.length - 1) {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
@@ -677,7 +605,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	};
 
 	useEffect(() => {
-		if (isUploading === false) {
+		if (isUploading === false && steps[currentStep].key !== 'review') {
 			setCurrentStep(currentStep + 1);
 			window.scrollTo(0, 0);
 		}
@@ -688,7 +616,12 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
-			window.scrollTo(0, 0);
+			(editDraft || editSubmitted) &&
+			currentStep === 1 &&
+			initialValues.applicantDocuments.length > 0
+				? location.reload()
+				: window.scrollTo(0, 0);
+			//window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
 		}
@@ -805,7 +738,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 										type='primary'
 										onClick={next}
 										className='wider-button'
-										loading={isUploading === true}
+										loading={steps[currentStep].key !== "review" ? isUploading === true : false}
 									>
 										{currentStep == steps.length - 1
 											? 'Submit Application'
