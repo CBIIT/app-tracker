@@ -5,6 +5,7 @@ import { Button, message, Tooltip } from 'antd';
 import { useParams, useHistory } from 'react-router-dom';
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
+import e from 'express';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -24,16 +25,13 @@ jest.mock('antd', () => ({
 
 describe('Header', () => {
     let mockUseAuth;
+    let mockProfileFalse;
 
     const mockProfileTrue = {
         hasProfile: true,
     };
 
-    const mockProfileFalse = {
-        hasProfile: false,
-    };
-
-    const mockProps = {
+    const mockVacancyProps = {
         closeDate: '',
         openDate: '2024-09-13',
         sysId: '456',
@@ -58,33 +56,33 @@ describe('Header', () => {
 
             },
         };
-    })
 
-    // beforeEach(() => {
-    //     useParams.mockReturnValue({ sysId: '123'});
-    //     useAuth.mockReturnValue({ auth: { user: mockUser}});
-    // });
+        useAuth.mockReturnValue(mockUseAuth);
+        mockHistoryPush = jest.fn();
+        useHistory.mockReturnValue({ push: mockHistoryPush });
+        delete window.location;
+        window.location = {
+            href: '',
+            assign: jest.fn() 
+        };
+
+    })
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('successfully clicks Apply button and checks for profile', async () => {
+    it('should render button with Apply text when user is logged in', async () => {
         mockUseAuth.auth.isUserLoggedIn = true;
-        useParams.mockReturnValue({ sysId: '123'});
-        useAuth.mockReturnValue({ auth: { user: mockProfileTrue } });
+        useParams.mockReturnValue({ sysId: '123' });
+        useAuth.mockReturnValue({ auth: { user: mockProfileTrue}});
 
-        // render the header (apply button exists here)
-        render(<Header { ...mockProps } { ...mockUseAuth } setHasProfile={ mockProfileTrue } />);
-        render(<Button />);
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            render(<Header {...mockVacancyProps} />);
+        });
 
-        expect(screen.getByRole('button')).toBeInTheDocument();
-
-
-        // click the apply button
-
-        // Apply.js functionality should appear
+        expect(screen.getByText('Apply')).toBeInTheDocument();
     });
 
-    // Test case for handling error when checking if user has profile
 });
