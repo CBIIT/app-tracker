@@ -388,13 +388,17 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	};
 
 	const updateAttachments = async (transformedData) => {
+		console.log("transformedData: ", transformedData)
 		try {
 			const documentsToDelete = transformedData.vacancy_documents.map(
 				(document) => {
+					console.log("documentsToDelete, document: ", document)
 					if (document?.uploadedDocument?.markedToDelete) {
-						return axios.delete(
+						const response =  axios.delete(
 							SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
 						);
+						console.log(response)
+						return response
 					}
 				}
 			);
@@ -479,7 +483,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 					const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
-					console.log("saveDraftResponse: ", saveDraftResponse)
+					//console.log("saveDraftResponse: ", saveDraftResponse)
 
 					if (!draftId && saveDraftResponse.data.result.draft_id) {
 						setDraftId(saveDraftResponse.data.result.draft_id);
@@ -487,6 +491,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
+						console.log("Edited Draft Docs: ", newData)
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
 
 						const transformNewData = transformJsonToBackend(newData);
@@ -538,9 +543,9 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 					dataToSend['app_sys_id'] = appSysId;
 
-					const editedAppResponse = await axios.put(APPLICATION_SUBMISSION, dataToSend);
+					console.log("Submitted App Data: ", dataToSend)
+					await axios.put(APPLICATION_SUBMISSION, dataToSend);
 					
-					console.log("editedAppResponse: ", editedAppResponse)
 
 					await updateAttachments(dataToSend);
 
