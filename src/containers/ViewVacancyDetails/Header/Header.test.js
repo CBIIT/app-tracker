@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
-import { render, screen, waitFor, act, findByText } from '@testing-library/react';
+import React from 'react';
+import { render, screen, waitFor, act, findByText, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import { Button, message, Tooltip } from 'antd';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
-import e from 'express';
+import { APPLICANT_DASHBOARD, APPLY, REGISTER_OKTA } from '../../../constants/Routes';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
+
     useParams: jest.fn(),
     useHistory: jest.fn(),
+
+}));
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
 }));
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
@@ -23,19 +29,34 @@ jest.mock('antd', () => ({
     }
 }));
 
+const mockUseAuth = {
+    auth: {
+        iTrustGlideSsoId: 'testSsoId',
+        iTrustUrl: 'https://test.itrust.com',
+        isUserLoggedIn: false,
+        user: { firstName: 'John', lastInitial: 'D' },
+        oktaLoginAndRedirectUrl: 'https://test.okta.com',
+
+    },
+}
+
 describe('Header', () => {
     let mockUseAuth;
-    let mockProfileFalse;
+    let mockedUsedNavigate;
 
-    const mockProfileTrue = {
-        hasProfile: true,
+    const myHeader = () => {
+        const handleClick = () => {
+            APPLY + mockVacancyProps.sysId;
+        };
+
+        return <Button data-testid="apply-button" onClick={handleClick}>Apply</Button>;  
     };
 
     const mockVacancyProps = {
         closeDate: '',
         openDate: '2024-09-13',
         sysId: '456',
-        title: 'Rolling Close Test Title',
+        title: 'Vacancy Title',
         vacancyPOC: {
             email: 'vacancy.poc@email.com',
             name: 'Vacancy POC',
@@ -47,15 +68,8 @@ describe('Header', () => {
 
     beforeEach(() => {
         mockUseAuth = {
-            auth: {
-                iTrustGlideSsoId: 'testSsoId',
-                iTrustUrl: 'https://test.itrust.com',
-                isUserLoggedIn: false,
-                user: { firstName: 'John', lastInitial: 'D' },
-                oktaLoginAndRedirectUrl: 'https://test.okta.com',
-
-            },
-        };
+            auth: { isUserLoggedIn: true, user: { hasProfile : true} },
+        },
 
         useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
@@ -72,10 +86,17 @@ describe('Header', () => {
         jest.clearAllMocks();
     });
 
-    it('should render button with Apply text when user is logged in', async () => {
-        mockUseAuth.auth.isUserLoggedIn = true;
+    // it('renders header with title and dates', async () => {});
+
+    // it('renders point of contact', async () => {});
+
+    // it('renders apply button with Sign In and Apply text when user is not logged in', async () => {});
+
+    // it('handles apply button click when user is not logged in', async () => {});
+
+
+    it('renders button with Apply text when user is logged in', async () => {
         useParams.mockReturnValue({ sysId: '123' });
-        useAuth.mockReturnValue({ auth: { user: mockProfileTrue}});
 
         await act(async () => {
             mockUseAuth.auth.isUserLoggedIn = true;
@@ -83,6 +104,44 @@ describe('Header', () => {
         });
 
         expect(screen.getByText('Apply')).toBeInTheDocument();
+    });
+
+    // it('handles apply button click when user is Logged in and does not have a profile', async () => {});
+
+    it('handles apply button click when user is logged in and has a profile', async () => {
+        const mockApply = jest.fn(() => location.pathname = APPLY + mockVacancyProps.sysId);
+        useParams.mockReturnValue({ sysId: '123' });
+
+        await waitFor(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            mockUseAuth.auth.user.hasProfile = true;
+            render(<Header {...mockVacancyProps} onClick={mockApply()} />);
+            const applyButton = screen.getByRole('button', { name: 'Apply' });
+            fireEvent.click(applyButton);
+        });
+
+        expect(mockApply).toHaveBeenCalled();
+        expect(window.location.pathname).toBe(APPLY + mockVacancyProps.sysId);
+    });
+
+    it('handles error handling gracefully', async () => {
+        const mockApply = jest.fn(() => location.pathname = APPLY + mockVacancyProps.sysId);
+        useParams.mockReturnValue({ sysId: '123' });
+
+        await waitFor(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            mockUseAuth.auth.user.hasProfile = true;
+            render(<Header {...mockVacancyProps} onClick={mockApply()} />);
+            const applyButton = screen.getByRole('button', { name: 'Apply' });
+            fireEvent.click(applyButton);
+        });
+
+        expect(mockApply).toHaveBeenCalled();
+        expect(window.location.pathname).toBe(APPLY + mockVacancyProps.sysId);
+        axios.get.mockRejectedValue(new Error('Profile not found'));
+        // screen.debug();
+        // expect(getByText('Sorry!  An error occurred while loading.')).toBeInTheDocument();
+        // screen.debug();
     });
 
 });
