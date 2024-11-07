@@ -86,15 +86,6 @@ describe('Header', () => {
         jest.clearAllMocks();
     });
 
-    // it('renders header with title and dates', async () => {});
-
-    // it('renders point of contact', async () => {});
-
-    // it('renders apply button with Sign In and Apply text when user is not logged in', async () => {});
-
-    // it('handles apply button click when user is not logged in', async () => {});
-
-
     it('renders button with Apply text when user is logged in', async () => {
         useParams.mockReturnValue({ sysId: '123' });
 
@@ -105,8 +96,6 @@ describe('Header', () => {
 
         expect(screen.getByText('Apply')).toBeInTheDocument();
     });
-
-    // it('handles apply button click when user is Logged in and does not have a profile', async () => {});
 
     it('handles apply button click when user is logged in and has a profile', async () => {
         const mockApply = jest.fn(() => location.pathname = APPLY + mockVacancyProps.sysId);
@@ -139,9 +128,6 @@ describe('Header', () => {
         expect(mockApply).toHaveBeenCalled();
         expect(window.location.pathname).toBe(APPLY + mockVacancyProps.sysId);
         axios.get.mockRejectedValue(new Error('Profile not found'));
-        // screen.debug();
-        // expect(getByText('Sorry!  An error occurred while loading.')).toBeInTheDocument();
-        // screen.debug();
     });
 
 });
