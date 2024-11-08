@@ -568,7 +568,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 					duration: 3,
 				});
 			} catch (error) {
-				console.log(error);
+				console.log("This is a save function error: " , error);
 				message.error('Sorry!  There was an error saving.');
 			} finally {
 				setIsUploading(false);
