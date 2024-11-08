@@ -98,7 +98,7 @@ const transformVacancyCommittee = (vacancyCommittee) => {
 			transformedCommitteeMember['user']['email'] = { value: '' };
 		}
 
-		if (!member.organization)
+		if (!member.orginization)
 			transformedCommitteeMember['user']['organization'] = { value: '' };
 
 		return transformedCommitteeMember;
