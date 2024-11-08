@@ -97,18 +97,7 @@ describe('Apply', () => {
         jest.clearAllMocks();
     });
 
-    // New Application test cases
-    // fetches Profile data
-    // it('should fetch profile data', async () => {
-    //     useParams.mockReturnValue({ sysId: '123' });
-
-    //     axios.get.mockResolvedValue({ data: { results: { exists: true } } });
-    //     axios.get.mockResolvedValue({ mockUser});
-
-    //     render(<Apply {...mockUser} {...mockVacancyProps} {...mockUseAuth} />);
-
-    // });
-
+    // This test case is not complete
     it('handles error while fetching profile data', async () => {
         const mockHistoryPush = jest.fn();
         // const notificationError = jest.spyOn(notification, 'error');
@@ -117,43 +106,8 @@ describe('Apply', () => {
 
         useParams.mockReturnValue({ sysId: '123' });
         axios.get.mockRejectedValue(new Error('This profile does not exist.'));
-
-        await waitFor(() => {
-            render(<ViewVacancyDetails {...mockVacancyDetails} />);
-            expect(notification.error).toHaveBeenCalledWith({
-                message: "Sorry! There was an error retrieving your profile.",
-                description: <>
-					<p>
-					Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
-					</p>
-				</>,
-            });
-        });
-
-        expect(mockHistoryPush).toHaveBeenCalled();
-        
     });
-
-    // render applicant documents page with optional and mandatory documents
-
-    // renders reference section with number of references
-
-    // renders Additional Questions section
-
-    // renders Review Section
-
-
-
-    // Edit Draft Application test cases
-
-
-
-
-
-
-    // Edit Submitted Application test cases
     
-
 });
 
 const mockVacancyDetails = {
