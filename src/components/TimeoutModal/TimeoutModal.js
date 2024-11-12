@@ -89,6 +89,7 @@ const TimeoutModal = () => {
 	return isUserLoggedIn && (
 		<>
 			<Modal
+				data-testid='timeout-modal'
 				title='Session Timeout'
 				open={isModalOpen}
 				onOk={handleExtend}
