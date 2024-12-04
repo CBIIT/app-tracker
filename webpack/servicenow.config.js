@@ -16,11 +16,13 @@ const servicenowConfig = {
    * no need to provide credentials for PRODUCTION
    */
   REACT_APP_USER: '',
-  /**
-   * 
-   * User password, for DEVELOPMENT mode only
-   */
+  // REACT_APP_USER: 'luke.skywalker.test@me.com',
+  /**   
+  *
+  * User password, for DEVELOPMENT mode only
+  */
   REACT_APP_PASSWORD: '',
+  // REACT_APP_PASSWORD: 'Px0ERyC!)@j1uTL',
   /**
    * 
    * ServiceNow path to GET resource which serves javascript files

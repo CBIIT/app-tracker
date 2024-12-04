@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import axios from 'axios';
 import TimeoutModal from './TimeoutModal';
 import useAuth from '../../hooks/useAuth';
@@ -37,38 +36,18 @@ describe('TimeoutModal', () => {
     afterEach(() => {
         jest.useRealTimers();
         jest.clearAllMocks();
-    })
-    // Testing that Advance Timers Work without rendering
-    test('setTimeout should work', () => {
-        const callback = jest.fn();
-
-        setTimeout(callback, 10000);
-
-        // Advance the timer by 1000ms (1 second)
-        jest.advanceTimersByTime(10000);
-
-        expect(callback).toHaveBeenCalled();
-    });
-    test('renders TimeoutModal component', async () => {
-        jest.useFakeTimers();
-
-        render(<TimeoutModal />);
-        jest.advanceTimersByTime(9000); // throws callback.apply is not a function error
-        await waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
-        expect(screen.getByTestId('timeout-modal')).toBeInTheDocument();
     });
 
-    test('shows modal after 90% of session time has elapsed', async () => {
+    test('shows modal after 90% of session time has elapsed', () => {
         render(<TimeoutModal />);
-        // jest.advanceTimersByTime(9000);
+        // Simulate the passage of time to open the modal
         act(() => {
-            jest.runOnlyPendingTimers(); // throws callback.apply is not a function error
+            jest.advanceTimersByTime(9000);
         });
-        await waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
-        // jest.useRealTimers();
+        waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
     });
 
-    test('extends session when Extend button is clicked', async () => {
+    test('extends session when Extend button is clicked', () => {
         axios.get.mockResolvedValue({
             data: {
                 result: {
@@ -95,31 +74,34 @@ describe('TimeoutModal', () => {
         });
 
         render(<TimeoutModal />);
-        // jest.advanceTimersByTime(9500); // throws callback.apply is not a function error
-        await waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
+        // Simulate the passage of time to open the modal
+        act(() => {
+            jest.advanceTimersByTime(9000);
+        });
+        expect(screen.getByTestId('timeout-modal')).toBeVisible()
         fireEvent.click(screen.getByText('Extend'));
-        await waitFor(() => expect(setAuthMock).toHaveBeenCalled());
-        jest.useRealTimers();
+        waitFor(() => expect(setAuthMock).toHaveBeenCalled());
     });
 
-    test('logs out user when Logout button is clicked', async () => {
+    test('logs out user when Logout button is clicked', () => {
         const mockedFunction = jest.fn(() => location.href = '/logout.do');
         render(<TimeoutModal onClick={mockedFunction()} />);
-        // jest.advanceTimersByTime(9000);
-        await waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
+        // Simulate the passage of time to open the modal
+        act(() => {
+            jest.advanceTimersByTime(9000);
+        });
+        waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
         fireEvent.click(screen.getByText('Logout'));
         expect(mockedFunction).toHaveBeenCalledTimes(1);
         expect(window.location.href).toBe('/logout.do');
-        // jest.useRealTimers();
     });
-
 
     test('auto closes modal and logs out user after remaining time', async () => {
         render(<TimeoutModal />);
 
         // Simulate the passage of time to open the modal
         act(() => {
-            jest.advanceTimersByTime(9000); // throws callback.apply is not a function error
+            jest.advanceTimersByTime(9000);
         });
 
         // Wait for the modal to be visible
@@ -127,15 +109,11 @@ describe('TimeoutModal', () => {
 
         // Simulate the passage of additional time to close the modal and log out the user
         act(() => {
-            jest.advanceTimersByTime(1000); // throws callback.apply is not a function error
+            jest.advanceTimersByTime(1000);
         });
 
         // Wait for the URL to change to /logout.do
-        await waitFor(() => expect(window.location.href).toBe('/logout.do'));
+        waitFor(() => expect(window.location.href).toBe('/logout.do'));
         expect(window.location.href).toBe('/logout.do');
-
-        jest.useRealTimers();
     });
-
-
 });

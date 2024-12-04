@@ -10,14 +10,14 @@ const TimeoutModal = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const { auth, setAuth } = useAuth();
 	const { setModalTimeout } = useTimeout();
-	let fullTimeoutDuration = auth.sessionTimeout;
+	// let fullTimeoutDuration = auth.sessionTimeout;
 	let uiTimeout = auth.sessionTimeout * 0.9;
 	let remainingTime = auth.sessionTimeout - uiTimeout;
 	let timeout;
 
 	useEffect(() => {
 		// show modal after 90% of session time has elapsed
-		setTimeout(fullTimeoutDuration);
+		// setTimeout(fullTimeoutDuration);
 		setModalTimeout(uiTimeout);
 		const showModal = () => {
 			timeout = setTimeout(() => {
