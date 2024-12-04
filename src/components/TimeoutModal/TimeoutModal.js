@@ -16,7 +16,6 @@ const TimeoutModal = () => {
 
 	useEffect(() => {
 		// show modal after 90% of session time has elapsed
-		// setTimeout(fullTimeoutDuration);
 		setModalTimeout(uiTimeout);
 		const showModal = () => {
 			timeout = setTimeout(() => {
