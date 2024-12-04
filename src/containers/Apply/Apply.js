@@ -120,7 +120,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			</>,
 			duration: 30,
 				style: {
-					height: "25vh",
+					height: "225px",
 					display: 'flex',
 					alignItems: 'center'
 				}
@@ -210,7 +210,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				</>,
 				duration: 30,
 				style: {
-					height: "25vh",
+					height: "225px",
 					display: 'flex',
 					alignItems: 'center'
 				}
