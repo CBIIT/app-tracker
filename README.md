@@ -45,6 +45,7 @@ ServiceNow username for API requests
 
 - it is being used for sending REST calls in Development mode only
 - no need to provide credentials for Production
+- Use a test user, not your own credentials. This can be done in the servicenow.config.js file by populating the REACT_APP_USER and REACT_APP_PASSWORD variables.
 
 ---
 
