@@ -7,33 +7,33 @@ import {
 	APPLICANT_GET_APPLICATION,
 } from '../../constants/ApiEndpoints';
 import { useFetch } from '../../hooks/useFetch';
-import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
+import { transformDraftJson, transformJsonFromBackend } from './Util/TransformJsonFromBackend';
 
 const editApplication = () => {
 	const { draft, appSysId } = useParams();
 
-	const transformDraftJson = (response) => {
-		const basicInfo = JSON.parse(response.jsonobj.value);
-		//console.log(response.app_documents)
-		basicInfo.applicantDocuments = response.app_documents.map((document) => {
-			const applicantDocument = {
-				documentName: document.doc_name,
-				table_name: document.table_name,
-				table_sys_id: document.table_sys_id,
-			};
+	// const transformDraftJson = (response) => {
+	// 	const basicInfo = JSON.parse(response.jsonobj.value);
+	// 	//console.log(response.app_documents)
+	// 	basicInfo.applicantDocuments = response.app_documents.map((document) => {
+	// 		const applicantDocument = {
+	// 			documentName: document.doc_name,
+	// 			table_name: document.table_name,
+	// 			table_sys_id: document.table_sys_id,
+	// 		};
 
-			if (document.attach_sys_id)
-				applicantDocument['uploadedDocument'] = {
-					fileName: document.file_name,
-					downloadLink: document.attachment_dl,
-					attachSysId: document.attach_sys_id,
-					markedToDelete: false,
-				};
+	// 		if (document.attach_sys_id)
+	// 			applicantDocument['uploadedDocument'] = {
+	// 				fileName: document.file_name,
+	// 				downloadLink: document.attachment_dl,
+	// 				attachSysId: document.attach_sys_id,
+	// 				markedToDelete: false,
+	// 			};
 
-			return applicantDocument;
-		})
-		return basicInfo;
-	}
+	// 		return applicantDocument;
+	// 	})
+	// 	return basicInfo;
+	// }
 
 	const {
 		isLoading,

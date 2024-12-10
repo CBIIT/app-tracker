@@ -25,6 +25,8 @@ import {
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
 	CREATE_APP_DOCS,
+	GET_APPLICATION_DRAFT,
+	APPLICANT_GET_APPLICATION,
 } from '../../constants/ApiEndpoints';
 
 import FormContext, { defaultFormData } from './Context';
@@ -34,6 +36,7 @@ import Review from './Forms/Review/Review';
 import SubmitModal from './SubmitModal/SubmitModal';
 import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 import { transformJsonToBackend } from './Util/TransformJsonToBackend.js';
+import { transformJsonFromBackend, transformDraftJson } from './Util/TransformJsonFromBackend.js';
 
 import './Apply.css';
 import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
@@ -374,10 +377,39 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			longDescription: 'Please review key information entered in each section.',
 		}
 	);
+	
+	//TODO: function to update applications
+	const updateApplications = async () => {
+		try {
+			// if app is draft: get app draft
+			if (editDraft) {
+				const draftResponse = await axios.get(GET_APPLICATION_DRAFT + appSysId)
+				const draftData = draftResponse.data.result
+				//console.log(draftData)
+				//setFormData(transformDraftJson(draftData))
+				saveCurrentForm(transformDraftJson(draftData))
+				loadExistingApplication()
+				console.log("draft form data: " , formData)
+			} else if (editSubmitted) {
+				const submittedResponse = await axios.get(APPLICANT_GET_APPLICATION + appSysId)
+				const submittedData = submittedResponse.data.result
+				//console.log(submittedData)
+				//setFormData(transformJsonFromBackend(submittedData))
+				saveCurrentForm(transformJsonFromBackend(submittedData))
+				console.log("edited app form data: ", formData)
+			}
+			// else if app is editsubmitted: applicant get application
+		} catch (error) {
+
+		}
+		
+	}
 
 	const onEditButtonClick = (step) => {
 		const index = steps.findIndex((item) => item.key === step);
 		setCurrentStep(index);
+		//location.reload();
+		//loadExistingApplication();
 		window.scrollTo(0, 0);
 	};
 
@@ -388,11 +420,10 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	};
 
 	const updateAttachments = async (transformedData) => {
-		console.log("transformedData: ", transformedData)
+		console.log("transformedData: ", transformedData.vacancy_documents)
 		try {
 			const documentsToDelete = transformedData.vacancy_documents.map(
 				(document) => {
-					console.log("documentsToDelete, document: ", document)
 					if (document?.uploadedDocument?.markedToDelete) {
 						const response =  axios.delete(
 							SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
@@ -491,7 +522,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 					// IF currentStep is applicantDocuments
 					if (steps[currentStep].key === 'applicantDocuments') {
-						console.log("Edited Draft Docs: ", newData)
+						//console.log("Edited Draft Docs: ", newData)
 						const saveDraftDocs = await axios.post(CREATE_APP_DOCS, newData);
 
 						const transformNewData = transformJsonToBackend(newData);
@@ -579,6 +610,10 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 	const next = async () => {
 		if (steps[currentStep].key === 'applicantDocuments') {
+			const validationResult = await currentFormInstance.validateFields();
+			console.log("validation: " , validationResult)
+				await saveCurrentForm(validationResult);
+			
 			save();
 		} else if (currentStep < steps.length - 1) {
 			try {
@@ -624,7 +659,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			(editDraft || editSubmitted) &&
 			currentStep === 1 &&
 			initialValues.applicantDocuments.length > 0
-				? location.reload()
+				? updateApplications() //location.reload()
 				: window.scrollTo(0, 0);
 			//window.scrollTo(0, 0);
 		} catch (error) {
