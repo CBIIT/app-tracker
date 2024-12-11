@@ -537,7 +537,9 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 							)
 						);
 
+						console.log('line 540 Edit Draft: ', editDraft);
 						if (!editDraft) {
+							console.log('line 542 Edit Draft: ', editDraft);
 							// new apps
 							const requests = [];
 
@@ -666,6 +668,10 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			message.error('Oops, there was an error while saving the form.');
 		}
 	};
+
+	useEffect(() => {
+		updateApplications();
+	}, []);
 
 	const saveLink = (
 		<Button
