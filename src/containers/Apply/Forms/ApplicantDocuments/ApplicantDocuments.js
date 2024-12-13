@@ -23,6 +23,7 @@ const ApplicantDocuments = (props) => {
 		setIsLoading(false);
 	}, []);
 
+	console.log('Applicant Documents, line 26: ', applicantDocuments)
 	const loadApplication = async () => {
 		try {
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);

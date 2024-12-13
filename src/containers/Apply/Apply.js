@@ -46,6 +46,9 @@ const { Step } = Steps;
 
 const updateFormData = (currentForm, newValues, step) => {
 	const updatedForm = { ...currentForm };
+	console.log("updateFormData: newValues: ", newValues)
+	console.log("step 2: draft updatedForm: ", updatedForm)
+	console.log("which step?: ", step)
 	switch (step) {
 		case 'basicInfo':
 			// (basic information) save to applicant
@@ -87,6 +90,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	const [draftId, setDraftId] = useState(draftId);
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [vacancyDocuments, setVacancyDocuments] = useState([]);
+	const [isDraft, setIsDraft] = useState(editDraft ? editDraft : false);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
@@ -128,7 +132,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
+			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
 
 		const profileResponse = await axios
@@ -179,10 +183,10 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 		if (
 			//editSubmitted &&
-			initialValues.applicantDocuments &&
-			initialValues.applicantDocuments.length > 0
+			formData.applicantDocuments &&
+			formData.applicantDocuments.length > 0
 		) {
-			initialValues.applicantDocuments.forEach((applicantDocument) => {
+			formData.applicantDocuments.forEach((applicantDocument) => {
 				if (
 					applicantDocument &&
 					applicantDocument.title &&
@@ -192,7 +196,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 						...applicantDocuments[applicantDocument.title.label],
 						...applicantDocument,
 					};
-					var initialFiles = initialValues.applicantDocuments.filter(
+					var initialFiles = formData.applicantDocuments.filter(
 						(iv) => iv.title.label === applicantDocument.title.label
 					);
 					if (initialFiles != null && initialFiles.length > 0) {
@@ -382,14 +386,17 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	const updateApplications = async () => {
 		try {
 			// if app is draft: get app draft
-			if (editDraft) {
-				const draftResponse = await axios.get(GET_APPLICATION_DRAFT + appSysId)
+			console.log("line 386: isDraft: " , isDraft)
+			if (isDraft) {
+				console.log("draftId: line 388: ", draftId)
+				const draftResponse = await axios.get(GET_APPLICATION_DRAFT + draftId)
 				const draftData = draftResponse.data.result
-				//console.log(draftData)
+				console.log("step 1: draftData: ", draftData)
+				console.log("step 1A: draftData transformed: ", transformDraftJson(draftData))
 				//setFormData(transformDraftJson(draftData))
 				saveCurrentForm(transformDraftJson(draftData))
 				loadExistingApplication()
-				console.log("draft form data: " , formData)
+				console.log("step 3: draft formData: " , formData)
 			} else if (editSubmitted) {
 				const submittedResponse = await axios.get(APPLICANT_GET_APPLICATION + appSysId)
 				const submittedData = submittedResponse.data.result
@@ -400,7 +407,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			}
 			// else if app is editsubmitted: applicant get application
 		} catch (error) {
-
+			console.log("updateApplications error, line 404: ", error)
 		}
 		
 	}
@@ -415,6 +422,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 	const saveCurrentForm = async (result) => {
 		const updatedForm = updateFormData(formData, result, currentStepObj.key);
+		console.log("step 3: line 422: draft updatedForm: ", updatedForm)
 		setFormData(updatedForm);
 		return updatedForm;
 	};
@@ -514,7 +522,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 					const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
-					//console.log("saveDraftResponse: ", saveDraftResponse)
+					console.log("saveDraftResponse: ", saveDraftResponse)
 
 					if (!draftId && saveDraftResponse.data.result.draft_id) {
 						setDraftId(saveDraftResponse.data.result.draft_id);
@@ -537,12 +545,12 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 							)
 						);
 
-						console.log('line 540 Edit Draft: ', editDraft);
-						if (!editDraft) {
-							console.log('line 542 Edit Draft: ', editDraft);
+						console.log('line 540 Edit Draft: ', isDraft);
+						if (!isDraft) {
+							console.log('line 542 Edit Draft: ', isDraft);
 							// new apps
 							const requests = [];
-
+							console.log('Next, line 546: ', documents)
 							documents.forEach((document) => {
 								if (document.uid) {
 									const file = filesHashMap.get(document.uid);
@@ -605,6 +613,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 				message.error('Sorry!  There was an error saving.');
 			} finally {
 				setIsUploading(false);
+				setIsDraft(true);
 				checkAuth(setIsLoading, setAuth);
 			}
 		}
@@ -617,6 +626,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 				await saveCurrentForm(validationResult);
 			
 			save();
+			updateApplications();
 		} else if (currentStep < steps.length - 1) {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
@@ -658,7 +668,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
-			(editDraft || editSubmitted) &&
+			(isDraft || editSubmitted) &&
 			currentStep === 1 &&
 			initialValues.applicantDocuments.length > 0
 				? updateApplications() //location.reload()
@@ -671,7 +681,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 	useEffect(() => {
 		updateApplications();
-	}, []);
+	}, [isDraft]);
 
 	const saveLink = (
 		<Button
