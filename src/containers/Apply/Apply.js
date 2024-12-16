@@ -80,7 +80,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	const [formData, setFormData] = useState(
 		initialValues ? initialValues : defaultFormData
 	);
-
+	
 	const [currentFormInstance, setCurrentFormInstance] = useState(null);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [vacancyTitle, setVacancyTitle] = useState();
@@ -96,7 +96,6 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
 	const vacancyId = initialValues?.sysId || vacancySysId;
-
 	const checkTimeDuration = 1000;
 
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
@@ -132,9 +131,8 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
+			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
 		);
-
 		const profileResponse = await axios
 			.get(GET_PROFILE + user.uid)
 			.catch(function () {
@@ -183,10 +181,10 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 
 		if (
 			//editSubmitted &&
-			formData.applicantDocuments &&
-			formData.applicantDocuments.length > 0
+			initialValues.applicantDocuments &&
+			initialValues.applicantDocuments.length > 0
 		) {
-			formData.applicantDocuments.forEach((applicantDocument) => {
+			initialValues.applicantDocuments.forEach((applicantDocument) => {
 				if (
 					applicantDocument &&
 					applicantDocument.title &&
@@ -196,7 +194,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 						...applicantDocuments[applicantDocument.title.label],
 						...applicantDocument,
 					};
-					var initialFiles = formData.applicantDocuments.filter(
+					var initialFiles = initialValues.applicantDocuments.filter(
 						(iv) => iv.title.label === applicantDocument.title.label
 					);
 					if (initialFiles != null && initialFiles.length > 0) {
@@ -232,7 +230,6 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 				}
 			});
 		}
-
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
@@ -396,6 +393,7 @@ const Apply = ({ initialValues, editSubmitted, editDraft }) => {
 				//setFormData(transformDraftJson(draftData))
 				saveCurrentForm(transformDraftJson(draftData))
 				loadExistingApplication()
+				
 				console.log("step 3: draft formData: " , formData)
 			} else if (editSubmitted) {
 				const submittedResponse = await axios.get(APPLICANT_GET_APPLICATION + appSysId)
