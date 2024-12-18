@@ -43,6 +43,7 @@ import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
+import { transformDateTimeToDisplay } from './components/Util/Date/Date';
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -54,6 +55,10 @@ const app = () => {
 
 	let routes = [];
 	const { isUserLoggedIn, user } = auth;
+
+	if (user && isUserLoggedIn) {
+		console.log(`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`);
+	}
 
 	if (isUserLoggedIn) {
 		if (user.isChair) {
