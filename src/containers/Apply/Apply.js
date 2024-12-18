@@ -66,7 +66,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [vacancyTitle, setVacancyTitle] = useState();
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [draftId, setDraftId] = useState(draftId);
+	const [draftId, setDraftId] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 
@@ -249,6 +249,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			basicInfo: basicInfo
 		};
 		setFormData(newFormData);
+
+		let data = {
+			jsonobj: JSON.stringify(newFormData),
+		}
+
+		if (draftId){
+			data['sys_id'] = draftId;
+		}
+
+		const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+		setDraftId(saveDraftResponse.data.result.draft_id);
 	};
 
 	let steps = [];
@@ -409,7 +420,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					jsonobj: JSON.stringify(updatedFormData),
 				};
 
-				if (draftId) data['sys_id'] = draftId;
+				if (draftId){
+					data['sys_id'] = draftId;
+				};
+
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
 				message.info({
@@ -428,9 +442,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					className: 'save-message',
 					duration: 3,
 				});
-
-				if (!draftId && saveDraftResponse.data.result.draft_id)
+				console.log("🚀 ~ save ~ saveDraftResponse.data.result.draft_id:", saveDraftResponse.data.result.draft_id);
+				if (!draftId && saveDraftResponse.data.result.draft_id) {
 					setDraftId(saveDraftResponse.data.result.draft_id);
+				}
+				
 			} catch (error) {
 				message.error('Sorry!  There was an error saving.');
 			} finally {
