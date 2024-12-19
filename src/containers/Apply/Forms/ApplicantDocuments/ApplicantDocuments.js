@@ -103,10 +103,32 @@ const ApplicantDocuments = (props) => {
 
 	const storeFile = (changedInfo, index, appDocs) => {
 		appDocs[index]?.file?.fileList.push(changedInfo.file);
-
+		console.log("🚀 ~ storeFile ~ appDocs:", appDocs)
 		// set the default file to the new file in the form data
 		var target = event.target || event.srcElement;
 		target.defaultFiles = appDocs[index]?.file?.fileList;
+		uploadDocument(appDocs, index);
+	};
+
+	const uploadDocument = (document, index) => {
+		console.log('Document is uploading! ', document);
+		console.log('document.file: ', document[index].file);
+		console.log('document.file.fileList: ', document[index].file.fileList);
+		const file = document[index].file.fileList[index].originFileObj;
+		console.log("🚀 ~ uploadDocument ~ file:", file);
+
+		const options = {
+			params: {
+				file_name: document.file_name,
+				table_name: document.table_name,
+				table_sys_id: document.table_sys_id,
+			},
+			headers: {
+				'Content-Type': document[index].file.fileList[0].type,
+			},
+		};
+		console.log("🚀 ~ uploadDocument ~ options:", options);
+		axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
 	};
 
 	const getFileList = (index, appDocs) => {
@@ -199,6 +221,7 @@ const ApplicantDocuments = (props) => {
 															}
 														>
 															<Button
+																
 																/* disabled={
 																	applicantDocuments[index].file.fileList
 																		.length >= 1
