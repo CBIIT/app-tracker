@@ -337,9 +337,7 @@ const vacancyDashboard = () => {
 			sorter: {
 				compare: (a, b) => new Date(a.close_date) - new Date(b.close_date),
 				multiple: 3,
-				defaultSortOrder: 'descend',
 			},
-			defaultSortOrder: 'descend',
 		},
 		{
 			title: 'Actions',
