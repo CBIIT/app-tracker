@@ -96,6 +96,30 @@ function injectJellyDoctype(inputHTML) {
 	);
 }
 
+function injectHTMLOpenTag(inputHTML) {
+	const HTML_TAG = `<html lang="en">
+	`;
+	const idx = inputHTML.indexOf('<head');
+	return (
+		inputHTML.substring(0, idx) +
+		HTML_TAG  +
+		inputHTML.substring(idx)
+	);
+
+}
+
+function injectHTMLCloseTag(inputHTML) {
+	const HTML_TAG = `</html>
+	`;
+	const idx = inputHTML.indexOf('</j:jelly>');
+	return (
+		inputHTML.substring(0, idx) +
+		HTML_TAG  +
+		inputHTML.substring(idx)
+	);
+
+}
+
 function removeHtmlTags(inputHTML) {
 	return inputHTML.replace(/(<html>)|(<html.+>)/, '').replace('</html>', '');
 }
@@ -117,6 +141,8 @@ function decorateIndexHTML(pathToHTML) {
 	decoratedHTML = injectJellyWrappers(decoratedHTML);
 	decoratedHTML = injectJellyDoctype(decoratedHTML);
 	decoratedHTML = injectAuthLogic(decoratedHTML);
+	decoratedHTML = injectHTMLOpenTag(decoratedHTML);
+	decoratedHTML = injectHTMLCloseTag(decoratedHTML)
 
 	fs.writeFileSync(pathToHTML, decoratedHTML);
 }
