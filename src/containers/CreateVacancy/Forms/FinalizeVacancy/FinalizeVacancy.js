@@ -210,14 +210,14 @@ const finalizeVacancy = (props) => {
 					{basicInfo.sacCode ? null : '! '}Organizational Code
 				</h2>
 				<ul>
-					<p className='ListItemTrue'>{basicInfo.sacCode}</p>
+					<li className='ListItemTrue'>{basicInfo.sacCode}</li>
 				</ul>
 				<h2 style={basicInfo.positionClassification ? null : { color: 'red' }}>
 					{basicInfo.positionClassification ? null : '! '}Position
 					Classification
 				</h2>
 				<ul>
-					<p className='ListItemTrue'>{basicInfo.positionClassification}</p>
+					<li className='ListItemTrue'>{basicInfo.positionClassification}</li>
 				</ul>
 				<div><h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 					<ul>
@@ -226,12 +226,12 @@ const finalizeVacancy = (props) => {
 								<LoadingOutlined style={{ fontSize: '2rem' }} />
 							</Space>
 						) : (
-							<p className='ListItemTrue'>
+							<li className='ListItemTrue'>
 								{getPackageInitiatorDisplayName(
 									basicInfo.appointmentPackageIndicator,
 									allPackageInitiators
 								)}
-							</p>
+							</li>
 						)}
 					</ul></div>
 			</div>
