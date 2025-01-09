@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import EditableDropDown from './EditableDropDown';
 import { Form } from 'antd';
@@ -76,5 +76,27 @@ describe('EditableDropDown Component', () => {
         select.focus();
         select.blur();
         expect(await screen.findByText('Please make a selection')).toBeInTheDocument();
+    });
+    it('allows switching values in the dropdown', () => {
+        render(
+            <Form>
+                <EditableDropDown {...defaultProps} />
+            </Form>
+        );
+        const select = screen.getByRole('combobox');
+        expect(select.value).toBe('');
+
+        // Simulate selecting the first option
+        fireEvent.mouseDown(select);
+        const firstOption = screen.getByText('Option 1');
+        fireEvent.click(firstOption);
+        expect(screen.getByLabelText('Option 1')).toHaveAttribute('aria-selected', 'true');
+
+
+        // Simulate selecting the second option
+        fireEvent.mouseDown(select);
+        const secondOption = screen.getByText('Option 2');
+        fireEvent.click(secondOption);
+        expect(screen.getByLabelText('Option 2')).toHaveAttribute('aria-selected', 'true');
     });
 });
