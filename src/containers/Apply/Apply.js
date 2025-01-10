@@ -68,6 +68,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
+	const [vacancyDocuments, setVacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
@@ -106,7 +107,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
+			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
 		);
 		const profileResponse = await axios.get(
 			GET_PROFILE + user.uid
@@ -134,6 +135,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		vacancyDocuments.push(response.data.result.vacancy_documents);
 		if (!editSubmitted) setDraftId(appSysId);
 
 		let applicantDocuments = {};
@@ -224,6 +226,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		vacancyDocuments.push(response.data.result.vacancy_documents);
 
 		const references = [];
 
@@ -250,8 +253,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		};
 		setFormData(newFormData);
 
+		const newData = {
+			...newFormData,
+			vacancyDocuments: vacancyDocuments,
+		}
+		
 		let data = {
-			jsonobj: JSON.stringify(newFormData),
+			jsonobj: JSON.stringify(newData),
 		}
 
 		if (draftId){
@@ -416,8 +424,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			});
 		} else {
 			try {
+				const newData = {
+					...updatedFormData,
+					vacancyDocuments: vacancyDocuments,
+				}
+
 				let data = {
-					jsonobj: JSON.stringify(updatedFormData),
+					jsonobj: JSON.stringify(newData),
 				};
 
 				if (draftId){
@@ -442,7 +455,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					className: 'save-message',
 					duration: 3,
 				});
-				console.log("🚀 ~ save ~ saveDraftResponse.data.result.draft_id:", saveDraftResponse.data.result.draft_id);
+				console.log("🚀 ~ save ~ saveDraftResponse.data.result.draft_id:", saveDraftResponse);
 				if (!draftId && saveDraftResponse.data.result.draft_id) {
 					setDraftId(saveDraftResponse.data.result.draft_id);
 				}

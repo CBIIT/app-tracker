@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Modal, message } from 'antd';
+import { Modal, message, notification } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
@@ -8,8 +8,10 @@ import './SubmitModal.css';
 import {
 	SUBMIT_APPLICATION,
 	APPLICATION_SUBMISSION,
+	SAVE_APP_DRAFT,
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
+	ATTACHMENT_CHECK,
 } from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
@@ -34,8 +36,25 @@ const submitModal = ({
 	const handleOk = async () => {
 		setConfirmLoading(true);
 		try {
-			const dataToSend = transformJsonToBackend(data);
+			const checkAttachments = (documents) => {
+				// Filters out optional documents
+				const filterOutOptional = documents.filter((doc) => doc.is_optional == 'false');
+				console.log("🚀 ~ checkAttachments ~ filterOutOptional:", filterOutOptional)
+
+				// Filters out the documents that return exists as false
+				const filterByFalse = filterOutOptional.filter((doc) => doc.exists == false);
+				console.log("🚀 ~ checkAttachments ~ filterByFalse:", filterByFalse)
+				
+				// If the length of the filterByFalse is greater than 0, return false, else return true
+				if (filterByFalse.length > 0) {
+					return false;
+				} else {
+					return true;
+				}
+			};
+
 			if (editSubmitted) {
+				const dataToSend = transformJsonToBackend(data);
 				dataToSend['app_sys_id'] = submittedAppSysId;
 
 				await axios.put(APPLICATION_SUBMISSION, dataToSend);
@@ -73,16 +92,24 @@ const submitModal = ({
 				await Promise.all([...documentsToDelete, ...documentsToUpload]);
 				setAppSysId(submittedAppSysId);
 			} else {
-				if (draftId) dataToSend['draft_id'] = draftId;
-
-				const response = await axios.post(SUBMIT_APPLICATION, dataToSend);
-
 				const requests = [];
-				const documents = response.data.result.vacancy_documents;
-				setAppSysId(response.data.result.application_sys_id);
+
+				let dataToSend = {
+					jsonobj: JSON.stringify(data),
+				};
+
+				if (draftId) {
+					dataToSend['draft_id'] = draftId;
+				}
+
+				const draftResponse = await axios.post(SAVE_APP_DRAFT, dataToSend);
+
+				const documents = draftResponse.data.result.response.vacancy_documents;
+				
+				const infoToSend = transformJsonToBackend(data);
 
 				const filesHashMap = new Map();
-				dataToSend.vacancy_documents.forEach((document) =>
+				infoToSend.vacancy_documents.forEach((document) =>
 					document.file.fileList.forEach((file) =>
 						filesHashMap.set(file.uid, file.originFileObj)
 					)
@@ -107,6 +134,40 @@ const submitModal = ({
 						);
 					}
 				});
+
+				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
+				console.log("🚀 ~ handleOk ~ verifyAttachments:", verifyAttachments)
+				const mandatoryDocuments = verifyAttachments.data.result.messages;
+				console.log("🚀 ~ handleOk ~ mandatoryDocuments:", mandatoryDocuments)
+				console.log("🚀 ~ handleOk ~ checkAttachments(mandatoryDocuments):", checkAttachments(mandatoryDocuments))
+				if (checkAttachments(mandatoryDocuments) == true) {
+					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
+					setAppSysId(response.data.result.application_sys_id);
+					await Promise.all(requests);
+				} else {
+					setSubmitted(false);
+					notification.error({
+						message:'Sorry! There was an error with submitting the attachments.',
+						description:(
+							<>
+								<p>
+									Please re-upload the attachment(s) and try again. If the issue
+									continues, contact the Help Desk by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '25vh',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
+					// history.goBack();
+				}
 
 				await Promise.all(requests);
 			}
