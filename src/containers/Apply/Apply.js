@@ -455,7 +455,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					className: 'save-message',
 					duration: 3,
 				});
-				console.log("🚀 ~ save ~ saveDraftResponse.data.result.draft_id:", saveDraftResponse);
+				
 				if (!draftId && saveDraftResponse.data.result.draft_id) {
 					setDraftId(saveDraftResponse.data.result.draft_id);
 				}

@@ -36,14 +36,47 @@ const submitModal = ({
 	const handleOk = async () => {
 		setConfirmLoading(true);
 		try {
+			const attachDraftDocuments = async (infoToSend, documents) => {
+				const requests = [];
+
+				const filesHashMap = new Map();
+				infoToSend.vacancy_documents.forEach((document) =>
+					document.file.fileList.forEach((file) =>
+						filesHashMap.set(file.uid, file.originFileObj)
+					)
+				);
+
+				documents.forEach((document) => {
+					if (document.uid) {
+						const file = filesHashMap.get(document.uid);
+
+						const options = {
+							params: {
+								file_name: document.file_name,
+								table_name: document.table_name,
+								table_sys_id: document.table_sys_id,
+							},
+							headers: {
+								'Content-Type': file.type,
+							},
+						};
+						requests.push(
+							axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+						);
+					}
+				});
+
+				await Promise.all(requests);
+
+				return;
+			}
+
 			const checkAttachments = (documents) => {
 				// Filters out optional documents
 				const filterOutOptional = documents.filter((doc) => doc.is_optional == 'false');
-				console.log("🚀 ~ checkAttachments ~ filterOutOptional:", filterOutOptional)
 
 				// Filters out the documents that return exists as false
 				const filterByFalse = filterOutOptional.filter((doc) => doc.exists == false);
-				console.log("🚀 ~ checkAttachments ~ filterByFalse:", filterByFalse)
 				
 				// If the length of the filterByFalse is greater than 0, return false, else return true
 				if (filterByFalse.length > 0) {
@@ -101,45 +134,16 @@ const submitModal = ({
 				if (draftId) {
 					dataToSend['draft_id'] = draftId;
 				}
-
-				const draftResponse = await axios.post(SAVE_APP_DRAFT, dataToSend);
-
-				const documents = draftResponse.data.result.response.vacancy_documents;
 				
 				const infoToSend = transformJsonToBackend(data);
 
-				const filesHashMap = new Map();
-				infoToSend.vacancy_documents.forEach((document) =>
-					document.file.fileList.forEach((file) =>
-						filesHashMap.set(file.uid, file.originFileObj)
-					)
-				);
+				const draftResponse = await axios.post(SAVE_APP_DRAFT, dataToSend);
+				const documents = draftResponse.data.result.response.vacancy_documents;
 
-				documents.forEach((document) => {
-					if (document.uid) {
-						const file = filesHashMap.get(document.uid);
-
-						const options = {
-							params: {
-								file_name: document.file_name,
-								table_name: document.table_name,
-								table_sys_id: document.table_sys_id,
-							},
-							headers: {
-								'Content-Type': file.type,
-							},
-						};
-						requests.push(
-							axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-						);
-					}
-				});
+				await attachDraftDocuments(infoToSend, documents);
 
 				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
-				console.log("🚀 ~ handleOk ~ verifyAttachments:", verifyAttachments)
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
-				console.log("🚀 ~ handleOk ~ mandatoryDocuments:", mandatoryDocuments)
-				console.log("🚀 ~ handleOk ~ checkAttachments(mandatoryDocuments):", checkAttachments(mandatoryDocuments))
 				if (checkAttachments(mandatoryDocuments) == true) {
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
 					setAppSysId(response.data.result.application_sys_id);
