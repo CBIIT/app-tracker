@@ -7,10 +7,11 @@ const editableDropDown = (props) => (
 		label={props.label}
 		name={props.name}
 		rules={[{ required: props.required, message: 'Please make a selection' }]}
+		validateTrigger={['onBlur']}
 	>
 		{props.loading ? (
-			<Space block='true' style={{display: 'flex', justifyContent: 'center'}}>
-				<LoadingOutlined style={{fontSize: '2rem'}}/>
+			<Space block='true' style={{ display: 'flex', justifyContent: 'center' }}>
+				<LoadingOutlined style={{ fontSize: '2rem' }} />
 			</Space>
 		) : (
 			<Select
