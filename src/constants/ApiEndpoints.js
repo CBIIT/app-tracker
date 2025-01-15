@@ -117,3 +117,6 @@ export const CREATE_APP_DOCS =
 
 export const ATTACHMENT_CHECK =
 	'/api/x_g_nci_app_tracke/application/attachment_check/';
+
+export const ATTACHMENT_CHECK_FOR_APPLICATIONS =
+	'/api/x_g_nci_app_tracke/application/getAttachmentApplication/';

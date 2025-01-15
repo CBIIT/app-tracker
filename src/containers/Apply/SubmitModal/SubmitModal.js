@@ -12,6 +12,7 @@ import {
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
 	ATTACHMENT_CHECK,
+	ATTACHMENT_CHECK_FOR_APPLICATIONS,
 } from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
@@ -36,40 +37,79 @@ const submitModal = ({
 	const handleOk = async () => {
 		setConfirmLoading(true);
 		try {
-			const attachDraftDocuments = async (infoToSend, documents) => {
-				const requests = [];
+			const requests = [];
 
-				const filesHashMap = new Map();
-				infoToSend.vacancy_documents.forEach((document) =>
-					document.file.fileList.forEach((file) =>
-						filesHashMap.set(file.uid, file.originFileObj)
-					)
-				);
+			const attachDocuments = async (infoToSend, documents) => {
 
-				documents.forEach((document) => {
-					if (document.uid) {
-						const file = filesHashMap.get(document.uid);
+				if (editSubmitted) {
 
-						const options = {
-							params: {
-								file_name: document.file_name,
-								table_name: document.table_name,
-								table_sys_id: document.table_sys_id,
-							},
-							headers: {
-								'Content-Type': file.type,
-							},
-						};
-						requests.push(
-							axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
-						);
-					}
-				});
+					const documentsToDelete = infoToSend.vacancy_documents.map(
+						(document) => {
+							console.log("🚀 ~ documentsToDelete ~ document:", document);
+							if (document?.uploadedDocument?.markedToDelete) {
+								return axios.delete(SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId);
+							}
+						}
+					);
 
-				await Promise.all(requests);
+					const documentsToUpload = infoToSend.vacancy_documents.map(
+						(document) => {
+							console.log("🚀 ~ documentsToUpload ~ document:", document);
+							if (document.file.file) {
+								const file = document.file.file;
+								const options = {
+									params: {
+										file_name: document.file.file.name,
+										table_name: document.table_name,
+										table_sys_id: document.table_sys_id,
+									},
+									headers: {
+										'Content-Type': document.file.file.type,
+									},
+								};
+								return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
+							}
+						}
+					);
 
-				return;
-			}
+					await Promise.all([...documentsToDelete, ...documentsToUpload]);
+					return;
+
+				} else {
+
+					const filesHashMap = new Map();
+					infoToSend.vacancy_documents.forEach((document) =>
+						document.file.fileList.forEach((file) =>
+							filesHashMap.set(file.uid, file.originFileObj)
+						)
+					);
+
+					documents.forEach((document) => {
+						if (document.uid) {
+							const file = filesHashMap.get(document.uid);
+
+							const options = {
+								params: {
+									file_name: document.file_name,
+									table_name: document.table_name,
+									table_sys_id: document.table_sys_id,
+								},
+								headers: {
+									'Content-Type': file.type,
+								},
+							};
+							requests.push(
+								axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
+							);
+						}
+					});
+
+					await Promise.all(requests);
+
+					return;
+				}
+
+			};
 
 			const checkAttachments = (documents) => {
 				// Filters out optional documents
@@ -86,46 +126,47 @@ const submitModal = ({
 				}
 			};
 
+			const infoToSend = transformJsonToBackend(data);
+
 			if (editSubmitted) {
-				const dataToSend = transformJsonToBackend(data);
-				dataToSend['app_sys_id'] = submittedAppSysId;
 
-				await axios.put(APPLICATION_SUBMISSION, dataToSend);
+				infoToSend['app_sys_id'] = submittedAppSysId;
 
-				const documentsToDelete = dataToSend.vacancy_documents.map(
-					(document) => {
-						if (document?.uploadedDocument?.markedToDelete) {
-							return axios.delete(
-								SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-							);
-						}
-					}
-				);
+				await attachDocuments(infoToSend);
+	
+				const checkDocuments = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId);
+				const mandatoryDocuments = checkDocuments.data.result.messages;
 
-				const documentsToUpload = dataToSend.vacancy_documents.map(
-					(document) => {
-						if (document.file.file) {
-							const file = document.file.file;
-							const options = {
-								params: {
-									file_name: document.file.file.name,
-									table_name: document.table_name,
-									table_sys_id: document.table_sys_id,
-								},
-								headers: {
-									'Content-Type': document.file.file.type,
-								},
-							};
+				if (checkAttachments(mandatoryDocuments) == true) {
+					await axios.put(APPLICATION_SUBMISSION, infoToSend);
+					setAppSysId(submittedAppSysId);
+					await Promise.all(requests);
+				} else {
+					setSubmitted(false);
+					notification.error({
+						message:'Sorry! There was an error with submitting the attachments.',
+						description:(
+							<>
+								<p>
+									Please re-upload the attachment(s) and try again. If the issue
+									continues, contact the Help Desk by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '25vh',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
+					// history.goBack();
+				}
 
-							return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
-						}
-					}
-				);
-
-				await Promise.all([...documentsToDelete, ...documentsToUpload]);
-				setAppSysId(submittedAppSysId);
 			} else {
-				const requests = [];
 
 				let dataToSend = {
 					jsonobj: JSON.stringify(data),
@@ -134,16 +175,15 @@ const submitModal = ({
 				if (draftId) {
 					dataToSend['draft_id'] = draftId;
 				}
-				
-				const infoToSend = transformJsonToBackend(data);
 
 				const draftResponse = await axios.post(SAVE_APP_DRAFT, dataToSend);
 				const documents = draftResponse.data.result.response.vacancy_documents;
 
-				await attachDraftDocuments(infoToSend, documents);
+				await attachDocuments(infoToSend, documents);
 
 				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
+
 				if (checkAttachments(mandatoryDocuments) == true) {
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
 					setAppSysId(response.data.result.application_sys_id);

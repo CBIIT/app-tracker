@@ -135,7 +135,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		vacancyDocuments.push(response.data.result.vacancy_documents);
 		if (!editSubmitted) setDraftId(appSysId);
 
 		let applicantDocuments = {};
@@ -191,6 +190,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			address: address
 		};
 		setFormData(formData);
+		console.log('formData', formData);
 	};
 
 	const {auth: {user}, setAuth} = useAuth();
