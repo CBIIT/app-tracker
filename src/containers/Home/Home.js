@@ -80,7 +80,7 @@ const home = () => {
 					of Health and Human Services, is the nation{"'"}s medical research
 					agency &#8212; making important discoveries that improve health and
 					save lives. To learn more about NIH, please visit{' '}
-					<a href='https://www.nih.gov/about-nih/who-we-are'>
+					<a href='https://www.nih.gov/about-nih/who-we-are' className='Link'>
 						https://www.nih.gov/about-nih/who-we-are
 					</a>
 				</p>
