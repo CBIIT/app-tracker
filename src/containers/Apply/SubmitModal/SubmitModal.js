@@ -55,16 +55,16 @@ const submitModal = ({
 					const documentsToUpload = infoToSend.vacancy_documents.map(
 						(document) => {
 							console.log("🚀 ~ documentsToUpload ~ document:", document);
-							if (document.file.file) {
-								const file = document.file.file;
+							if (document.file.file || document.file.fileList.length > 0) {
+								const file = document.file.file ? document.file.file  : document.file.fileList[0];
 								const options = {
 									params: {
-										file_name: document.file.file.name,
+										file_name: file.name,
 										table_name: document.table_name,
 										table_sys_id: document.table_sys_id,
 									},
 									headers: {
-										'Content-Type': document.file.file.type,
+										'Content-Type': file.type,
 									},
 								};
 								return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
