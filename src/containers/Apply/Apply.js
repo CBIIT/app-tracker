@@ -190,7 +190,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			address: address
 		};
 		setFormData(formData);
-		console.log('formData', formData);
 	};
 
 	const {auth: {user}, setAuth} = useAuth();

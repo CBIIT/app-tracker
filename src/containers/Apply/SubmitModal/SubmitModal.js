@@ -46,7 +46,6 @@ const submitModal = ({
 
 					const documentsToDelete = infoToSend.vacancy_documents.map(
 						(document) => {
-							console.log("🚀 ~ documentsToDelete ~ document:", document);
 							if (document?.uploadedDocument?.markedToDelete) {
 								return axios.delete(
 									SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
@@ -59,7 +58,6 @@ const submitModal = ({
 
 					const documentsToUpload = infoToSend.vacancy_documents.map(
 						(document) => {
-							console.log("🚀 ~ documentsToUpload ~ document:", document);
 							if (document.file.file || document.file.fileList.length > 0) {
 								const file = document.file.file ? document.file.file  : document.file.fileList[0];
 								const options = {
