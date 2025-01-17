@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Modal, message, notification } from 'antd';
+import { Modal, message, notification, Progress } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
@@ -30,6 +30,7 @@ const submitModal = ({
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
 	const [submitted, setSubmitted] = useState(false);
+	const [percent, setPercent] = useState(false);
 
 	const history = useHistory();
 
@@ -142,15 +143,18 @@ const submitModal = ({
 			if (editSubmitted) {
 
 				infoToSend['app_sys_id'] = submittedAppSysId;
+				setSubmitted(true);
 
 				await attachDocuments(infoToSend);
-	
+				setPercent(33);
+				
 				const checkDocuments = await axios.get(
 					ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId
 				).catch(function () {
 					message.error('Sorry! There was an error when attempting to verify your documents.');
 				});
 				const mandatoryDocuments = checkDocuments.data.result.messages;
+				setPercent(66);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
 					await axios.put(
@@ -194,12 +198,15 @@ const submitModal = ({
 				if (draftId) {
 					dataToSend['draft_id'] = draftId;
 				}
+				
+				setSubmitted(true);
 
 				const draftResponse = await axios.post(
 					SAVE_APP_DRAFT, dataToSend
 				).catch(function () {
 					message.error('Sorry! There was an error when attempting to save your application draft.');
 				});
+				setPercent(20);
 				console.log("Saving draft...", draftResponse);
 
 				// creates a filename on application document table for each vacancy document
@@ -208,15 +215,18 @@ const submitModal = ({
 				).catch(function () {
 					message.error('Sorry! There was an error when attempting to attach your documents.');
 				});
+				setPercent(40);
 
 				const documents = saveDraftDocs.data.result.response.vacancy_documents;
 				await attachDocuments(infoToSend, documents);
+				setPercent(60);
 
 				const verifyAttachments = await axios.get(
 					ATTACHMENT_CHECK + draftId
 				).catch(function () {
 					message.error('Sorry! There was an error when attempting to verify your documents.');
 				});
+				setPercent(80);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
 
 				if (checkAttachments(mandatoryDocuments) == true) {
@@ -261,6 +271,7 @@ const submitModal = ({
 			);
 		} finally {
 			setConfirmLoading(false);
+			setPercent(100);
 			checkAuth(setConfirmLoading, setAuth);
 		}
 	};
@@ -303,13 +314,24 @@ const submitModal = ({
 			className='ModalConfirmed'
 			okText='Done'
 		>
-			<div className='Confirmed'>
-				<CheckCircleFilled className='ConfirmedIcon' />
-				<h2>Application Submitted</h2>
-				<p>
-					View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
-				</p>
+			{percent < 100 ? (
+				<div className='Confirmed'>
+					<h2>Application is being submitted</h2>
+					<p>
+						Please do not close or refresh the browser window while the system
+						is uploading your application.
+					</p>
+					<Progress type='circle' percent={percent} />
+				</div>
+			) : (
+				<div className='Confirmed'>
+					<CheckCircleFilled className='ConfirmedIcon' />
+					<h2>Application Submitted</h2>
+					<p>
+						View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
+					</p>
 			</div>
+			)}
 		</Modal>
 	);
 };
