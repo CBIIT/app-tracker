@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Error Component should render with default props 1`] = `
+<div>
+  <div
+    class="ant-result ant-result-"
+  >
+    <div
+      class="ant-result-icon"
+    />
+    <div
+      class="ant-result-title"
+    />
+    <div
+      class="ant-result-subtitle"
+    >
+      Sorry, something went wrong![object Object]
+    </div>
+  </div>
+</div>
+`;
