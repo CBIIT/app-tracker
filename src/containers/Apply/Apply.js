@@ -266,7 +266,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			data['sys_id'] = draftId;
 		}
 
-		const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+		const saveDraftResponse = await axios.post(
+			SAVE_APP_DRAFT, data
+		).catch(function () {
+			message.error('Sorry! There was an error saving your application draft.');
+		});
 		setDraftId(saveDraftResponse.data.result.draft_id);
 	};
 
@@ -437,7 +441,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					data['sys_id'] = draftId;
 				};
 
-				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+				const saveDraftResponse = await axios.post(
+					SAVE_APP_DRAFT, data
+				).catch(function () {
+					message.error('Sorry! There was an error saving your application draft.');
+				});
 
 				message.info({
 					successKey,
@@ -461,7 +469,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				}
 				
 			} catch (error) {
-				message.error('Sorry!  There was an error saving.');
+				message.error('Sorry! There was an error saving.');
 			} finally {
 				checkAuth(setIsLoading, setAuth);
 			}
