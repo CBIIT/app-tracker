@@ -9,6 +9,7 @@ import {
 	SUBMIT_APPLICATION,
 	APPLICATION_SUBMISSION,
 	SAVE_APP_DRAFT,
+	CREATE_APP_DOCS,
 	SERVICE_NOW_FILE_ATTACHMENT,
 	SERVICE_NOW_ATTACHMENT,
 	ATTACHMENT_CHECK,
@@ -177,7 +178,9 @@ const submitModal = ({
 				}
 
 				const draftResponse = await axios.post(SAVE_APP_DRAFT, dataToSend);
-				const documents = draftResponse.data.result.response.vacancy_documents;
+				console.log("Saving draft...", draftResponse);
+				const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
+				const documents = saveDraftDocs.data.result.response.vacancy_documents;
 
 				await attachDocuments(infoToSend, documents);
 
