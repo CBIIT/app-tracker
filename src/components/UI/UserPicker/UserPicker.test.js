@@ -8,7 +8,6 @@ jest.mock('axios');
 
 describe('UserPicker Component', () => {
     const mockOnChange = jest.fn();
-    const mockBuildUrl = jest.fn();
 
     const mockUser = {
         name: { value: 'John Doe' },
@@ -178,13 +177,10 @@ describe('UserPicker Component', () => {
         });
     });
 
-    // Testing buildUrl with no search query
-
     test('builds URL correctly without search query', async () => {
         render(<UserPicker value={mockUser} onChange={mockOnChange} />);
         const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: '' } });
-        fireEvent.click(input);
+        fireEvent.change(input, { target: { value: ' ' } });
 
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('^nameISNOTEMPTY'));
