@@ -15,6 +15,7 @@ describe('SubmitModal component', () => {
     let mockDraftId;
     let mockEditSubmitted; // returns True or False
     let mockAppSysId;
+    let mockInfoToSend;
 
     beforeEach(() => {
         mockHandleCancel = jest.fn();
@@ -112,6 +113,34 @@ describe('SubmitModal component', () => {
             },
         };
         axios.post.mockResolvedValue(mockSaveDraftDocResponse);
+
+        mockInfoToSend = {
+            vacancy_documents: {
+                file: {
+                    file: {
+                        uid: "rc-upload-1737555580020-15", 
+                        name: "Cirriculum Vitae (CV).docx", 
+                        size: 14296046, 
+                        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    },
+                    fileList: [{
+                        0: {
+                            name: "Cirriculum Vitae (CV).docx",
+                            originFileObj: {
+                                uid: "rc-upload-1737555580020-15",
+                                name: "Cirriculum Vitae (CV).docx",
+                                size: 14296046,
+                                type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                uid: "rc-upload-1737555580020-15",
+                            },
+                            size: 14296046,
+                            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            uid: "rc-upload-1737555580020-15",
+                        },
+                    }],
+                },
+            }
+        };
 
         render(<SubmitModal
             visible={mockVisible}
