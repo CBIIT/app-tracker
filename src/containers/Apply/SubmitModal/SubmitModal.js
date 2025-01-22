@@ -190,7 +190,7 @@ const submitModal = ({
 				}
 
 			} else {
-
+				console.log('🚀 ~ handleOk ~ data: ', data);
 				let dataToSend = {
 					jsonobj: JSON.stringify(data),
 				};
@@ -201,13 +201,12 @@ const submitModal = ({
 				
 				setSubmitted(true);
 
-				const draftResponse = await axios.post(
+				await axios.post(
 					SAVE_APP_DRAFT, dataToSend
 				).catch(function () {
 					message.error('Sorry! There was an error when attempting to save your application draft.');
 				});
 				setPercent(20);
-				console.log("Saving draft...", draftResponse);
 
 				// creates a filename on application document table for each vacancy document
 				const saveDraftDocs = await axios.post(
