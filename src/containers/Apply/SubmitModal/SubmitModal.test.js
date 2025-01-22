@@ -114,6 +114,37 @@ describe('SubmitModal component', () => {
         };
         axios.post.mockResolvedValue(mockSaveDraftDocResponse);
 
+        // This mock will stand in as the option used to attach documents
+        const mockOptions = [
+            {
+                uid: "rc-upload-1737555580020-15",
+                file_name: "Cirriculum Vitae (CV).docx",
+                table_name: 'application_documents',
+                table_sys_id: '456',
+            },
+        ];
+
+        // This mock will stand in as the file that is the fileHashMap
+        const mockFile = {
+            file: {
+                uid: "rc-upload-1737555580020-15", 
+                originFileObj: {
+                    uid: "rc-upload-1737555580020-15",
+                    name: "Cirriculum Vitae (CV).docx",
+                    size: 14296046,
+                    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    uid: "rc-upload-1737555580020-15",
+                },
+            },
+        };
+
+        const mockFileAttachResponse = {
+            response: {
+                'status': 200,
+            }
+        }
+        axios.post.mockResolvedValue(mockFileAttachResponse);
+
         mockInfoToSend = {
             vacancy_documents: {
                 file: {
@@ -154,6 +185,7 @@ describe('SubmitModal component', () => {
         fireEvent.click(screen.getByText(/Ok/i));
         expect(axios.post).toHaveBeenCalledWith('/api/x_g_nci_app_tracke/application/save_app_draft', { key: mockFormData, draft_id: mockDraftId });
         expect(axios.post).toHaveBeenCalledWith('/api/x_g_nci_app_tracke/application/createApplicationDocument', { key: mockFormData, draft_id: mockDraftId });
+        // expect(axios.post).toHaveBeenCalledWith('/api/now/attachment/file', { key: mockOptions, file: mockFile });
     });
     
 
