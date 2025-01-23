@@ -2,20 +2,28 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
 import axios from 'axios';
+import { 
+    mockUseAuth, 
+    mockFormData, 
+    mockSaveAppDraftResponse,
+    mockSaveAppDraftFailResponse,
+    mockSaveDraftDocResponse,
+    mockSaveDraftDocFailResponse,
+    mockOptions,
+    mockFile,
+    mockFileAttachResponse
+} from './SubmitModalMockData';
 
 jest.mock('../../../hooks/useAuth');
 jest.mock('axios');
 
 
 describe('SubmitModal component', () => {
-    let mockUseAuth;
     let mockVisible; // returns True or False
     let mockHandleCancel;
-    let mockFormData;
     let mockDraftId;
     let mockEditSubmitted; // returns True or False
     let mockAppSysId;
-    let mockInfoToSend;
 
     beforeEach(() => {
         mockHandleCancel = jest.fn();
@@ -41,137 +49,21 @@ describe('SubmitModal component', () => {
 
     // Test cases for new app submissions
     test('should begin new app submission process on Ok click', () => {
-        mockUseAuth = {
-            auth: {
-                isUserLoggedIn: true,
-                user: { uid: '123' },
-                oktaLoginAndRedirectUrl: 'http://example.com/login',
-            },
-        };
+        
         useAuth.mockReturnValue(mockUseAuth);
 
         mockVisible = true;
         mockDraftId = 123;
         mockEditSubmitted = false;
         mockAppSysId = null;
-        mockFormData = {
-            applicantDocuments: [
-                {
-                    file: {
-                        file: {
-                            uid: "rc-upload-1737555580020-15", 
-                            name: "Cirriculum Vitae (CV).docx", 
-                            size: 14296046, 
-                            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        },
-                        fileList: [{
-                            0: {
-                                name: "Cirriculum Vitae (CV).docx",
-                                originFileObj: {
-                                    uid: "rc-upload-1737555580020-15",
-                                    name: "Cirriculum Vitae (CV).docx",
-                                    size: 14296046,
-                                    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                    uid: "rc-upload-1737555580020-15",
-                                },
-                                size: 14296046,
-                                type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                uid: "rc-upload-1737555580020-15",
-                            },
-                        }],
-                    },
-                },
-            ],
-        }
 
-        const mockSaveAppDraftResponse = {
-            data: {
-                result: {
-                    response: {
-                        'status': 200,
-						'message': 'Sucessfully updated draft_id:' + '123',
-						'draft_id': '123',
-                    },
-                },
-            },
-        };
+        // Mocks axios.post call for SAVE_APP_DRAFT
         axios.post.mockResolvedValue(mockSaveAppDraftResponse);
 
-        const mockSaveDraftDocResponse = {
-            data: {
-                result: {
-                    response: {
-                        'status': 200,
-                        response: {
-                            'file_name': "Cirriculum Vitae (CV).docx",
-                            'table_sys_id': '456',
-                            'table_name': 'application_documents',
-                            'uid': 'rc-upload-1737555580020-15',
-                        }
-                    },
-                },
-            },
-        };
+        // Mocks axios.post call for CREATE_APP_DOCS
         axios.post.mockResolvedValue(mockSaveDraftDocResponse);
 
-        // This mock will stand in as the option used to attach documents
-        const mockOptions = [
-            {
-                uid: "rc-upload-1737555580020-15",
-                file_name: "Cirriculum Vitae (CV).docx",
-                table_name: 'application_documents',
-                table_sys_id: '456',
-            },
-        ];
-
-        // This mock will stand in as the file that is the fileHashMap
-        const mockFile = {
-            file: {
-                uid: "rc-upload-1737555580020-15", 
-                originFileObj: {
-                    uid: "rc-upload-1737555580020-15",
-                    name: "Cirriculum Vitae (CV).docx",
-                    size: 14296046,
-                    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    uid: "rc-upload-1737555580020-15",
-                },
-            },
-        };
-
-        const mockFileAttachResponse = {
-            response: {
-                'status': 200,
-            }
-        }
         axios.post.mockResolvedValue(mockFileAttachResponse);
-
-        mockInfoToSend = {
-            vacancy_documents: {
-                file: {
-                    file: {
-                        uid: "rc-upload-1737555580020-15", 
-                        name: "Cirriculum Vitae (CV).docx", 
-                        size: 14296046, 
-                        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    },
-                    fileList: [{
-                        0: {
-                            name: "Cirriculum Vitae (CV).docx",
-                            originFileObj: {
-                                uid: "rc-upload-1737555580020-15",
-                                name: "Cirriculum Vitae (CV).docx",
-                                size: 14296046,
-                                type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                uid: "rc-upload-1737555580020-15",
-                            },
-                            size: 14296046,
-                            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                            uid: "rc-upload-1737555580020-15",
-                        },
-                    }],
-                },
-            }
-        };
 
         render(<SubmitModal
             visible={mockVisible}
@@ -185,7 +77,7 @@ describe('SubmitModal component', () => {
         fireEvent.click(screen.getByText(/Ok/i));
         expect(axios.post).toHaveBeenCalledWith('/api/x_g_nci_app_tracke/application/save_app_draft', { key: mockFormData, draft_id: mockDraftId });
         expect(axios.post).toHaveBeenCalledWith('/api/x_g_nci_app_tracke/application/createApplicationDocument', { key: mockFormData, draft_id: mockDraftId });
-        // expect(axios.post).toHaveBeenCalledWith('/api/now/attachment/file', { key: mockOptions, file: mockFile });
+        expect(axios.post).toHaveBeenCalledWith('/api/now/attachment/file', { key: mockOptions, file: mockFile });
     });
     
 
