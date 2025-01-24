@@ -1,10 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
+import checkAuth from '../../../constants/checkAuth';
 import axios from 'axios';
 import { 
     mockUseAuth, 
-    mockFormData, 
+    mockFormData,
+    mockFormData1,
     mockSaveAppDraftResponse,
     mockSaveAppDraftFailResponse,
     mockSaveDraftDocResponse,
@@ -13,13 +15,24 @@ import {
     mockFile,
     mockFileAttachResponse
 } from './SubmitModalMockData';
+import {
+	SUBMIT_APPLICATION,
+	APPLICATION_SUBMISSION,
+	SAVE_APP_DRAFT,
+	CREATE_APP_DOCS,
+	SERVICE_NOW_FILE_ATTACHMENT,
+	SERVICE_NOW_ATTACHMENT,
+	ATTACHMENT_CHECK,
+	ATTACHMENT_CHECK_FOR_APPLICATIONS,
+} from '../../../constants/ApiEndpoints';
 
 jest.mock('../../../hooks/useAuth');
+jest.mock('../../../constants/checkAuth');
 jest.mock('axios');
 
 
 describe('SubmitModal component', () => {
-    let mockVisible; // returns True or False
+    const mockVisible = true;
     let mockHandleCancel;
     let mockDraftId;
     let mockEditSubmitted; // returns True or False
@@ -27,10 +40,14 @@ describe('SubmitModal component', () => {
 
     beforeEach(() => {
         mockHandleCancel = jest.fn();
+        useAuth.mockReturnValue(mockUseAuth);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     test('should render SubmitModal component', () => {
-        mockVisible = true;
         render(<SubmitModal
             visible={mockVisible}
             onCancel={mockHandleCancel}
@@ -47,43 +64,29 @@ describe('SubmitModal component', () => {
         expect(handleCancelElement).toBeInTheDocument();
     });
 
-    // Test cases for new app submissions
-    test('should begin new app submission process on Ok click', () => {
-        
+    test('should begin new app submission process on Ok click', async () => {
         useAuth.mockReturnValue(mockUseAuth);
-
-        mockVisible = true;
-        mockDraftId = 123;
+        mockDraftId = '123';
         mockEditSubmitted = false;
-        mockAppSysId = null;
-
-        // Mocks axios.post call for SAVE_APP_DRAFT
-        axios.post.mockResolvedValue(mockSaveAppDraftResponse);
-
-        // Mocks axios.post call for CREATE_APP_DOCS
-        axios.post.mockResolvedValue(mockSaveDraftDocResponse);
-
-        // Mocks axios.post call for SERVICE_NOW_FILE_ATTACHMENT
-        axios.post.mockResolvedValue(mockFileAttachResponse);
+        mockAppSysId = '';
 
         render(<SubmitModal
             visible={mockVisible}
             onCancel={mockHandleCancel}
-            data={mockFormData}
+            data={mockFormData1}
             draftId={mockDraftId}
             editSubmitted={mockEditSubmitted}
             submittedAppSysId={mockAppSysId}
         />);
 
         fireEvent.click(screen.getByText(/Ok/i));
-        expect(axios.post).toHaveBeenCalledWith('/api/x_g_nci_app_tracke/application/save_app_draft', { key: mockFormData, draft_id: mockDraftId });
-        expect(axios.post).toHaveBeenCalledWith('/api/x_g_nci_app_tracke/application/createApplicationDocument', { key: mockFormData, draft_id: mockDraftId });
-        expect(axios.post).toHaveBeenCalledWith('/api/now/attachment/file', { key: mockOptions, file: mockFile });
+
+        await waitFor(() => {
+            expect(axios.post).toHaveBeenCalledTimes(2);
+            expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+            expect(axios.post).toHaveBeenCalledWith(CREATE_APP_DOCS, { draft_id: mockDraftId, jsonobj: mockFormData1 });
+        });
+
     });
-    
-
-
-    
-    // Test cases for editing submitted applications
 
 });

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Modal, message, notification, Progress } from 'antd';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory, Link} from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
 import './SubmitModal.css';
@@ -190,7 +190,6 @@ const submitModal = ({
 				}
 
 			} else {
-				console.log('🚀 ~ handleOk ~ data: ', data);
 				let dataToSend = {
 					jsonobj: JSON.stringify(data),
 				};
@@ -203,17 +202,19 @@ const submitModal = ({
 
 				await axios.post(
 					SAVE_APP_DRAFT, dataToSend
-				).catch(function () {
-					message.error('Sorry! There was an error when attempting to save your application draft.');
-				});
+				)
+				// .catch(function () {
+				// 	message.error('Sorry! There was an error when attempting to save your application draft.');
+				// });
 				setPercent(20);
 
 				// creates a filename on application document table for each vacancy document
 				const saveDraftDocs = await axios.post(
 					CREATE_APP_DOCS, data
-				).catch(function () {
-					message.error('Sorry! There was an error when attempting to attach your documents.');
-				});
+				)
+				// .catch(function () {
+				// 	message.error('Sorry! There was an error when attempting to attach your documents.');
+				// });
 				setPercent(40);
 
 				const documents = saveDraftDocs.data.result.response.vacancy_documents;
@@ -222,18 +223,20 @@ const submitModal = ({
 
 				const verifyAttachments = await axios.get(
 					ATTACHMENT_CHECK + draftId
-				).catch(function () {
-					message.error('Sorry! There was an error when attempting to verify your documents.');
-				});
+				)
+				// .catch(function () {
+				// 	message.error('Sorry! There was an error when attempting to verify your documents.');
+				// });
 				setPercent(80);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
 
 				if (checkAttachments(mandatoryDocuments) == true) {
 					const response = await axios.post(
 						SUBMIT_APPLICATION, infoToSend
-					).catch(function () {
-						message.error('Sorry! There was an error when attempting to submit your application.');
-					});
+					)
+					// .catch(function () {
+					// 	message.error('Sorry! There was an error when attempting to submit your application.');
+					// });
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
 				} else {
@@ -327,7 +330,7 @@ const submitModal = ({
 					<CheckCircleFilled className='ConfirmedIcon' />
 					<h2>Application Submitted</h2>
 					<p>
-						View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
+						{/* View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>. */}
 					</p>
 			</div>
 			)}
