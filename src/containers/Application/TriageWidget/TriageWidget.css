@@ -39,3 +39,7 @@
 .TriageWidgetSteps .ant-steps-dot.ant-steps-small .ant-steps-item-tail {
 	margin-left: 55px;
 }
+
+.Notice {
+	font-size: 12px;
+}

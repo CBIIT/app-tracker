@@ -177,6 +177,8 @@ const basicInformation = (props) => {
 		{ label: 'N/A', value: 'N/A' },
 	];
 
+	const hrSpecialistTooltip = 'Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage.';
+
 	useEffect(() => {
 		setIsLoading(true);
 		(async () => {
@@ -300,7 +302,7 @@ const basicInformation = (props) => {
 							<Checkbox>Utilizing a Set Close Date</Checkbox>
 						</Form.Item>
 					</Tooltip>
-					<Tooltip title='Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage'>
+					<Tooltip title={user.isManager ? `${hrSpecialistTooltip} Please email the HR Specialist informing them to complete the vacancy triage.`: hrSpecialistTooltip}>
 						<Form.Item
 							name='allowHrSpecialistTriage'
 							valuePropName='checked'

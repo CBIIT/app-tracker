@@ -99,7 +99,7 @@ const home = () => {
 					pagination={{ hideOnSinglePage: true }}
 					locale={{
 						emptyText:
-							'There are currently no open vacancies.  Please check back later.',
+							'There are currently no open vacancies.',
 					}}
 					loading={isLoading}
 				/>
