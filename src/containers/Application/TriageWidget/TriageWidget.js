@@ -9,7 +9,6 @@ const { TextArea } = Input;
 const { Text } = Typography;
 
 const triageWidget = (props) => {
-	const isHRSpecialist = true;
 	return (<div style={props.style}>
 		<InfoCard
 			title={props.title}
@@ -59,7 +58,7 @@ const triageWidget = (props) => {
 					/>
 				)}
 			</InfoCardRow>
-			{isHRSpecialist ? (
+			{props.isHRSpecialist ? (
 				<InfoCardRow
 					style={{ display: 'flex', justifyContent: 'space-between' }}
 				>
