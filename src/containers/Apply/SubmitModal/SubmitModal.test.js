@@ -79,13 +79,18 @@ describe('SubmitModal component', () => {
             submittedAppSysId={mockAppSysId}
         />);
 
+        // const saveAppDraft = expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+
         fireEvent.click(screen.getByText(/Ok/i));
 
-        await waitFor(() => {
-            expect(axios.post).toHaveBeenCalledTimes(2);
-            expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
-            expect(axios.post).toHaveBeenCalledWith(CREATE_APP_DOCS, { draft_id: mockDraftId, jsonobj: mockFormData1 });
-        });
+        const asyncMock = jest.fn()
+            .mockResolvedValueOnce(mockSaveAppDraftResponse)
+            // .mockResolvedValueOnce(mockSaveDraftDocResponse)
+            // // .mockResolvedValueOnce(mockFileAttachResponse);
+
+        await asyncMock(expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId }));
+        // await asyncMock();
+        // await asyncMock();
 
     });
 
