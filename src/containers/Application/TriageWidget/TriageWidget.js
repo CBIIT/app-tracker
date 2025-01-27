@@ -2,11 +2,14 @@ import InfoCard from '../../../components/UI/InfoCard/InfoCard';
 import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 import LabelValuePair from '../../../components/UI/LabelValuePair/LabelValuePair';
 import './TriageWidget.css';
-import { Radio, Input, Button } from 'antd';
-const { TextArea } = Input;
+import { Radio, Input, Button, Typography } from 'antd';
+import { WarningOutlined } from '@ant-design/icons';
 
-const triageWidget = (props) => (
-	<div style={props.style}>
+const { TextArea } = Input;
+const { Text } = Typography;
+
+const triageWidget = (props) => {
+	return (<div style={props.style}>
 		<InfoCard
 			title={props.title}
 			className='TriageWidgetContainer'
@@ -55,6 +58,12 @@ const triageWidget = (props) => (
 					/>
 				)}
 			</InfoCardRow>
+			{props.isHRSpecialist ? (
+				<InfoCardRow
+					style={{ display: 'flex', justifyContent: 'space-between' }}
+				>
+					<div className='Notice'> <WarningOutlined /> Please email the Vacancy Manager and/or Executive Secretary informing them that HR Specialist triage is complete.  </div>
+				</InfoCardRow>) : null}
 			{!props.readOnly ? (
 				<InfoCardRow
 					style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -66,7 +75,7 @@ const triageWidget = (props) => (
 				</InfoCardRow>
 			) : null}
 		</InfoCard>
-	</div>
-);
+	</div>)
+};
 
 export default triageWidget;

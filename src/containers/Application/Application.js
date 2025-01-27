@@ -36,6 +36,7 @@ import {
 	OWM_TEAM,
 	COMMITTEE_MEMBER_VOTING,
 	COMMITTEE_MEMBER_NON_VOTING,
+	COMMITTEE_HR_SPECIALIST,
 } from '../../constants/Roles';
 
 import {
@@ -476,6 +477,10 @@ const application = () => {
 		);
 	};
 
+	const isHRSpecialist = (userVacancyCommitteeRole) => {
+		return userVacancyCommitteeRole === COMMITTEE_HR_SPECIALIST;
+	};
+
 	const onViewApplicantsListClick = () => {
 		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
@@ -609,6 +614,7 @@ const application = () => {
 											vacancyState === TRIAGE ? false : true
 										}
 										maxCommentLength={10000}
+										isHRSpecialist={isHRSpecialist(userVacancyCommitteeRole)}
 									/>
 									<TriageWidget
 										title='Committee Chair Feedback and Notes'
