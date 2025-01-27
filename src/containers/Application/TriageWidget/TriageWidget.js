@@ -2,11 +2,10 @@ import InfoCard from '../../../components/UI/InfoCard/InfoCard';
 import InfoCardRow from '../../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 import LabelValuePair from '../../../components/UI/LabelValuePair/LabelValuePair';
 import './TriageWidget.css';
-import { Radio, Input, Button, Typography } from 'antd';
+import { Radio, Input, Button } from 'antd';
 import { WarningOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
-const { Text } = Typography;
 
 const triageWidget = (props) => {
 	return (<div style={props.style}>
