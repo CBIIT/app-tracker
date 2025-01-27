@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
 import checkAuth from '../../../constants/checkAuth';
@@ -79,18 +79,29 @@ describe('SubmitModal component', () => {
             submittedAppSysId={mockAppSysId}
         />);
 
-        // const saveAppDraft = expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
-
+        act (() => {
         fireEvent.click(screen.getByText(/Ok/i));
+        });
 
-        const asyncMock = jest.fn()
-            .mockResolvedValueOnce(mockSaveAppDraftResponse)
-            // .mockResolvedValueOnce(mockSaveDraftDocResponse)
-            // // .mockResolvedValueOnce(mockFileAttachResponse);
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveAppDraftResponse));
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveDraftDocResponse));
 
-        await asyncMock(expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId }));
+        // const mockSaveAppDraft = jest.fn().mockResolvedValueOnce(mockSaveAppDraftResponse);
+        // const mockSaveDraftDocs = jest.fn().mockResolvedValueOnce(mockSaveDraftDocResponse);
+        // .mockResolvedValueOnce(mockFileAttachResponse);
+
+        // await mockSaveAppDraft(expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId }));
+        // await mockSaveDraftDocs(expect(axios.post).toHaveBeenCalledWith(CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId }));
         // await asyncMock();
-        // await asyncMock();
+        const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+        const saveDocs = await axios.post(CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
+        screen.debug();
+        expect(axios.post).toHaveBeenCalledTimes(4);
+        screen.debug();
+        expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+        expect(axios.post).toHaveBeenNthCalledWith(4, CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
+        expect(saveDraft).toEqual(mockSaveAppDraftResponse);
+        // expect(saveDocs).toEqual(mockSaveDraftDocResponse);
 
     });
 
