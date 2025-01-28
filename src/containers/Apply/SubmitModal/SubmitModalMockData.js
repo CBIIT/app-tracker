@@ -140,6 +140,21 @@ export const mockFileAttachResponse = {
 
 // Mocks a failed response from the SERVICE_NOW_FILE_ATTACHMENT endpoint
 
+// Mocks a response from the ATTACHMENT_CHECK endpoint
+export const mockAttachmentCheckResponse = {
+    data: {
+        result: {
+            response: {
+                "exists": true,
+                "filename": "Cirriculum Vitae (CV).docx",
+                'is_optional': false,
+                "message": "Attachment available",
+                "status": 200,
+            },
+        },
+    },
+};
+
 // Mocks infoToSend data that is sent with the SUBMIT_APPLICATION endpoint
 
 // Mocks a successful response from the SUBMIT_APPLICATION endpoint

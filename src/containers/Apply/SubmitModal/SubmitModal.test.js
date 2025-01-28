@@ -13,7 +13,8 @@ import {
     mockSaveDraftDocFailResponse,
     mockOptions,
     mockFile,
-    mockFileAttachResponse
+    mockFileAttachResponse,
+    mockAttachmentCheckResponse,
 } from './SubmitModalMockData';
 import {
 	SUBMIT_APPLICATION,
@@ -79,29 +80,29 @@ describe('SubmitModal component', () => {
             submittedAppSysId={mockAppSysId}
         />);
 
-        act (() => {
+        await waitFor (() => {
         fireEvent.click(screen.getByText(/Ok/i));
         });
 
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveAppDraftResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveDraftDocResponse));
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockFileAttachResponse));
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockFileAttachResponse));
 
-        // const mockSaveAppDraft = jest.fn().mockResolvedValueOnce(mockSaveAppDraftResponse);
-        // const mockSaveDraftDocs = jest.fn().mockResolvedValueOnce(mockSaveDraftDocResponse);
-        // .mockResolvedValueOnce(mockFileAttachResponse);
-
-        // await mockSaveAppDraft(expect(axios.post).toHaveBeenCalledWith(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId }));
-        // await mockSaveDraftDocs(expect(axios.post).toHaveBeenCalledWith(CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId }));
-        // await asyncMock();
         const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
         const saveDocs = await axios.post(CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
-        screen.debug();
-        expect(axios.post).toHaveBeenCalledTimes(4);
-        screen.debug();
+        const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
+        const attachmentCheck = await axios.post(ATTACHMENT_CHECK, { draft_id: mockDraftId });
+
+        expect(axios.post).toHaveBeenCalledTimes(6);
         expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
-        expect(axios.post).toHaveBeenNthCalledWith(4, CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
         expect(saveDraft).toEqual(mockSaveAppDraftResponse);
-        // expect(saveDocs).toEqual(mockSaveDraftDocResponse);
+        expect(axios.post).toHaveBeenNthCalledWith(4, CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
+        expect(saveDocs).toEqual(mockSaveDraftDocResponse);
+        expect(axios.post).toHaveBeenNthCalledWith(5, SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
+        expect(attachFile).toEqual(mockFileAttachResponse);
+        expect(axios.post).toHaveBeenNthCalledWith(6, ATTACHMENT_CHECK, { draft_id: mockDraftId });
+        // expect(attachmentCheck).toEqual(mockAttachmentCheckResponse);
 
     });
 
