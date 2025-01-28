@@ -145,10 +145,10 @@ export const mockAttachmentCheckResponse = {
     data: {
         result: {
             response: {
-                "exists": true,
-                "filename": "Cirriculum Vitae (CV).docx",
-                'is_optional': false,
-                "message": "Attachment available",
+                // "exists": true,
+                // "filename": "Cirriculum Vitae (CV).docx",
+                // "is_optional": false,
+                // "message": "Attachment available",
                 "status": 200,
             },
         },

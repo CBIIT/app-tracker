@@ -102,7 +102,7 @@ describe('SubmitModal component', () => {
         expect(axios.post).toHaveBeenNthCalledWith(5, SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
         expect(attachFile).toEqual(mockFileAttachResponse);
         expect(axios.post).toHaveBeenNthCalledWith(6, ATTACHMENT_CHECK, { draft_id: mockDraftId });
-        // expect(attachmentCheck).toEqual(mockAttachmentCheckResponse);
+        expect(attachmentCheck).toEqual(mockAttachmentCheckResponse);
 
     });
 
