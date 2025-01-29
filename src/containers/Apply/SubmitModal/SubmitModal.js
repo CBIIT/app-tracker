@@ -200,43 +200,23 @@ const submitModal = ({
 				
 				setSubmitted(true);
 
-				await axios.post(
-					SAVE_APP_DRAFT, dataToSend
-				)
-				// .catch(function () {
-				// 	message.error('Sorry! There was an error when attempting to save your application draft.');
-				// });
+				await axios.post(SAVE_APP_DRAFT, dataToSend);
 				setPercent(20);
 
 				// creates a filename on application document table for each vacancy document
-				const saveDraftDocs = await axios.post(
-					CREATE_APP_DOCS, data
-				)
-				// .catch(function () {
-				// 	message.error('Sorry! There was an error when attempting to attach your documents.');
-				// });
+				const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
 				setPercent(40);
 
 				const documents = saveDraftDocs.data.result.response.vacancy_documents;
 				await attachDocuments(infoToSend, documents);
 				setPercent(60);
 
-				const verifyAttachments = await axios.get(
-					ATTACHMENT_CHECK + draftId
-				)
-				// .catch(function () {
-				// 	message.error('Sorry! There was an error when attempting to verify your documents.');
-				// });
+				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
 				setPercent(80);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
 
 				if (checkAttachments(mandatoryDocuments) == true) {
-					const response = await axios.post(
-						SUBMIT_APPLICATION, infoToSend
-					)
-					// .catch(function () {
-					// 	message.error('Sorry! There was an error when attempting to submit your application.');
-					// });
+					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
 				} else {

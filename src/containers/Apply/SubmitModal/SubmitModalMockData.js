@@ -158,6 +158,17 @@ export const mockAttachmentCheckResponse = {
 // Mocks infoToSend data that is sent with the SUBMIT_APPLICATION endpoint
 
 // Mocks a successful response from the SUBMIT_APPLICATION endpoint
+export const mockSubmitAppResponse = {
+    data: {
+        result: {
+            response: {
+                'status': 200,
+                'message': 'Successfully submitted application',
+                'app_sys_id': '123',
+            },
+        },
+    },
+};
 
 // Mocks a failed response from the SUBMIT_APPLICATION endpoint
 
