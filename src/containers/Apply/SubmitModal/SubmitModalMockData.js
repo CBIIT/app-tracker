@@ -1,14 +1,3 @@
-// Mocks checkAuth response
-export const mockCheckAuth = {
-    mockData: {
-        auth: {
-            isUserLoggedIn: true,
-            user: { uid: '123' },
-            oktaLoginAndRedirectUrl: 'http://example.com/login',
-        },
-    }
-};
-
 //Mocks useAuth data
 export const mockUseAuth = {
     auth: {
@@ -68,7 +57,7 @@ export const mockSaveAppDraftFailResponse = {
         result: {
             response: {
                 'status': 500,
-                'message': 'Failed to update draft_id:' + '123',
+				'message': 'Application draft save was unsuccessful. Please try again.'
             },
         },
     },
@@ -97,7 +86,7 @@ export const mockSaveDraftDocFailResponse = {
         result: {
             response: {
                 'status': 500,
-                'message': 'Failed to attach documents',
+                'message': 'Draft documents save was unsuccessful. Please try again.',
             },
         },
     },
@@ -155,7 +144,17 @@ export const mockAttachmentCheckResponse = {
     },
 };
 
-// Mocks infoToSend data that is sent with the SUBMIT_APPLICATION endpoint
+// Mocks a failed response from the ATTACHMENT_CHECK endpoint
+export const mockAttachmentCheckFailResponse = {
+    data:{
+        result: {
+            response: {
+                'status': 500,
+                'message': 'Attachment check was unsuccessful. Please try again.',
+            },
+        }
+    }
+};
 
 // Mocks a successful response from the SUBMIT_APPLICATION endpoint
 export const mockSubmitAppResponse = {
@@ -171,6 +170,16 @@ export const mockSubmitAppResponse = {
 };
 
 // Mocks a failed response from the SUBMIT_APPLICATION endpoint
+export const mockSubmitAppFailResponse = {
+    data: {
+        result: {
+            response: {
+                'status': 500,
+                'message': 'Application submission was unsuccessful. Please try again.',
+            },
+        },
+    },
+};
 
 export const mockFormData1 = {
     sysId: '123',

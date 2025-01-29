@@ -48,11 +48,7 @@ const submitModal = ({
 					const documentsToDelete = infoToSend.vacancy_documents.map(
 						(document) => {
 							if (document?.uploadedDocument?.markedToDelete) {
-								return axios.delete(
-									SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-								).catch(function () {
-									message.error('Sorry! There was an error when attempting to delete your documents.');
-								});
+								return axios.delete(SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId);
 							}
 						}
 					);
@@ -71,11 +67,7 @@ const submitModal = ({
 										'Content-Type': file.type,
 									},
 								};
-								return axios.post(
-									SERVICE_NOW_FILE_ATTACHMENT, file, options
-								).catch(function () {
-									message.error('Sorry! There was an error when attempting to attach your documents.');
-								});
+								return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
 							}
 						}
 					);
@@ -107,11 +99,7 @@ const submitModal = ({
 								},
 							};
 							requests.push(
-								axios.post(
-									SERVICE_NOW_FILE_ATTACHMENT, file, options
-								).catch(function () {
-									message.error('Sorry! There was an error when attempting to attach your documents.');
-								})
+								axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options)
 							);
 						}
 					});
@@ -148,20 +136,12 @@ const submitModal = ({
 				await attachDocuments(infoToSend);
 				setPercent(33);
 				
-				const checkDocuments = await axios.get(
-					ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId
-				).catch(function () {
-					message.error('Sorry! There was an error when attempting to verify your documents.');
-				});
+				const checkDocuments = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId);
 				const mandatoryDocuments = checkDocuments.data.result.messages;
 				setPercent(66);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
-					await axios.put(
-						APPLICATION_SUBMISSION, infoToSend
-					).catch(function () {
-						message.error('Sorry! There was an error when attempting to submit your application.');
-					});
+					await axios.put(APPLICATION_SUBMISSION, infoToSend);
 					setAppSysId(submittedAppSysId);
 					await Promise.all(requests);
 				} else {
@@ -205,15 +185,15 @@ const submitModal = ({
 
 				// creates a filename on application document table for each vacancy document
 				const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
+				const documents = saveDraftDocs.data.result.response.vacancy_documents;
 				setPercent(40);
 
-				const documents = saveDraftDocs.data.result.response.vacancy_documents;
 				await attachDocuments(infoToSend, documents);
 				setPercent(60);
 
 				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
-				setPercent(80);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
+				setPercent(80);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
@@ -249,7 +229,7 @@ const submitModal = ({
 			setSubmitted(true);
 		} catch (error) {
 			message.error(
-				'Sorry!  There was an error when attempting to submit your application or it is past the close date.'
+				'Sorry! There was an error when attempting to submit your application or it is past the close date.'
 			);
 		} finally {
 			setConfirmLoading(false);
