@@ -191,6 +191,16 @@ export const mockApplicationAttachmentCheckResponse = {
 // Mocks a failed response from the ATTACHMENT_CHECK_FOR_APPLICATIONS endpoint
 
 // Mocks a successful response from the APPLICATION_SUBMISSION endpoint
+export const mockApplicationUpdateResponse = {
+	data: {
+		result: {
+			response: {
+				'status': 200, 
+				'message': 'Application updated successfully.'
+			},
+		},
+	},
+}
 
 // Mocks a failed response from the APPLICATION_SUBMISSION endpoint
 

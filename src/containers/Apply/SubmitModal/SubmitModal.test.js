@@ -19,6 +19,7 @@ import {
     mockAttachmentDeleteResponse,
     mockDocumentToDelete,
     mockApplicationAttachmentCheckResponse,
+    mockApplicationUpdateResponse,
 } from './SubmitModalMockData';
 import {
 	SUBMIT_APPLICATION,
@@ -142,13 +143,15 @@ describe('SubmitModal component', () => {
         axios.delete.mockImplementationOnce(() => Promise.resolve(mockAttachmentDeleteResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockFileAttachResponse));
         axios.get.mockImplementationOnce(() => Promise.resolve(mockApplicationAttachmentCheckResponse));
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockApplicationUpdateResponse));
 
         const deleteFile = await axios.delete(SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
         const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
         const applicationAttachmentCheck = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS, { sys_id: mockAppSysId });
+        const applicationSubmission = await axios.post(APPLICATION_SUBMISSION, { key: mockInfoToSend });
 
         expect(axios.delete).toHaveBeenCalledTimes(1);
-        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledTimes(2);
         expect(axios.get).toHaveBeenCalledTimes(1);
 
         expect(axios.delete).toHaveBeenNthCalledWith(1, SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
@@ -159,6 +162,9 @@ describe('SubmitModal component', () => {
 
         expect(axios.get).toHaveBeenNthCalledWith(1, ATTACHMENT_CHECK_FOR_APPLICATIONS, { sys_id: mockAppSysId });
         expect(applicationAttachmentCheck).toEqual(mockApplicationAttachmentCheckResponse);
+
+        expect(axios.post).toHaveBeenNthCalledWith(2, APPLICATION_SUBMISSION, { key: mockInfoToSend });
+        expect(applicationSubmission).toEqual(mockApplicationUpdateResponse);
 
     })
 
