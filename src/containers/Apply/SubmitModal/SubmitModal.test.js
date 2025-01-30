@@ -6,7 +6,6 @@ import axios from 'axios';
 import { 
     mockUseAuth, 
     mockFormData,
-    mockFormData1,
     mockSaveAppDraftResponse,
     mockSaveAppDraftFailResponse,
     mockSaveDraftDocResponse,
@@ -16,6 +15,8 @@ import {
     mockFileAttachResponse,
     mockAttachmentCheckResponse,
     mockSubmitAppResponse,
+    mockInfoToSend,
+    mockDocumentToDelete,
 } from './SubmitModalMockData';
 import {
 	SUBMIT_APPLICATION,
@@ -52,7 +53,7 @@ describe('SubmitModal component', () => {
         render(<SubmitModal
             visible={mockVisible}
             onCancel={mockHandleCancel}
-            data={mockFormData1}
+            data={mockFormData}
             draftId={mockDraftId}
             editSubmitted={mockEditSubmitted}
             submittedAppSysId={mockAppSysId}
@@ -74,7 +75,7 @@ describe('SubmitModal component', () => {
         render(<SubmitModal
             visible={mockVisible}
             onCancel={mockHandleCancel}
-            data={mockFormData1}
+            data={mockFormData}
             draftId={mockDraftId}
             editSubmitted={mockEditSubmitted}
             submittedAppSysId={mockAppSysId}
@@ -91,19 +92,19 @@ describe('SubmitModal component', () => {
         axios.post.mockImplementationOnce(() => Promise.resolve(mockAttachmentCheckResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSubmitAppResponse));
 
-        const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
-        const saveDocs = await axios.post(CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
+        const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
+        const saveDocs = await axios.post(CREATE_APP_DOCS, { jsonobj: (mockFormData), draft_id: mockDraftId });
         const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
         const attachmentCheck = await axios.post(ATTACHMENT_CHECK, { draft_id: mockDraftId });
         // jest.spyOn(SubmitModal, 'checkAttachments').mockReturnValue(true);
-        const submitApp = await axios.post(SUBMIT_APPLICATION, { key: mockFormData1 });
+        const submitApp = await axios.post(SUBMIT_APPLICATION, { key: mockInfoToSend });
 
         expect(axios.post).toHaveBeenCalledTimes(7);
 
-        expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+        expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
         expect(saveDraft).toEqual(mockSaveAppDraftResponse);
 
-        expect(axios.post).toHaveBeenNthCalledWith(4, CREATE_APP_DOCS, { jsonobj: (mockFormData1), draft_id: mockDraftId });
+        expect(axios.post).toHaveBeenNthCalledWith(4, CREATE_APP_DOCS, { jsonobj: (mockFormData), draft_id: mockDraftId });
         expect(saveDocs).toEqual(mockSaveDraftDocResponse);
 
         expect(axios.post).toHaveBeenNthCalledWith(5, SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
@@ -112,10 +113,44 @@ describe('SubmitModal component', () => {
         expect(axios.post).toHaveBeenNthCalledWith(6, ATTACHMENT_CHECK, { draft_id: mockDraftId });
         expect(attachmentCheck).toEqual(mockAttachmentCheckResponse);
 
-        expect(axios.post).toHaveBeenNthCalledWith(7, SUBMIT_APPLICATION, { key: mockFormData1 });
+        expect(axios.post).toHaveBeenNthCalledWith(7, SUBMIT_APPLICATION, { key: mockInfoToSend });
         expect(submitApp).toEqual(mockSubmitAppResponse);
 
     });
+
+    test('Should handle editing a submitted application on Ok click', async () => {
+        mockDraftId = '';
+        mockEditSubmitted = true;
+        mockAppSysId = '123';
+
+        render(<SubmitModal
+            visible={mockVisible}
+            onCancel={mockHandleCancel}
+            data={mockFormData}
+            draftId={mockDraftId}
+            editSubmitted={mockEditSubmitted}
+            submittedAppSysId={mockAppSysId}
+        />);
+
+        await waitFor (() => {
+            fireEvent.click(screen.getByText(/Ok/i));
+        });
+
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockDeleteFileAttachResponse));
+        axios.post.mockImplementationOnce(() => Promise.resolve(mockFileAttachResponse));
+
+        await axios.delete(SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
+        const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
+
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledTimes(1);
+
+        expect(axios.delete).toHaveBeenNthCalledWith(1, SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
+
+        expect(axios.post).toHaveBeenNthCalledWith(1, SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
+        expect(attachFile).toEqual(mockFileAttachResponse);
+
+    })
 
     // test('should handle failed app submission process on Ok click', async () => {
     //     mockDraftId = '123';
@@ -125,7 +160,7 @@ describe('SubmitModal component', () => {
     //     render(<SubmitModal
     //         visible={mockVisible}
     //         onCancel={mockHandleCancel}
-    //         data={mockFormData1}
+    //         data={mockFormData}
     //         draftId={mockDraftId}
     //         editSubmitted={mockEditSubmitted}
     //         submittedAppSysId={mockAppSysId}
@@ -138,11 +173,11 @@ describe('SubmitModal component', () => {
     //     axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveAppDraftFailResponse));
 
 
-    //     const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+    //     const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
 
     //     expect(axios.post).toHaveBeenCalledTimes(3);
 
-    //     expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData1), draft_id: mockDraftId });
+    //     expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
     //     expect(saveDraft).toEqual(mockSaveAppDraftFailResponse);
     //     expect(screen.getAllByText([<span>Sorry! There was an error when attempting to submit your application or it is past the close date.</span>, <span>Sorry! There was an error when attempting to submit your application or it is past the close date.</span>])).toBeInTheDocument();
     //     screen.debug();

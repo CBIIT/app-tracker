@@ -132,13 +132,14 @@ const submitModal = ({
 
 				infoToSend['app_sys_id'] = submittedAppSysId;
 				setSubmitted(true);
+				setPercent(25);
 
 				await attachDocuments(infoToSend);
-				setPercent(33);
+				setPercent(50);
 				
 				const checkDocuments = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId);
 				const mandatoryDocuments = checkDocuments.data.result.messages;
-				setPercent(66);
+				setPercent(75);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
 					await axios.put(APPLICATION_SUBMISSION, infoToSend);
