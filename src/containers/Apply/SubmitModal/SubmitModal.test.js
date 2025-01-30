@@ -195,8 +195,7 @@ describe('SubmitModal component', () => {
 
         expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
         expect(saveDraft).toEqual(mockSaveAppDraftFailResponse);
-        // expect(screen.getAllByText([<span>Sorry! There was an error when attempting to submit your application or it is past the close date.</span>, <span>Sorry! There was an error when attempting to submit your application or it is past the close date.</span>])).toBeInTheDocument();
-        // screen.debug();
+        waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application or it is past the close date.")).toBeInTheDocument());
     });
 
 });
