@@ -16,7 +16,9 @@ import {
     mockAttachmentCheckResponse,
     mockSubmitAppResponse,
     mockInfoToSend,
+    mockAttachmentDeleteResponse,
     mockDocumentToDelete,
+    mockApplicationAttachmentCheckResponse,
 } from './SubmitModalMockData';
 import {
 	SUBMIT_APPLICATION,
@@ -89,17 +91,18 @@ describe('SubmitModal component', () => {
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveAppDraftResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveDraftDocResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockFileAttachResponse));
-        axios.post.mockImplementationOnce(() => Promise.resolve(mockAttachmentCheckResponse));
+        axios.get.mockImplementationOnce(() => Promise.resolve(mockAttachmentCheckResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSubmitAppResponse));
 
         const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
         const saveDocs = await axios.post(CREATE_APP_DOCS, { jsonobj: (mockFormData), draft_id: mockDraftId });
         const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
-        const attachmentCheck = await axios.post(ATTACHMENT_CHECK, { draft_id: mockDraftId });
+        const attachmentCheck = await axios.get(ATTACHMENT_CHECK, { draft_id: mockDraftId });
         // jest.spyOn(SubmitModal, 'checkAttachments').mockReturnValue(true);
         const submitApp = await axios.post(SUBMIT_APPLICATION, { key: mockInfoToSend });
 
-        expect(axios.post).toHaveBeenCalledTimes(7);
+        expect(axios.post).toHaveBeenCalledTimes(6);
+        expect(axios.get).toHaveBeenCalledTimes(1);
 
         expect(axios.post).toHaveBeenNthCalledWith(1, SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
         expect(saveDraft).toEqual(mockSaveAppDraftResponse);
@@ -110,10 +113,10 @@ describe('SubmitModal component', () => {
         expect(axios.post).toHaveBeenNthCalledWith(5, SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
         expect(attachFile).toEqual(mockFileAttachResponse);
 
-        expect(axios.post).toHaveBeenNthCalledWith(6, ATTACHMENT_CHECK, { draft_id: mockDraftId });
+        expect(axios.get).toHaveBeenNthCalledWith(1, ATTACHMENT_CHECK, { draft_id: mockDraftId });
         expect(attachmentCheck).toEqual(mockAttachmentCheckResponse);
 
-        expect(axios.post).toHaveBeenNthCalledWith(7, SUBMIT_APPLICATION, { key: mockInfoToSend });
+        expect(axios.post).toHaveBeenNthCalledWith(6, SUBMIT_APPLICATION, { key: mockInfoToSend });
         expect(submitApp).toEqual(mockSubmitAppResponse);
 
     });
@@ -136,19 +139,26 @@ describe('SubmitModal component', () => {
             fireEvent.click(screen.getByText(/Ok/i));
         });
 
-        axios.post.mockImplementationOnce(() => Promise.resolve(mockDeleteFileAttachResponse));
+        axios.delete.mockImplementationOnce(() => Promise.resolve(mockAttachmentDeleteResponse));
         axios.post.mockImplementationOnce(() => Promise.resolve(mockFileAttachResponse));
+        axios.get.mockImplementationOnce(() => Promise.resolve(mockApplicationAttachmentCheckResponse));
 
-        await axios.delete(SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
+        const deleteFile = await axios.delete(SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
         const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
+        const applicationAttachmentCheck = await axios.get(ATTACHMENT_CHECK_FOR_APPLICATIONS, { sys_id: mockAppSysId });
 
         expect(axios.delete).toHaveBeenCalledTimes(1);
         expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.get).toHaveBeenCalledTimes(1);
 
         expect(axios.delete).toHaveBeenNthCalledWith(1, SERVICE_NOW_ATTACHMENT, { key: mockDocumentToDelete.uploadedDocument.attachSysId });
+        expect(deleteFile).toEqual(mockAttachmentDeleteResponse);
 
         expect(axios.post).toHaveBeenNthCalledWith(1, SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
         expect(attachFile).toEqual(mockFileAttachResponse);
+
+        expect(axios.get).toHaveBeenNthCalledWith(1, ATTACHMENT_CHECK_FOR_APPLICATIONS, { sys_id: mockAppSysId });
+        expect(applicationAttachmentCheck).toEqual(mockApplicationAttachmentCheckResponse);
 
     })
 

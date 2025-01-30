@@ -103,10 +103,10 @@ export const mockAttachmentCheckResponse = {
 	data: {
 		result: {
 			response: {
-				// "exists": true,
-				// "filename": "Cirriculum Vitae (CV).docx",
-				// "is_optional": false,
-				// "message": "Attachment available",
+				"exists": true,
+				"filename": "Cirriculum Vitae (CV).docx",
+				"is_optional": false,
+				"message": "Attachment available",
 				status: 200,
 			},
 		},
@@ -159,6 +159,40 @@ export const mockDocumentToDelete = {
 		markedToDelete: true,
 	},
 };
+
+// Mocks a successful response from the SERVICE_NOW_ATTACHMENT endpoint
+export const mockAttachmentDeleteResponse = {
+	data: {
+		result: {
+			response: {
+				status: 200,
+			},
+		},
+	},
+};
+
+// Mocks a failed response from the SERVICE_NOW_ATTACHMENT endpoint
+
+// Mocks a successful response from the ATTACHMENT_CHECK_FOR_APPLICATIONS endpoint
+export const mockApplicationAttachmentCheckResponse = {
+	data: {
+		result: {
+			response: {
+				"exists": true,
+				"filename": "Cirriculum Vitae (CV).docx",
+				"is_optional": false,
+				"message": "Attachment available",
+				status: 200,
+			},
+		},
+	},
+};
+
+// Mocks a failed response from the ATTACHMENT_CHECK_FOR_APPLICATIONS endpoint
+
+// Mocks a successful response from the APPLICATION_SUBMISSION endpoint
+
+// Mocks a failed response from the APPLICATION_SUBMISSION endpoint
 
 export const mockInfoToSend = {
 	sysId: '123',
