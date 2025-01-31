@@ -83,7 +83,6 @@ describe('SubmitModal component', () => {
             editSubmitted={mockEditSubmitted}
             submittedAppSysId={mockAppSysId}
         />);
-        // SubmitModal.checkAttachments = jest.fn(() => true);
 
         await waitFor (() => {
         fireEvent.click(screen.getByText(/Ok/i));
@@ -99,7 +98,6 @@ describe('SubmitModal component', () => {
         const saveDocs = await axios.post(CREATE_APP_DOCS, { jsonobj: (mockFormData), draft_id: mockDraftId });
         const attachFile = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, { options: mockOptions, file: mockFile });
         const attachmentCheck = await axios.get(ATTACHMENT_CHECK, { draft_id: mockDraftId });
-        // jest.spyOn(SubmitModal, 'checkAttachments').mockReturnValue(true);
         const submitApp = await axios.post(SUBMIT_APPLICATION, { key: mockInfoToSend });
 
         expect(axios.post).toHaveBeenCalledTimes(6);
@@ -187,7 +185,6 @@ describe('SubmitModal component', () => {
         });
 
         axios.post.mockImplementationOnce(() => Promise.resolve(mockSaveAppDraftFailResponse));
-
 
         const saveDraft = await axios.post(SAVE_APP_DRAFT, { jsonobj: JSON.stringify(mockFormData), draft_id: mockDraftId });
 

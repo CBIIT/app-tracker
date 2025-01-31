@@ -229,6 +229,7 @@ const submitModal = ({
 			}
 			setSubmitted(true);
 		} catch (error) {
+			setSubmitted(false);
 			message.error(
 				'Sorry! There was an error when attempting to submit your application or it is past the close date.'
 			);
