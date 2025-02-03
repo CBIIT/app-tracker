@@ -4,7 +4,6 @@ import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import checkAuth from '../../constants/checkAuth';
 import { SAVE_APP_DRAFT } from '../../constants/ApiEndpoints';
-import { use } from 'react';
 
 jest.mock('../../hooks/useAuth');
 jest.mock('../../constants/checkAuth');
