@@ -109,7 +109,6 @@ describe('SwitchFormItemEditor', () => {
             rules: [],
             readOnly: false,
             onBlur: jest.fn(),
-            onToggle: jest.fn()
         };
 
         render(
@@ -121,10 +120,7 @@ describe('SwitchFormItemEditor', () => {
         const switchInput = screen.getByRole('checkbox');
 
         fireEvent.click(switchInput);
-
-        if (defaultProps.onToggle) {
-            expect(defaultProps.onToggle).not.toHaveBeenCalled();
-        }
+        expect(jest.fn()).not.toHaveBeenCalled();
     });
 
 
