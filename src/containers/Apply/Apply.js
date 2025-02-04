@@ -111,23 +111,24 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		);
 		const profileResponse = await axios.get(
 			GET_PROFILE + user.uid
-		).catch(function () {
-			notification.error({
-				message: "Sorry! There was an error retrieving your profile.",                        
-				description: <>
-				<p>
-				Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
-				</p>
-			</>,
-			duration: 30,
-				style: {
-					height: "225px",
-					display: 'flex',
-					alignItems: 'center'
-				}
-			});
-			history.goBack();
-		});
+		);
+		// .catch(function () {
+		// 	notification.error({
+		// 		message: "Sorry! There was an error retrieving your profile.",                        
+		// 		description: <>
+		// 		<p>
+		// 		Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
+		// 		</p>
+		// 	</>,
+		// 	duration: 30,
+		// 		style: {
+		// 			height: "225px",
+		// 			display: 'flex',
+		// 			alignItems: 'center'
+		// 		}
+		// 	});
+		// 	history.goBack();
+		// });
 
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		const {basicInfo, demographics} = profileData;
@@ -199,25 +200,27 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
+
 		const profileResponse = await axios.get(
 			GET_PROFILE + user.uid
-		).catch(function () {
-			notification.error({
-				message: "Sorry! There was an error retrieving your profile.",                        
-				description: <>
-					<p>
-					Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
-					</p>
-				</>,
-				duration: 30,
-				style: {
-					height: "225px",
-					display: 'flex',
-					alignItems: 'center'
-				}
-			});
-			history.goBack();
-		});
+		);
+		// .catch(function () {
+		// 	notification.error({
+		// 		message: "Sorry! There was an error retrieving your profile.",                        
+		// 		description: <>
+		// 			<p>
+		// 			Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
+		// 			</p>
+		// 		</>,
+		// 		duration: 30,
+		// 		style: {
+		// 			height: "225px",
+		// 			display: 'flex',
+		// 			alignItems: 'center'
+		// 		}
+		// 	});
+		// 	history.goBack();
+		// });
 
 		const profileData = convertDataFromBackend(profileResponse.data.result.response)
 		const {basicInfo, demographics} = profileData;
@@ -267,9 +270,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		const saveDraftResponse = await axios.post(
 			SAVE_APP_DRAFT, data
-		).catch(function () {
-			message.error('Sorry! There was an error saving your application draft.');
-		});
+		);
+		// .catch(function () {
+		// 	message.error('Sorry! There was an error saving your application draft.');
+		// });
 		setDraftId(saveDraftResponse.data.result.draft_id);
 	};
 
@@ -442,9 +446,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 				const saveDraftResponse = await axios.post(
 					SAVE_APP_DRAFT, data
-				).catch(function () {
-					message.error('Sorry! There was an error saving your application draft.');
-				});
+				);
+				// .catch(function () {
+				// 	message.error('Sorry! There was an error saving your application draft.');
+				// });
 
 				message.info({
 					successKey,
