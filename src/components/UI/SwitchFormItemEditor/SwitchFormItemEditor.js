@@ -27,6 +27,7 @@ const switchFormItemEditor = (props) => {
 				onChangeHandler={onChangeHandler}
 				rules={props.rules}
 				readOnly={readOnly}
+				data-testid='SwitchFormItemEditorSwitch'
 			/>
 			<Form.Item
 				name={props.textName ? props.textName : props.name + 'Text'}
