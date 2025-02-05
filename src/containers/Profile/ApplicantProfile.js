@@ -14,10 +14,11 @@ const tabList = [
 		key: 'basicInfo',
 		tab: 'Basic Information',
 	},
-	{
-		key: 'demographics',
-		tab: 'Demographics (optional)',
-	},
+	// Hide demographics tab
+	// {
+	// 	key: 'demographics',
+	// 	tab: 'Demographics (optional)',
+	// },
 ];
 
 const ApplicantProfile = () => {
