@@ -359,10 +359,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		}
 
 		const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-		// setDraftId(saveDraftResponse.data?.result.draft_id);
 
 		const successKey = 'success';
-		// const errorKey = 'error';
 		message.info({
 			successKey,
 			content: [
@@ -383,7 +381,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		if (saveDraftResponse) {
 			setDraftId(saveDraftResponse.data.result.draft_id);
 		}
-		//setDraftId(saveDraftResponse.data.result.draft_id);
 	};
 
 	let steps = [];
