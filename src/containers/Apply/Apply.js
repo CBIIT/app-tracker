@@ -120,24 +120,32 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
 		);
-		const profileResponse = await axios.get(GET_PROFILE + user.uid);
-		// .catch(function () {
-		// 	notification.error({
-		// 		message: "Sorry! There was an error retrieving your profile.",
-		// 		description: <>
-		// 		<p>
-		// 		Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
-		// 		</p>
-		// 	</>,
-		// 	duration: 30,
-		// 		style: {
-		// 			height: "225px",
-		// 			display: 'flex',
-		// 			alignItems: 'center'
-		// 		}
-		// 	});
-		// 	history.goBack();
-		// });
+		const profileResponse = await axios
+			.get(GET_PROFILE + user.uid)
+			.catch(function () {
+				notification.error({
+					message: 'Sorry! There was an error retrieving your profile.',
+					description: (
+						<>
+							<p>
+								Please verify if the vacancy has closed. If not, please log out
+								and re-login to resubmit your application. If the issue
+								continues, contact the Help Desk by emailing{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 30,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
+				history.goBack();
+			});
 
 		const profileData = convertDataFromBackend(
 			profileResponse.data.result.response
@@ -232,7 +240,32 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
 
-		const profileResponse = await axios.get(GET_PROFILE + user.uid);
+		const profileResponse = await axios
+			.get(GET_PROFILE + user.uid)
+			.catch(function () {
+				notification.error({
+					message: 'Sorry! There was an error retrieving your profile.',
+					description: (
+						<>
+							<p>
+								Please verify if the vacancy has closed. If not, please log out
+								and re-login to resubmit your application. If the issue
+								continues, contact the Help Desk by emailing{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 30,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
+				history.goBack();
+			});
 
 		// commented for Jest testing. Do not remove.
 		// const profileData = convertDataFromBackend(profileResponse.data.result.response)
