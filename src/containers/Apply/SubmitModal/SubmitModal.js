@@ -292,7 +292,7 @@ const submitModal = ({
 					<CheckCircleFilled className='ConfirmedIcon' />
 					<h2>Application Submitted</h2>
 					<p>
-						{/* View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>. */}
+						View and print <Link to={VIEW_APPLICATION + appSysId}>here</Link>.
 					</p>
 			</div>
 			)}
