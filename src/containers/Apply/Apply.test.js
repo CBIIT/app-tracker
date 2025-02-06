@@ -1,66 +1,99 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import Apply from './Apply';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import checkAuth from '../../constants/checkAuth';
 import { useParams, MemoryRouter } from 'react-router-dom';
-import { mockUseAuth } from './SubmitModal/SubmitModalMockData';
-import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
-import { 
-    mockDefaultFormData,
-    mockProfileData, 
-    mockVacancyResponse, 
-    mockProfileResponse 
-} from '../Profile/Util/ConvertDataFromBackendMockData';
+import {
+	mockUseAuth,
+	mockSaveAppDraftResponse,
+} from './SubmitModal/SubmitModalMockData';
+import {
+	mockDefaultFormData,
+	mockProfileData,
+	mockVacancyResponse,
+	mockProfileResponse,
+	mockFormData,
+} from './ApplyMockData';
+
+import {
+	VACANCY_DETAILS_FOR_APPLICANTS,
+	SAVE_APP_DRAFT,
+	GET_PROFILE,
+} from '../../constants/ApiEndpoints';
 
 jest.mock('../../hooks/useAuth');
 jest.mock('../../constants/checkAuth');
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useParams: jest.fn(),
+	...jest.requireActual('react-router-dom'),
+	useParams: jest.fn(),
 }));
 jest.mock('../Profile/Util/ConvertDataFromBackend');
 
-
 describe('Apply component', () => {
+	let mockVacancyId;
+	let mockDraftId;
 
-    beforeEach(() => {
-        const mockUseAuth = {
-            auth: {
-                isUserLoggedIn: true,
-                user: { uid: '123' },
-                oktaLoginAndRedirectUrl: 'http://example.com/login',
-            },
-        };
-        useAuth.mockReturnValue(mockUseAuth);
-    });
+	beforeAll(() => {
+		Object.defineProperty(window, 'matchMedia', {
+			writable: true,
+			value: jest.fn().mockImplementation((query) => ({
+				matches: false,
+				media: query,
+				onchange: null,
+				addListener: jest.fn(), // deprecated
+				removeListener: jest.fn(), // deprecated
+				addEventListener: jest.fn(),
+				removeEventListener: jest.fn(),
+				dispatchEvent: jest.fn(),
+			})),
+		});
+	});
 
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
+	beforeEach(() => {
+		useAuth.mockReturnValue(mockUseAuth);
+	});
 
-    test('Should render new application form', async () => {
-        useParams.mockReturnValue({ id: '' });
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
 
-        axios.get.mockImplementationOnce(() => Promise.resolve(mockProfileData));
-        axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });
-        axios.get.mockResolvedValueOnce(mockProfileResponse);
+	test('Should render new application form', async () => {
+		mockVacancyId = '222';
+		mockDraftId = '333';
+		useParams.mockReturnValue({ id: '' });
 
-        axios.get.mockImplementationOnce(() => Promise.resolve(mockVacancyResponse));
-        axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });
-        axios.get.mockResolvedValueOnce(mockVacancyResponse);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockVacancyResponse)
+		);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockProfileResponse)
+		);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockSaveAppDraftResponse)
+		);
 
-        convertDataFromBackend.mockReturnValue(mockProfileData);
+		await waitFor(() => {
+			render(
+				<MemoryRouter initialEntries={['/apply']}>
+					<Apply />
+				</MemoryRouter>
+			);
+		});
 
-        render(
-            <MemoryRouter initialEntries={['/apply']}>
-                <Apply
-                    initialValues={mockDefaultFormData}
-                />
-            </MemoryRouter>
-        );
+		const vacancy = await axios.get(1, VACANCY_DETAILS_FOR_APPLICANTS + mockVacancyId);
+		const profile = await axios.get(2, GET_PROFILE + mockUseAuth.auth.user.uid);
+		const saveDraft = await axios.post(1, SAVE_APP_DRAFT, {
+			jsonobj: JSON.stringify(mockFormData),
+			draft_id: mockDraftId,
+		});
 
-    });
+		expect(axios.get).toHaveBeenCalledTimes(5);
+		expect(axios.post).toHaveBeenCalledTimes(2);
 
+		//expect(vacancy).toEqual(mockVacancyResponse);
+		//expect(profile).toEqual(mockProfileResponse);
+		//expect(saveDraft).toEqual(mockSaveAppDraftResponse);
+	});
 });

@@ -14,7 +14,7 @@ export const mockVacancyResponse = {
     data: {
         result: {
             basic_info: {
-                number_of_recommendations: {label: '1', value: '1'},
+                number_of_recommendation: {label: '1', value: '1'},
                 tenant: {label: 'test tenant', value: '123'},
                 vacancy_title: {label: 'Test Vacancy', value: 'Test Vacancy'},
             },
@@ -95,4 +95,54 @@ export const mockProfileData = {
         race: ['White', 'Asian'],
         sex: 'Male',
     },
+};
+
+export const mockFormData = {
+	basicInfo: {
+		firstName: 'John',
+		middleName: 'A',
+		lastName: 'Doe',
+		email: 'john.doe@example.com',
+		phonePrefix: '+1',
+		phone: '1234567890',
+		businessPhonePrefix: '+1',
+		businessPhone: '0987654321',
+		highestLevelEducation: 'PhD',
+		isUsCitizen: true,
+		address: {
+			address: '123 Main St',
+			address2: 'Apt 4',
+			city: 'Anytown',
+			zip: '12345',
+			stateProvince: 'CA',
+			country: 'USA',
+		},
+	},
+	address: {
+		address: '123 Main St',
+		address2: 'Apt 4',
+		city: 'Anytown',
+		zip: '12345',
+		stateProvince: 'CA',
+		country: 'USA',
+	},
+	references: [
+		{
+			ref_sys_id: '',
+			firstName: '',
+			middleName: '',
+			lastName: '',
+			email: '',
+			phoneNumber: '',
+			contact: '',
+			organization: '',
+			title: '',
+			relationship: '',
+		},
+	],
+	applicantDocuments: [],
+	questions: {
+		share: '0',
+	},
+	sysId: '123',
 };
