@@ -585,6 +585,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 	}
 
+	useEffect(() => {
+		returnToDocuments();
+	}, []);
+
 	return (
 		<>
 			{editSubmitted ? (

@@ -203,7 +203,6 @@ const submitModal = ({
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
-					setPercent(100);
 				} else {
 					mandatoryDocuments.map(doc => {
 						if (doc.attachSysId) {
