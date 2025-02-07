@@ -15,6 +15,7 @@ import {
 	ATTACHMENT_CHECK,
 	ATTACHMENT_CHECK_FOR_APPLICATIONS,
 } from '../../../constants/ApiEndpoints';
+import { EDIT_APPLICATION, EDIT_DRAFT } from '../../../constants/Routes';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
 import { checkAuth } from '../../../constants/checkAuth';
@@ -42,6 +43,8 @@ const submitModal = ({
 			const requests = [];
 
 			const attachDocuments = async (infoToSend, documents) => {
+
+				console.log(documents);
 
 				if (editSubmitted) {
 
@@ -122,7 +125,7 @@ const submitModal = ({
 				if (filterByFalse.length > 0) {
 					return false;
 				} else {
-					return true;
+					return false;
 				}
 			};
 
@@ -162,12 +165,12 @@ const submitModal = ({
 						),
 						duration: 30,
 						style: {
-							height: '25vh',
+							height: '225px',
 							display: 'flex',
 							alignItems: 'center',
 						},
 					});
-					// history.goBack();
+					
 				}
 
 			} else {
@@ -194,14 +197,23 @@ const submitModal = ({
 
 				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
+				console.log("🚀 ~ handleOk ~ mandatoryDocuments:", mandatoryDocuments)
 				setPercent(80);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
 					setAppSysId(response.data.result.application_sys_id);
 					await Promise.all(requests);
+					setPercent(100);
 				} else {
+					mandatoryDocuments.map(doc => {
+						if (doc.attachSysId) {
+							axios.delete(SERVICE_NOW_ATTACHMENT + doc.attachSysId);
+						}
+					});
+					// location.reload();
 					setSubmitted(false);
+					//message.error('Sorry! There was an error with submitting the attachments.');
 					notification.error({
 						message:'Sorry! There was an error with submitting the attachments.',
 						description:(
@@ -215,14 +227,15 @@ const submitModal = ({
 								</p>
 							</>
 						),
-						duration: 30,
+						duration: 60,
 						style: {
-							height: '25vh',
+							height: '225px',
 							display: 'flex',
 							alignItems: 'center',
 						},
 					});
-					// history.goBack();
+					setPercent(false);
+					onCancel();
 				}
 
 				await Promise.all(requests);
@@ -243,6 +256,8 @@ const submitModal = ({
 	const handleClose = () => {
 		history.push('/');
 	};
+
+	console.log(percent);
 
 	return !submitted ? (
 		<Modal
