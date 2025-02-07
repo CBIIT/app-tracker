@@ -360,24 +360,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
-		const successKey = 'success';
-		message.info({
-			successKey,
-			content: [
-				'Application successfully saved ',
-				saveLink,
-				<Button
-					key='saveButton'
-					className='save-X-button'
-					onClick={() => message.destroy()}
-				>
-					x
-				</Button>,
-			],
-			className: 'save-message',
-			duration: 3,
-		});
-
 		if (saveDraftResponse) {
 			setDraftId(saveDraftResponse.data.result.draft_id);
 		}
@@ -595,6 +577,14 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
 
+	const returnToDocuments = () => {
+		// moving application back to documents step in case of error
+		setCurrentStep(0);
+		formData.applicantDocuments.forEach((doc) => {
+			doc.file = { fileList: [] };
+		});
+	}
+
 	return (
 		<>
 			{editSubmitted ? (
@@ -706,6 +696,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				draftId={draftId}
 				editSubmitted={editSubmitted}
 				submittedAppSysId={appSysId}
+				currentStep={returnToDocuments}
 			/>
 		</>
 	);

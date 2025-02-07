@@ -27,6 +27,7 @@ const submitModal = ({
 	onCancel,
 	editSubmitted,
 	submittedAppSysId,
+	currentStep,
 }) => {
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
@@ -39,12 +40,11 @@ const submitModal = ({
 
 	const handleOk = async () => {
 		setConfirmLoading(true);
+		// attempt to put each block into it's own Try/Catch block to better handle errors in future
 		try {
 			const requests = [];
 
 			const attachDocuments = async (infoToSend, documents) => {
-
-				console.log(documents);
 
 				if (editSubmitted) {
 
@@ -125,7 +125,7 @@ const submitModal = ({
 				if (filterByFalse.length > 0) {
 					return false;
 				} else {
-					return false;
+					return true;
 				}
 			};
 
@@ -197,7 +197,6 @@ const submitModal = ({
 
 				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
 				const mandatoryDocuments = verifyAttachments.data.result.messages;
-				console.log("🚀 ~ handleOk ~ mandatoryDocuments:", mandatoryDocuments)
 				setPercent(80);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
@@ -211,9 +210,7 @@ const submitModal = ({
 							axios.delete(SERVICE_NOW_ATTACHMENT + doc.attachSysId);
 						}
 					});
-					// location.reload();
 					setSubmitted(false);
-					//message.error('Sorry! There was an error with submitting the attachments.');
 					notification.error({
 						message:'Sorry! There was an error with submitting the attachments.',
 						description:(
@@ -227,7 +224,7 @@ const submitModal = ({
 								</p>
 							</>
 						),
-						duration: 60,
+						duration: 0,
 						style: {
 							height: '225px',
 							display: 'flex',
@@ -236,6 +233,7 @@ const submitModal = ({
 					});
 					setPercent(false);
 					onCancel();
+					currentStep();
 				}
 
 				await Promise.all(requests);
@@ -243,6 +241,7 @@ const submitModal = ({
 			setSubmitted(true);
 		} catch (error) {
 			setSubmitted(false);
+
 			message.error(
 				'Sorry! There was an error when attempting to submit your application or it is past the close date.'
 			);
@@ -253,11 +252,11 @@ const submitModal = ({
 		}
 	};
 
+	// if variable catches error, make a call to delete documents
+
 	const handleClose = () => {
 		history.push('/');
 	};
-
-	console.log(percent);
 
 	return !submitted ? (
 		<Modal
