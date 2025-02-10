@@ -27,7 +27,7 @@ const submitModal = ({
 	onCancel,
 	editSubmitted,
 	submittedAppSysId,
-	currentStep,
+	returnToDocuments,
 }) => {
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
@@ -148,7 +148,6 @@ const submitModal = ({
 					const submitApp = await axios.put(APPLICATION_SUBMISSION, infoToSend);
 					if (submitApp.data.result.status == 200) {
 						setPercent(100);
-						setSubmitted(true);
 						setAppSysId(submittedAppSysId);
 					}
 					await Promise.all(requests);
@@ -207,7 +206,6 @@ const submitModal = ({
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
 					if (response.data.result.status == 200) {
 						setPercent(100);
-						setSubmitted(true);
 						setAppSysId(response.data.result.application_sys_id);
 					}
 					await Promise.all(requests);
@@ -240,7 +238,7 @@ const submitModal = ({
 					});
 					setPercent(false);
 					onCancel();
-					currentStep();
+					returnToDocuments();
 				}
 
 				await Promise.all(requests);
