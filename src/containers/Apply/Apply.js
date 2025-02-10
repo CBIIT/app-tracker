@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Steps, Button, Result, Space, Alert, message, notification } from 'antd';
+import {
+	Steps,
+	Button,
+	Result,
+	Space,
+	Alert,
+	message,
+	notification,
+} from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -66,8 +74,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [vacancyTitle, setVacancyTitle] = useState();
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [draftId, setDraftId] = useState(draftId);
+	const [draftId, setDraftId] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
+	const [vacancyDocuments, setVacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
@@ -95,7 +104,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	setTimeout(async () => {
 		// checking to see if user is about to get logged out
 		// NB: this drops right to zero
-		if (lastModalTimeout > 0.01 && Math.abs(lastModalTimeout - modalTimeout) > 0.1) {
+		if (
+			lastModalTimeout > 0.01 &&
+			Math.abs(lastModalTimeout - modalTimeout) > 0.1
+		) {
 			console.log('Saving ...');
 			// it changed, since it only changes when time runs out, save now
 			setLastModalTimeout(modalTimeout);
@@ -106,30 +118,39 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const loadExistingApplication = async () => {
 		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + initialValues.sysId
+			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
 		);
-		const profileResponse = await axios.get(
-			GET_PROFILE + user.uid
-		).catch(function () {
-			notification.error({
-				message: "Sorry! There was an error retrieving your profile.",                        
-				description: <>
-				<p>
-				Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
-				</p>
-			</>,
-			duration: 30,
-				style: {
-					height: "225px",
-					display: 'flex',
-					alignItems: 'center'
-				}
+		const profileResponse = await axios
+			.get(GET_PROFILE + user.uid)
+			.catch(function () {
+				notification.error({
+					message: 'Sorry! There was an error retrieving your profile.',
+					description: (
+						<>
+							<p>
+								Please verify if the vacancy has closed. If not, please log out
+								and re-login to resubmit your application. If the issue
+								continues, contact the Help Desk by emailing{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 30,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
+				history.goBack();
 			});
-			history.goBack();
-		});
 
-		const profileData = convertDataFromBackend(profileResponse.data.result.response)
-		const {basicInfo, demographics} = profileData;
+		const profileData = convertDataFromBackend(
+			profileResponse.data.result.response
+		);
+		const { basicInfo, demographics } = profileData;
 		const address = basicInfo?.address;
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
@@ -144,31 +165,46 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				: { ...document, file: { fileList: [] } };
 		});
 
-		if (editSubmitted &&
+		if (
+			editSubmitted &&
 			initialValues.applicantDocuments &&
 			initialValues.applicantDocuments.length > 0
 		) {
 			initialValues.applicantDocuments.forEach((applicantDocument) => {
-				if (applicantDocument && applicantDocument.title && applicantDocument.title.label) {
+				if (
+					applicantDocument &&
+					applicantDocument.title &&
+					applicantDocument.title.label
+				) {
 					applicantDocuments[applicantDocument.title.label] = {
 						...applicantDocuments[applicantDocument.title.label],
-						...applicantDocument
+						...applicantDocument,
 					};
-					var initialFiles = initialValues.applicantDocuments.filter(iv => iv.title.label === applicantDocument.title.label);
+					var initialFiles = initialValues.applicantDocuments.filter(
+						(iv) => iv.title.label === applicantDocument.title.label
+					);
 					if (initialFiles != null && initialFiles.length > 0) {
-						applicantDocuments[applicantDocument.title.label].file = initialFiles[0].file;
+						applicantDocuments[applicantDocument.title.label].file =
+							initialFiles[0].file;
 						if (initialFiles[0].file.fileList.length > 0) {
 							if (initialFiles[0] && initialFiles[0].uploadedDocument) {
-								applicantDocuments[applicantDocument.title.label].uploadedDocument = {
-									fileName : initialFiles[0]?.uploadedDocument?.fileName,
-									attachSysId : initialFiles[0]?.uploadedDocument?.attachSysId,
-									downloadLink : initialFiles[0]?.uploadedDocument?.downloadLink,
-									markedToDelete : initialFiles[0]?.uploadedDocument?.markedToDelete
+								applicantDocuments[
+									applicantDocument.title.label
+								].uploadedDocument = {
+									fileName: initialFiles[0]?.uploadedDocument?.fileName,
+									attachSysId: initialFiles[0]?.uploadedDocument?.attachSysId,
+									downloadLink: initialFiles[0]?.uploadedDocument?.downloadLink,
+									markedToDelete:
+										initialFiles[0]?.uploadedDocument?.markedToDelete,
 								};
 							} else {
 								// its missing because this is getting rehydrated ... clear it out
-								applicantDocuments[applicantDocument.title.label].uploadedDocument = {};
-								applicantDocuments[applicantDocument.title.label].file = {fileList:[]};
+								applicantDocuments[
+									applicantDocument.title.label
+								].uploadedDocument = {};
+								applicantDocuments[applicantDocument.title.label].file = {
+									fileList: [],
+								};
 							}
 						}
 					}
@@ -184,46 +220,105 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
-			questions: ((initialValues) && initialValues.questions) ? initialValues.questions : demographics,
+			questions:
+				initialValues && initialValues.questions
+					? initialValues.questions
+					: demographics,
 			basicInfo: basicInfo,
-			address: address
+			address: address,
 		};
 		setFormData(formData);
 	};
 
-	const {auth: {user}, setAuth} = useAuth();
-	
-	const instantiateNewApplication = async () => {
+	const {
+		auth: { user },
+		setAuth,
+	} = useAuth();
 
+	const instantiateNewApplication = async () => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
-		const profileResponse = await axios.get(
-			GET_PROFILE + user.uid
-		).catch(function () {
-			notification.error({
-				message: "Sorry! There was an error retrieving your profile.",                        
-				description: <>
-					<p>
-					Please verify if the vacancy has closed. If not, please log out and re-login to resubmit your application. If the issue continues, contact the Help Desk by emailing <a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
-					</p>
-				</>,
-				duration: 30,
-				style: {
-					height: "225px",
-					display: 'flex',
-					alignItems: 'center'
-				}
-			});
-			history.goBack();
-		});
 
-		const profileData = convertDataFromBackend(profileResponse.data.result.response)
-		const {basicInfo, demographics} = profileData;
+		const profileResponse = await axios
+			.get(GET_PROFILE + user.uid)
+			.catch(function () {
+				notification.error({
+					message: 'Sorry! There was an error retrieving your profile.',
+					description: (
+						<>
+							<p>
+								Please verify if the vacancy has closed. If not, please log out
+								and re-login to resubmit your application. If the issue
+								continues, contact the Help Desk by emailing{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 30,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
+				history.goBack();
+			});
+
+		// commented for Jest testing. Do not remove.
+		// const profileData = convertDataFromBackend(profileResponse.data.result.response)
+		// const {basicInfo, demographics} = profileData;
+		// const address = basicInfo?.address;
+
+		const profileData = profileResponse.data.result.response;
+		const basicInfo = {
+			firstName: profileData.basic_info?.first_name,
+			middleName: profileData.basic_info?.middle_name
+				? profileData.basic_info?.middle_name
+				: null,
+			lastName: profileData.basic_info?.last_name,
+			email: profileData.basic_info?.email,
+			phonePrefix: profileData.basic_info?.phone.slice(0, 2),
+			phone: profileData.basic_info?.phone.slice(2),
+			businessPhonePrefix: profileData.basic_info?.business_phone
+				? profileData.basic_info.business_phone?.slice(0, 2)
+				: '+1',
+			businessPhone: profileData.basic_info?.business_phone
+				? profileData.basic_info.business_phone.slice(2)
+				: null,
+			highestLevelEducation: profileData.basic_info?.highest_level_of_education,
+			isUsCitizen: parseInt(profileData.basic_info?.us_citizen),
+			address: {
+				address: profileData.basic_info?.address,
+				address2: profileData.basic_info?.address_2,
+				city: profileData.basic_info?.city,
+				stateProvince: profileData.basic_info?.state_province,
+				zip: profileData.basic_info?.zip_code,
+				country: profileData.basic_info?.country,
+			},
+		};
 		const address = basicInfo?.address;
+
+		let demographics = {};
+		if (profileData.demographics?.share === '0') {
+			demographics = {
+				share: profileData.demographics.share,
+			};
+		} else if (profileData.demographics?.share === '1') {
+			demographics = {
+				disability: profileData.demographics.disability?.split(','),
+				ethnicity: profileData.demographics.ethnicity,
+				race: profileData.demographics.race?.split(','),
+				sex: profileData.demographics.sex,
+				share: profileData.demographics.share,
+			};
+		}
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		vacancyDocuments.push(response.data.result.vacancy_documents);
 
 		const references = [];
 
@@ -246,9 +341,28 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			references: references,
 			questions: demographics,
 			address: address,
-			basicInfo: basicInfo
+			basicInfo: basicInfo,
 		};
 		setFormData(newFormData);
+
+		const newData = {
+			...newFormData,
+			vacancyDocuments: vacancyDocuments,
+		};
+
+		let data = {
+			jsonobj: JSON.stringify(newData),
+		};
+
+		if (draftId) {
+			data['sys_id'] = draftId;
+		}
+
+		const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+
+		if (saveDraftResponse) {
+			setDraftId(saveDraftResponse.data.result.draft_id);
+		}
 	};
 
 	let steps = [];
@@ -257,12 +371,15 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
 			title: 'Application Documents',
-			content: <ApplicantDocuments vacancyId={initialValues ? initialValues.sysId : vacancyId}/>,
+			content: (
+				<ApplicantDocuments
+					vacancyId={initialValues ? initialValues.sysId : vacancyId}
+				/>
+			),
 			description: 'CV, cover letter, and statement of research interests',
 			longDescription:
 				'Please upload the following documents. Each file cannot exceed 1 GB in size. We prefer that you submit documents in PDF (.pdf) format, but we can also accept Microsoft Word (.doc/.docx) format.',
-			strongContent:
-				'Please ensure each of your documents are unique files.',
+			strongContent: 'Please ensure each of your documents are unique files.',
 			dangerContent:
 				'Application documents will not be saved unless your application is submitted/finalized on the Review section.',
 		});
@@ -278,7 +395,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					<p>
 						Please provide professional references that can submit a
 						recommendation on your behalf. <br />{' '}
-						<span style={{color: 'red', fontWeight: 'bold', fontSize: '16px'}}>
+						<span
+							style={{ color: 'red', fontWeight: 'bold', fontSize: '16px' }}
+						>
 							Any reference provided can be contacted at any point in the
 							recruitment process.
 						</span>
@@ -287,25 +406,27 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			),
 		});
 
-	steps.push({
-		key: 'additionalQuestions',
-		title: 'Demographic Information',
-		content: <DemographicsStepForm />,
-		description: 'Opt in to share your demographics',
-		longDescription: 'Please review demographic information.',
-	},
-	{
-		key: 'review',
-		title: 'Review',
-		content: (
-			<Review
-				vacancyTenantType={vacancyTenantType}
-				onEditButtonClick={(step) => onEditButtonClick(step)}
-			/>
-		),
-		description: 'Review before submitting',
-		longDescription: 'Please review key information entered in each section.',
-	});
+	steps.push(
+		{
+			key: 'additionalQuestions',
+			title: 'Demographic Information',
+			content: <DemographicsStepForm />,
+			description: 'Opt in to share your demographics',
+			longDescription: 'Please review demographic information.',
+		},
+		{
+			key: 'review',
+			title: 'Review',
+			content: (
+				<Review
+					vacancyTenantType={vacancyTenantType}
+					onEditButtonClick={(step) => onEditButtonClick(step)}
+				/>
+			),
+			description: 'Review before submitting',
+			longDescription: 'Please review key information entered in each section.',
+		}
+	);
 
 	const onEditButtonClick = (step) => {
 		const index = steps.findIndex((item) => item.key === step);
@@ -329,15 +450,16 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			} catch (error) {
 				if (steps[currentStep].key === 'additionalQuestions') {
 					notification.error({
-						message: "Please make a selection.",
-						description: "You've chosen to share your demographics. Please make a selection for at least one question.",
+						message: 'Please make a selection.',
+						description:
+							"You've chosen to share your demographics. Please make a selection for at least one question.",
 						duration: 5,
 						style: {
-							height: "15vh",
+							height: '15vh',
 							display: 'flex',
-							alignItems: 'center'
-						}
-					})
+							alignItems: 'center',
+						},
+					});
 				} else {
 					message.error('Please fill out all required fields.');
 				}
@@ -405,11 +527,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			});
 		} else {
 			try {
-				let data = {
-					jsonobj: JSON.stringify(updatedFormData),
+				const newData = {
+					...updatedFormData,
+					vacancyDocuments: vacancyDocuments,
 				};
 
-				if (draftId) data['sys_id'] = draftId;
+				let data = {
+					jsonobj: JSON.stringify(newData),
+				};
+
+				if (draftId) {
+					data['sys_id'] = draftId;
+				}
+
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
 
 				message.info({
@@ -429,10 +559,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					duration: 3,
 				});
 
-				if (!draftId && saveDraftResponse.data.result.draft_id)
+				if (!draftId && saveDraftResponse.data.result.draft_id) {
 					setDraftId(saveDraftResponse.data.result.draft_id);
+				}
 			} catch (error) {
-				message.error('Sorry!  There was an error saving.');
+				message.error('Sorry! There was an error saving.');
 			} finally {
 				checkAuth(setIsLoading, setAuth);
 			}
@@ -446,6 +577,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const currentStepObj = steps[currentStep] || {};
 	const formIsFinished = currentStep > steps.length - 1;
 
+	const returnToDocuments = () => {
+		// moving application back to documents step in case of error
+		setCurrentStep(0);
+	};
+
 	return (
 		<>
 			{editSubmitted ? (
@@ -458,7 +594,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					<Alert
 						type='error'
 						message='You are editing a submitted application.'
-						description="Changes are not saved until the application is submitted again."
+						description='Changes are not saved until the application is submitted again.'
 						banner
 					/>
 				</Space>
@@ -483,14 +619,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 						</Steps>
 					</div>
 					<div className='StepContentContainer'>
-						<div className='StepContent' style={{marginLeft: 15}}>
+						<div className='StepContent' style={{ marginLeft: 15 }}>
 							<h3>{currentStepObj.title}</h3>
 							<p>{currentStepObj.longDescription}</p>
 							<span style={{ marginBottom: '0px', whiteSpace: 'pre-wrap' }}>
 								<strong>{currentStepObj.strongContent}</strong>
 							</span>
-							<br/>
-							<span style={{ marginBottom: '0px', whiteSpace: 'pre-wrap', color: 'red' }}>
+							<br />
+							<span
+								style={{
+									marginBottom: '0px',
+									whiteSpace: 'pre-wrap',
+									color: 'red',
+								}}
+							>
 								<strong>{currentStepObj.dangerContent}</strong>
 							</span>
 							<div>
@@ -507,7 +649,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 						{!formIsFinished && (
 							<div className='steps-action'>
-								<div style={{marginLeft: 15}}>
+								<div style={{ marginLeft: 15 }}>
 									<Button
 										onClick={prev}
 										type='primary'
@@ -551,6 +693,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				draftId={draftId}
 				editSubmitted={editSubmitted}
 				submittedAppSysId={appSysId}
+				currentStep={returnToDocuments}
 			/>
 		</>
 	);

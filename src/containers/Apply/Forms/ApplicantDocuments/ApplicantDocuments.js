@@ -103,7 +103,6 @@ const ApplicantDocuments = (props) => {
 
 	const storeFile = (changedInfo, index, appDocs) => {
 		appDocs[index]?.file?.fileList.push(changedInfo.file);
-
 		// set the default file to the new file in the form data
 		var target = event.target || event.srcElement;
 		target.defaultFiles = appDocs[index]?.file?.fileList;
@@ -199,6 +198,7 @@ const ApplicantDocuments = (props) => {
 															}
 														>
 															<Button
+																
 																/* disabled={
 																	applicantDocuments[index].file.fileList
 																		.length >= 1
