@@ -125,7 +125,7 @@ const submitModal = ({
 				if (filterByFalse.length > 0) {
 					return false;
 				} else {
-					return false;
+					return true;
 				}
 			};
 
