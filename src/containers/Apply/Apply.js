@@ -580,14 +580,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const returnToDocuments = () => {
 		// moving application back to documents step in case of error
 		setCurrentStep(0);
-		formData.applicantDocuments.forEach((doc) => {
-			doc.file = { fileList: [] };
-		});
-	}
-
-	useEffect(() => {
-		returnToDocuments();
-	}, []);
+	};
 
 	return (
 		<>

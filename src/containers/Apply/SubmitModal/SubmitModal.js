@@ -15,7 +15,7 @@ import {
 	ATTACHMENT_CHECK,
 	ATTACHMENT_CHECK_FOR_APPLICATIONS,
 } from '../../../constants/ApiEndpoints';
-import { EDIT_APPLICATION, EDIT_DRAFT } from '../../../constants/Routes';
+import { EDIT_APPLICATION } from '../../../constants/Routes';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
 import { checkAuth } from '../../../constants/checkAuth';
@@ -125,7 +125,7 @@ const submitModal = ({
 				if (filterByFalse.length > 0) {
 					return false;
 				} else {
-					return true;
+					return false;
 				}
 			};
 
@@ -145,8 +145,12 @@ const submitModal = ({
 				setPercent(75);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
-					await axios.put(APPLICATION_SUBMISSION, infoToSend);
-					setAppSysId(submittedAppSysId);
+					const submitApp = await axios.put(APPLICATION_SUBMISSION, infoToSend);
+					if (submitApp.data.result.status == 200) {
+						setPercent(100);
+						setSubmitted(true);
+						setAppSysId(submittedAppSysId);
+					}
 					await Promise.all(requests);
 				} else {
 					setSubmitted(false);
@@ -201,7 +205,11 @@ const submitModal = ({
 
 				if (checkAttachments(mandatoryDocuments) == true) {
 					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
-					setAppSysId(response.data.result.application_sys_id);
+					if (response.data.result.status == 200) {
+						setPercent(100);
+						setSubmitted(true);
+						setAppSysId(response.data.result.application_sys_id);
+					}
 					await Promise.all(requests);
 				} else {
 					mandatoryDocuments.map(doc => {
@@ -237,7 +245,6 @@ const submitModal = ({
 
 				await Promise.all(requests);
 			}
-			setSubmitted(true);
 		} catch (error) {
 			setSubmitted(false);
 			message.error(
@@ -245,7 +252,6 @@ const submitModal = ({
 			);
 		} finally {
 			setConfirmLoading(false);
-			setPercent(100);
 			checkAuth(setConfirmLoading, setAuth);
 		}
 	};
