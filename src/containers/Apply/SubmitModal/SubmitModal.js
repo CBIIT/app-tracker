@@ -15,7 +15,6 @@ import {
 	ATTACHMENT_CHECK,
 	ATTACHMENT_CHECK_FOR_APPLICATIONS,
 } from '../../../constants/ApiEndpoints';
-import { EDIT_APPLICATION } from '../../../constants/Routes';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
 import { checkAuth } from '../../../constants/checkAuth';
