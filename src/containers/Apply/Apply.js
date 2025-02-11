@@ -76,7 +76,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
-	const [vacancyDocuments, setVacancyDocuments] = useState([]);
+	const [vacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 
 	const history = useHistory();
