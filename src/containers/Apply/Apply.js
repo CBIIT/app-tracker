@@ -31,7 +31,6 @@ import SubmitModal from './SubmitModal/SubmitModal';
 import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
-import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
 import { checkAuth } from '../../constants/checkAuth.js';
 
 const { Step } = Steps;
@@ -55,10 +54,6 @@ const updateFormData = (currentForm, newValues, step) => {
 			// (documents) handle attachments
 			updatedForm.applicantDocuments = newValues.applicantDocuments;
 			updatedForm.focusArea = newValues.focusArea;
-			return updatedForm;
-		case 'additionalQuestions':
-			// (last-content) save to questions
-			updatedForm.questions = newValues;
 			return updatedForm;
 		default:
 			return updatedForm;
@@ -407,13 +402,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 
 	steps.push(
-		{
-			key: 'additionalQuestions',
-			title: 'Demographic Information',
-			content: <DemographicsStepForm />,
-			description: 'Opt in to share your demographics',
-			longDescription: 'Please review demographic information.',
-		},
 		{
 			key: 'review',
 			title: 'Review',
