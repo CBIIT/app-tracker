@@ -112,6 +112,9 @@ describe('Header', () => {
         const mockApply = jest.fn(() => location.pathname = APPLY + mockVacancyProps.sysId);
         useParams.mockReturnValue({ sysId: '123' });
 
+        axios.get.mockResolvedValue({ data: { result: { exists: true } } });
+        const response = await axios.get(CHECK_USER_ALREADY_APPLIED + mockVacancyProps.sysId);
+
         await waitFor(async () => {
             mockUseAuth.auth.isUserLoggedIn = true;
             mockUseAuth.auth.user.hasProfile = true;
