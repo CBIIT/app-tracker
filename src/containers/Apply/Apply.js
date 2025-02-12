@@ -145,7 +145,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const profileData = convertDataFromBackend(
 			profileResponse.data.result.response
 		);
-		const { basicInfo, demographics } = profileData;
+		const { basicInfo } = profileData;
 		const address = basicInfo?.address;
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
@@ -296,21 +296,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		};
 		const address = basicInfo?.address;
 
-		let demographics = {};
-		if (profileData.demographics?.share === '0') {
-			demographics = {
-				share: profileData.demographics.share,
-			};
-		} else if (profileData.demographics?.share === '1') {
-			demographics = {
-				disability: profileData.demographics.disability?.split(','),
-				ethnicity: profileData.demographics.ethnicity,
-				race: profileData.demographics.race?.split(','),
-				sex: profileData.demographics.sex,
-				share: profileData.demographics.share,
-			};
-		}
-
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 		vacancyDocuments.push(response.data.result.vacancy_documents);
@@ -334,7 +319,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					document.file ? document : { ...document, file: { fileList: [] } }
 			),
 			references: references,
-			questions: demographics,
 			address: address,
 			basicInfo: basicInfo,
 		};
@@ -436,21 +420,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
-				if (steps[currentStep].key === 'additionalQuestions') {
-					notification.error({
-						message: 'Please make a selection.',
-						description:
-							"You've chosen to share your demographics. Please make a selection for at least one question.",
-						duration: 5,
-						style: {
-							height: '15vh',
-							display: 'flex',
-							alignItems: 'center',
-						},
-					});
-				} else {
-					message.error('Please fill out all required fields.');
-				}
+				message.error('Please fill out all required fields.');
 			}
 		} else {
 			setSubmitModalVisible(true);
