@@ -86,6 +86,17 @@ describe('Header', () => {
         jest.clearAllMocks();
     });
 
+    it('renders button with Sign In and Apply text when user is not logged in', async () => {
+        useParams.mockReturnValue({ sysId: '123' });
+
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = false;
+            render(<Header {...mockVacancyProps} />);
+        });
+
+        expect(screen.getByText('Sign In and Apply')).toBeInTheDocument();
+    });
+
     it('renders button with Apply text when user is logged in', async () => {
         useParams.mockReturnValue({ sysId: '123' });
 
