@@ -1,22 +1,4 @@
 export const convertDataFromBackend = (data) => {
-	const createDemoObj = (data) => {
-		if (data.demographics?.share === '0') {
-			return {
-				share: data.demographics.share,
-			}
-		} else if (data.demographics?.share === '1') {
-			return {
-				disability: data.demographics.disability?.split(','),
-				ethnicity: data.demographics.ethnicity,
-				race: data.demographics.race?.split(','),
-				sex: data.demographics.sex,
-				share: data.demographics.share,
-			}
-		} else {
-			return {};
-		}
-	}
-
 	const cleanseFocusArea = (localFocusAreas) => {
 		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas.includes("undefined"))
 			return [];
@@ -53,6 +35,5 @@ export const convertDataFromBackend = (data) => {
 			},
 		},
 		focusArea: cleanseFocusArea(data?.focus_area),
-		demographics: createDemoObj(data),
 	};
 };
