@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import useAuth from './useAuth';
 import AuthContext from '../context/AuthContext';
 import React from 'react';
+import { expect } from '@jest/globals';
 
 describe('useAuth', () => {
     it('should use AuthContext', () => {
