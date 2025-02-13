@@ -25,13 +25,6 @@ describe('convertDataToBackend', () => {
                     country: 'USA',
                 },
             },
-            demographics: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: ['White'],
-                disability: ['None'],
-            },
         };
 
         const expectedOutput = {
@@ -54,13 +47,6 @@ describe('convertDataToBackend', () => {
                     state_province: 'CA',
                     country: 'USA',
                 },
-            },
-            demographics: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: 'White',
-                disability: 'None',
             },
         };
 
@@ -91,13 +77,6 @@ describe('convertDataToBackend', () => {
                     country: 'USA',
                 },
             },
-            demographics: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: ['White'],
-                disability: ['None'],
-            },
         };
 
         const expectedOutput = {
@@ -120,13 +99,6 @@ describe('convertDataToBackend', () => {
                     state_province: 'CA',
                     country: 'USA',
                 },
-            },
-            demographics: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: 'White',
-                disability: 'None',
             },
         };
 
@@ -157,13 +129,6 @@ describe('convertDataToBackend', () => {
                     country: 'USA',
                 },
             },
-            demographics: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: ['White'],
-                disability: ['None'],
-            },
         };
 
         const expectedOutput = {
@@ -186,13 +151,6 @@ describe('convertDataToBackend', () => {
                     state_province: 'CA',
                     country: 'USA',
                 },
-            },
-            demographics: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: 'White',
-                disability: 'None',
             },
         };
 
