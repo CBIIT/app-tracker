@@ -40,13 +40,6 @@ describe('transformJsonToBackend', () => {
                     relationship: 'Colleague',
                 },
             ],
-            questions: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: ['White'],
-                disability: ['None'],
-            },
         };
 
         const expectedTargetJson = {
@@ -83,13 +76,6 @@ describe('transformJsonToBackend', () => {
                     relationship: 'Colleague',
                 },
             ],
-            questions: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: 'White',
-                disability: 'None',
-            },
         };
 
         const result = transformJsonToBackend(sourceJson);
@@ -135,13 +121,6 @@ describe('transformJsonToBackend', () => {
                     relationship: 'Colleague',
                 },
             ],
-            questions: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: ['White'],
-                disability: ['None'],
-            },
         };
 
         const expectedTargetJson = {
@@ -178,13 +157,6 @@ describe('transformJsonToBackend', () => {
                     relationship: 'Colleague',
                 },
             ],
-            questions: {
-                share: true,
-                sex: 'Male',
-                ethnicity: 'Hispanic',
-                race: 'White',
-                disability: 'None',
-            },
         };
 
         const result = transformJsonToBackend(sourceJson);

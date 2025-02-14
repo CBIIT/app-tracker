@@ -31,7 +31,6 @@ import SubmitModal from './SubmitModal/SubmitModal';
 import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
-import DemographicsStepForm from './Forms/DemographicsStep/DemographicsStepForm/DemographicsStepForm';
 import { checkAuth } from '../../constants/checkAuth.js';
 
 const { Step } = Steps;
@@ -55,10 +54,6 @@ const updateFormData = (currentForm, newValues, step) => {
 			// (documents) handle attachments
 			updatedForm.applicantDocuments = newValues.applicantDocuments;
 			updatedForm.focusArea = newValues.focusArea;
-			return updatedForm;
-		case 'additionalQuestions':
-			// (last-content) save to questions
-			updatedForm.questions = newValues;
 			return updatedForm;
 		default:
 			return updatedForm;
@@ -150,7 +145,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const profileData = convertDataFromBackend(
 			profileResponse.data.result.response
 		);
-		const { basicInfo, demographics } = profileData;
+		const { basicInfo } = profileData;
 		const address = basicInfo?.address;
 
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
@@ -220,10 +215,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const formData = {
 			...initialValues,
 			applicantDocuments: Object.values(applicantDocuments),
-			questions:
-				initialValues && initialValues.questions
-					? initialValues.questions
-					: demographics,
 			basicInfo: basicInfo,
 			address: address,
 		};
@@ -301,21 +292,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		};
 		const address = basicInfo?.address;
 
-		let demographics = {};
-		if (profileData.demographics?.share === '0') {
-			demographics = {
-				share: profileData.demographics.share,
-			};
-		} else if (profileData.demographics?.share === '1') {
-			demographics = {
-				disability: profileData.demographics.disability?.split(','),
-				ethnicity: profileData.demographics.ethnicity,
-				race: profileData.demographics.race?.split(','),
-				sex: profileData.demographics.sex,
-				share: profileData.demographics.share,
-			};
-		}
-
 		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
 		setVacancyTenantType(response.data.result.basic_info.tenant.label);
 		vacancyDocuments.push(response.data.result.vacancy_documents);
@@ -339,7 +315,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					document.file ? document : { ...document, file: { fileList: [] } }
 			),
 			references: references,
-			questions: demographics,
 			address: address,
 			basicInfo: basicInfo,
 		};
@@ -408,13 +383,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	steps.push(
 		{
-			key: 'additionalQuestions',
-			title: 'Demographic Information',
-			content: <DemographicsStepForm />,
-			description: 'Opt in to share your demographics',
-			longDescription: 'Please review demographic information.',
-		},
-		{
 			key: 'review',
 			title: 'Review',
 			content: (
@@ -448,21 +416,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
-				if (steps[currentStep].key === 'additionalQuestions') {
-					notification.error({
-						message: 'Please make a selection.',
-						description:
-							"You've chosen to share your demographics. Please make a selection for at least one question.",
-						duration: 5,
-						style: {
-							height: '15vh',
-							display: 'flex',
-							alignItems: 'center',
-						},
-					});
-				} else {
-					message.error('Please fill out all required fields.');
-				}
+				message.error('Please fill out all required fields.');
 			}
 		} else {
 			setSubmitModalVisible(true);

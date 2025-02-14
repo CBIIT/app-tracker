@@ -1,5 +1,5 @@
 export const convertDataToBackend = (data) => {
-	const { basicInfo, demographics } = data;
+	const { basicInfo } = data;
 
 	 const cleanseFocusArea = (localFocusAreas) => {
 		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas[0] === 'undefined')
@@ -34,13 +34,6 @@ export const convertDataToBackend = (data) => {
 				state_province: basicInfo.address.stateProvince,
 				country: basicInfo.address.country,
 			},
-		},
-		demographics: {
-			share: demographics.share ? demographics.share : null,
-			sex: demographics?.sex  ? demographics.sex : null,
-			ethnicity: demographics?.ethnicity ? demographics.ethnicity : null,
-			race: demographics?.race ? demographics?.race.toString() : null,
-			disability: demographics?.disability ? demographics?.disability.toString() : null,
 		},
 	};
 };

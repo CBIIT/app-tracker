@@ -21,13 +21,6 @@ describe('convertDataFromBackend', () => {
                 country: 'USA',
             },
             focus_area: 'area1,area2',
-            demographics: {
-                share: '1',
-                disability: 'none',
-                ethnicity: 'Hispanic',
-                race: 'White,Asian',
-                sex: 'Male',
-            },
         };
 
         const result = convertDataFromBackend(data);
@@ -55,13 +48,6 @@ describe('convertDataFromBackend', () => {
                 },
             },
             focusArea: ['area1', 'area2'],
-            demographics: {
-                share: '1',
-                disability: ['none'],
-                ethnicity: 'Hispanic',
-                race: ['White', 'Asian'],
-                sex: 'Male',
-            },
         });
     });
 
@@ -109,7 +95,6 @@ describe('convertDataFromBackend', () => {
                 },
             },
             focusArea: ['area1', 'area2'],
-            demographics: {},
         });
     });
 
@@ -130,9 +115,6 @@ describe('convertDataFromBackend', () => {
                 country: 'USA',
             },
             focus_area: '',
-            demographics: {
-                share: '0',
-            },
         };
 
         const result = convertDataFromBackend(data);
@@ -160,9 +142,6 @@ describe('convertDataFromBackend', () => {
                 },
             },
             focusArea: [],
-            demographics: {
-                share: '0',
-            },
         });
     });
 });

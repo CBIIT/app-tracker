@@ -7,7 +7,6 @@ export const mockDefaultFormData = {
     address: {},
     references: [],
     applicantDocuments: [],
-    questions: {},
 };
 
 export const mockVacancyResponse = {
@@ -52,13 +51,6 @@ export const mockProfileResponse = {
                     country: 'USA',
                 },
                 focus_area: 'area1,area2',
-                demographics: {
-                    share: '1',
-                    disability: 'none',
-                    ethnicity: 'Hispanic',
-                    race: 'White,Asian',
-                    sex: 'Male',
-                },
                 status: 200,
             },
         },
@@ -88,13 +80,6 @@ export const mockProfileData = {
         },
     },
     focusArea: ['area1', 'area2'],
-    demographics: {
-        share: '1',
-        disability: ['none'],
-        ethnicity: 'Hispanic',
-        race: ['White', 'Asian'],
-        sex: 'Male',
-    },
 };
 
 export const mockFormData = {
@@ -141,8 +126,5 @@ export const mockFormData = {
 		},
 	],
 	applicantDocuments: [],
-	questions: {
-		share: '0',
-	},
 	sysId: '123',
 };

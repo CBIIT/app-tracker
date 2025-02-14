@@ -31,87 +31,6 @@ const review = (props) => {
 		...reference,
 	}));
 
-	const getAllRaces = (value) => {
-		if (!value)
-			return '';
-		for(var i = 0; i < value.length; i++)
-			value[i] = getRace(value[i]);
-		return value.join(', ');
-	}
-
-	const getAllDisabilities = (value) => {
-		if (!value)
-			return '';
-		for(var i = 0; i < value.length; i++)
-			value[i] = getDisability(value[i]);
-		return value.join(', ');
-	}
-
-	const getEthnicity = (value) => {
-		if (!value)
-			return '';
-		switch (value) {
-			case '1':
-				return 'Hispanic or Latino';
-			case '0':
-				return 'Not Hispanic or Latino';
-			default:
-				return '';
-		}
-	};
-
-    const getDisability = (value) => {
-		if (!value)
-			return 'Prefer not to answer';
-		switch (value) {
-			case 'Deaf':
-				return 'Deaf or serious difficulty hearing';
-			case 'Blind':
-				return 'Blind or serious difficulty seeing even when wearing glasses';
-			case 'Amputee':
-				return 'Missing an arm, leg, hand or foot';
-			case 'Paralysis':
-				return 'Paralysis: partial or complete paralysis (any cause)';
-			case 'Disfigurement':
-				return 'Significant disfigurement: for example, severe disfigurements caused by burns, wounds, accidents or congenital disorders';
-			case 'Mobility Impairment':
-				return 'Significant mobility impairment: for example, uses a wheelchair, scooter, walker or uses a leg brace to walk';
-			case 'Psychiatric Disorder':
-				return 'Significant psychiatric disorder: for example, bipolar disorder, schizophrenia, PTSD or major depression';
-			case 'Intellectual Disability':
-				return 'Intellectual disability (formerly described as mental retardation)';
-			case 'Developmental Disability':
-				return 'Developmental disability: for example, cerebral palsy or autism spectrum disorder';
-			case 'Brain Injury':
-				return 'Traumatic brain injury';
-			case 'Dwarfism':
-				return 'Dwarfism';
-			case 'Epilepsy':
-				return 'Epilepsy';
-			case 'Other Disability':
-				return 'Other disability or serious health condition: for example, diabetes, cancer, cardiovascular disease, anxiety disorder or HIV infection';
-			case 'None':
-				return 'None of the conditions listed above apply to me.';
-			case 'Do Not Wish to Answer':
-				return 'I do not wish to answer questions regarding my disability/health conditions.';
-		}
-	};
-
-    const getRace = (value) => {
-        switch (value) {
-            case 'American Indian':
-                return "American Indian or Alaska Native";
-            case 'Asian':
-                return 'Asian';
-            case 'African-American':
-                return "Black or African-American";
-            case 'Pacific Islander':
-                return "Native Hawaiian or other Pacific Islander"
-            case 'White':
-                return 'White';
-        }
-    }
-
 	return (
 		<div>
 			<SectionHeader
@@ -214,34 +133,6 @@ const review = (props) => {
 				</div>
 				: null
 			}
-			<SectionHeader
-				title='Demographics'
-				onClick={() => props.onEditButtonClick('additionalQuestions')}
-			/>
-			<div className='SectionContent'>
-				<div className='SectionContentRow'>
-					<LabelValuePair
-						label='Sharing demographics'
-						value={reviewData?.questions?.share != "0" ? "Yes" : "No" }
-					/>
-					<LabelValuePair
-						label='Sex'
-						value={ reviewData?.questions?.sex ? reviewData?.questions?.sex : "Prefer not to answer"}
-					/>
-					<LabelValuePair
-						label='Ethnicity'
-						value={reviewData?.questions?.ethnicity ? getEthnicity(reviewData?.questions?.ethnicity) : "Prefer not to answer"}
-					/>
-					<LabelValuePair
-						label='Race'
-						value={getAllRaces(reviewData?.questions?.race)}
-					/>
-					<LabelValuePair
-						label='Disability'
-						value={getAllDisabilities(reviewData?.questions?.disability)}
-					/>
-				</div>
-			</div>
 			{reviewData.references.length > 0 ? (
 				<>
 					<SectionHeader
