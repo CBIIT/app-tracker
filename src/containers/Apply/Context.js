@@ -8,7 +8,6 @@ const defaultFormData = {
 	address: {},
 	references: [],
 	applicantDocuments: [],
-	questions: {},
 };
 
 const FormContext = createContext({
