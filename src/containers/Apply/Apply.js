@@ -647,7 +647,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				draftId={draftId}
 				editSubmitted={editSubmitted}
 				submittedAppSysId={appSysId}
-				currentStep={returnToDocuments}
+				returnToDocuments={returnToDocuments}
 			/>
 		</>
 	);
