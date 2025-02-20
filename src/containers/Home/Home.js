@@ -87,10 +87,10 @@ const home = () => {
 
 				{/* <h2 style={{ marginBottom: '3px' }}>Contact Application Support</h2>
 				<p>
-				Email: NCIAppSupport@nih.gov
-
-				Application Support Telephone: 240-276-5541 or toll free: 888-478-4423
-
+				<b>Email: </b><a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@nih.gov</a>
+				<br></br>
+				<b>Application Support Telephone:</b> 240-276-5541 or toll free: 888-478-4423
+				<br></br>
 				Hours: Monday to Friday, 9:00 a.m. to 5:00 p.m. Eastern Time (ET), closed weekends and holidays.
 				</p> */}
 
@@ -113,15 +113,16 @@ const home = () => {
 					loading={isLoading}
 				/>
 			</div>
-			<div>
+			<div className='HomeContent'>
 				<h2 style={{ marginBottom: '3px' }}>Contact Application Support</h2>
 				<p>
-				Email: NCIAppSupport@nih.gov
-
-				Application Support Telephone: 240-276-5541 or toll free: 888-478-4423
-
+				<b>Email: </b><a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@nih.gov</a>
+				<br></br>
+				<b>Application Support Telephone:</b> 240-276-5541 or toll free: 888-478-4423
+				<br></br>
 				Hours: Monday to Friday, 9:00 a.m. to 5:00 p.m. Eastern Time (ET), closed weekends and holidays.
 				</p>
+				<br></br>
 			</div>
 		</>
 	);
