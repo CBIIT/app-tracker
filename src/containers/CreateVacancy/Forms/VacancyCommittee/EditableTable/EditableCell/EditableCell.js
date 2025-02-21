@@ -28,9 +28,6 @@ const editableCell = ({
 						<Option value={COMMITTEE_HR_SPECIALIST}>
 							HR Specialist (non-voting)
 						</Option>
-						<Option value={COMMITTEE_EDI_REPRESENTATIVE}>
-							EDI Representative (non-voting)
-						</Option>
 						<Option value={COMMITTEE_EXEC_SEC}>
 							Executive Secretary (non-voting)
 						</Option>
