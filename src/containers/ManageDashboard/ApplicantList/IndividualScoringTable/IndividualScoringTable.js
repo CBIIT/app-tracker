@@ -60,6 +60,7 @@ const individualScoringTable = (props) => {
 	const [chairComments, setChairComments] = useState('');
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
 	const contextValue = useContext(SearchContext);
+	const [referencesSent, setReferencesSent] = useState(false);
 	const {
 		searchText,
 		setSearchText,
@@ -125,11 +126,9 @@ const individualScoringTable = (props) => {
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppicantSysId(sysId);
-		if (referencesSent === '0') {
-			sendReferences(sysId)
-		} else {
-			setShowReferenceModal(true);
-		}
+		setReferencesSent(referencesSent);
+		setShowReferenceModal(true);
+
 	}
 
 	const getColumns = () => {
@@ -425,6 +424,7 @@ const individualScoringTable = (props) => {
 				showModal={showReferenceModal}
 				setShowModal={setShowReferenceModal}
 				sendReferences={sendReferences}
+				referencesSent={referencesSent}
 			/>
 		</>
 	);
