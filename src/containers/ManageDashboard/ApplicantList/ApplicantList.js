@@ -73,6 +73,7 @@ const applicantList = (props) => {
 	const [filter, setFilter] = useState(
 		displayTriage(props.userRoles, props.userCommitteeRole) ? APP_TRIAGE : SCORING
 	);
+	const [referencesSent, setReferencesSent] = useState();
 	const {
 		searchText,
 		setSearchText,
@@ -87,6 +88,7 @@ const applicantList = (props) => {
 			message.success(
 				response.data.result.message
 			);
+			loadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
 				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
@@ -96,11 +98,8 @@ const applicantList = (props) => {
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
-		if (referencesSent === '0') {
-			sendReferences(sysId)
-		} else {
-			setShowModal(true);
-		}
+		setReferencesSent(referencesSent);
+		setShowModal(true);
 	}
 
 	const applicantColumns = [
@@ -684,6 +683,7 @@ const applicantList = (props) => {
 				showModal={showModal}
 				setShowModal={setShowModal}
 				sendReferences={sendReferences}
+				referencesSent={referencesSent}
 			/>
 		</>
 	);
