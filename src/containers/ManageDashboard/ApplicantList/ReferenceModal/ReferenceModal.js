@@ -18,7 +18,7 @@ const referenceModal = (props) => {
 		<Modal
 			title={
 				<Paragraph>
-					<WarningOutlined /> Ready To Send Reference Notifications
+					<WarningOutlined /> Ready To Send Reference Letter Collection Notifications
 				</Paragraph>
 			}
 			open={props.showModal}
@@ -35,7 +35,7 @@ const referenceModal = (props) => {
 			]}
 		>
 			<Paragraph>
-				Are you sure you want to send the Reference Letter collection e-mails to
+				Are you sure you want to send the Reference Letter collection emails to
 				the listed references for this applicant? The notifications will be sent
 				immediately upon your confirmation.
 			</Paragraph>
@@ -44,7 +44,7 @@ const referenceModal = (props) => {
 		<Modal
 			title={
 				<Paragraph>
-					<WarningOutlined /> Reference Notifications Have Been Sent
+					<WarningOutlined /> Reference Letter Collection Notifications Have Already Been Sent.
 				</Paragraph>
 			}
 			open={props.showModal}
@@ -61,8 +61,8 @@ const referenceModal = (props) => {
 			]}
 		>
 			<Paragraph>
-				Notifications to this applicant&apos;s selected references have already
-				been sent. Would you like to send the notifications again?
+				Notifications to this applicant&apos;s listed references have already
+				been sent. Would you like to send the Reference Letter Collection emails again?
 			</Paragraph>
 		</Modal>
 	);
