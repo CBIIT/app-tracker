@@ -7,8 +7,6 @@ describe('ReferenceModal', () => {
     let mockSetShowModal;
     let mockSendReferences;
     let mockReferencesSent;
-    let mockHandleReferenceSubmit;
-    let mockHandleReferenceCancel;
 
     beforeEach(() => {
         mockAppSysId = '1234';
