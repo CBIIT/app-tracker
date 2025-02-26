@@ -1,5 +1,5 @@
 import ReferenceModal from './ReferenceModal';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
    
 describe('ReferenceModal', () => {
     let mockAppSysId;
@@ -7,12 +7,16 @@ describe('ReferenceModal', () => {
     let mockSetShowModal;
     let mockSendReferences;
     let mockReferencesSent;
+    let mockHandleReferenceSubmit;
+    let mockHandleReferenceCancel;
 
     beforeEach(() => {
         mockAppSysId = '1234';
         mockShowModal = true;
         mockSetShowModal = jest.fn();
         mockSendReferences = jest.fn();
+        mockHandleReferenceSubmit = jest.fn();
+        mockHandleReferenceCancel = jest.fn();
     });
 
     afterEach(() => {
@@ -51,6 +55,40 @@ describe('ReferenceModal', () => {
         expect(screen.getByText(/Notifications to this applicant's listed references have already been sent. Would you like to send the Reference Letter Collection emails again?/i)).toBeInTheDocument();
         expect(screen.getByText('Send References Again')).toBeInTheDocument();
         expect(screen.getByText('Cancel')).toBeInTheDocument();
+    });
+
+    test('calls handleReferenceSubmit function when Send References button is clicked', () => {
+        mockReferencesSent = '0';
+
+        render(<ReferenceModal 
+            appSysId={mockAppSysId}
+            showModal={mockShowModal}
+            setShowModal={mockSetShowModal}
+            sendReferences={mockSendReferences}
+            referencesSent={mockReferencesSent}
+        />);
+
+        fireEvent.click(screen.getByText('Send References'));
+
+        expect(mockSendReferences).toHaveBeenCalled();
+        expect(mockSetShowModal).toHaveBeenCalledWith(false);
+
+    });
+
+    test('calls handleReferenceCancel function when Cancel button is clicked', () => {
+        mockReferencesSent = '0';
+
+        render(<ReferenceModal 
+            appSysId={mockAppSysId}
+            showModal={mockShowModal}
+            setShowModal={mockSetShowModal}
+            sendReferences={mockSendReferences}
+            referencesSent={mockReferencesSent}
+        />);
+
+        fireEvent.click(screen.getByText('Cancel'));
+
+        expect(mockSetShowModal).toHaveBeenCalledWith(false);
     });
 
 });
