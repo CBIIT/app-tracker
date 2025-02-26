@@ -117,11 +117,16 @@ const individualScoringTable = (props) => {
 			message.success(
 				response.data.result.message
 			);
+			reloadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
 				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
 			);
 		}
+	}
+
+	const reloadVacancyAndApplicants = () => {
+		props.reloadVacancy();
 	}
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
