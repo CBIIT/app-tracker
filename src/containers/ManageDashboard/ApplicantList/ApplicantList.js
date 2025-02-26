@@ -414,6 +414,7 @@ const applicantList = (props) => {
 									onTableChange={loadRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -424,6 +425,7 @@ const applicantList = (props) => {
 									onTableChange={loadNonRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 						</Collapse>

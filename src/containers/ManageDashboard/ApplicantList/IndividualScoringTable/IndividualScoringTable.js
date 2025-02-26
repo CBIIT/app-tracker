@@ -128,7 +128,6 @@ const individualScoringTable = (props) => {
 		setAppicantSysId(sysId);
 		setReferencesSent(referencesSent);
 		setShowReferenceModal(true);
-
 	}
 
 	const getColumns = () => {
