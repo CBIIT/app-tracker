@@ -13,8 +13,6 @@ describe('ReferenceModal', () => {
         mockShowModal = true;
         mockSetShowModal = jest.fn();
         mockSendReferences = jest.fn();
-        mockHandleReferenceSubmit = jest.fn();
-        mockHandleReferenceCancel = jest.fn();
     });
 
     afterEach(() => {

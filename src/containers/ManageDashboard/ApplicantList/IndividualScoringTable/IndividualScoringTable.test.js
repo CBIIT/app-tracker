@@ -3,7 +3,9 @@ import { render, screen } from '@testing-library/react';
 import {
 	mockRecommendedApplicants,
 	mockRecommendedApplicantsTablePagination,
+    mockUserRoles
 } from './IndividualScoringTableMockData';
+import { OWM_TEAM } from '../../../../constants/Roles';
 
 describe('individualScoringTable', () => {
 	let mockRecommendedApplicantsTableLoading;
@@ -12,7 +14,6 @@ describe('individualScoringTable', () => {
 	let mockLoadVacancyAndApplicants;
 
 	beforeEach(() => {
-		mockRecommendedApplicantsTableLoading = false;
 		mockLoadRecommendedApplicants = jest.fn();
 		mockLoadVacancyAndApplicants = jest.fn();
 	});
@@ -23,7 +24,7 @@ describe('individualScoringTable', () => {
 
 	test('renders individualScoringTable component', () => {
         mockReferenceCollection = true;
-        mockRecommendedApplicantsTableLoading = true;
+        mockRecommendedApplicantsTableLoading = 'true';
 
 		render(
 			<individualScoringTable
@@ -37,7 +38,7 @@ describe('individualScoringTable', () => {
 			/>
 		);
 
-        expect(screen.getByText('Collect References')).toBeInTheDocument();
+        expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
 
 	});
 });

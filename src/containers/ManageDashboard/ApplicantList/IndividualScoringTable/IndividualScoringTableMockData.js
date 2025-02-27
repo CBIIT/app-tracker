@@ -42,3 +42,10 @@ export const mockRecommendedApplicantsTablePagination = {
     ],
     total: 0,
 };
+
+export const mockUserRoles = [
+    'x_g_nci_app_tracke.vacancy_manager',
+    'x_g_nci_app_tracke.committee_member',
+    'x_g_nci_app_tracke.user',
+    'snc_internal',
+]

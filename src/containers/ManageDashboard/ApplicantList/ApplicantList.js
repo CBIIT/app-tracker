@@ -102,6 +102,16 @@ const applicantList = (props) => {
 		setShowModal(true);
 	}
 
+	console.log('applicants={recommendedApplicants}:: ', recommendedApplicants);
+	console.log('pagination={recommendedApplicantsTablePagination}:: ', recommendedApplicantsTablePagination);
+	console.log('loading={recommendedApplicantsTableLoading}:: ', recommendedApplicantsTableLoading);
+	console.log('onTableChange={loadRecommendedApplicants}:: ', loadRecommendedApplicants);
+	console.log('refCollection={props.referenceCollection}:: ', props.referenceCollection);
+	console.log('typeof refCollection={props.referenceCollection}:: ', typeof props.referenceCollection)
+	console.log('isVacancyManager={props.userRoles.includes(OWM_TEAM)}:: ', props.userRoles.includes(OWM_TEAM));
+	console.log('typeof isVacancyManager={props.userRoles.includes(OWM_TEAM)}:: ', typeof props.userRoles.includes(OWM_TEAM))
+	console.log('reloadVacancy={loadVacancyAndApplicants}:: ', loadVacancyAndApplicants);
+
 	const applicantColumns = [
 		{
 			title: 'Applicant',
