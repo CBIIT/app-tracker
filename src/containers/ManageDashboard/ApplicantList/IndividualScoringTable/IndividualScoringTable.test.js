@@ -1,11 +1,10 @@
-import individualScoringTable from './IndividualScoringTable';
+import IndividualScoringTable from './IndividualScoringTable';
 import { render, screen } from '@testing-library/react';
 import {
 	mockRecommendedApplicants,
 	mockRecommendedApplicantsTablePagination,
-    mockUserRoles
+	mockUserRoles,
 } from './IndividualScoringTableMockData';
-import { OWM_TEAM } from '../../../../constants/Roles';
 
 describe('individualScoringTable', () => {
 	let mockRecommendedApplicantsTableLoading;
@@ -23,14 +22,14 @@ describe('individualScoringTable', () => {
 	});
 
 	test('renders individualScoringTable component', () => {
-        mockReferenceCollection = true;
-        mockRecommendedApplicantsTableLoading = 'true';
+		mockReferenceCollection = undefined;
+		mockRecommendedApplicantsTableLoading = true;
 
 		render(
-			<individualScoringTable
+			<IndividualScoringTable
 				applicants={mockRecommendedApplicants}
 				pagination={mockRecommendedApplicantsTablePagination}
-				loading={mockRecommendedApplicantsTableLoading}
+				loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
 				onTableChange={mockLoadRecommendedApplicants}
 				refCollection={mockReferenceCollection}
 				isVacancyManager={true}
@@ -38,7 +37,6 @@ describe('individualScoringTable', () => {
 			/>
 		);
 
-        expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
-
+		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
 	});
 });
