@@ -226,6 +226,7 @@ const applicantList = (props) => {
 				width: 200,
 				render: (_, record) => (
 					<Button
+					data-testid='collect-references-button'
 						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
 					>
 						Collect References

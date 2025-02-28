@@ -44,5 +44,7 @@ describe('ApplicantList', () => {
                 reloadVacancy={mockLoadLatestVacancyInfo}
             />
         );
+
+        expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
     });
 })
