@@ -1,0 +1,18 @@
+.HelpDesk {
+	width: 100%;
+	background-color: white;
+}
+
+.HelpDeskContent {
+	padding-top: 20px;
+	width: min(90%, 1216px);
+	margin: auto;
+}
+
+.HelpDeskContent p {
+	color: #333333;
+	font-family: 'Noto Sans';
+	font-weight: 500;
+	letter-spacing: 0;
+	line-height: 20px;
+}
