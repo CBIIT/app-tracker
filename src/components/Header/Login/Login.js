@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import { Button, Menu, Dropdown, Divider } from 'antd';
+import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
@@ -11,8 +11,12 @@ import './Login.css';
 
 const login = () => {
 	const {
-		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl, tenants},
+		currentTenant,
+		setCurrentTenant
 	} = useAuth();
+
+	console.log('Tenants :', tenants, '---->', currentTenant);
 
 	const history = useHistory();
 
@@ -102,15 +106,40 @@ const login = () => {
 	);
 
 	return isUserLoggedIn ? (
-		<Dropdown className='Login' overlay={logoutMenu}>
-			<Button type='link'>
-				<UserOutlined />
-				{user.firstName +
+		<div>
+			{user.isManager ?
+				<Select 
+					placeholder="Select a tenant" 
+					filterOption={(input, option) =>
+						(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+			  		}		
+			  		options={tenants}
+			  		onChange={(value) =>
+					setCurrentTenant(value)
+			  		}
+				/> : null
+			}
+			{/* <Select
+    			placeholder="Select a tenant"
+    			filterOption={(input, option) =>
+      				(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+    			}
+				options={tenants}
+				onChange={(value) =>
+					setCurrentTenant(value)
+				}
+    		/> */}
+			<Dropdown className='Login' overlay={logoutMenu}>
+				<Button type='link'>
+					<UserOutlined />
+					{user.firstName +
 					' ' +
 					(user.lastInitial ? user.lastInitial + '.' : '')}
-				<DownOutlined />
-			</Button>
-		</Dropdown>
+					<DownOutlined />
+				</Button>
+			</Dropdown>
+		</div>
+		
 	) : (
 		<Dropdown className='Login' overlay={loginMenu}>
 			<Button type='link'>

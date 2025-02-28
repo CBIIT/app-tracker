@@ -69,7 +69,7 @@ export const WITHDRAW_USER_APPLICATION =
 	'/api/x_g_nci_app_tracke/application/withdraw/';
 
 // Login Scripted REST API Endpoints
-export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/check_auth';
+export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/v2/check_auth';
 
 export const CREATE_OKTA_USER =
 	'/api/x_g_nci_app_tracke/login/create_okta_user';
@@ -94,7 +94,7 @@ export const CHANGE_VACANCY_STATUS =
 export const GET_COMMITTEE_MEMBER_VIEW =
 	'/api/x_g_nci_app_tracke/vacancy/committee';
 
-export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/counts/';
+export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/v2/counts/';
 
 export const EDIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/edit';
 

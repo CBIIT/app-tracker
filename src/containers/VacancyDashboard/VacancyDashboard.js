@@ -41,6 +41,8 @@ import {
 import CountTile from './CountTile/CountTile';
 import ExtendModal from './ExtendModal/ExtendModal';
 import './VacancyDashboard.css';
+import useAuth from '../../hooks/useAuth';
+
 
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
@@ -52,6 +54,9 @@ const vacancyDashboard = () => {
 	const [activeTab, setActiveTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
 	const [filter, setFilter] = useState('all');
+
+	const { currentTenant } = useAuth();
+
 
 	const tabs = {
 		PREFLIGHT: 'preflight',
@@ -104,7 +109,7 @@ const vacancyDashboard = () => {
 		return () => {
 			cancelToken.cancel();
 		};
-	}, [tab]);
+	}, [tab, currentTenant]);
 
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
@@ -579,8 +584,9 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='pre-flight vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.PREFLIGHT}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.PREFLIGHT}
 									data={data}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.PREFLIGHT}
@@ -620,7 +626,8 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='live vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.LIVE}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.LIVE}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.LIVE}
@@ -660,7 +667,8 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='rolling close vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.ROLLING}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.ROLLING}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.ROLLING}
@@ -700,7 +708,8 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='closed vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.CLOSED}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.CLOSED}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.CLOSED}

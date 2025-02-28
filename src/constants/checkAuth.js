@@ -25,6 +25,7 @@ export const checkAuth = async (setIsLoading, setAuth) => {
             roles: data.user.roles,
         },
         oktaLoginAndRedirectUrl: data.okta_login_and_redirect_url,
+        tenants: data.tenants,
     });
     setIsLoading(false);
 };
