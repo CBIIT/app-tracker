@@ -2,6 +2,7 @@ import ApplicantList from './ApplicantList';
 import { render, screen } from '@testing-library/react';
 import { mockVacancy, mockUser } from './ApplicantListMockData';
 import { useParams } from 'react-router-dom';
+import { OWM_TEAM, COMMITTEE_EXEC_SEC } from '../../../constants/Roles';
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -40,7 +41,7 @@ describe('ApplicantList', () => {
                 vacancyTenant={mockVacancy.basicInfo.tenant}
                 referenceCollection={mockVacancy.basicInfo.referenceCollection}
                 userRoles={mockUser.roles}
-                userCommitteeRole={'Executive Secretary (non-voting)'}
+                userCommitteeRole={COMMITTEE_EXEC_SEC}
                 reloadVacancy={mockLoadLatestVacancyInfo}
             />
         );

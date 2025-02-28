@@ -15,7 +15,7 @@ export const mockVacancy = {
         openDate: '02/07/2025',
         positionClassification: 'Research Fellow',
         referenceCollection: true,
-        referenceCollectionDate: '02/24/2025',
+        referenceCollectionDate: '02/28/2025',
         requireFocusArea: false,
         sacCode: 'HNC',
         scoringDueByDate: '',
