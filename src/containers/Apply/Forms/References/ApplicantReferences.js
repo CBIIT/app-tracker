@@ -145,7 +145,7 @@ const applicantReferences = () => {
 												labelAlign='left'
 												colon={false}
 											>
-												<Select placeholder='Please Select'>
+												<Select placeholder='Please Select' data-testid='relationship'>
 													<Option value='Supervisor/Manager'>
 														Supervisor/Manager
 													</Option>
@@ -189,7 +189,7 @@ const applicantReferences = () => {
 								defaultCurrent={1}
 								current={current}
 								pageSize={5}
-								onChange={(value)=> setCurrent(value)}
+								onChange={(value) => setCurrent(value)}
 							/>
 						</>
 					);
