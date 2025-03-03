@@ -1,5 +1,6 @@
 import IndividualScoringTable from './IndividualScoringTable';
 import { render, screen } from '@testing-library/react';
+import { HashRouter } from 'react-router-dom';
 import {
 	mockRecommendedApplicants,
 	mockRecommendedApplicantsTablePagination,
@@ -34,22 +35,28 @@ describe('individualScoringTable', () => {
 		jest.clearAllMocks();
 	});
 
-	test('renders individualScoringTable component', () => {
-		mockReferenceCollection = undefined;
+	test('renders individualScoringTable component ', () => {
+		mockReferenceCollection = true;
 		mockRecommendedApplicantsTableLoading = true;
 
 		render(
-			<IndividualScoringTable
-				applicants={mockRecommendedApplicants}
-				pagination={mockRecommendedApplicantsTablePagination}
-				loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
-				onTableChange={mockLoadRecommendedApplicants}
-				refCollection={mockReferenceCollection}
-				isVacancyManager={true}
-				reloadVacancy={mockLoadVacancyAndApplicants}
-			/>
+			<HashRouter>
+				<IndividualScoringTable
+					applicants={mockRecommendedApplicants}
+					pagination={mockRecommendedApplicantsTablePagination}
+					loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
+					onTableChange={mockLoadRecommendedApplicants}
+					refCollection={mockReferenceCollection}
+					isVacancyManager={true}
+					reloadVacancy={mockLoadVacancyAndApplicants}
+				/>
+			</HashRouter>
 		);
 
-		// expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
+		expect(screen.getByText('Applicant')).toBeInTheDocument();
+		expect(screen.getByText('Email')).toBeInTheDocument();
+		expect(screen.getByText('Average Score')).toBeInTheDocument();
+		expect(screen.getByText('Scoring Status')).toBeInTheDocument();
+		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
 	});
 });

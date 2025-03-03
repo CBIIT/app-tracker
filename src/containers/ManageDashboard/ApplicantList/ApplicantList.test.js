@@ -2,7 +2,7 @@ import ApplicantList from './ApplicantList';
 import { render, screen } from '@testing-library/react';
 import { mockVacancy, mockUser } from './ApplicantListMockData';
 import { useParams } from 'react-router-dom';
-import { OWM_TEAM, COMMITTEE_EXEC_SEC } from '../../../constants/Roles';
+import { OWM_TEAM } from '../../../constants/Roles';
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -10,10 +10,10 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('ApplicantList', () => {
-    let mockLoadLatestVacancyInfo;
+	let mockLoadLatestVacancyInfo;
 
-    beforeEach(() => {
-        Object.defineProperty(window, 'matchMedia', {
+	beforeEach(() => {
+		Object.defineProperty(window, 'matchMedia', {
 			writable: true,
 			value: jest.fn().mockImplementation((query) => ({
 				matches: false,
@@ -26,26 +26,28 @@ describe('ApplicantList', () => {
 				dispatchEvent: jest.fn(),
 			})),
 		});
-        useParams.mockReturnValue({ id: mockVacancy.sysId });
-        mockLoadLatestVacancyInfo = jest.fn();
-    });
+		useParams.mockReturnValue({ id: mockVacancy.sysId });
+		mockLoadLatestVacancyInfo = jest.fn();
+	});
 
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
 
-    test('should render ApplicantList component', () => {
-        render (
-            <ApplicantList
-                vacancyState={mockVacancy.state}
-                vacancyTenant={mockVacancy.basicInfo.tenant}
-                referenceCollection={mockVacancy.basicInfo.referenceCollection}
-                userRoles={mockUser.roles}
-                userCommitteeRole={COMMITTEE_EXEC_SEC}
-                reloadVacancy={mockLoadLatestVacancyInfo}
-            />
-        );
+	test('should render ApplicantList component', () => {
+		render(
+			<HashRouter>
+				<ApplicantList
+					vacancyState={mockVacancy.state}
+					vacancyTenant={mockVacancy.basicInfo.tenant}
+					referenceCollection={true}
+					userRoles={mockUser.roles}
+					userCommitteeRole={OWM_TEAM}
+					reloadVacancy={mockLoadLatestVacancyInfo}
+				/>
+			</HashRouter>
+		);
 
-        expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
-    });
-})
+		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
+	});
+});
