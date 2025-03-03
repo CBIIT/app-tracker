@@ -13,3 +13,93 @@
 		<div id="root"></div>
 	</body>
 </html>
+
+<div class="main-content">
+	<div class="row page-title">
+	</div>
+	<div class="row nav-tabs">
+		<!--<div class="tab active tab-teal" style="font-weight: bold;">
+        RASopathies
+      </div>-->
+	</div>
+	<div class="row content-body">
+		<div class="content-block">
+			<div class="enrollment-info">
+				<div class="sub-title">
+					Please complete the available document(s) by clicking the link(s) below.
+				</div>
+				<div class="custom-card-row">
+					<div class="custom-card" ng-show='c.data.study == "metformin"'>
+						<div class="custom-card-title">
+							<a href="/familystudyhub?id=metformin_patient_home_page"><span
+									class="strong-color">Metformin Study</span></a>
+						</div>
+						<!-- <div class="custom-card-image">
+                          <a href="/familystudyhub?id=metformin_patient_home_page" target='_BLANK'><img src="" width="160" /></a>
+                        </div> -->
+					</div>
+					<!-- <div class="custom-card" ng-show='c.data.study == "metformin"'> -->
+					<!-- <div class="custom-card">
+                        <div class="custom-card-title">
+                            <span class="strong-color">Metformin Study Complete</span>
+                        </div>
+                      	<div class="custom-card-image">
+                            <img src="" width="160" />
+                        </div>
+                    </div> -->
+					<div class="custom-card" ng-show='c.data.study == "general"'>
+
+						<div class="custom-card-title">
+							<a href aria-label="PAS">
+								<span class="strong-color">Generic Eligibility Screener</span>
+							</a>
+						</div>
+						<div class="custom-card-image">
+							<!-- <a href target='_BLANK'><img src="" width="160" /></a> -->
+						</div>
+					</div>
+					<!-- <div class="custom-card" ng-show='c.data.study == "" && c.data.genSurvey.complete == true'> -->
+					<!-- <div class="custom-card">
+                        <div class="custom-card-title">
+                            <span class="strong-color">Generic Questionnaire Complete</span>
+                        </div>
+                        <div class="custom-card-image">
+                            <img src="" width="160" />
+              			</div>
+                    </div> -->
+
+					<!-- <div class="custom-card"
+						ng-if="c.data.family_member_id != '-9999'"> -->
+					<!-- desktop mobile dialog -->
+					<!-- <a class="custom-card-link modal-desktop"
+							href="javascript:void(0);"
+							ng-click="c.openattachmentModal(c.data.participant, c.data.family_member_id, 'desktop')"
+							aria-label="Upload Attachment">
+							<div class="custom-card-title">
+								<span class="strong-color">Upload Attachment</span>
+							</div>
+							<div class="custom-card-image">
+								<img src="Upload%20File.jpg" width="160" height="108.75" />
+							</div>
+						</a> -->
+					<!--mobile upload dialog -->
+					<!-- <a class="custom-card-link modal-mobile"
+							href="javascript:void(0);"
+							ng-click="c.openattachmentModal(c.data.participant, c.data.family_member_id, 'mobile')"
+							aria-label="Upload Attachment">
+							<div class="custom-card-title">
+								<span class="strong-color">Upload Attachment</span>
+							</div>
+							<div class="custom-card-image">
+								<img src="Upload%20File.jpg" width="160" height="108.75" />
+							</div>
+						</a>
+					</div> -->
+				</div>
+			</div>
+			<div class="bottom-help">
+				If you have any questions, please contact us at (800) 518-8474 or <a
+					href="mailto:NCIFamilyStudiesHub@nih.gov">NCIFamilyStudiesHub@nih.gov</a>.
+			</div>
+		</div>
+	</div>
