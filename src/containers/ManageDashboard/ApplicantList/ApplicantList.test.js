@@ -1,16 +1,24 @@
 import ApplicantList from './ApplicantList';
 import { render, screen } from '@testing-library/react';
-import { mockVacancy, mockUser } from './ApplicantListMockData';
 import { useParams, HashRouter } from 'react-router-dom';
+import axios from 'axios';
 import { GET_ROLLING_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
+import { 
+	mockVacancy, 
+	mockUser, 
+	mockGetRollingApplicantList 
+} from './ApplicantListMockData';
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
 }));
+jest.mock('axios');
 
 describe('ApplicantList', () => {
 	let mockLoadLatestVacancyInfo;
+	let mockLoadApplicants;
+	let mockLoadAllApplicants;
 
 	beforeEach(() => {
 		Object.defineProperty(window, 'matchMedia', {
@@ -28,16 +36,18 @@ describe('ApplicantList', () => {
 		});
 		useParams.mockReturnValue({ id: mockVacancy.sysId });
 		mockLoadLatestVacancyInfo = jest.fn();
+		mockLoadApplicants = jest.fn();
+		mockLoadAllApplicants = jest.fn();
 	});
 
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
 
-	test('should render ApplicantList component', () => {
+	test('should render ApplicantList component', async () => {
         var mockOffset = 1;
         var mockLimit = 10;
-        mockApi = GET_ROLLING_APPLICANT_LIST
+        var mockApi = GET_ROLLING_APPLICANT_LIST
 		render(
 			<HashRouter>
 				<ApplicantList
@@ -51,6 +61,10 @@ describe('ApplicantList', () => {
 			</HashRouter>
 		);
 
+		axios.get.mockImplementationOnce(() => Promise.resolve(mockGetRollingApplicantList));
+		const rollingApplicantList = await axios.get(mockApi, { sysId: mockVacancy.sysId, offset: mockOffset, limit: mockLimit });
+
+		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
 
         // mock the loadApplicants function in ApplicantList.js
             // mock 
