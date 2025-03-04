@@ -35,7 +35,7 @@ const referenceModal = (props) => {
 			]}
 		>
 			<Paragraph>
-				Are you sure you want to send the Reference Letter collection emails to
+				Are you sure you want to send the Reference Letter Collection emails to
 				the listed references for this applicant? The notifications will be sent
 				immediately upon your confirmation.
 			</Paragraph>

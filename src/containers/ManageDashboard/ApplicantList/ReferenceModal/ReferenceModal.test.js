@@ -31,7 +31,7 @@ describe('ReferenceModal', () => {
         />);
 
         expect(screen.getByText('Ready To Send Reference Letter Collection Notifications')).toBeInTheDocument();
-        expect(screen.getByText('Are you sure you want to send the Reference Letter collection emails to the listed references for this applicant? The notifications will be sent immediately upon your confirmation.')).toBeInTheDocument();
+        expect(screen.getByText('Are you sure you want to send the Reference Letter Collection emails to the listed references for this applicant? The notifications will be sent immediately upon your confirmation.')).toBeInTheDocument();
         expect(screen.getByText('Send References')).toBeInTheDocument();
         expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
