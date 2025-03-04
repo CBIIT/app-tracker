@@ -335,9 +335,9 @@ const applicantList = (props) => {
 		setTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
 		setTableLoading(false);
-		setApplicants(data.applicants);
-		setTotalCount(data.totalCount);
-		setPageSize(data.pageSize);
+		if (data && data.applicants) { setApplicants(data.applicants); }
+		if (data && data.totalCount) { setTotalCount(data.totalCount); }
+		if (data && data.pageSize) { setPageSize(data.pageSize); }
 	};
 
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
@@ -385,6 +385,7 @@ const applicantList = (props) => {
 
 		const table = (
 			<Table
+				data-testid='applicant-table'
 				dataSource={data}
 				columns={getColumns()}
 				scroll={{ x: 'true' }}

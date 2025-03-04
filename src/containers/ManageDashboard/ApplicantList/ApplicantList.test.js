@@ -1,5 +1,5 @@
 import ApplicantList from './ApplicantList';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { useParams, HashRouter } from 'react-router-dom';
 import axios from 'axios';
 import { GET_ROLLING_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
@@ -61,12 +61,13 @@ describe('ApplicantList', () => {
 			</HashRouter>
 		);
 
-		axios.get.mockImplementationOnce(() => Promise.resolve(mockGetRollingApplicantList));
-		const rollingApplicantList = await axios.get(mockApi, { sysId: mockVacancy.sysId, offset: mockOffset, limit: mockLimit });
-
-		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
-
-        // mock the loadApplicants function in ApplicantList.js
-            // mock 
+		waitFor(() => {
+			axios.get.mockImplementationOnce(() => Promise.resolve(mockGetRollingApplicantList));
+			const rollingApplicantList = axios.get(mockApi, { sysId: mockVacancy.sysId, offset: mockOffset, limit: mockLimit });
+			expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
+		})
+		
+		expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		
 	});
 });
