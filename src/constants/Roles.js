@@ -1,8 +1,8 @@
 const COMMITTEE_CHAIR = 'Chair';
 const COMMITTEE_MEMBER_VOTING = 'Member';
 const COMMITTEE_MEMBER_NON_VOTING = 'Member (non-voting)';
-const COMMITTEE_EXEC_SEC = 'Executive Secretary (non-voting)';
-const COMMITTEE_HR_SPECIALIST = 'HR Specialist (non-voting)';
+const COMMITTEE_EXEC_SEC = 'Executive Secretary';
+const COMMITTEE_HR_SPECIALIST = 'HR Specialist';
 const COMMITTEE_EDI_REPRESENTATIVE = 'EDI Representative (non-voting)';
 const APPLICANT = 'APPLICANT';
 const COMMITTEE_MEMBER_READ_ONLY = 'Member (read-only)';
