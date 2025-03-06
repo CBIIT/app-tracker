@@ -14,11 +14,37 @@ const referenceModal = (props) => {
 		props.setShowModal(false);
 	};
 
-	return (
+	return props.referencesSent === '0' ? (
 		<Modal
 			title={
 				<Paragraph>
-					<WarningOutlined /> Reference Notifications Have Been Sent
+					<WarningOutlined /> Ready To Send Reference Letter Collection Notifications
+				</Paragraph>
+			}
+			open={props.showModal}
+			onOk={handleReferenceSubmit}
+			onCancel={handleReferenceCancel}
+			closable={false}
+			footer={[
+				<Button key='modal-button' onClick={handleReferenceSubmit}>
+					Send References
+				</Button>,
+				<Button key='modal-continue' onClick={handleReferenceCancel}>
+					Cancel
+				</Button>,
+			]}
+		>
+			<Paragraph>
+				Are you sure you want to send the Reference Letter Collection emails to
+				the listed references for this applicant? The notifications will be sent
+				immediately upon your confirmation.
+			</Paragraph>
+		</Modal>
+	) : (
+		<Modal
+			title={
+				<Paragraph>
+					<WarningOutlined /> Reference Letter Collection Notifications Have Already Been Sent.
 				</Paragraph>
 			}
 			open={props.showModal}
@@ -35,8 +61,8 @@ const referenceModal = (props) => {
 			]}
 		>
 			<Paragraph>
-				Notifications to this applicant&apos;s selected references have already been
-				sent. Would you like to send the notifications again?
+				Notifications to this applicant&apos;s listed references have already
+				been sent. Would you like to send the Reference Letter Collection emails again?
 			</Paragraph>
 		</Modal>
 	);

@@ -73,6 +73,7 @@ const applicantList = (props) => {
 	const [filter, setFilter] = useState(
 		displayTriage(props.userRoles, props.userCommitteeRole) ? APP_TRIAGE : SCORING
 	);
+	const [referencesSent, setReferencesSent] = useState();
 	const {
 		searchText,
 		setSearchText,
@@ -87,6 +88,7 @@ const applicantList = (props) => {
 			message.success(
 				response.data.result.message
 			);
+			loadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
 				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
@@ -96,11 +98,8 @@ const applicantList = (props) => {
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
-		if (referencesSent === '0') {
-			sendReferences(sysId)
-		} else {
-			setShowModal(true);
-		}
+		setReferencesSent(referencesSent);
+		setShowModal(true);
 	}
 
 	const applicantColumns = [
@@ -227,6 +226,7 @@ const applicantList = (props) => {
 				width: 200,
 				render: (_, record) => (
 					<Button
+					data-testid='collect-references-button'
 						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
 					>
 						Collect References
@@ -335,9 +335,9 @@ const applicantList = (props) => {
 		setTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
 		setTableLoading(false);
-		setApplicants(data.applicants);
-		setTotalCount(data.totalCount);
-		setPageSize(data.pageSize);
+		if (data && data.applicants) { setApplicants(data.applicants); }
+		if (data && data.totalCount) { setTotalCount(data.totalCount); }
+		if (data && data.pageSize) { setPageSize(data.pageSize); }
 	};
 
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
@@ -385,6 +385,7 @@ const applicantList = (props) => {
 
 		const table = (
 			<Table
+				data-testid='applicant-table'
 				dataSource={data}
 				columns={getColumns()}
 				scroll={{ x: 'true' }}
@@ -415,6 +416,7 @@ const applicantList = (props) => {
 									onTableChange={loadRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -425,6 +427,7 @@ const applicantList = (props) => {
 									onTableChange={loadNonRecommendedApplicants}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 						</Collapse>
@@ -477,6 +480,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											reloadVacancy={loadVacancyAndApplicants}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -488,6 +492,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											reloadVacancy={loadVacancyAndApplicants}
 										/>
 									</Panel>
 								</Collapse>
@@ -684,6 +689,7 @@ const applicantList = (props) => {
 				showModal={showModal}
 				setShowModal={setShowModal}
 				sendReferences={sendReferences}
+				referencesSent={referencesSent}
 			/>
 		</>
 	);
