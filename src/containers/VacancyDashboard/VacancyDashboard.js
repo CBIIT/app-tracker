@@ -85,9 +85,10 @@ const vacancyDashboard = () => {
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			let dataUrl = DASHBOARD_VACANCIES + tabs.PREFLIGHT;
+			// let dataUrl = DASHBOARD_VACANCIES + tabs.PREFLIGHT;
+			let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
 			if (tab) {
-				dataUrl = DASHBOARD_VACANCIES + tab;
+				dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
 				setActiveTab(tab);
 			}
 
