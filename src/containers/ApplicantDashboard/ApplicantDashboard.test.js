@@ -1,6 +1,6 @@
 import ApplicantDashboard from './ApplicantDashboard';
 import { render, screen } from '@testing-library/react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, Router } from 'react-router-dom';
 import ProtectedRoute from '../../components/ProtectedRoute/ProtectedRoute';
 import { 
     GET_USER_APPLICATIONS, 
@@ -18,15 +18,17 @@ import useAuth from '../../hooks/useAuth';
 import { checkAuth } from '../../constants/checkAuth';
 
 jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
     useHistory: jest.fn(),
-    useLocation: jest.fn(),
+    useLocation: () => {
+        pathname: '/nci-scss.do#/applicant-dashboard'
+    }
 }));
 jest.mock('axios');
 jest.mock('../../hooks/useAuth')
 
 
 describe('ApplicantDashboard', () => {
-    let mockUseAuth;
     let mockHistoryPush;
 
     beforeEach(() => {
@@ -61,12 +63,14 @@ describe('ApplicantDashboard', () => {
 
     test('should render ApplicantDashboard with no applications', () => {
         render(
+            <Router history={/nci-scss.do#/}>
                 <ProtectedRoute 
                     key='applicant-dashboard'
                     path={APPLICANT_DASHBOARD}
                     component={ApplicantDashboard}
                     useOktaAuth={true}
                 />
+            </Router>
         );
     })
 });
