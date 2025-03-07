@@ -1,6 +1,6 @@
 import ApplicantDashboard from './ApplicantDashboard';
 import { render, screen } from '@testing-library/react';
-import { useHistory, Router } from 'react-router-dom';
+import { useHistory, MemoryRouter, useLocation } from 'react-router-dom';
 import ProtectedRoute from '../../components/ProtectedRoute/ProtectedRoute';
 import { 
     GET_USER_APPLICATIONS, 
@@ -63,14 +63,15 @@ describe('ApplicantDashboard', () => {
 
     test('should render ApplicantDashboard with no applications', () => {
         render(
-            <Router history={/nci-scss.do#/}>
-                <ProtectedRoute 
+            <MemoryRouter initialEntry='/nci-scss.do#/applicant-dashboard/'>
+                {/* <ProtectedRoute 
                     key='applicant-dashboard'
-                    path={APPLICANT_DASHBOARD}
+                    path={'/nci-scss.do#/applicant-dashboard'}
                     component={ApplicantDashboard}
                     useOktaAuth={true}
-                />
-            </Router>
+                /> */}
+            </MemoryRouter>
         );
+        expect(screen.getByText('You have not submitted any applications')).toBeInTheDocument()
     })
 });
