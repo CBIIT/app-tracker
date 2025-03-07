@@ -1,6 +1,6 @@
 import ApplicantDashboard from './ApplicantDashboard';
 import { render, screen } from '@testing-library/react';
-import { useHistory, useLocation, MemoryRouter } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import ProtectedRoute from '../../components/ProtectedRoute/ProtectedRoute';
 import { 
     GET_USER_APPLICATIONS, 
@@ -61,14 +61,12 @@ describe('ApplicantDashboard', () => {
 
     test('should render ApplicantDashboard with no applications', () => {
         render(
-            <MemoryRouter initialEntries={['/protected']}>
                 <ProtectedRoute 
                     key='applicant-dashboard'
                     path={APPLICANT_DASHBOARD}
                     component={ApplicantDashboard}
                     useOktaAuth={true}
                 />
-            </MemoryRouter>
         );
     })
 });
