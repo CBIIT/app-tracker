@@ -137,6 +137,8 @@ export const REQUEST_CHAIR_TRIAGE =
 
 export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/save_draft';
 
+export const SUBMIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/submit_vacancy';
+
 // ServiceNow Scripted REST API Endpoints
 export const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 

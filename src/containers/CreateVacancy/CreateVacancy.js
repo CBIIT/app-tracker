@@ -15,7 +15,7 @@ import axios from 'axios';
 import { transformJsonToBackend } from './Util/TransformJsonToBackend';
 
 const createVacancy = (props) => {
-	const { auth: { user } } = useAuth();
+	const { auth: { user }, currentTenant } = useAuth();
 	const newValues = {
 		...initialValues,
 		basicInfo: {
@@ -23,6 +23,7 @@ const createVacancy = (props) => {
 			appointmentPackageIndicator: user.uid,
 			vacancyPoc: user.uid
 		},
+		currentTenant: currentTenant,
 	};
 	const { Step } = Steps;
 	const history = useHistory();
