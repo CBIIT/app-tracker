@@ -1,12 +1,14 @@
 import ApplicantDashboard from './ApplicantDashboard';
-import { render } from '@testing-library/react';
-import { Link, useHistory } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { useHistory, useLocation, MemoryRouter } from 'react-router-dom';
+import ProtectedRoute from '../../components/ProtectedRoute/ProtectedRoute';
 import { 
     GET_USER_APPLICATIONS, 
     REMOVE_USER_APPLICATION_DRAFT, 
     WITHDRAW_USER_APPLICATION 
 } from '../../constants/ApiEndpoints';
 import { 
+    APPLICANT_DASHBOARD,
     EDIT_APPLICATION, 
     VIEW_APPLICATION 
 } from '../../constants/Routes';
@@ -14,12 +16,13 @@ import axios from 'axios';
 import { useFetch } from '../../hooks/useFetch';
 import useAuth from '../../hooks/useAuth';
 import { checkAuth } from '../../constants/checkAuth';
-import { MemoryRouter } from 'react-router-dom/cjs/react-router-dom.min';
 
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn(),
+    useLocation: jest.fn(),
 }));
 jest.mock('axios');
+jest.mock('../../hooks/useAuth')
 
 
 describe('ApplicantDashboard', () => {
@@ -47,6 +50,9 @@ describe('ApplicantDashboard', () => {
             href: '',
             assign: jest.fn(),
         }
+        useAuth.mockReturnValue({
+            auth: { isUserLoggedIn: true, iTrustGlideSsoId: 'itrust123', oktaGlideSsoId: 'okta123' },
+        });
     });
 
     afterEach(() => {
@@ -55,9 +61,14 @@ describe('ApplicantDashboard', () => {
 
     test('should render ApplicantDashboard with no applications', () => {
         render(
-            <MemoryRouter initialEntries={['/applicant-dashboard/']}>
-                <ApplicantDashboard />
+            <MemoryRouter initialEntries={['/protected']}>
+                <ProtectedRoute 
+                    key='applicant-dashboard'
+                    path={APPLICANT_DASHBOARD}
+                    component={ApplicantDashboard}
+                    useOktaAuth={true}
+                />
             </MemoryRouter>
-        )
+        );
     })
 });
