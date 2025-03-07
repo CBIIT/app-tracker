@@ -541,7 +541,7 @@ const basicInformation = (props) => {
 
 			<Form.Item label='Personnel Action Tracking Solution (PATS): Appointment Information'>
 				<div className='PATSContainer'>
-					<div>
+					<div className='PATSClarification'>
 						<p>
 							The selections made in the fields below will be included in the
 							package sent to{' '}
