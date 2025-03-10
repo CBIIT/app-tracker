@@ -92,6 +92,8 @@ const basicInformation = (props) => {
 		formInstance
 	);
 
+	console.log('formInstance:: ', formInstance);
+	console.log('user:: ', user);
 	const { auth } = useAuth();
 	const { user } = auth;
 
