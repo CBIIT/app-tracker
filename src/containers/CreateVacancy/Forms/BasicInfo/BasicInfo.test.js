@@ -2,12 +2,12 @@ import BasicInfo from './BasicInfo';
 import useAuth from '../../../../hooks/useAuth';
 import axios from 'axios';
 import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
-import { mockIntialValues } from './BasicInfoMockData';
+import { mockIntialValues, mockVacancyOptionsResponse } from './BasicInfoMockData';
 import { render } from '@testing-library/react';
 
 jest.mock('../../../../hooks/useAuth');
 jest.mock('axios');
-jest.mock('antd', () => {
+const { result } = jest.mock('antd', () => {
     return {
         ...mockAntd,
         mockForm: {
@@ -55,28 +55,40 @@ describe('BasicInfo', () => {
 		jest.clearAllMocks();
 	});
 
-	it('should render BasicInfo component for new Vacancy', () => {
+	it('should render BasicInfo component for new Vacancy', async () => {
 		mockReadOnly = undefined;
 		mockIsNew = true;
 		mockPocDefined = true;
 
 		useAuth.mockReturnValue({
-			user: {
-				id: '12345',
-				name: 'John Doe',
-				email: '',
-			},
+			auth: { 
+                isUserLoggedIn: true, 
+                iTrustGlideSsoId: 'itrust123', 
+                oktaGlideSsoId: 'okta123', 
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+            } }
 		});
 
         render(
             <BasicInfo
                 initialValues={mockIntialValues}
-                formInstance={mockForm}
+                formInstance={result}
                 readOnly={mockReadOnly}
                 isNew={mockIsNew}
                 pocDefined={mockPocDefined}
             />
         )
+
+        axios.get.mockImplementationOnce(() => Promise.resolve(mockVacancyOptionsResponse));
+        const vacancyOptions = await axios.get(GET_VACANCY_OPTIONS);
+
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(vacancyOptions).toEqual(mockVacancyOptionsResponse);
 
 	});
 

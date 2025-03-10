@@ -92,8 +92,6 @@ const basicInformation = (props) => {
 		formInstance
 	);
 
-	console.log('formInstance:: ', formInstance);
-	console.log('user:: ', user);
 	const { auth } = useAuth();
 	const { user } = auth;
 
@@ -189,6 +187,7 @@ const basicInformation = (props) => {
 		setIsLoading(true);
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
+			console.log("🚀 ~ vacancyOptionsResponse:", vacancyOptionsResponse)
 
 			setCurrentPositionMenu(positionClassificationMenu);
 
