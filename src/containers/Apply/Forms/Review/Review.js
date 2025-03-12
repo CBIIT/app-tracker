@@ -35,7 +35,6 @@ const review = (props) => {
 		<div>
 			<SectionHeader
 				title='Basic Information'
-				onClick={() => props.onEditButtonClick('basicInfo')}
 				showButton='false'
 			/>
 			<div className='SectionContent'>
@@ -65,7 +64,7 @@ const review = (props) => {
 						value={
 							reviewData.basicInfo.phone
 								? reviewData.basicInfo.phonePrefix.toString() +
-								  reviewData.basicInfo.phone.toString()
+								reviewData.basicInfo.phone.toString()
 								: ''
 						}
 					/>
@@ -74,7 +73,7 @@ const review = (props) => {
 						value={
 							reviewData.basicInfo.businessPhone
 								? reviewData.basicInfo.businessPhonePrefix.toString() +
-								  reviewData.basicInfo.businessPhone.toString()
+								reviewData.basicInfo.businessPhone.toString()
 								: ''
 						}
 					/>
@@ -93,7 +92,6 @@ const review = (props) => {
 			</div>
 			<SectionHeader
 				title='Address'
-				onClick={() => props.onEditButtonClick('address')}
 				showButton='false'
 			/>
 			<div className='SectionContent'>
@@ -122,14 +120,14 @@ const review = (props) => {
 					onClick={() => props.onEditButtonClick('applicantDocuments')}
 				/>
 				: null
-			}			
+			}
 			{reviewData?.focusArea ?
 				<div className='SectionContent'>
-				{reviewData?.focusArea?.map((area, index) => {
-					return (
-						<p key={index}>{area}</p>
-					);
-				})}
+					{reviewData?.focusArea?.map((area, index) => {
+						return (
+							<p key={index}>{area}</p>
+						);
+					})}
 				</div>
 				: null
 			}
@@ -164,7 +162,7 @@ const review = (props) => {
 						{reviewData.applicantDocuments.map((document, index) => (
 							<div key={index}>
 								{document.uploadedDocument &&
-								document.uploadedDocument.markedToDelete === false ? (
+									document.uploadedDocument.markedToDelete === false ? (
 									<>
 										{'✓ '}
 										{document.title.value}
