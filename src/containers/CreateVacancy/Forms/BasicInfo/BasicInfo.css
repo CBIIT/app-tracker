@@ -31,6 +31,14 @@
 	gap: 10px;
 }
 
+.PATSClarification {
+	margin-top: 10px;
+}
+
+.PATSClarification p {
+	font-size: 15x;
+}
+
 .PATSPicker {
 	flex-shrink: 1;
 	flex-grow: 1;
