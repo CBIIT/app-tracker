@@ -135,7 +135,7 @@ export const REMOVE_DRAFT_VACANCY =
 export const REQUEST_CHAIR_TRIAGE =
 	'/api/x_g_nci_app_tracke/vacancy/request_chair_triage/';
 
-export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/save_draft';
+export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/v2/save_draft';
 
 export const SUBMIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/submit_vacancy';
 

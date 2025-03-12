@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import useAuth from '../../hooks/useAuth';
 import { Steps, Button, Form, message, Tooltip } from 'antd';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
+import ConfirmTenantSwitch from './ConfirmTenantSwitchModal/ConfirmTenantSwitchModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
 import VacancyCommittee from './Forms/VacancyCommittee/VacancyCommittee';
@@ -32,6 +33,7 @@ const createVacancy = (props) => {
 		props.initialValues ? props.initialValues : newValues
 	);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
+	const [showTenantSwitchModal, setShowTenantSwitchModal] = useState(false);
 	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
 	const isNew = props.initialValues ? false : true;
 	const pocDefined = allForms.basicInfo.vacancyPoc === undefined ? false : true;
@@ -242,12 +244,14 @@ const createVacancy = (props) => {
 			try {
 				let draft = {
 					jsonobj: data,
+					tenantId: currentTenant,
 				};
 
 				if (draftSysId)
 					draft = {
 						sys_id: draftSysId,
 						jsonobj: data,
+						tenantId: currentTenant,
 					};
 
 				const response = await axios.post(SAVE_VACANCY_DRAFT, draft);
@@ -343,6 +347,10 @@ const createVacancy = (props) => {
 			}
 		}
 	};
+
+	useEffect(() => {
+		currentTenant ? setShowTenantSwitchModal(true) : setShowTenantSwitchModal(false);
+	}, [currentTenant]);
 
 	return (
 		<>
@@ -446,6 +454,10 @@ const createVacancy = (props) => {
 				visible={submitModalVisible}
 				onCancel={handleSubmitModalCancel}
 				data={draftSysId ? { ...allForms, draftId: draftSysId } : allForms}
+			/>
+			<ConfirmTenantSwitch
+				visible={showTenantSwitchModal}
+				onCancel={() => {setShowTenantSwitchModal(false)}}
 			/>
 		</>
 	);
