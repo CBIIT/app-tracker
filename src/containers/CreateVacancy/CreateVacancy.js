@@ -98,11 +98,6 @@ const createVacancy = (props) => {
 	const getVacancyCommittee = () => {
 		return allForms.vacancyCommittee;
 	};
-	console.log('initialValues={allForms.basicInfo}:: ', allForms.basicInfo);
-	console.log('formInstance={basicInfoForm}:: ', basicInfoForm);
-	console.log('readOnly={restrictedEditMode}:: ', restrictedEditMode);
-	console.log('isNew={isNew}:: ', isNew);
-	console.log('pocDefined={pocDefined}:: ', pocDefined);
 
 	const steps = [
 		{
