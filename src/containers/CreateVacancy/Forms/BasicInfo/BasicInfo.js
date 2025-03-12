@@ -187,31 +187,37 @@ const basicInformation = (props) => {
 		setIsLoading(true);
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
-			console.log("🚀 ~ vacancyOptionsResponse:", vacancyOptionsResponse)
 
 			setCurrentPositionMenu(positionClassificationMenu);
-
-			var packageInitiators = [];
-			for (
-				var i = 0;
-				i < vacancyOptionsResponse.data.result.package_initiators.length;
-				i++
-			) {
-				var packageInitiator =
-					vacancyOptionsResponse.data.result.package_initiators[i];
-				var packageInitiatorOption = {
-					label: packageInitiator.name,
-					value: packageInitiator.sys_id,
-					email: packageInitiator.email,
-				};
-				packageInitiators.push(packageInitiatorOption);
-			}
-			setAppInitiatorMenu(packageInitiators);
 			const codes = [];
-			vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
-				codes.push({ label: code, value: code });
-			});
-			setSacCodes(codes);
+			var packageInitiators = [];
+
+			if (
+				vacancyOptionsResponse &&
+				vacancyOptionsResponse.data &&
+				vacancyOptionsResponse.data.result
+			) {
+				for (
+					var i = 0;
+					i < vacancyOptionsResponse.data.result.package_initiators.length;
+					i++
+				) {
+					var packageInitiator =
+						vacancyOptionsResponse.data.result.package_initiators[i];
+					var packageInitiatorOption = {
+						label: packageInitiator.name,
+						value: packageInitiator.sys_id,
+						email: packageInitiator.email,
+					};
+					packageInitiators.push(packageInitiatorOption);
+				}
+				setAppInitiatorMenu(packageInitiators);
+				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
+					codes.push({ label: code, value: code });
+				});
+				setSacCodes(codes);
+			}
+
 			setIsLoading(false);
 		})();
 	}, []);

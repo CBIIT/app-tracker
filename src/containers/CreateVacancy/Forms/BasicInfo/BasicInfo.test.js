@@ -2,8 +2,8 @@ import BasicInfo from './BasicInfo';
 import useAuth from '../../../../hooks/useAuth';
 import axios from 'axios';
 import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
-import { mockIntialValues, mockVacancyOptionsResponse } from './BasicInfoMockData';
-import { render } from '@testing-library/react';
+import { mockIntialValues, mockVacancyOptionsResponse, mockPackageInitiators, mockSacCodes } from './BasicInfoMockData';
+import { render, screen, waitFor } from '@testing-library/react';
 
 jest.mock('../../../../hooks/useAuth');
 jest.mock('axios');
@@ -49,14 +49,32 @@ describe('BasicInfo', () => {
 	let mockIsNew; //true or false
 	let mockPocDefined; //true or false
 
-	beforeEach(() => {});
+    beforeAll(() => {
+        Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: jest.fn().mockImplementation(query => ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addListener: jest.fn(), // deprecated
+            removeListener: jest.fn(), // deprecated
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+            dispatchEvent: jest.fn(),
+        })),
+        });
+    });
+
+	beforeEach(() => {
+        document.getSelection = jest.fn();
+    });
 
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
 
 	it('should render BasicInfo component for new Vacancy', async () => {
-		mockReadOnly = undefined;
+		mockReadOnly = false;
 		mockIsNew = true;
 		mockPocDefined = true;
 
@@ -81,14 +99,19 @@ describe('BasicInfo', () => {
                 readOnly={mockReadOnly}
                 isNew={mockIsNew}
                 pocDefined={mockPocDefined}
+                isDefined={true}
             />
         )
 
-        axios.get.mockImplementationOnce(() => Promise.resolve(mockVacancyOptionsResponse));
+        await axios.get.mockImplementationOnce(() => Promise.resolve(mockVacancyOptionsResponse));
         const vacancyOptions = await axios.get(GET_VACANCY_OPTIONS);
-
-        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(axios.get).toHaveBeenCalledTimes(2);
         expect(vacancyOptions).toEqual(mockVacancyOptionsResponse);
+
+        waitFor(() => {
+            const PATSClarification = screen.getByText(/The selections made in the fields below will be included in the package sent to PATS upon selecting a candidate./i);
+            expect(PATSClarification).toBeInTheDocument();
+        });
 
 	});
 

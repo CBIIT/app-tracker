@@ -22,6 +22,22 @@ export const mockIntialValues = {
     vacancyPoc: '12345'
 };
 
+export const mockPackageInitiators = [
+    {
+        email: 'john.doe@mail.com',
+        name: 'John Doe',
+        sys_id: '123'
+    }
+];
+
+export const mockSacCodes = [
+    {
+        code: 'HHH00H',
+        description: 'description',
+        sys_id: '123'
+    }
+];
+
 export const mockVacancyOptionsResponse = {
     data: {
         result: {
