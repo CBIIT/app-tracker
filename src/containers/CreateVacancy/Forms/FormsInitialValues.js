@@ -24,7 +24,7 @@ export const initialValues = {
 	mandatoryStatements: {
 		equalOpportunityEmployer: true,
 		equalOpportunityEmployerText:
-			'<p>Selection for this position will be based solely on merit, with no discrimination for non-merit reasons such as race, color, religion, gender, sexual orientation, national origin, political affiliation, marital status, disability, age, or membership or non-membership in an employee organization.&nbsp;The NIH encourages the application and nomination of qualified women, minorities, and individuals with disabilities.</p>',
+			'<p>The United States government does not discriminate in employment on the basis of race, color, religion, sex, pregnancy, national origin, political affiliation, sexual orientation, marital status, disability, genetic information, age, membership in an employee organization, retaliation, parental status, military service or other non-merit factor.</p><br/><p>To learn more, please visit the <a href="https://www.eeoc.gov/federal-sector/federal-employees-job-applicants">U.S. Equal Employment Opportunity Commission</a>.</p>',
 		standardsOfConduct: true,
 		standardsOfConductText:
 			'<p>The National Institutes of Health inspires public confidence in our science by maintaining high ethical principles. NIH employees are subject to Federal government-wide regulations and statutes as well as agency-specific regulations described at the NIH Ethics Website. We encourage you to review this information. The position is subject to a background investigation and requires the incumbent to complete a public financial disclosure report prior to the effective date of the appointment.</p>',
@@ -45,7 +45,7 @@ export const initialValues = {
 		{
 			type: 'Application submitted confirmation',
 			active: true,
-			text: "<p>Dear Dr. #APP_LAST_NAME#, <br><br></p><p>Good news! Your application for the position of #POSITION# at the #IC#, National Institutes of Health <b>has been submitted.</b></p><p>You may view the status of your application at any time by following #APP_URL#.</p><p>If you should have any questions, please contact #VACANCY_POC_NAME#.  </p><p>Thank you for your interest in the National Institutes of Health.</p>",
+			text: '<p>Dear Dr. #APP_LAST_NAME#, <br><br></p><p>Good news! Your application for the position of #POSITION# at the #IC#, National Institutes of Health <b>has been submitted.</b></p><p>You may view the status of your application at any time by following #APP_URL#.</p><p>If you should have any questions, please contact #VACANCY_POC_NAME#.  </p><p>Thank you for your interest in the National Institutes of Health.</p>',
 		},
 	],
 };
