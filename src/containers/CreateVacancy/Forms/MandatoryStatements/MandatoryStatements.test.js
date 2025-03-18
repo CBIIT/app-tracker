@@ -1,6 +1,9 @@
 import MandatoryStatements from './MandatoryStatements';
 import { render, screen } from '@testing-library/react';
-import initialValues from '../FormsInitialValues';
+import mockAllForms from './MandatoryStatementsMockData';
+import SwitchFormItemEditor from '../../../../components/UI/SwitchFormItemEditor/SwitchFormItemEditor';
+import { HashRouter } from 'react-router-dom';
+import { Form } from 'antd';
 
 const { result } = jest.mock('antd', () => {
 	return {
@@ -40,6 +43,7 @@ const { result } = jest.mock('antd', () => {
 });
 
 describe('MandatoryStatements', () => {
+	let mockRestrictedEditMode;
 	beforeAll(() => {
 		Object.defineProperty(window, 'matchMedia', {
 			writable: true,
@@ -56,9 +60,42 @@ describe('MandatoryStatements', () => {
 		});
 	});
 
-	beforeEach(() => {});
+	beforeEach(() => {
+		mockRestrictedEditMode = undefined;
+	});
 
-    afterEach(() => {
-        jest.clearAllMocks();
-    })
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
+	test('Should render all mandatory statements', () => {
+		const formInstance = {
+			getFieldValue: jest.fn().mockReturnValue(true),
+			name: 'MandatoryStatements',
+		};
+
+		render(
+			<HashRouter>
+				<MandatoryStatements
+					initialValues={mockAllForms}
+					formInstance={result}
+					readOnly={mockRestrictedEditMode}
+				/>
+				<Form>
+					<SwitchFormItemEditor
+						name='equalOpportunityEmployer'
+						label='Equal Employment Opportunity Policy'
+						formInstance={formInstance}
+						onToggle={() => {
+							formInstance.validateFields(['mandatoryStatements']);
+						}}
+						onBlur={() => {
+							formInstance.validateFields(['mandatoryStatements']);
+						}}
+						readOnly={true}
+					/>
+				</Form>
+			</HashRouter>
+		);
+	});
 });
