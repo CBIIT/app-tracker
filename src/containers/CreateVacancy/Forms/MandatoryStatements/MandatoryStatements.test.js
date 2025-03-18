@@ -1,6 +1,11 @@
 import MandatoryStatements from './MandatoryStatements';
 import { render, screen } from '@testing-library/react';
-import mockAllForms from './MandatoryStatementsMockData';
+import {
+	mockBasicInfo,
+	mockEmailTemplates,
+	mockMandatoryStatements,
+	mockVacancyCommittee,
+} from './MandatoryStatementsMockData';
 import SwitchFormItemEditor from '../../../../components/UI/SwitchFormItemEditor/SwitchFormItemEditor';
 import { HashRouter } from 'react-router-dom';
 import { Form } from 'antd';
@@ -42,23 +47,35 @@ const { result } = jest.mock('antd', () => {
 	};
 });
 
+jest.mock('../../../../components/UI/SwitchFormItem/SwitchFormItem', () => {
+	return function DummySwitchFormItem({ onChangeHandler }) {
+        return <input type="checkbox" data-testid="SwitchFormItemEditorSwitch" name="testName" label="Test Label" readOnly={false} onChange={(e) => onChangeHandler(e.target.checked)} />;
+    };
+});
+
+window.matchMedia = window.matchMedia || function () {
+    return {
+        matches: false,
+        addListener: function () { },
+        removeListener: function () { }
+    };
+};
+
 describe('MandatoryStatements', () => {
 	let mockRestrictedEditMode;
-	beforeAll(() => {
-		Object.defineProperty(window, 'matchMedia', {
-			writable: true,
-			value: jest.fn().mockImplementation((query) => ({
-				matches: false,
-				media: query,
-				onchange: null,
-				addListener: jest.fn(), // deprecated
-				removeListener: jest.fn(), // deprecated
-				addEventListener: jest.fn(),
-				removeEventListener: jest.fn(),
-				dispatchEvent: jest.fn(),
-			})),
-		});
-	});
+
+	const formInstance = {
+        getFieldValue: jest.fn().mockReturnValue(true),
+		name: 'mockMandatoryStatements',
+    };
+
+    const defaultProps = {
+        formInstance: formInstance,
+        rules: [],
+        readOnly: false,
+        onToggle: jest.fn(),
+        onBlur: jest.fn(),
+    };
 
 	beforeEach(() => {
 		mockRestrictedEditMode = undefined;
@@ -69,31 +86,16 @@ describe('MandatoryStatements', () => {
 	});
 
 	test('Should render all mandatory statements', () => {
-		const formInstance = {
-			getFieldValue: jest.fn().mockReturnValue(true),
-			name: 'MandatoryStatements',
-		};
 
 		render(
 			<HashRouter>
 				<MandatoryStatements
-					initialValues={mockAllForms}
+					initialValues={mockMandatoryStatements}
 					formInstance={result}
 					readOnly={mockRestrictedEditMode}
 				/>
 				<Form>
-					<SwitchFormItemEditor
-						name='equalOpportunityEmployer'
-						label='Equal Employment Opportunity Policy'
-						formInstance={formInstance}
-						onToggle={() => {
-							formInstance.validateFields(['mandatoryStatements']);
-						}}
-						onBlur={() => {
-							formInstance.validateFields(['mandatoryStatements']);
-						}}
-						readOnly={true}
-					/>
+					<SwitchFormItemEditor {...defaultProps} />
 				</Form>
 			</HashRouter>
 		);
