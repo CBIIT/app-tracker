@@ -1,5 +1,6 @@
 import MandatoryStatements from './MandatoryStatements';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import {
 	mockBasicInfo,
 	mockEmailTemplates,
@@ -20,10 +21,10 @@ const { result } = jest.mock('antd', () => {
 					...mockResult.current[0],
 					mockGetFieldError: jest.fn(),
 					mockGetFieldInstace: jest.fn(),
-					mockGetFieldValue: jest.fn(),
+					mockGetFieldValue: jest.fn().mockReturnValue(true),
 					mockGetFieldWarning: jest.fn(),
 					mockGetFieldsError: jest.fn(),
-					mockGetFieldsVlaue: jest.fn(),
+					mockGetFieldsValue: jest.fn(),
 					mockGetInternalHooks: jest.fn(),
 					mockIsFieldTouched: jest.fn(),
 					mockIsFieldValidating: jest.fn(),
@@ -64,13 +65,13 @@ window.matchMedia = window.matchMedia || function () {
 describe('MandatoryStatements', () => {
 	let mockRestrictedEditMode;
 
-	const formInstance = {
-        getFieldValue: jest.fn().mockReturnValue(true),
-		name: 'mockMandatoryStatements',
-    };
+	// const formInstance = {
+    //     getFieldValue: jest.fn().mockReturnValue(false),
+	// 	name: 'mockMandatoryStatements',
+    // };
 
     const defaultProps = {
-        formInstance: formInstance,
+        formInstance: result,
         rules: [],
         readOnly: false,
         onToggle: jest.fn(),
@@ -87,6 +88,8 @@ describe('MandatoryStatements', () => {
 
 	test('Should render all mandatory statements', () => {
 
+		// formInstance.getFieldValue.mockReturnValue(true);
+
 		render(
 			<HashRouter>
 				<MandatoryStatements
@@ -94,8 +97,15 @@ describe('MandatoryStatements', () => {
 					formInstance={result}
 					readOnly={mockRestrictedEditMode}
 				/>
-				<Form>
-					<SwitchFormItemEditor {...defaultProps} />
+				<Form
+					name='MandatoryStatements'
+					layout='horizontal'
+					requiredMark={false}
+					form={result}
+					initialValues={mockMandatoryStatements}
+					colon={false}
+				>
+					<SwitchFormItemEditor {...defaultProps} showEditor={undefined} />
 				</Form>
 			</HashRouter>
 		);
