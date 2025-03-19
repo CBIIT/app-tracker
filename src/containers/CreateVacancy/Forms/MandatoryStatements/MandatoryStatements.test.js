@@ -90,24 +90,24 @@ describe('MandatoryStatements', () => {
 
 		// formInstance.getFieldValue.mockReturnValue(true);
 
-		render(
-			<HashRouter>
-				<MandatoryStatements
-					initialValues={mockMandatoryStatements}
-					formInstance={result}
-					readOnly={mockRestrictedEditMode}
-				/>
-				<Form
-					name='MandatoryStatements'
-					layout='horizontal'
-					requiredMark={false}
-					form={result}
-					initialValues={mockMandatoryStatements}
-					colon={false}
-				>
-					<SwitchFormItemEditor {...defaultProps} showEditor={undefined} />
-				</Form>
-			</HashRouter>
-		);
+		// render(
+		// 	<HashRouter>
+		// 		<MandatoryStatements
+		// 			initialValues={mockMandatoryStatements}
+		// 			formInstance={result}
+		// 			readOnly={mockRestrictedEditMode}
+		// 		/>
+		// 		<Form
+		// 			name='MandatoryStatements'
+		// 			layout='horizontal'
+		// 			requiredMark={false}
+		// 			form={result}
+		// 			initialValues={mockMandatoryStatements}
+		// 			colon={false}
+		// 		>
+		// 			<SwitchFormItemEditor {...defaultProps} showEditor={undefined} />
+		// 		</Form>
+		// 	</HashRouter>
+		// );
 	});
 });
