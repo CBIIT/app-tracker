@@ -41,10 +41,7 @@ const viewVacancyDetails = () => {
 			setVacancyDetails(response.data.result);
 			setIsLoading(false);
 		})();
-	}, []);
-
-	console.log('vacancyDetails', vacancyDetails);
-	console.log('sysId', sysId);
+	}, []);;
 
 	return isLoading ? (
 		<> </>
