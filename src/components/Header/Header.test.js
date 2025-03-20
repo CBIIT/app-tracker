@@ -30,6 +30,6 @@ describe('Header Component', () => {
 
     it('should render the Login component', () => {
         const { container } = render(<Login />);
-        expect(container.firstChild).toHaveClass('Login');
+        expect(container.firstChild).toHaveClass('LoginRightContainer');
     });
 });

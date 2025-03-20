@@ -9,11 +9,11 @@ jest.mock('react-router-dom', () => ({
     useLocation: jest.fn(),
 }));
 // const mockedUsedNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUsedNavigate,
-    useLocation: () => mockedUsedLocation,
-}));
+// jest.mock('react-router-dom', () => ({
+//     ...jest.requireActual('react-router-dom'),
+//     useNavigate: () => mockedUsedNavigate,
+//     useLocation: () => mockedUsedLocation,
+// }));
 
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,

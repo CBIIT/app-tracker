@@ -17,7 +17,6 @@ const login = () => {
 		setCurrentTenant,
 		previousTenant,
 	} = useAuth();
-	const location = useLocation();
 	const history = useHistory();
 
 	const nihClicked = () => {
@@ -116,9 +115,10 @@ const login = () => {
 							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
 							options={tenants}
 							onChange={(value) => {
-							const routeToCheck = location.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
-							previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : ''
-							setCurrentTenant(value);}} />
+								const location = useLocation();
+								const routeToCheck = location.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
+								previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
+								setCurrentTenant(value);}} />
 				</div> :
 				<div className='LeftContainerSub'>null</div>
 			}

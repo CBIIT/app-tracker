@@ -108,7 +108,6 @@ export const GET_APPLICANT_LIST =
 
 export const DASHBOARD_VACANCIES =
 	'/api/x_g_nci_app_tracke/vacancy/v2/get_dashboard_vacancy_list/';
-	//'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/';
 
 export const GET_DRAFT = '/api/x_g_nci_app_tracke/vacancy/get_draft/';
 
