@@ -76,3 +76,22 @@
 hr.solid {
 	border-top: 3px solid #bbb;
 }
+
+.LoginRightContainer {
+	width: 350px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.RightContainerSub {
+	flex-shrink: 1;
+	flex-grow: 1;
+	width: 50%;
+}
+
+.ant-select-selection-placeholder {
+	opacity: 1;
+	color: rgb(0, 0, 0);
+}

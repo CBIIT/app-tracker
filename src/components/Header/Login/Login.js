@@ -1,23 +1,23 @@
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
-
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { REGISTER_OKTA, } from '../../../constants/Routes';
+import { REGISTER_OKTA, TENANT_CHECK_ROUTES} from '../../../constants/Routes';
 
 import './Login.css';
+
+const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
 
 const login = () => {
 	const {
 		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl, tenants},
 		currentTenant,
-		setCurrentTenant
+		setCurrentTenant,
+		previousTenant,
 	} = useAuth();
-
-	console.log('Tenants :', tenants, '---->', currentTenant);
-
+	const location = useLocation();
 	const history = useHistory();
 
 	const nihClicked = () => {
@@ -106,29 +106,23 @@ const login = () => {
 	);
 
 	return isUserLoggedIn ? (
-		<div>
+		<div className='LoginRightContainer'>
 			{user.isManager ?
-				<Select 
-					placeholder="Select a tenant" 
-					filterOption={(input, option) =>
-						(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-			  		}		
-			  		options={tenants}
-			  		onChange={(value) =>
-					setCurrentTenant(value)
-			  		}
-				/> : null
+				<div className='RightContainerSub'>
+					<Select
+						style={{ width: "100%", border: "2px solid #015ea2"}}
+						placeholder="Select a tenant"
+						filterOption={(input, option) =>
+							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+							options={tenants}
+							onChange={(value) => {
+							const routeToCheck = location.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
+							previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : ''
+							setCurrentTenant(value);}} />
+				</div> :
+				<div className='LeftContainerSub'>null</div>
 			}
-			{/* <Select
-    			placeholder="Select a tenant"
-    			filterOption={(input, option) =>
-      				(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-    			}
-				options={tenants}
-				onChange={(value) =>
-					setCurrentTenant(value)
-				}
-    		/> */}
+			<div className='LeftContainerSub'>
 			<Dropdown className='Login' overlay={logoutMenu}>
 				<Button type='link'>
 					<UserOutlined />
@@ -138,6 +132,7 @@ const login = () => {
 					<DownOutlined />
 				</Button>
 			</Dropdown>
+			</div>
 		</div>
 		
 	) : (
