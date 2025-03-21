@@ -590,8 +590,6 @@ const applicantList = (props) => {
 								</Collapse>
 							);
 						case IN_REVIEW:
-						case REVIEW_COMPLETE:
-						case COMPLETED:
 							return (
 								<Collapse defaultActiveKey={['0']} ghost>
 									<Panel header='Recommended Applicants'>
@@ -628,6 +626,63 @@ const applicantList = (props) => {
 										/>
 									</Panel>
 								</Collapse>
+							);
+						case REVIEW_COMPLETE:
+						case COMPLETED:
+							return (
+								<>
+									<div>
+										<p classname='PATS-Reminder'>
+											<b>REMINDER: </b> Once an individual has been marked
+											selected, a New Appointment package will be prompted in
+											the{' '}
+											<a href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+												PATS
+											</a>{' '}
+											system with the Position Classification, Organizational
+											Code, and PATS Initiator identified in the Basic Vacancy
+											Information section.
+										</p>
+									</div>
+									<Collapse defaultActiveKey={['0']} ghost>
+										<Panel header='Recommended Applicants'>
+											<IndividualScoringTable
+												applicants={getFilterData(
+													filter,
+													recommendedApplicants
+												)}
+												pagination={recommendedApplicantsTablePagination}
+												loading={recommendedApplicantsTableLoading}
+												onTableChange={loadRecommendedApplicants}
+												committeeVoting={true}
+												postChangeHandler={loadVacancyAndApplicants}
+												displayAllComments={filter === 'review_complete'}
+												vacancyState={vacancyState}
+												refCollection={props.referenceCollection}
+												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+												filter={filter}
+											/>
+										</Panel>
+										<Panel header='Non-Recommended Applicants'>
+											<IndividualScoringTable
+												applicants={getFilterData(
+													filter,
+													nonRecommendedApplicants
+												)}
+												pagination={nonRecommendedApplicantsTablePagination}
+												loading={nonRecommendedApplicantsTableLoading}
+												onTableChange={loadNonRecommendedApplicants}
+												committeeVoting={true}
+												postChangeHandler={loadVacancyAndApplicants}
+												displayAllComments={filter === 'review_complete'}
+												vacancyState={vacancyState}
+												refCollection={props.referenceCollection}
+												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+												filter={filter}
+											/>
+										</Panel>
+									</Collapse>
+								</>
 							);
 						default:
 							return table;

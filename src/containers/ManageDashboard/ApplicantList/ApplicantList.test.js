@@ -82,7 +82,6 @@ describe('ApplicantList', () => {
 		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
 		expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
 	});
-
 	test('should render PATS reminder text for set close date vacancies in the Voting Complete state', async () => {
 		var mockOffset = 1;
 		var mockLimit = 10;
@@ -93,7 +92,6 @@ describe('ApplicantList', () => {
 			<HashRouter>
 				<VacancyStatus state={mockNRCVacancy.state}/>
 				<ApplicantList
-					// vacancyState={mockNRCVacancy.state}
 					vacancyTenant={mockNRCVacancy.basicInfo.tenant}
 					referenceCollection={true}
 					userRoles={mockUser.roles}
@@ -112,6 +110,9 @@ describe('ApplicantList', () => {
 		expect(applicantList).toEqual(mockGetApplicantList);
 
 		waitFor(() => {
+			const selectedTab = screen.getByText('SELECTED');
+			expect(selectedTab).toBeInTheDocument();
+			fireEvent.click(screen.getByText('SELECTED'));
 			const patsReminder = screen.getByText('REMINDER: Once an individual has been marked selected, a New Appointment package will be prompted in the PATS system with the Position Classification, Organizational Code, and PATS Initiator identified in the Basic Vacancy Information section.');
 			expect(patsReminder).toBeInTheDocument();
 		});
