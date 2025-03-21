@@ -4,6 +4,11 @@ import Header from './Header';
 import Logo from './Logo/Logo';
 import Login from './Login/Login';
 
+jest.mock('react-router-dom', () => ({
+    useHistory: jest.fn(),
+    useLocation: jest.fn(),
+}));
+
 jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
     return {
         auth: {
