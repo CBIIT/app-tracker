@@ -476,6 +476,52 @@ const applicantList = (props) => {
 						</Collapse>
 					);
 				case VOTING_COMPLETE:
+					return (
+						<>
+							<div>
+								<p>
+									<b>REMINDER: </b> Once an individual has been marked selected,
+									a New Appointment package will be prompted in the{' '}
+									<a href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+										PATS
+									</a>{' '}
+									system with the Position Classification, Organizational Code,
+									and PATS Initiator identified in the Basic Vacancy Information
+									section.
+								</p>
+							</div>
+							<Collapse defaultActiveKey={['0']} ghost>
+								<Panel header='Recommended Applicants'>
+									<IndividualScoringTable
+										applicants={recommendedApplicants}
+										pagination={recommendedApplicantsTablePagination}
+										loading={recommendedApplicantsTableLoading}
+										onTableChange={loadRecommendedApplicants}
+										committeeVoting={true}
+										postChangeHandler={loadVacancyAndApplicants}
+										displayAllComments={vacancyState === VOTING_COMPLETE}
+										vacancyState={vacancyState}
+										refCollection={props.referenceCollection}
+										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									/>
+								</Panel>
+								<Panel header='Non-Recommended Applicants'>
+									<IndividualScoringTable
+										applicants={nonRecommendedApplicants}
+										pagination={nonRecommendedApplicantsTablePagination}
+										loading={nonRecommendedApplicantsTableLoading}
+										onTableChange={loadNonRecommendedApplicants}
+										committeeVoting={true}
+										postChangeHandler={loadVacancyAndApplicants}
+										displayAllComments={vacancyState === VOTING_COMPLETE}
+										vacancyState={vacancyState}
+										refCollection={props.referenceCollection}
+										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									/>
+								</Panel>
+							</Collapse>
+						</>
+					);
 				case COMMITTEE_REVIEW_IN_PROGRESS:
 					return (
 						<Collapse defaultActiveKey={['0']} ghost>

@@ -1,12 +1,18 @@
 import ApplicantList from './ApplicantList';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import VacancyStatus from '../../../components/UI/VacancyStatus/VacancyStatus';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { useParams, HashRouter } from 'react-router-dom';
 import axios from 'axios';
-import { GET_ROLLING_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
 import {
-	mockVacancy,
+	GET_APPLICANT_LIST,
+	GET_ROLLING_APPLICANT_LIST,
+} from '../../../constants/ApiEndpoints';
+import {
+	mockRCVacancy,
+	mockNRCVacancy,
 	mockUser,
 	mockGetRollingApplicantList,
+	mockGetApplicantList,
 } from './ApplicantListMockData';
 
 jest.mock('react-router-dom', () => ({
@@ -19,6 +25,8 @@ describe('ApplicantList', () => {
 	let mockLoadLatestVacancyInfo;
 	let mockLoadApplicants;
 	let mockLoadAllApplicants;
+	let mockLoadRecommendedApplicants;
+	let mockApi;
 
 	beforeEach(() => {
 		Object.defineProperty(window, 'matchMedia', {
@@ -34,10 +42,10 @@ describe('ApplicantList', () => {
 				dispatchEvent: jest.fn(),
 			})),
 		});
-		useParams.mockReturnValue({ id: mockVacancy.sysId });
 		mockLoadLatestVacancyInfo = jest.fn();
 		mockLoadApplicants = jest.fn();
 		mockLoadAllApplicants = jest.fn();
+		mockLoadRecommendedApplicants = jest.fn();
 	});
 
 	afterEach(() => {
@@ -47,12 +55,13 @@ describe('ApplicantList', () => {
 	test('should render ApplicantList component', async () => {
 		var mockOffset = 1;
 		var mockLimit = 10;
-		var mockApi = GET_ROLLING_APPLICANT_LIST;
+		mockApi = GET_ROLLING_APPLICANT_LIST;
+		useParams.mockReturnValue({ id: mockRCVacancy.sysId });
 		render(
 			<HashRouter>
 				<ApplicantList
-					vacancyState={mockVacancy.state}
-					vacancyTenant={mockVacancy.basicInfo.tenant}
+					vacancyState={mockRCVacancy.state}
+					vacancyTenant={mockRCVacancy.basicInfo.tenant}
 					referenceCollection={true}
 					userRoles={mockUser.roles}
 					userCommitteeRole={mockUser.roles}
@@ -65,7 +74,7 @@ describe('ApplicantList', () => {
 			Promise.resolve(mockGetRollingApplicantList)
 		);
 		const rollingApplicantList = await axios.get(mockApi, {
-			sysId: mockVacancy.sysId,
+			sysId: mockRCVacancy.sysId,
 			offset: mockOffset,
 			limit: mockLimit,
 		});
@@ -73,16 +82,17 @@ describe('ApplicantList', () => {
 		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
 		expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
 	});
-
-	test('should render PATS Reminder text when selecting SELECTED tab for Rolling Close', async () => {
+	test('should render PATS reminder text for set close date vacancies in the Voting Complete state', async () => {
 		var mockOffset = 1;
 		var mockLimit = 10;
-		var mockApi = GET_ROLLING_APPLICANT_LIST;
+		mockApi = GET_APPLICANT_LIST;
+		useParams.mockReturnValue({ id: mockNRCVacancy.sysId });
+
 		render(
 			<HashRouter>
+				<VacancyStatus state={mockNRCVacancy.state}/>
 				<ApplicantList
-					vacancyState={mockVacancy.state}
-					vacancyTenant={mockVacancy.basicInfo.tenant}
+					vacancyTenant={mockNRCVacancy.basicInfo.tenant}
 					referenceCollection={true}
 					userRoles={mockUser.roles}
 					userCommitteeRole={mockUser.roles}
@@ -91,15 +101,13 @@ describe('ApplicantList', () => {
 			</HashRouter>
 		);
 
-		await axios.get.mockImplementationOnce(() =>
-			Promise.resolve(mockGetRollingApplicantList)
-		);
-		const rollingApplicantList = await axios.get(mockApi, {
-			sysId: mockVacancy.sysId,
+		await axios.get.mockImplementationOnce(() => Promise.resolve(mockGetApplicantList));
+		const applicantList = await axios.get(mockApi, {
+			sysId: mockNRCVacancy.sysId,
 			offset: mockOffset,
 			limit: mockLimit,
 		});
-		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
+		expect(applicantList).toEqual(mockGetApplicantList);
 
 		waitFor(() => {
 			const selectedTab = screen.getByText('SELECTED');
