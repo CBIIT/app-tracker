@@ -1,7 +1,7 @@
 import ViewVacancyDetails from './ViewVacancyDetails';
 import VIEW_VACANCY from '../../constants/Routes';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import { extractAndTransformMandatoryStatements } from '../../components/Util/Vacancy/Vacancy';
@@ -26,6 +26,8 @@ window.matchMedia =
 describe('ViewVacancyDetails', () => {
 	let sysId;
 
+	const renderer = require('@testing-library/react');
+
 	beforeEach(() => {
 		sysId = '123';
 		useParams.mockReturnValue({ sysId: sysId });
@@ -33,6 +35,13 @@ describe('ViewVacancyDetails', () => {
 
 	afterEach(() => {
 		jest.clearAllMocks();
+	});
+
+	test ('should render ViewVacancyDetails mandatory statements', async () => {
+		// const detailPage = renderer.create(<Link to={VIEW_VACANCY}></Link>).toJSON();
+
+		// expect(detailPage).toMatchSnapshot();
+
 	});
 
     // const wrapper = () => {
