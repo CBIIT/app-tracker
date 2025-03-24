@@ -40,7 +40,7 @@ const createVacancy = (props) => {
 	const [showTenantSwitchModal, setShowTenantSwitchModal] = useState(false);
 	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
 	const isNew = props.initialValues ? false : true;
-	const pocDefined = allForms.basicInfo.vacancyPoc === undefined ? false : true;
+	const pocDefined = allForms.basicInfo && allForms.basicInfo.vacancyPoc === undefined ? false : true;
 
 	const showSubmitModal = () => {
 		setSubmitModalVisible(true);

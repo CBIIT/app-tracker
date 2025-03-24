@@ -71,29 +71,29 @@ const finalizeVacancy = (props) => {
 				<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
 					<div>
 						<h2>Vacancy Title</h2>
-						<p>{basicInfo.title}</p>
+						<p>{basicInfo && basicInfo.title}</p>
 					</div>
 					<div>
 						<h2>Utilize a Set Close Date</h2>
-						<p>{basicInfo.useCloseDate ? 'Yes' : 'No'}</p>
+						<p>{basicInfo && basicInfo.useCloseDate ? 'Yes' : 'No'}</p>
 					</div>
 				</div>
 				<div>
 					<h2>Allow HR Specialist to Triage</h2>
-					<p>{basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
+					<p>{basicInfo && basicInfo.allowHrSpecialistTriage ? 'Yes' : 'No'}</p>
 				</div>
-				<h2 style={basicInfo.description ? null : { color: 'red' }}>
-					{basicInfo.description ? null : '! '}Vacancy Description
+				<h2 style={basicInfo && basicInfo.description ? null : { color: 'red' }}>
+					{basicInfo && basicInfo.description ? null : '! '}Vacancy Description
 				</h2>
 				<ReactQuill
 					className='RichTextDisplay'
-					value={basicInfo.description}
+					value={basicInfo && basicInfo.description}
 					readOnly={true}
 					theme={'bubble'}
 				/>
 				<div>
-					<h2 style={basicInfo.vacancyPoc ? null : { color: 'red' }}>
-						{basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact
+					<h2 style={basicInfo && basicInfo.vacancyPoc ? null : { color: 'red' }}>
+						{basicInfo && basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact
 						Information
 					</h2>
 
@@ -116,24 +116,24 @@ const finalizeVacancy = (props) => {
 				</div>
 				<div className='DateSection'>
 					<div className='DateCard'>
-						<h2 style={basicInfo.openDate ? null : { color: 'red' }}>
-							{basicInfo.openDate ? null : '! '}Open Date
+						<h2 style={basicInfo && basicInfo.openDate ? null : { color: 'red' }}>
+							{basicInfo && basicInfo.openDate ? null : '! '}Open Date
 						</h2>
 						<p>
-							{basicInfo.openDate
+							{basicInfo && basicInfo.openDate
 								? new Date(basicInfo.openDate)
 									.toLocaleString('en-us')
 									.split(',')[0]
 								: null}
 						</p>
 					</div>
-					{basicInfo.useCloseDate && (
+					{basicInfo && basicInfo.useCloseDate && (
 						<div className='DateCard'>
 							<h2 style={basicInfo.closeDate ? null : { color: 'red' }}>
-								{basicInfo.closeDate ? null : '! '}Close Date
+								{basicInfo && basicInfo.closeDate ? null : '! '}Close Date
 							</h2>
 							<p>
-								{basicInfo.closeDate
+								{basicInfo && basicInfo.closeDate
 									? new Date(basicInfo.closeDate)
 										.toLocaleString('en-us')
 										.split(',')[0]
@@ -142,7 +142,7 @@ const finalizeVacancy = (props) => {
 						</div>
 					)}
 				</div>
-				{basicInfo.closeDate && (
+				{basicInfo && basicInfo.closeDate && (
 					<div className='DateSection'>
 						<div className='DateCard'>
 							<h2>Scoring Due By Date</h2>
@@ -168,7 +168,7 @@ const finalizeVacancy = (props) => {
 				)}
 				<h2>Application Documents</h2>
 				<ul>
-					{basicInfo.applicationDocuments.map((element, index) => (
+					{basicInfo && basicInfo.applicationDocuments.map((element, index) => (
 						<li key={index} className='ListItemTrue'>
 							{element.document}
 							{element.isDocumentOptional ? ' (optional)' : ''}
@@ -177,9 +177,9 @@ const finalizeVacancy = (props) => {
 				</ul>
 				<div>
 					<h2>Reference Collection</h2>
-					<p>{basicInfo.referenceCollection ? 'Yes' : 'No'}</p>
+					<p>{basicInfo && basicInfo.referenceCollection ? 'Yes' : 'No'}</p>
 				</div>
-				{basicInfo.referenceCollection && (
+				{basicInfo && basicInfo.referenceCollection && (
 					<div className='DateCard'>
 						<h2>Reference Collection Date</h2>
 						<p>
@@ -195,7 +195,7 @@ const finalizeVacancy = (props) => {
 				<h3>How many recommendations does this vacancy require?</h3>
 				<ul>
 					<li className='ListItemTrue'>
-						{basicInfo.numberOfRecommendations} recommendation(s)
+						{basicInfo && basicInfo.numberOfRecommendations} recommendation(s)
 					</li>
 				</ul>
 
@@ -203,21 +203,21 @@ const finalizeVacancy = (props) => {
 					<h3>How many categories does this vacancy require for scoring?</h3>
 					<ul>
 						<li className='ListItemTrue'>
-							{basicInfo.numberOfCategories} categories
+							{basicInfo && basicInfo.numberOfCategories} categories
 						</li>
 					</ul></div>}
-				<h2 style={basicInfo.sacCode ? null : { color: 'red' }}>
-					{basicInfo.sacCode ? null : '! '}Organizational Code
+				<h2 style={basicInfo && basicInfo.sacCode ? null : { color: 'red' }}>
+					{basicInfo && basicInfo.sacCode ? null : '! '}Organizational Code
 				</h2>
 				<ul>
-					<li className='ListItemTrue'>{basicInfo.sacCode}</li>
+					<li className='ListItemTrue'>{basicInfo && basicInfo.sacCode}</li>
 				</ul>
-				<h2 style={basicInfo.positionClassification ? null : { color: 'red' }}>
-					{basicInfo.positionClassification ? null : '! '}Position
+				<h2 style={basicInfo && basicInfo.positionClassification ? null : { color: 'red' }}>
+					{basicInfo && basicInfo.positionClassification ? null : '! '}Position
 					Classification
 				</h2>
 				<ul>
-					<li className='ListItemTrue'>{basicInfo.positionClassification}</li>
+					<li className='ListItemTrue'>{basicInfo && basicInfo.positionClassification}</li>
 				</ul>
 				<div><h2>Personnel Action Tracking Solution (PATS) Initiator</h2>
 					<ul>
@@ -227,7 +227,7 @@ const finalizeVacancy = (props) => {
 							</Space>
 						) : (
 							<li className='ListItemTrue'>
-								{getPackageInitiatorDisplayName(
+								{basicInfo && getPackageInitiatorDisplayName(
 									basicInfo.appointmentPackageIndicator,
 									allPackageInitiators
 								)}
@@ -247,7 +247,7 @@ const finalizeVacancy = (props) => {
 						<ul>
 							<li
 								className={
-									mandatoryStatements.equalOpportunityEmployer
+									mandatoryStatements && mandatoryStatements.equalOpportunityEmployer
 										? 'ListItemTrue'
 										: 'ListItemFalse'
 								}
@@ -256,7 +256,7 @@ const finalizeVacancy = (props) => {
 							</li>
 							<li
 								className={
-									mandatoryStatements.standardsOfConduct
+									mandatoryStatements && mandatoryStatements.standardsOfConduct
 										? 'ListItemTrue'
 										: 'ListItemFalse'
 								}
@@ -265,7 +265,7 @@ const finalizeVacancy = (props) => {
 							</li>
 							<li
 								className={
-									mandatoryStatements.foreignEducation
+									mandatoryStatements && mandatoryStatements.foreignEducation
 										? 'ListItemTrue'
 										: 'ListItemFalse'
 								}
@@ -274,7 +274,7 @@ const finalizeVacancy = (props) => {
 							</li>
 							<li
 								className={
-									mandatoryStatements.reasonableAccomodation
+									mandatoryStatements && mandatoryStatements.reasonableAccomodation
 										? 'ListItemTrue'
 										: 'ListItemFalse'
 								}
@@ -299,7 +299,7 @@ const finalizeVacancy = (props) => {
 							locale={{
 								emptyText: 'Currently no committee members selected.',
 							}}
-							dataSource={
+							dataSource={vacancyCommittee &&
 								Object.keys(vacancyCommittee).length === 0
 									? null
 									: vacancyCommittee
@@ -320,7 +320,7 @@ const finalizeVacancy = (props) => {
 					<div className='SectionContent' style={props.sectionContentStyle}>
 						<div className='TwoColumnCheckList'>
 							<ul className='TwoColumnChecklist'>
-								{emailTemplates.map((template, index) => (
+								{emailTemplates && emailTemplates.map((template, index) => (
 									<li
 										key={index}
 										className={
