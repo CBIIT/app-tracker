@@ -1,7 +1,12 @@
 import { useEffect, useState, useContext } from 'react';
 import { message, Table, Tooltip, Collapse, Button, Radio } from 'antd';
 import { useParams } from 'react-router-dom';
-import { CheckCircleOutlined, CloseCircleOutlined, CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+	CheckCircleOutlined,
+	CloseCircleOutlined,
+	CheckCircleTwoTone,
+	ExclamationCircleOutlined,
+} from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
 
@@ -30,7 +35,11 @@ import {
 	COMMITTEE_MEMBER_NON_VOTING,
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../../constants/Roles';
-import { GET_APPLICANT_LIST, COLLECT_REFERENCES, GET_ROLLING_APPLICANT_LIST } from '../../../constants/ApiEndpoints';
+import {
+	GET_APPLICANT_LIST,
+	COLLECT_REFERENCES,
+	GET_ROLLING_APPLICANT_LIST,
+} from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 
@@ -71,7 +80,9 @@ const applicantList = (props) => {
 	const [showModal, setShowModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
-		displayTriage(props.userRoles, props.userCommitteeRole) ? APP_TRIAGE : SCORING
+		displayTriage(props.userRoles, props.userCommitteeRole)
+			? APP_TRIAGE
+			: SCORING
 	);
 	const [referencesSent, setReferencesSent] = useState();
 	const {
@@ -79,28 +90,26 @@ const applicantList = (props) => {
 		setSearchText,
 		searchedColumn,
 		setSearchedColumn,
-		searchInput
+		searchInput,
 	} = contextValue;
 
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
-			message.success(
-				response.data.result.message
-			);
+			message.success(response.data.result.message);
 			loadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
 				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
 			);
 		}
-	}
+	};
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
 		setReferencesSent(referencesSent);
 		setShowModal(true);
-	}
+	};
 
 	const applicantColumns = [
 		{
@@ -160,7 +169,7 @@ const applicantList = (props) => {
 			dataIndex: 'chair_triage_status',
 			key: 'ChairStatus',
 			render: (text) => renderDecision(text),
-		}
+		},
 	];
 
 	const committeeColumns = [
@@ -198,7 +207,7 @@ const applicantList = (props) => {
 			key: 'recommend',
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
-	]
+	];
 
 	if (
 		props.vacancyTenant === 'Stadtman' &&
@@ -219,21 +228,21 @@ const applicantList = (props) => {
 	}
 
 	if (props.referenceCollection && props.userRoles.includes(OWM_TEAM)) {
-		applicantColumns.push(
-			{
-				title: '',
-				align: 'center',
-				width: 200,
-				render: (_, record) => (
-					<Button
+		applicantColumns.push({
+			title: '',
+			align: 'center',
+			width: 200,
+			render: (_, record) => (
+				<Button
 					data-testid='collect-references-button'
-						onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
-					>
-						Collect References
-					</Button>
-				)
-			}
-		)
+					onClick={() =>
+						onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+					}
+				>
+					Collect References
+				</Button>
+			),
+		});
 	}
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
@@ -311,20 +320,42 @@ const applicantList = (props) => {
 			}
 			return newState == filter;
 		});
-	} 
+	};
 
-	const loadRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
+	const loadRecommendedApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn
+	) => {
 		setRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes');
+		const data = await loadApplicants(
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			'yes'
+		);
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
 
-	const loadNonRecommendedApplicants = async (page, pageSize, orderBy, orderColumn) => {
+	const loadNonRecommendedApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn
+	) => {
 		setNonRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no');
+		const data = await loadApplicants(
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			'no'
+		);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
@@ -335,9 +366,15 @@ const applicantList = (props) => {
 		setTableLoading(true);
 		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
 		setTableLoading(false);
-		if (data && data.applicants) { setApplicants(data.applicants); }
-		if (data && data.totalCount) { setTotalCount(data.totalCount); }
-		if (data && data.pageSize) { setPageSize(data.pageSize); }
+		if (data && data.applicants) {
+			setApplicants(data.applicants);
+		}
+		if (data && data.totalCount) {
+			setTotalCount(data.totalCount);
+		}
+		if (data && data.pageSize) {
+			setPageSize(data.pageSize);
+		}
 	};
 
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
@@ -346,8 +383,7 @@ const applicantList = (props) => {
 			(props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS ||
 				props.vacancyState === VOTING_COMPLETE ||
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
-				(props.vacancyState === ROLLING_CLOSE &&
-					filter !== TRIAGE))
+				(props.vacancyState === ROLLING_CLOSE && filter !== TRIAGE))
 		) {
 			loadRecommendedApplicants(
 				1,
@@ -368,8 +404,12 @@ const applicantList = (props) => {
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
-			if (userCommitteeRole === COMMITTEE_MEMBER_VOTING || userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING || userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
-				const applicantColumnCopy = [...applicantColumns]
+			if (
+				userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+				userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
+				userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY
+			) {
+				const applicantColumnCopy = [...applicantColumns];
 				const columns = applicantColumnCopy.splice(0, 2);
 				if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
 					return columns;
@@ -379,9 +419,12 @@ const applicantList = (props) => {
 			} else {
 				return applicantColumns;
 			}
-		}
+		};
 
-		const data = vacancyState == ROLLING_CLOSE ? getFilterData(filter, applicants) : applicants;
+		const data =
+			vacancyState == ROLLING_CLOSE
+				? getFilterData(filter, applicants)
+				: applicants;
 
 		const table = (
 			<Table
@@ -433,6 +476,52 @@ const applicantList = (props) => {
 						</Collapse>
 					);
 				case VOTING_COMPLETE:
+					return (
+						<>
+							<div>
+								<p>
+									<b>REMINDER: </b> Once an individual has been marked selected,
+									a New Appointment package will be prompted in the{' '}
+									<a href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+										PATS
+									</a>{' '}
+									system with the Position Classification, Organizational Code,
+									and PATS Initiator identified in the Basic Vacancy Information
+									section.
+								</p>
+							</div>
+							<Collapse defaultActiveKey={['0']} ghost>
+								<Panel header='Recommended Applicants'>
+									<IndividualScoringTable
+										applicants={recommendedApplicants}
+										pagination={recommendedApplicantsTablePagination}
+										loading={recommendedApplicantsTableLoading}
+										onTableChange={loadRecommendedApplicants}
+										committeeVoting={true}
+										postChangeHandler={loadVacancyAndApplicants}
+										displayAllComments={vacancyState === VOTING_COMPLETE}
+										vacancyState={vacancyState}
+										refCollection={props.referenceCollection}
+										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									/>
+								</Panel>
+								<Panel header='Non-Recommended Applicants'>
+									<IndividualScoringTable
+										applicants={nonRecommendedApplicants}
+										pagination={nonRecommendedApplicantsTablePagination}
+										loading={nonRecommendedApplicantsTableLoading}
+										onTableChange={loadNonRecommendedApplicants}
+										committeeVoting={true}
+										postChangeHandler={loadVacancyAndApplicants}
+										displayAllComments={vacancyState === VOTING_COMPLETE}
+										vacancyState={vacancyState}
+										refCollection={props.referenceCollection}
+										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									/>
+								</Panel>
+							</Collapse>
+						</>
+					);
 				case COMMITTEE_REVIEW_IN_PROGRESS:
 					return (
 						<Collapse defaultActiveKey={['0']} ghost>
@@ -485,7 +574,10 @@ const applicantList = (props) => {
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
 										<IndividualScoringTable
-											applicants={getFilterData(filter, nonRecommendedApplicants)}
+											applicants={getFilterData(
+												filter,
+												nonRecommendedApplicants
+											)}
 											pagination={nonRecommendedApplicantsTablePagination}
 											loading={nonRecommendedApplicantsTableLoading}
 											onTableChange={loadNonRecommendedApplicants}
@@ -498,8 +590,6 @@ const applicantList = (props) => {
 								</Collapse>
 							);
 						case IN_REVIEW:
-						case REVIEW_COMPLETE:
-           				case COMPLETED:
 							return (
 								<Collapse defaultActiveKey={['0']} ghost>
 									<Panel header='Recommended Applicants'>
@@ -519,7 +609,10 @@ const applicantList = (props) => {
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
 										<IndividualScoringTable
-											applicants={getFilterData(filter, nonRecommendedApplicants)}
+											applicants={getFilterData(
+												filter,
+												nonRecommendedApplicants
+											)}
 											pagination={nonRecommendedApplicantsTablePagination}
 											loading={nonRecommendedApplicantsTableLoading}
 											onTableChange={loadNonRecommendedApplicants}
@@ -534,7 +627,64 @@ const applicantList = (props) => {
 									</Panel>
 								</Collapse>
 							);
-						default: 
+						case REVIEW_COMPLETE:
+						case COMPLETED:
+							return (
+								<>
+									<div>
+										<p classname='PATS-Reminder'>
+											<b>REMINDER: </b> Once an individual has been marked
+											selected, a New Appointment package will be prompted in
+											the{' '}
+											<a href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+												PATS
+											</a>{' '}
+											system with the Position Classification, Organizational
+											Code, and PATS Initiator identified in the Basic Vacancy
+											Information section.
+										</p>
+									</div>
+									<Collapse defaultActiveKey={['0']} ghost>
+										<Panel header='Recommended Applicants'>
+											<IndividualScoringTable
+												applicants={getFilterData(
+													filter,
+													recommendedApplicants
+												)}
+												pagination={recommendedApplicantsTablePagination}
+												loading={recommendedApplicantsTableLoading}
+												onTableChange={loadRecommendedApplicants}
+												committeeVoting={true}
+												postChangeHandler={loadVacancyAndApplicants}
+												displayAllComments={filter === 'review_complete'}
+												vacancyState={vacancyState}
+												refCollection={props.referenceCollection}
+												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+												filter={filter}
+											/>
+										</Panel>
+										<Panel header='Non-Recommended Applicants'>
+											<IndividualScoringTable
+												applicants={getFilterData(
+													filter,
+													nonRecommendedApplicants
+												)}
+												pagination={nonRecommendedApplicantsTablePagination}
+												loading={nonRecommendedApplicantsTableLoading}
+												onTableChange={loadNonRecommendedApplicants}
+												committeeVoting={true}
+												postChangeHandler={loadVacancyAndApplicants}
+												displayAllComments={filter === 'review_complete'}
+												vacancyState={vacancyState}
+												refCollection={props.referenceCollection}
+												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+												filter={filter}
+											/>
+										</Panel>
+									</Collapse>
+								</>
+							);
+						default:
 							return table;
 					}
 				default:
@@ -565,9 +715,9 @@ const applicantList = (props) => {
 						/>
 					);
 				case ROLLING_CLOSE:
-					switch(filter) {
+					switch (filter) {
 						case SCORING:
-							return(
+							return (
 								<IndividualScoringTable
 									applicants={getFilterData(filter, applicants)}
 									pagination={tablePagination}
@@ -579,7 +729,7 @@ const applicantList = (props) => {
 						case IN_REVIEW:
 						case REVIEW_COMPLETE:
 						case COMPLETED:
-							return(
+							return (
 								<IndividualScoringTable
 									applicants={getFilterData(filter, applicants)}
 									pagination={tablePagination}
@@ -591,7 +741,7 @@ const applicantList = (props) => {
 									filter={filter}
 								/>
 							);
-						default: 
+						default:
 							return table;
 					}
 				default:
@@ -603,7 +753,11 @@ const applicantList = (props) => {
 		) {
 			return (
 				<ApplicantList
-					applicants={vacancyState === ROLLING_CLOSE ? getFilterData(filter, applicants) : applicants}
+					applicants={
+						vacancyState === ROLLING_CLOSE
+							? getFilterData(filter, applicants)
+							: applicants
+					}
 					pagination={tablePagination}
 					onTableChange={loadAllApplicants}
 					loading={tableLoading}
@@ -615,14 +769,22 @@ const applicantList = (props) => {
 		}
 	};
 
-	const loadApplicants = async (page, pageSize, orderBy, orderColumn, recommended) => {
+	const loadApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn,
+		recommended
+	) => {
 		const offset = page;
 		const limit = pageSize;
-		const api = props.vacancyState == ROLLING_CLOSE ? GET_ROLLING_APPLICANT_LIST : GET_APPLICANT_LIST;
+		const api =
+			props.vacancyState == ROLLING_CLOSE
+				? GET_ROLLING_APPLICANT_LIST
+				: GET_APPLICANT_LIST;
 		try {
 			let apiString =
-				api
-				 +
+				api +
 				sysId +
 				'?offset=' +
 				offset +
