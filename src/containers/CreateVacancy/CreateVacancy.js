@@ -342,6 +342,7 @@ const createVacancy = (props) => {
 			}
 		}
 	};
+	console.log('mandatoryStatementsForm', mandatoryStatementsForm);
 
 	return (
 		<>

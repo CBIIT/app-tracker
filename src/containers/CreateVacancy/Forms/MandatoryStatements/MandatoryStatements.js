@@ -51,7 +51,7 @@ const mandatoryStatements = (props) => {
 			</p>
 			<SwitchFormItemEditor
 				name='equalOpportunityEmployer'
-				label='Equal Opportunity Employer'
+				label='Equal Employment Opportunity Policy'
 				formInstance={formInstance}
 				onToggle={() => {
 					formInstance.validateFields(['mandatoryStatements']);

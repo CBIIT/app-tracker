@@ -41,7 +41,7 @@ const viewVacancyDetails = () => {
 			setVacancyDetails(response.data.result);
 			setIsLoading(false);
 		})();
-	}, []);
+	}, []);;
 
 	return isLoading ? (
 		<> </>
