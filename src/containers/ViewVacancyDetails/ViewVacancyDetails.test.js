@@ -26,8 +26,6 @@ window.matchMedia =
 describe('ViewVacancyDetails', () => {
 	let sysId;
 
-	const renderer = require('@testing-library/react');
-
 	beforeEach(() => {
 		sysId = '123';
 		useParams.mockReturnValue({ sysId: sysId });
