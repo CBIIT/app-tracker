@@ -371,7 +371,7 @@ const createVacancy = (props) => {
 					wizardFormChangeHandler(name, forms, changedFields);
 				}}
 			>
-				<div className='CreateVacancyContainer'>
+				<div className='CreateVacancyContainer' data-testid="create-vacancy-container">
 					<div className='StepNavigation'>
 						<Steps
 							current={currentStep}

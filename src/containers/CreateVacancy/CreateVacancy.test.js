@@ -1,7 +1,20 @@
 
+// import { useRef } from 'react';
 import CreateVacancy from './CreateVacancy';
 import { rtRender } from '../test-utils';
+import { screen } from '@testing-library/react';
+import { initialValues } from './Forms/FormsInitialValues';
 import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
+
+// jest.mock('react', () => {
+//     const originReact = jest.requireActual('react');
+//     const mUseRef = jest.fn();
+//     return {
+//       ...originReact,
+//       useRef: mUseRef,
+//     };
+// });
 
 
 jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
@@ -15,6 +28,12 @@ jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
         },
     };
 }));
+
+jest.mock('../../hooks/useAuth', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}));
+
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -24,6 +43,7 @@ jest.mock('react-router-dom', () => ({
         }
     })
 }));
+
 
 // Mock react-quill
 jest.mock('react-quill', () => ({
@@ -72,8 +92,26 @@ window.matchMedia = window.matchMedia || function () {
 };
 
 describe('CreateVacancy component tests' , () => {
-
+    let mockUseAuthTenant1;
+    let t1 = 'tenant 1';
+    //let t2 = 'tenant 2';
+    
     beforeEach(() => {
+        // const mRef = { current: ''} ;
+        // useRef.mockReturnValueOnce(mRef);
+
+        mockUseAuthTenant1 = {
+            auth: {
+                iTrustGlideSsoId: 'testSsoId',
+                iTrustUrl: 'https://test.itrust.com',
+                isUserLoggedIn: false,
+                user: { firstName: 'John', lastInitial: 'D' },
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',
+                currentTenant: t1,
+            },
+        };
+        useAuth.mockReturnValue(mockUseAuthTenant1);
+
         const pa = {'data': {'result': {
             'package_initiators': [
                 {
@@ -99,6 +137,40 @@ describe('CreateVacancy component tests' , () => {
         const data = {}
         const sysId = ''     
         rtRender(<CreateVacancy initialValues={data} draftSysId={sysId} />)
-
     });
+
+    test('<CreateVacancy /> test with initial values', async () => {    
+        const data = {
+            ...initialValues,
+            description: 'Test vacancy'
+        }
+        const sysId = '123'     
+        await rtRender(<CreateVacancy initialValues={data} draftSysId={sysId} />);
+        expect(screen.getByTestId('create-vacancy-container')).toBeInTheDocument();
+    });
+
+    // test('<CreateVacancy /> test with initial values', async () => {   
+
+    //     const data = {}
+    //     const sysId = ''      
+    //     await rtRender(<CreateVacancy initialValues={data} draftSysId={sysId} />);
+    //     expect(screen.getByTestId('create-vacancy-container')).toBeInTheDocument();
+
+    //     const mRef = { current: t1 };
+    //     let mockUseAuthTenant2 = {
+    //         auth: {
+    //             iTrustGlideSsoId: 'testSsoId',
+    //             iTrustUrl: 'https://test.itrust.com',
+    //             isUserLoggedIn: false,
+    //             user: { firstName: 'John', lastInitial: 'D' },
+    //             oktaLoginAndRedirectUrl: 'https://test.okta.com',
+    //             previousTenant: mRef,
+    //             currentTenant: t2,
+    //         },
+    //     };
+    //     useAuth.mockReturnValue(mockUseAuthTenant2);
+
+    // });
+
+
 });

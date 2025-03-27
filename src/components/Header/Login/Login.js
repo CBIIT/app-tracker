@@ -116,8 +116,8 @@ const login = () => {
 							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
 							options={tenants}
 							onChange={(value) => {
-								//const location = useLocation();
-								const routeToCheck = locationX.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
+								const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
+
 								previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
 								setCurrentTenant(value);}} />
 				</div> :
