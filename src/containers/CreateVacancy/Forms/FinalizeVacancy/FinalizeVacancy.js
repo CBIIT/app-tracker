@@ -29,9 +29,11 @@ const finalizeVacancy = (props) => {
 		setLoading(true);
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
-			setAllPackageInitiators(
-				vacancyOptionsResponse.data.result.package_initiators
-			);
+			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
+				setAllPackageInitiators(
+					vacancyOptionsResponse.data.result.package_initiators
+				);
+			}
 			setLoading(false);
 		})();
 	}, []);
@@ -87,7 +89,7 @@ const finalizeVacancy = (props) => {
 				</h2>
 				<ReactQuill
 					className='RichTextDisplay'
-					value={basicInfo && basicInfo.description}
+					value={basicInfo ? basicInfo.description : ''}
 					readOnly={true}
 					theme={'bubble'}
 				/>

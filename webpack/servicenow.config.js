@@ -9,14 +9,18 @@ const servicenowConfig = {
    * it is being used in DEVELOPMENT mode only
    * This should be the instance where React application will be deployed to
    */
-  SERVICENOW_INSTANCE: 'https://service-dev2.nci.nih.gov/',
+  SERVICENOW_INSTANCE: 'https://ezapps-dev.nih.gov//',
   /**
    * User Name for API requests
    * it is being used for sending REST calls in DEVELOPMENT mode only
    * no need to provide credentials for PRODUCTION
    */
-  REACT_APP_USER: 'jaya.chakladar.test.user@gmail.com',
-  REACT_APP_PASSWORD: '[]l6jvGclNP83<SyX;',
+  REACT_APP_USER: '',
+  /**
+   * 
+   * User password, for DEVELOPMENT mode only
+   */
+  REACT_APP_PASSWORD: '',
   /**
    * 
    * ServiceNow path to GET resource which serves javascript files
