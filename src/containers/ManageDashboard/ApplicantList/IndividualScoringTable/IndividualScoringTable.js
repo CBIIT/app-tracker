@@ -60,6 +60,7 @@ const individualScoringTable = (props) => {
 	const [chairComments, setChairComments] = useState('');
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
 	const contextValue = useContext(SearchContext);
+	const [referencesSent, setReferencesSent] = useState(false);
 	const {
 		searchText,
 		setSearchText,
@@ -116,6 +117,7 @@ const individualScoringTable = (props) => {
 			message.success(
 				response.data.result.message
 			);
+			reloadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
 				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
@@ -123,13 +125,14 @@ const individualScoringTable = (props) => {
 		}
 	}
 
+	const reloadVacancyAndApplicants = () => {
+		props.reloadVacancy();
+	}
+
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppicantSysId(sysId);
-		if (referencesSent === '0') {
-			sendReferences(sysId)
-		} else {
-			setShowReferenceModal(true);
-		}
+		setReferencesSent(referencesSent);
+		setShowReferenceModal(true);
 	}
 
 	const getColumns = () => {
@@ -342,6 +345,7 @@ const individualScoringTable = (props) => {
 					width: 200,
 					render: (_, record) => (
 						<Button
+							data-testid='collect-references-button'
 							onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
 						>
 							Collect References
@@ -425,6 +429,7 @@ const individualScoringTable = (props) => {
 				showModal={showReferenceModal}
 				setShowModal={setShowReferenceModal}
 				sendReferences={sendReferences}
+				referencesSent={referencesSent}
 			/>
 		</>
 	);

@@ -87,7 +87,10 @@ const basicInformation = (props) => {
 	const isDefined = props.pocDefined;
 	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
 	const useCloseDate = Form.useWatch('useCloseDate', formInstance);
-	const referenceCollection = Form.useWatch('referenceCollection', formInstance);
+	const referenceCollection = Form.useWatch(
+		'referenceCollection',
+		formInstance
+	);
 
 	const { auth } = useAuth();
 	const { user } = auth;
@@ -177,7 +180,8 @@ const basicInformation = (props) => {
 		{ label: 'N/A', value: 'N/A' },
 	];
 
-	const hrSpecialistTooltip = 'Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage.';
+	const hrSpecialistTooltip =
+		'Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage.';
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -225,18 +229,16 @@ const basicInformation = (props) => {
 		).setHours(0, 0, 0, 0);
 
 		if (useCloseDate == true) {
-            if (formItem.field == 'openDate' && closeDate && openDate >= closeDate) {
-                throw new Error(
-                    'Please pick an open date that is before the close date.'
-                );
-            }
-        } else {
-            if (formItem.field == 'openDate' && !openDate) {
-                throw new Error(
-                    'Please pick an open date.'
-                )
-            }
-        }
+			if (formItem.field == 'openDate' && closeDate && openDate >= closeDate) {
+				throw new Error(
+					'Please pick an open date that is before the close date.'
+				);
+			}
+		} else {
+			if (formItem.field == 'openDate' && !openDate) {
+				throw new Error('Please pick an open date.');
+			}
+		}
 
 		if (formItem.field == 'closeDate' && openDate && closeDate <= openDate) {
 			throw new Error('Please pick a close date that is after the open date.');
@@ -299,7 +301,13 @@ const basicInformation = (props) => {
 							<Checkbox>Utilizing a Set Close Date</Checkbox>
 						</Form.Item>
 					</Tooltip>
-					<Tooltip title={user.isManager ? `${hrSpecialistTooltip} Please email the HR Specialist informing them to complete the vacancy triage.`: hrSpecialistTooltip}>
+					<Tooltip
+						title={
+							user.isManager
+								? `${hrSpecialistTooltip} Please email the HR Specialist informing them to complete the vacancy triage.`
+								: hrSpecialistTooltip
+						}
+					>
 						<Form.Item
 							name='allowHrSpecialistTriage'
 							valuePropName='checked'
@@ -530,6 +538,16 @@ const basicInformation = (props) => {
 
 			<Form.Item label='Personnel Action Tracking Solution (PATS): Appointment Information'>
 				<div className='PATSContainer'>
+					<div className='PATSClarification'>
+						<p>
+							The selections made in the fields below will be included in the
+							package sent to{' '}
+							<a href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+								PATS
+							</a>{' '}
+							upon selecting a candidate.
+						</p>
+					</div>
 					<div className='PATSPicker'>
 						<EditableDropDown
 							label={

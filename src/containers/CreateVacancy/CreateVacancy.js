@@ -351,6 +351,7 @@ const createVacancy = (props) => {
 			}
 		}
 	};
+	console.log('mandatoryStatementsForm', mandatoryStatementsForm);
 
 	useEffect(() => {
 		const routeToCheck = location.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
