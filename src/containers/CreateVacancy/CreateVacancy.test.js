@@ -29,10 +29,10 @@ jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
     };
 }));
 
-jest.mock('../../hooks/useAuth', () => ({
-    __esModule: true,
-    default: jest.fn(),
-}));
+// jest.mock('../../hooks/useAuth', () => ({
+//     __esModule: true,
+//     default: jest.fn(),
+// }));
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -131,6 +131,10 @@ describe('CreateVacancy component tests' , () => {
             }
           }
     });
+
+    afterEach(() => {
+		jest.clearAllMocks();
+	});
 
 
     test('<CreateVacancy /> crash test', async () => {    
