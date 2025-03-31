@@ -129,7 +129,7 @@ describe('CreateVacancy component tests' , () => {
               addRange: () => {},
               getRangeAt: () => {},
             }
-          }
+        }
     });
 
     afterEach(() => {

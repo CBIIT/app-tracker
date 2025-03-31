@@ -92,8 +92,9 @@ const basicInformation = (props) => {
 		formInstance
 	);
 
-	const { auth } = useAuth();
-	const { user } = auth;
+	const { auth, currentTenant } = useAuth();
+	const { user, tenants } = auth;
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
 
 	const newValues = {
 		...props.initialValues,
@@ -460,7 +461,7 @@ const basicInformation = (props) => {
 				</div>
 			)}
 
-			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
+			{tname && tname.label && tname.label.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'

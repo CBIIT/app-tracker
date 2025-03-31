@@ -11,8 +11,9 @@ import { LoadingOutlined } from '@ant-design/icons';
 const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
-	const { auth } = useAuth();
-	const { user } = auth;
+	const { auth, currentTenant } = useAuth();
+	const { user, tenants } = auth;
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
 	const readOnlyMember = props.readOnlyMember;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -158,7 +159,7 @@ const finalizeVacancy = (props) => {
 						</div>
 					</div>
 				)}
-				{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
+				{tname && tname.label && tname.label.trim().toLowerCase() === 'stadtman' ? (
 					<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
 						<div>
 							<h2>Focus Area</h2>
