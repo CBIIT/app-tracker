@@ -1,5 +1,4 @@
 
-// import { useRef } from 'react';
 import CreateVacancy from './CreateVacancy';
 import { rtRender } from '../test-utils';
 import { screen } from '@testing-library/react';
@@ -28,11 +27,6 @@ jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
         },
     };
 }));
-
-// jest.mock('../../hooks/useAuth', () => ({
-//     __esModule: true,
-//     default: jest.fn(),
-// }));
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -93,13 +87,8 @@ window.matchMedia = window.matchMedia || function () {
 
 describe('CreateVacancy component tests' , () => {
     let mockUseAuthTenant1;
-    let t1 = 'tenant 1';
-    //let t2 = 'tenant 2';
     
     beforeEach(() => {
-        // const mRef = { current: ''} ;
-        // useRef.mockReturnValueOnce(mRef);
-
         mockUseAuthTenant1 = {
             auth: {
                 iTrustGlideSsoId: 'testSsoId',
@@ -107,7 +96,7 @@ describe('CreateVacancy component tests' , () => {
                 isUserLoggedIn: false,
                 user: { firstName: 'John', lastInitial: 'D' },
                 oktaLoginAndRedirectUrl: 'https://test.okta.com',
-                currentTenant: t1,
+                currentTenant: 'tenant 1',
             },
         };
         useAuth.mockReturnValue(mockUseAuthTenant1);
