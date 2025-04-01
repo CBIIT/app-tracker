@@ -557,24 +557,26 @@ const vacancyDashboard = () => {
 			<div style={{ backgroundColor: '#EDF1F4' }}>
 				<div className='app-container'>
 					<div className='CreateVacancyButtonDiv'>
-						<Link to={CREATE_VACANCY}>
-							<Tooltip title={currentTenant ? '' : 'Please select a tenant before creating a vacancy'}>
-								<Button
-									className='CreateVacancyButton'
-									type='primary'
-									style={{
-										fontSize: '16px',
-										maxWidth: '161px',
-										height: '36px',
-										float: 'right',
-									}}
-									link='true'
-									disabled={currentTenant ? false : true}
-								>
-									+ Create Vacancy
-								</Button>
-							</Tooltip>
-						</Link>
+						<Tooltip title={currentTenant ? '' : 'Please select a tenant before creating a vacancy'}>
+							<div style={{ display: 'inline-block', height: '50px', marginLeft: '1000px'}}>
+								<Link style={currentTenant ? { cursor: 'pointer' } : { cursor: 'not-allowed' }} to={CREATE_VACANCY}>
+									<Button
+										className='CreateVacancyButton'
+										type='primary'
+										style={{
+											fontSize: '16px',
+											maxWidth: '161px',
+											height: '36px',
+											float: 'right',
+										}}
+										link='true'
+										disabled={currentTenant ? false : true}
+									>
+										+ Create Vacancy
+									</Button>
+								</Link>
+							</div>
+						</Tooltip>
 					</div>
 					<Tabs
 						className='vacancy-tabs'
