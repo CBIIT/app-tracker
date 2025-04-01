@@ -19,7 +19,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
 
 const createVacancy = (props) => {
-	const { auth: { user }, currentTenant, previousTenant } = useAuth();
+	const { auth: { user }, currentTenant, previousTenant, setCurrentTenant } = useAuth();
 	const newValues = {
 		...initialValues,
 		basicInfo: {
@@ -351,7 +351,6 @@ const createVacancy = (props) => {
 			}
 		}
 	};
-	console.log('mandatoryStatementsForm', mandatoryStatementsForm);
 
 	useEffect(() => {
 		const routeToCheck = location.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
@@ -472,7 +471,10 @@ const createVacancy = (props) => {
 				title='Confirm tenant switch'
 				open={showTenantSwitchModal}
 				onOk={onOk}
-				onCancel={() => setShowTenantSwitchModal(false)}
+				onCancel={() => {
+					setCurrentTenant(previousTenant.current);
+					setShowTenantSwitchModal(false);
+				}}
 				closable={false}
 			>
 				<div className='ConfirmSubmitModal'>

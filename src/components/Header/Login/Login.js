@@ -117,9 +117,9 @@ const login = () => {
 							options={tenants}
 							onChange={(value) => {
 								const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
-
 								previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
-								setCurrentTenant(value);}} />
+								setCurrentTenant(value);}} 
+						value={currentTenant} />
 				</div> :
 				<div className='LeftContainerSub'>null</div>
 			}
