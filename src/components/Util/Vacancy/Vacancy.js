@@ -2,7 +2,7 @@ export const extractAndTransformMandatoryStatements = (vacancyDetails) => {
 	const mandatoryStatements = [];
 
 	mandatoryStatements.push({
-		label: 'Equal Opportunity Employment',
+		label: 'Equal Employment Opportunity Policy',
 		text:
 			vacancyDetails.basic_info.equal_opportunity_employment_statement.value,
 		display: vacancyDetails.basic_info.show_eoes.value,
