@@ -121,7 +121,7 @@ const login = () => {
 								setCurrentTenant(value);}} 
 						value={currentTenant} />
 				</div> :
-				<div className='LeftContainerSub'>null</div>
+				<div className='LeftContainerSub'>{''}</div>
 			}
 			<div className='LeftContainerSub'>
 			<Dropdown className='Login' overlay={logoutMenu}>
