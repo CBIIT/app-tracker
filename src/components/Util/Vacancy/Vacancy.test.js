@@ -19,7 +19,7 @@ describe('extractAndTransformMandatoryStatements', () => {
 
         expect(result).toEqual([
             {
-                label: 'Equal Opportunity Employment',
+                label: 'Equal Employment Opportunity Policy',
                 text: 'EOE Statement',
                 display: true,
             },
@@ -59,7 +59,7 @@ describe('extractAndTransformMandatoryStatements', () => {
 
         expect(result).toEqual([
             {
-                label: 'Equal Opportunity Employment',
+                label: 'Equal Employment Opportunity Policy',
                 text: 'EOE Statement',
                 display: true,
             },
@@ -99,7 +99,7 @@ describe('extractAndTransformMandatoryStatements', () => {
 
         expect(result).toEqual([
             {
-                label: 'Equal Opportunity Employment',
+                label: 'Equal Employment Opportunity Policy',
                 text: '',
                 display: false,
             },
