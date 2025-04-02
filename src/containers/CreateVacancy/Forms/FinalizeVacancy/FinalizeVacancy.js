@@ -12,7 +12,7 @@ const finalizeVacancy = (props) => {
 	const { basicInfo, mandatoryStatements, vacancyCommittee, emailTemplates } =
 		props.allForms;
 	const { auth, currentTenant } = useAuth();
-	const { user, tenants } = auth;
+	const { tenants } = auth;
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
 	const readOnlyMember = props.readOnlyMember;
 	const [allPackageInitiators, setAllPackageInitiators] = useState('');
