@@ -4,6 +4,11 @@ import Header from './Header';
 import Logo from './Logo/Logo';
 import Login from './Login/Login';
 
+jest.mock('react-router-dom', () => ({
+    useHistory: jest.fn(),
+    useLocation: jest.fn(),
+}));
+
 jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
     return {
         auth: {
@@ -30,6 +35,6 @@ describe('Header Component', () => {
 
     it('should render the Login component', () => {
         const { container } = render(<Login />);
-        expect(container.firstChild).toHaveClass('Login');
+        expect(container.firstChild).toHaveClass('LoginRightContainer');
     });
 });

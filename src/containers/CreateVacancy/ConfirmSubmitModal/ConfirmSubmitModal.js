@@ -5,6 +5,7 @@ import { VACANCY_DASHBOARD } from '../../../constants/Routes';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
 import axios from 'axios';
+import { SUBMIT_VACANCY } from '../../../constants/ApiEndpoints.js';
 
 import './ConfirmSubmitModal.css';
 
@@ -33,7 +34,7 @@ const confirmSubmitModal = (props) => {
 		const dataToSend = transformJsonToBackend(props.data);
 		try {
 			await axios.post(
-				'/api/x_g_nci_app_tracke/vacancy/submit_vacancy',
+				SUBMIT_VACANCY,
 				dataToSend
 			);
 			setConfirmLoading(false);

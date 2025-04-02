@@ -5,13 +5,15 @@ import Login from './Login';
 import useAuth from '../../../hooks/useAuth';
 
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn()
+    useHistory: jest.fn(),
+    useLocation: jest.fn(),
 }));
 // const mockedUsedNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUsedNavigate,
-}));
+// jest.mock('react-router-dom', () => ({
+//     ...jest.requireActual('react-router-dom'),
+//     useNavigate: () => mockedUsedNavigate,
+//     useLocation: () => mockedUsedLocation,
+// }));
 
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,

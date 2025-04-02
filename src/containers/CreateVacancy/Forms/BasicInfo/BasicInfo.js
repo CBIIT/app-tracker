@@ -92,8 +92,9 @@ const basicInformation = (props) => {
 		formInstance
 	);
 
-	const { auth } = useAuth();
-	const { user } = auth;
+	const { auth, currentTenant } = useAuth();
+	const { user, tenants } = auth;
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
 
 	const newValues = {
 		...props.initialValues,
@@ -189,35 +190,25 @@ const basicInformation = (props) => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
 
 			setCurrentPositionMenu(positionClassificationMenu);
-			const codes = [];
-			var packageInitiators = [];
 
-			if (
-				vacancyOptionsResponse &&
-				vacancyOptionsResponse.data &&
-				vacancyOptionsResponse.data.result
-			) {
-				for (
-					var i = 0;
-					i < vacancyOptionsResponse.data.result.package_initiators.length;
-					i++
-				) {
-					var packageInitiator =
-						vacancyOptionsResponse.data.result.package_initiators[i];
+			var packageInitiators = [];
+			const codes = [];
+			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
+				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
+					codes.push({ label: code, value: code });
+				});
+				setSacCodes(codes);
+
+				vacancyOptionsResponse.data.result.package_initiators.forEach((packageInitiator) => {
 					var packageInitiatorOption = {
 						label: packageInitiator.name,
 						value: packageInitiator.sys_id,
 						email: packageInitiator.email,
 					};
 					packageInitiators.push(packageInitiatorOption);
-				}
-				setAppInitiatorMenu(packageInitiators);
-				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
-					codes.push({ label: code, value: code });
 				});
-				setSacCodes(codes);
+				setAppInitiatorMenu(packageInitiators);
 			}
-
 			setIsLoading(false);
 		})();
 	}, []);
@@ -470,7 +461,7 @@ const basicInformation = (props) => {
 				</div>
 			)}
 
-			{user?.tenant?.trim().toLowerCase() === 'stadtman' ? (
+			{tname && tname.label && tname.label.trim().toLowerCase() === 'stadtman' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'

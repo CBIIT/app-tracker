@@ -41,6 +41,8 @@ import {
 import CountTile from './CountTile/CountTile';
 import ExtendModal from './ExtendModal/ExtendModal';
 import './VacancyDashboard.css';
+import useAuth from '../../hooks/useAuth';
+
 
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
@@ -52,6 +54,9 @@ const vacancyDashboard = () => {
 	const [activeTab, setActiveTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
 	const [filter, setFilter] = useState('all');
+
+	const { currentTenant } = useAuth();
+
 
 	const tabs = {
 		PREFLIGHT: 'preflight',
@@ -80,9 +85,9 @@ const vacancyDashboard = () => {
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			let dataUrl = DASHBOARD_VACANCIES + tabs.PREFLIGHT;
+			let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
 			if (tab) {
-				dataUrl = DASHBOARD_VACANCIES + tab;
+				dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
 				setActiveTab(tab);
 			}
 
@@ -104,7 +109,7 @@ const vacancyDashboard = () => {
 		return () => {
 			cancelToken.cancel();
 		};
-	}, [tab]);
+	}, [tab, currentTenant]);
 
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
@@ -552,21 +557,26 @@ const vacancyDashboard = () => {
 			<div style={{ backgroundColor: '#EDF1F4' }}>
 				<div className='app-container'>
 					<div className='CreateVacancyButtonDiv'>
-						<Link to={CREATE_VACANCY}>
-							<Button
-								className='CreateVacancyButton'
-								type='primary'
-								style={{
-									fontSize: '16px',
-									maxWidth: '161px',
-									height: '36px',
-									float: 'right',
-								}}
-								link='true'
-							>
-								+ Create Vacancy
-							</Button>
-						</Link>
+						<Tooltip title={currentTenant ? '' : 'Please select a tenant before creating a vacancy'}>
+							<div style={{ display: 'inline-block', height: '50px', marginLeft: '1000px'}}>
+								<Link style={currentTenant ? { cursor: 'pointer' } : { cursor: 'not-allowed' }} to={CREATE_VACANCY}>
+									<Button
+										className='CreateVacancyButton'
+										type='primary'
+										style={{
+											fontSize: '16px',
+											maxWidth: '161px',
+											height: '36px',
+											float: 'right',
+										}}
+										link='true'
+										disabled={currentTenant ? false : true}
+									>
+										+ Create Vacancy
+									</Button>
+								</Link>
+							</div>
+						</Tooltip>
 					</div>
 					<Tabs
 						className='vacancy-tabs'
@@ -579,8 +589,9 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='pre-flight vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.PREFLIGHT}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.PREFLIGHT}
 									data={data}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.PREFLIGHT}
@@ -620,7 +631,8 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='live vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.LIVE}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.LIVE}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.LIVE}
@@ -660,7 +672,8 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='rolling close vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.ROLLING}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.ROLLING}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.ROLLING}
@@ -700,7 +713,8 @@ const vacancyDashboard = () => {
 							tab={
 								<CountTile
 									title='closed vacancies'
-									apiUrl={VACANCY_COUNTS + tabs.CLOSED}
+									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.CLOSED}
+									currentTenant={currentTenant}
 								/>
 							}
 							key={tabs.CLOSED}

@@ -1,20 +1,24 @@
-import { useHistory } from 'react-router-dom';
-import { Button, Menu, Dropdown, Divider } from 'antd';
+import { useHistory, useLocation } from 'react-router-dom';
+import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
-
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { REGISTER_OKTA, } from '../../../constants/Routes';
+import { REGISTER_OKTA, TENANT_CHECK_ROUTES} from '../../../constants/Routes';
 
 import './Login.css';
 
+const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
+
 const login = () => {
 	const {
-		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl },
+		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl, tenants},
+		currentTenant,
+		setCurrentTenant,
+		previousTenant,
 	} = useAuth();
-
 	const history = useHistory();
+	const locationX = useLocation();
 
 	const nihClicked = () => {
 		location.href =
@@ -102,15 +106,36 @@ const login = () => {
 	);
 
 	return isUserLoggedIn ? (
-		<Dropdown className='Login' overlay={logoutMenu}>
-			<Button type='link'>
-				<UserOutlined />
-				{user.firstName +
+		<div className='LoginRightContainer'>
+			{user.isManager ?
+				<div className='RightContainerSub'>
+					<Select
+						style={{ width: "100%", border: "2px solid #015ea2"}}
+						placeholder="Select a tenant"
+						filterOption={(input, option) =>
+							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+							options={tenants}
+							onChange={(value) => {
+								const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
+								previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
+								setCurrentTenant(value);}} 
+						value={currentTenant} />
+				</div> :
+				<div className='LeftContainerSub'>null</div>
+			}
+			<div className='LeftContainerSub'>
+			<Dropdown className='Login' overlay={logoutMenu}>
+				<Button type='link'>
+					<UserOutlined />
+					{user.firstName +
 					' ' +
 					(user.lastInitial ? user.lastInitial + '.' : '')}
-				<DownOutlined />
-			</Button>
-		</Dropdown>
+					<DownOutlined />
+				</Button>
+			</Dropdown>
+			</div>
+		</div>
+		
 	) : (
 		<Dropdown className='Login' overlay={loginMenu}>
 			<Button type='link'>

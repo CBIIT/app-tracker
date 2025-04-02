@@ -2,7 +2,7 @@ import BasicInfo from './BasicInfo';
 import useAuth from '../../../../hooks/useAuth';
 import axios from 'axios';
 import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
-import { mockIntialValues, mockVacancyOptionsResponse, mockPackageInitiators, mockSacCodes } from './BasicInfoMockData';
+import { mockIntialValues, mockVacancyOptionsResponse } from './BasicInfoMockData';
 import { render, screen, waitFor } from '@testing-library/react';
 
 jest.mock('../../../../hooks/useAuth');
@@ -114,5 +114,20 @@ describe('BasicInfo', () => {
         });
 
 	});
+
+
+    test('<BasicInfo /> crash test', async () => {
+        const data = {}
+        render(
+            <BasicInfo
+                initialValues={data}
+                formInstance={result}
+                readOnly={true}
+                isNew={false}
+                pocDefined={false}
+                isDefined={false}
+            />
+        )
+    });
 
 });

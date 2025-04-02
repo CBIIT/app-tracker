@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import './CountTile.css';
 
-const countTile = ({ apiUrl, title, data }) => {
+const countTile = ({ apiUrl, title, data, currentTenant }) => {
 	const [count, setCount] = useState(null);
 
 	useEffect(() => {
@@ -12,7 +12,7 @@ const countTile = ({ apiUrl, title, data }) => {
 			const response = await axios.get(apiUrl);
 			setCount(response.data.result.count);
 		})();
-	}, [data]);
+	}, [data, currentTenant]);
 
 	return (
 		<span className='CountTileContainer'>

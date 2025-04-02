@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useHistory } from 'react-router';
+import { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import useAuth from '../../hooks/useAuth';
-import { Steps, Button, Form, message, Tooltip } from 'antd';
+import { Steps, Button, Form, message, Tooltip , Modal} from 'antd';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
 import BasicInfo from './Forms/BasicInfo/BasicInfo';
 import MandatoryStatements from './Forms/MandatoryStatements/MandatoryStatements';
@@ -10,12 +10,16 @@ import EmailTemplates from './Forms/EmailTemplates/EmailTemplates';
 import FinalizeVacancy from './Forms/FinalizeVacancy/FinalizeVacancy';
 import { initialValues } from './Forms/FormsInitialValues';
 import { EDIT_VACANCY, SAVE_VACANCY_DRAFT } from '../../constants/ApiEndpoints';
+import { TENANT_CHECK_ROUTES } from '../../constants/Routes';
 import './CreateVacancy.css';
 import axios from 'axios';
 import { transformJsonToBackend } from './Util/TransformJsonToBackend';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
 
 const createVacancy = (props) => {
-	const { auth: { user } } = useAuth();
+	const { auth: { user }, currentTenant, previousTenant, setCurrentTenant } = useAuth();
 	const newValues = {
 		...initialValues,
 		basicInfo: {
@@ -23,17 +27,20 @@ const createVacancy = (props) => {
 			appointmentPackageIndicator: user.uid,
 			vacancyPoc: user.uid
 		},
+		currentTenant: currentTenant,
 	};
 	const { Step } = Steps;
 	const history = useHistory();
+	const location = useLocation();
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(
 		props.initialValues ? props.initialValues : newValues
 	);
 	const [submitModalVisible, setSubmitModalVisible] = useState(false);
+	const [showTenantSwitchModal, setShowTenantSwitchModal] = useState(false);
 	const [draftSysId, setDraftSysId] = useState(props.draftSysId);
 	const isNew = props.initialValues ? false : true;
-	const pocDefined = allForms.basicInfo.vacancyPoc === undefined ? false : true;
+	const pocDefined = allForms.basicInfo && allForms.basicInfo.vacancyPoc === undefined ? false : true;
 
 	const showSubmitModal = () => {
 		setSubmitModalVisible(true);
@@ -241,12 +248,14 @@ const createVacancy = (props) => {
 			try {
 				let draft = {
 					jsonobj: data,
+					tenantId: currentTenant,
 				};
 
 				if (draftSysId)
 					draft = {
 						sys_id: draftSysId,
 						jsonobj: data,
+						tenantId: currentTenant,
 					};
 
 				const response = await axios.post(SAVE_VACANCY_DRAFT, draft);
@@ -342,16 +351,27 @@ const createVacancy = (props) => {
 			}
 		}
 	};
-	console.log('mandatoryStatementsForm', mandatoryStatementsForm);
+
+	useEffect(() => {
+		const routeToCheck = location.pathname.match(regex) ? location.pathname.split(regex)[0] : location.pathname;
+		if (TENANT_CHECK_ROUTES.includes(routeToCheck)
+			&& currentTenant && previousTenant.current && (currentTenant !== previousTenant.current))  {
+			setShowTenantSwitchModal(true); }
+	}, [currentTenant]);
+
+	const onOk = () => {
+		previousTenant.current = currentTenant;
+		history.goBack();
+	}
 
 	return (
-		<>
+		<div>
 			<Form.Provider
 				onFormChange={(name, { forms, changedFields }) => {
 					wizardFormChangeHandler(name, forms, changedFields);
 				}}
 			>
-				<div className='CreateVacancyContainer'>
+				<div className='CreateVacancyContainer' data-testid="create-vacancy-container">
 					<div className='StepNavigation'>
 						<Steps
 							current={currentStep}
@@ -447,7 +467,27 @@ const createVacancy = (props) => {
 				onCancel={handleSubmitModalCancel}
 				data={draftSysId ? { ...allForms, draftId: draftSysId } : allForms}
 			/>
-		</>
+			<Modal
+				title='Confirm tenant switch'
+				open={showTenantSwitchModal}
+				onOk={onOk}
+				onCancel={() => {
+					setCurrentTenant(previousTenant.current);
+					setShowTenantSwitchModal(false);
+				}}
+				closable={false}
+			>
+				<div className='ConfirmSubmitModal'>
+					<ExclamationCircleFilled
+						style={{ color: '#faad14', fontSize: '24px' }}
+				/>
+				<h2>Ready to switch tenant?</h2>
+				<p>
+					All the work on the current vacancy will be lost if you switch tenants.
+				</p>
+			</div>
+			</Modal>
+		</div>
 	);
 };
 

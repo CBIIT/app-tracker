@@ -15,6 +15,7 @@ const VIEW_VACANCY = '/vacancy/';
 const CREATE_PROFILE = '/create-profile';
 const PROFILE = '/profile/';
 const EDIT_PROFILE = 'manage/profile/edit/';
+const TENANT_CHECK_ROUTES = [CREATE_VACANCY, EDIT_VACANCY, EDIT_DRAFT];
 export {
 	MANAGE_APPLICATION,
 	MANAGE_VACANCY,
@@ -32,5 +33,6 @@ export {
 	VIEW_APPLICATION,
 	CREATE_PROFILE,
 	PROFILE,
-	EDIT_PROFILE
+	EDIT_PROFILE,
+	TENANT_CHECK_ROUTES
 };
