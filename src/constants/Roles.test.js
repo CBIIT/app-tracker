@@ -33,11 +33,11 @@ describe('Roles constants', () => {
     });
 
     test('should have correct value for COMMITTEE_EXEC_SEC', () => {
-        expect(COMMITTEE_EXEC_SEC).toBe('Executive Secretary (non-voting)');
+        expect(COMMITTEE_EXEC_SEC).toBe('Executive Secretary');
     });
 
     test('should have correct value for COMMITTEE_HR_SPECIALIST', () => {
-        expect(COMMITTEE_HR_SPECIALIST).toBe('HR Specialist (non-voting)');
+        expect(COMMITTEE_HR_SPECIALIST).toBe('HR Specialist');
     });
 
     test('should have correct value for COMMITTEE_EDI_REPRESENTATIVE', () => {
