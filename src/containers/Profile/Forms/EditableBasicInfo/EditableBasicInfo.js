@@ -10,6 +10,7 @@ import {
 	Col,
 	Row,
 	Select,
+	notification,
 	Tooltip
 } from 'antd';
 const { Option } = Select;
@@ -63,20 +64,42 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			await formInstance.validateFields();
 			window.scrollTo(0, 0);
 			valid = true;
+
+			if (valid) {
+				let data = {
+					...profile, 
+					basicInfo: values
+				}
+				setProfile(data);
+				var convertedData = convertDataToBackend(data);
+				await axios.post(SAVE_PROFILE, convertedData);
+				setHasProfile(true);
+				setBasicOpen(false);
+			}
+
 		} catch (error) {
 			console.log(error);
-		}
-
-		if (valid){
-			let data = {
-				...profile, 
-				basicInfo: values
-			}
-			setProfile(data);
-			var convertedData = convertDataToBackend(data);
-			await axios.post(SAVE_PROFILE, convertedData);
-			setHasProfile(true);
-			setBasicOpen(false);
+			notification.error({
+				message: 'Sorry! There was an error saving your profile.',
+				description: (
+					<>
+						<p>
+							Please verify all information was entered correctly and try saving
+							again. If the issue continues, contact the Help Desk by emailing{' '}
+							<a href='mailto:NCIAppSupport@mail.nih.gov'>
+								NCIAppSupport@mail.nih.gov
+							</a>
+							.
+						</p>
+					</>
+				),
+				duration: 30,
+				style: {
+					height: '225px',
+					display: 'flex',
+					alignItems: 'center',
+				},
+			});
 		}
 	};
 
