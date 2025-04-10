@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { CHECK_AUTH, GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty, message } from 'antd';
+import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
 
@@ -19,6 +20,8 @@ const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [readOnly, setreadOnly] = useState(false);
+	const { auth: { user }, currentTenant } = useAuth();
+
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
 			<Empty
@@ -32,20 +35,18 @@ const committeeDashboard = () => {
 		(async () => {
 			setIsLoading(true);
 			try {
-				const response = await axios.get(CHECK_AUTH);
-				setreadOnly(response.data.result.is_read_only_user);
-				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
+				setreadOnly(user.isReadOnlyUser)
+				const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant
+				const currentData = await axios.get(url);
 				setData(currentData.data.result);
 			} catch (err) {
 				message.error('Sorry!  An error occurred.');
 			}
 			setIsLoading(false);
 		})();
-	}, []);
+	}, [currentTenant]);
 
-	return isLoading ? (
-		<> </>
-	) : (
+	return (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
@@ -67,6 +68,7 @@ const committeeDashboard = () => {
 							paddingRight: '20px',
 							paddingTop: '20px',
 						}}
+						loading={isLoading}
 					></Table>
 				</ConfigProvider>
 			</div>

@@ -92,7 +92,7 @@ export const CHANGE_VACANCY_STATUS =
 	'/api/x_g_nci_app_tracke/vacancy/change_status/';
 
 export const GET_COMMITTEE_MEMBER_VIEW =
-	'/api/x_g_nci_app_tracke/vacancy/committee';
+	'/api/x_g_nci_app_tracke/vacancy/v2/committee/';
 
 export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/v2/counts/';
 
