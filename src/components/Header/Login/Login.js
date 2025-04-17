@@ -110,6 +110,7 @@ const login = () => {
 			{(user.isManager || user.isCommitteeMember ) ?
 				<div className='RightContainerSub'>
 					<Select
+						data-testid="tenant-select-item"
 						style={{ width: "100%", border: "2px solid #015ea2"}}
 						placeholder="Select a tenant"
 						filterOption={(input, option) =>
