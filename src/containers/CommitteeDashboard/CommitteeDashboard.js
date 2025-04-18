@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { CHECK_AUTH, GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
+import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty, message } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
