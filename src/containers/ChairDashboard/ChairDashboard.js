@@ -6,27 +6,35 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
+import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
+import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js'
+import useAuth from '../../hooks/useAuth';
 
 const chairDashboard = () => {
+	const { auth: { tenants }, currentTenant } = useAuth();
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			try {
-				const currentData = await axios.get(GET_COMMITTEE_CHAIR_VACANCIES);
-				setData(
-					currentData.data.result.filter(
-						(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
-					)
-				);
-			} catch (err) {
-				console.warn(err);
-			}
+		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
+			(async () => {
+				setIsLoading(true);
+				try {
+					const currentData = await axios.get(GET_COMMITTEE_CHAIR_VACANCIES  + currentTenant);
+					setData(
+						currentData.data.result.filter(
+							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
+						)
+					);
+				} catch (err) {
+					console.warn(err);
+				}
+				setIsLoading(false);
+			})();
+		} else {
 			setIsLoading(false);
-		})();
-	}, []);
+		}
+	}, [currentTenant]);
 
 	return (
 		<>

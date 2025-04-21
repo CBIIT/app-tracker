@@ -6,7 +6,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for GET_COMMITTEE_CHAIR_VACANCIES', () => {
-        expect(ApiEndpoints.GET_COMMITTEE_CHAIR_VACANCIES).toBe('/api/x_g_nci_app_tracke/vacancy/chair');
+        expect(ApiEndpoints.GET_COMMITTEE_CHAIR_VACANCIES).toBe('/api/x_g_nci_app_tracke/vacancy/v2/chair/');
     });
 
     it('should have the correct value for GET_APPLICATION', () => {

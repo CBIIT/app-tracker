@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 
-import { Tabs, Button, Tooltip, message } from 'antd';
+import { Tabs, Button, Tooltip, message, Modal } from 'antd';
 import {
 	DoubleRightOutlined,
 	LockOutlined,
 	UnlockOutlined,
+	ExclamationCircleFilled
 } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -38,6 +39,7 @@ import {
 	COMMITTEE_CHAIR,
 	COMMITTEE_MEMBER_READ_ONLY,
 } from '../../constants/Roles';
+import { TENANT_CHECK_ROUTES } from '../../constants/Routes';
 import {
 	TRIAGE,
 	CHAIR_TRIAGE,
@@ -140,6 +142,8 @@ const getNextStepModalSteps = (currentStep) => {
 
 const ratingPlanTable = 'x_g_nci_app_tracke_vacancy';
 
+const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
+
 const manageDashboard = () => {
 	const { sysId, tab } = useParams();
 	const [currentTab, setCurrentTab] = useState();
@@ -157,6 +161,7 @@ const manageDashboard = () => {
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
 	const [isReadOnlyMember, setisReadOnlyMember] = useState(false);
+	const [showTenantSwitchModal, setShowTenantSwitchModal] = useState(false);
 
 	const searchContext = {
 		searchText,
@@ -167,9 +172,7 @@ const manageDashboard = () => {
 	};
 
 	const history = useHistory();
-	const {
-		auth: { user },
-	} = useAuth();
+	const { auth: { user }, currentTenant, previousTenant, setCurrentTenant } = useAuth();
 
 	useEffect(() => {
 		loadLatestVacancyInfo();
@@ -264,6 +267,16 @@ const manageDashboard = () => {
 		else return false;
 	};
 
+	useEffect(() => {
+		if (currentTenant && previousTenant.current && (currentTenant !== previousTenant.current))  {
+			setShowTenantSwitchModal(true); }
+	}, [currentTenant]);
+
+	const onOk = () => {
+		previousTenant.current = currentTenant;
+		history.goBack();
+	}
+
 	return isLoading ? (
 		<Loading />
 	) : (
@@ -276,6 +289,7 @@ const manageDashboard = () => {
 					<div className='HeaderLink'>
 						<Button
 							type='link'
+							// Now a user can be a manager and chair and comm member, how do we return them
 							onClick={() => {
 								if (user.isManager == true) {
 									history.push(VACANCY_DASHBOARD);
@@ -436,6 +450,26 @@ const manageDashboard = () => {
 					setModal={setStatusModalOpen}
 					loadVacancy={loadLatestVacancyInfo}
 				/>
+				<Modal
+					title='Confirm tenant switch'
+					open={showTenantSwitchModal}
+					onOk={onOk}
+					onCancel={() => {
+						setCurrentTenant(previousTenant.current);
+						setShowTenantSwitchModal(false);
+					}}
+					closable={false}
+				>
+					<div className='ConfirmSubmitModal'>
+						<ExclamationCircleFilled
+							style={{ color: '#faad14', fontSize: '24px' }}
+						/>
+						<h2>Ready to switch tenant?</h2>
+						<p>
+							All the work on the current vacancy will be lost if you switch tenants.
+						</p>
+					</div>
+				</Modal>
 			</SearchContext.Provider>
 		</>
 	);

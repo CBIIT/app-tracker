@@ -6,6 +6,8 @@ import { Table, ConfigProvider, Empty, message } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
+import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js'
+import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -20,7 +22,7 @@ const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [readOnly, setreadOnly] = useState(false);
-	const { auth: { user }, currentTenant } = useAuth();
+	const { auth: { user, tenants }, currentTenant } = useAuth();
 
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
@@ -32,18 +34,20 @@ const committeeDashboard = () => {
 	);
 
 	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			try {
-				setreadOnly(user.isReadOnlyUser)
-				const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant
-				const currentData = await axios.get(url);
-				setData(currentData.data.result);
-			} catch (err) {
-				message.error('Sorry!  An error occurred.');
-			}
-			setIsLoading(false);
-		})();
+		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
+			(async () => {
+				setIsLoading(true);
+				try {
+					setreadOnly(user.isReadOnlyUser)
+					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant
+					const currentData = await axios.get(url);
+					setData(currentData.data.result);
+				} catch (err) {
+					message.error('Sorry!  An error occurred.');
+				}
+				setIsLoading(false);
+			})();
+		}
 	}, [currentTenant]);
 
 	return (

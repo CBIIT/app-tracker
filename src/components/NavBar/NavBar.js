@@ -36,16 +36,16 @@ const navBar = () => {
 					</Menu.Item>
 				);
 			}
-
 			includedReports = true;
-			menuItems.push(
-				<Menu.Item key='reports'>
-					<a href='/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D0b282cf21b225110e541631ee54bcbd1'>
-						Reports
-					</a>
-				</Menu.Item>
-			);
-		} else if (user.isChair === true) {
+            menuItems.push(
+            <Menu.Item key='reports'>
+                <a href='/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D0b282cf21b225110e541631ee54bcbd1'>
+                    Reports
+                </a>
+            </Menu.Item>
+            );
+		}
+		if (user.isChair === true) {
 			menuItems.push(
 				<Menu.Item key='your-vacancies'>
 					<Link to={CHAIR_DASHBOARD}>Your Vacancies</Link>
