@@ -85,7 +85,7 @@ describe('Layout', () => {
 
         const reportsLinks = getAllByText('Reports');
         expect(reportsLinks.length).toBeGreaterThan(0);
-        const reportsLink = reportsLinks.find(link => link.getAttribute('href') === '/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D0b282cf21b225110e541631ee54bcbd1');
+        const reportsLink = reportsLinks.find(link => link.getAttribute('href') === '/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D326711461bf2a910e541631ee54bcbec');
         expect(reportsLink).toBeInTheDocument();
     });
 
