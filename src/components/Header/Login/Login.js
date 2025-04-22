@@ -107,7 +107,7 @@ const login = () => {
 
 	return isUserLoggedIn ? (
 		<div className='LoginRightContainer'>
-			{(user.isManager || user.isCommitteeMember ) ?
+			{(user.isManager || user.isCommitteeMember || user.isChair) ?
 				<div className='RightContainerSub'>
 					<Select
 						data-testid="tenant-select-item"

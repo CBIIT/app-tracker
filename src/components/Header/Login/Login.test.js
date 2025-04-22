@@ -140,6 +140,25 @@ describe('Login Component', () => {
         expect(screen.getByTestId('tenant-select-item')).toBeInTheDocument();
     });
 
+    test('Tenant dropdown shows for committee chair', async () => {
+        let mockUseAuthCommMember = {
+            auth: {
+                iTrustGlideSsoId: 'testSsoId',
+                iTrustUrl: 'https://test.itrust.com',
+                isUserLoggedIn: true,
+                user: { 
+                    firstName: 'John', 
+                    lastInitial: 'D',
+                    isChair: true,
+                 },
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+            },
+        };
+        useAuth.mockReturnValue(mockUseAuthCommMember);
+        render(<Login />);
+        expect(screen.getByTestId('tenant-select-item')).toBeInTheDocument();
+    });
+
 
 });
 
