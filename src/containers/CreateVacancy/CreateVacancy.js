@@ -19,7 +19,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
 
 const createVacancy = (props) => {
-	const { auth: { user }, currentTenant, previousTenant, setCurrentTenant } = useAuth();
+	const { auth: { user }, currentTenant, previousTenant, setCurrentTenant, step, setStep } = useAuth();
 	const newValues = {
 		...initialValues,
 		basicInfo: {
@@ -361,7 +361,12 @@ const createVacancy = (props) => {
 
 	const onOk = () => {
 		previousTenant.current = currentTenant;
-		history.goBack();
+		if (step < 0) {
+			history.go(step);
+			setStep(0);
+		} else {
+			history.goBack();
+		}
 	}
 
 	return (

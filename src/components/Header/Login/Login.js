@@ -107,18 +107,19 @@ const login = () => {
 
 	return isUserLoggedIn ? (
 		<div className='LoginRightContainer'>
-			{user.isManager ?
+			{(user.isManager || user.isCommitteeMember || user.isChair) ?
 				<div className='RightContainerSub'>
 					<Select
+						data-testid="tenant-select-item"
 						style={{ width: "100%", border: "2px solid #015ea2"}}
 						placeholder="Select a tenant"
 						filterOption={(input, option) =>
 							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
-							options={tenants}
-							onChange={(value) => {
-								const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
-								previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
-								setCurrentTenant(value);}} 
+						options={tenants}
+						onChange={(value) => {
+							const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
+							previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
+							setCurrentTenant(value);}} 
 						value={currentTenant} />
 				</div> :
 				<div className='LeftContainerSub'>{''}</div>

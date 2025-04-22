@@ -20,6 +20,7 @@ export const checkAuth = async (setIsLoading, setAuth) => {
             isChair: data.is_chair,
             isReadOnlyUser: data.is_read_only_user,
             isManager: data.is_manager,
+            isCommitteeMember: data.is_committee_member,
             isExecSec: data.is_exec_sec,
             hasApplications: data.user.has_applications,
             roles: data.user.roles,

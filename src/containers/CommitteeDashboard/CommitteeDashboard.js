@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { CHECK_AUTH, GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
+import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty, message } from 'antd';
+import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
+import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js'
+import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -19,6 +22,8 @@ const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [readOnly, setreadOnly] = useState(false);
+	const { auth: { user, tenants }, currentTenant } = useAuth();
+
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
 			<Empty
@@ -29,23 +34,23 @@ const committeeDashboard = () => {
 	);
 
 	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			try {
-				const response = await axios.get(CHECK_AUTH);
-				setreadOnly(response.data.result.is_read_only_user);
-				const currentData = await axios.get(GET_COMMITTEE_MEMBER_VIEW);
-				setData(currentData.data.result);
-			} catch (err) {
-				message.error('Sorry!  An error occurred.');
-			}
-			setIsLoading(false);
-		})();
-	}, []);
+		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
+			(async () => {
+				setIsLoading(true);
+				try {
+					setreadOnly(user.isReadOnlyUser)
+					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant
+					const currentData = await axios.get(url);
+					setData(currentData.data.result);
+				} catch (err) {
+					message.error('Sorry!  An error occurred.');
+				}
+				setIsLoading(false);
+			})();
+		}
+	}, [currentTenant]);
 
-	return isLoading ? (
-		<> </>
-	) : (
+	return (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
@@ -67,6 +72,7 @@ const committeeDashboard = () => {
 							paddingRight: '20px',
 							paddingTop: '20px',
 						}}
+						loading={isLoading}
 					></Table>
 				</ConfigProvider>
 			</div>

@@ -93,6 +93,30 @@ describe('NavBar', () => {
         expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
     });
 
+    it('renders Vacancy dashboard and Your Vacancies link for manager as well as chair', () => {
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                user: {
+                    isManager: true,
+                    isChair: true,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                }
+            }
+        });
+
+        render(
+            <MemoryRouter>
+                <NavBar />
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('Vacancy Dashboard')).toBeInTheDocument();
+        expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
+    });
+
     it('renders Your Applications link for applicants', () => {
         useAuth.mockReturnValue({
             auth: {

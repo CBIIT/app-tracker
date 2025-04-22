@@ -86,13 +86,13 @@ export const CHECK_HAS_PROFILE = '/api/x_g_nci_app_tracke/user/check_profile';
 
 // Vacancy Scripted REST API Endpoints
 export const GET_COMMITTEE_CHAIR_VACANCIES =
-	'/api/x_g_nci_app_tracke/vacancy/chair';
+	'/api/x_g_nci_app_tracke/vacancy/v2/chair/';
 
 export const CHANGE_VACANCY_STATUS =
 	'/api/x_g_nci_app_tracke/vacancy/change_status/';
 
 export const GET_COMMITTEE_MEMBER_VIEW =
-	'/api/x_g_nci_app_tracke/vacancy/committee';
+	'/api/x_g_nci_app_tracke/vacancy/v2/committee/';
 
 export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/v2/counts/';
 

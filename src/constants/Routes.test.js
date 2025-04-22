@@ -70,6 +70,6 @@ describe('Routes constants', () => {
     });
 
     it('should have the correct value for TENANT_CHECK_ROUTES', () => {
-        expect(Routes.TENANT_CHECK_ROUTES).toStrictEqual(['/create-vacancy','/manage/vacancy/edit/','/manage/edit/draft/']);
+        expect(Routes.TENANT_CHECK_ROUTES).toStrictEqual(['/create-vacancy','/manage/vacancy/edit/','/manage/edit/draft/','/manage/vacancy/']);
     });
 });
