@@ -168,7 +168,7 @@ const manageDashboard = () => {
 
 	const history = useHistory();
 	const {
-		auth: { user },
+		auth: { user }, setStep
 	} = useAuth();
 
 	useEffect(() => {
@@ -364,7 +364,8 @@ const manageDashboard = () => {
 										<Button
 											type='primary'
 											ghost
-											onClick={() => history.push(EDIT_VACANCY + sysId)}
+											onClick={() => { setStep(-2);
+												history.push(EDIT_VACANCY + sysId)}}
 										>
 											Edit
 										</Button>
