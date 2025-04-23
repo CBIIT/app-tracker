@@ -227,21 +227,37 @@ const applicantList = (props) => {
 		});
 	}
 
-	if (props.referenceCollection && props.userRoles.includes(OWM_TEAM)) {
+	if (props.userRoles.includes(OWM_TEAM)) {
+		if (props.referenceCollection) {
+			applicantColumns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='collect-references-button'
+						onClick={() =>
+							onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+						}
+					>
+						Collect References
+					</Button>
+				),
+			});
+		}
+
 		applicantColumns.push({
 			title: '',
 			align: 'center',
 			width: 200,
 			render: (_, record) => (
 				<Button
-					data-testid='collect-references-button'
-					onClick={() =>
-						onCollectReferenceButtonClick(record.sys_id, record.references_sent)
-					}
+					data-testid='send-regret-email-button'
+					// onClick={() => {}}
 				>
-					Collect References
+					Send Regret Email
 				</Button>
-			),
+			)
 		});
 	}
 

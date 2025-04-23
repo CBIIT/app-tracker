@@ -11,7 +11,8 @@ import {
 	SELECTED,
 	REFERRED_TO_SELECTING_OFFICIAL,
 	SUBMIT_COMMITTEE_COMMENTS,
-	COLLECT_REFERENCES
+	COLLECT_REFERENCES,
+	SEND_REGRET_EMAIL
 } from '../../../../constants/ApiEndpoints';
 import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -61,6 +62,7 @@ const individualScoringTable = (props) => {
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
 	const contextValue = useContext(SearchContext);
 	const [referencesSent, setReferencesSent] = useState(false);
+	const [rejectionEmailSent, setRejectionEmailSent] = useState(false);
 	const {
 		searchText,
 		setSearchText,
@@ -125,6 +127,10 @@ const individualScoringTable = (props) => {
 		}
 	}
 
+	const sendRejectionEmail = async (sysId) => {
+
+	}
+
 	const reloadVacancyAndApplicants = () => {
 		props.reloadVacancy();
 	}
@@ -133,6 +139,10 @@ const individualScoringTable = (props) => {
 		setAppicantSysId(sysId);
 		setReferencesSent(referencesSent);
 		setShowReferenceModal(true);
+	}
+
+	const onSendRejectionEmailButtonClick = async (sysId) => {
+		
 	}
 
 	const getColumns = () => {
@@ -349,6 +359,23 @@ const individualScoringTable = (props) => {
 							onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
 						>
 							Collect References
+						</Button>
+					)
+				}
+			)
+		}
+		if (props.isVacancyManager) {
+			columns.push(
+				{
+					title: '',
+					align: 'center',
+					width: 200,
+					render: (_, record) => (
+						<Button
+							data-testid='send-regret-email-button'
+							// onClick={() => sendReferences(record.sys_id)}
+						>
+							Send Regret Email
 						</Button>
 					)
 				}
