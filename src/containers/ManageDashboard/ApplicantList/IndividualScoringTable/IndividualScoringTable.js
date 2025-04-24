@@ -6,6 +6,7 @@ import axios from 'axios';
 import SearchContext from '../../Util/SearchContext';
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import ReferenceModal from '../ReferenceModal/ReferenceModal';
+import RejectionEmailModal from '../RejectionEmailModal/RejectionEmailModal';
 import {
 	INTERVIEW,
 	SELECTED,
@@ -89,6 +90,7 @@ const individualScoringTable = (props) => {
 	const onTextAreaChangeHandler = (event) => {
 		setCommitteeComments(event.target.value);
 	};
+	// console.log('IndividualScoringTable props:: ', props);
 
 	const handleCommentSave = async (comment, sysId) => {
 		try {
@@ -129,17 +131,17 @@ const individualScoringTable = (props) => {
 		}
 	};
 
-	const sendRejectionEmail = async (sysId) => {
-		try {
-			const response = await axios.get(SEND_REGRET_EMAIL + sysId);
-			message.success(response.data.result.message);
-			reloadVacancyAndApplicants();
-		} catch (e) {
-			message.error(
-				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
-			);
-		}
-	};
+	// const sendRejectionEmail = async (sysId) => {
+	// 	try {
+	// 		const response = await axios.get(SEND_REGRET_EMAIL + sysId);
+	// 		message.success(response.data.result.message);
+	// 		reloadVacancyAndApplicants();
+	// 	} catch (e) {
+	// 		message.error(
+	// 			'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+	// 		);
+	// 	}
+	// };
 
 	const reloadVacancyAndApplicants = () => {
 		props.reloadVacancy();
@@ -151,11 +153,11 @@ const individualScoringTable = (props) => {
 		setShowReferenceModal(true);
 	};
 
-	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent) => {
-		setAppicantSysId(sysId);
-		setRejectionEmailSent(rejectionEmailSent);
-		setShowReferenceModal(true);
-	};
+	// const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent) => {
+	// 	setAppicantSysId(sysId);
+	// 	setRejectionEmailSent(rejectionEmailSent);
+	// 	setShowReferenceModal(true);
+	// };
 
 	const getColumns = () => {
 		const columns = [
@@ -383,19 +385,19 @@ const individualScoringTable = (props) => {
 				});
 			}
 
-			columns.push({
-				title: '',
-				align: 'center',
-				width: 200,
-				render: (_, record) => (
-					<Button
-						data-testid='send-regret-email-button'
-						onClick={() => onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent)}
-					>
-						Send Regret Email
-					</Button>
-				),
-			});
+			// columns.push({
+			// 	title: '',
+			// 	align: 'center',
+			// 	width: 200,
+			// 	render: (_, record) => (
+			// 		<Button
+			// 			data-testid='send-regret-email-button'
+			// 			onClick={() => onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent)}
+			// 		>
+			// 			Send Regret Email
+			// 		</Button>
+			// 	),
+			// });
 		}
 
 		return columns;
@@ -474,7 +476,7 @@ const individualScoringTable = (props) => {
 				sendReferences={sendReferences}
 				referencesSent={referencesSent}
 			/>
-			{/* <EmailModal
+			{/* <RejectionEmailModal
 				appSysId={applicantSysId}
 				showModal={showReferenceModal}
 				setShowModal={setShowReferenceModal}

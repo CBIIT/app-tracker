@@ -13,6 +13,7 @@ import axios from 'axios';
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
 import ReferenceModal from './ReferenceModal/ReferenceModal';
+import RejectionEmailModal from './RejectionEmailModal/RejectionEmailModal';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -39,6 +40,7 @@ import {
 	GET_APPLICANT_LIST,
 	COLLECT_REFERENCES,
 	GET_ROLLING_APPLICANT_LIST,
+	SEND_REGRET_EMAIL,
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
@@ -71,13 +73,15 @@ const displayTriage = (userRole, committeeRole) => {
 const defaultApplicantSort = 'ascend';
 
 const applicantList = (props) => {
+	// console.log('ApplicantList props', props);
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
-	const [showModal, setShowModal] = useState(false);
+	const [referenceModal, setReferenceModal] = useState(false);
+	const [rejectionEmailModal, setRejectionEmailModal] = useState(false);
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
 		displayTriage(props.userRoles, props.userCommitteeRole)
@@ -85,6 +89,7 @@ const applicantList = (props) => {
 			: SCORING
 	);
 	const [referencesSent, setReferencesSent] = useState();
+	const [rejectionEmailSent, setRejectionEmailSent] = useState();
 	const {
 		searchText,
 		setSearchText,
@@ -105,10 +110,28 @@ const applicantList = (props) => {
 		}
 	};
 
+	const sendRejectionEmail = async (sysId) => {
+		try {
+			const response = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(response.data.result.message);
+			loadVacancyAndApplicants();
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the rejection email.  Try refreshing the browser.'
+			);
+		}
+	};
+
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
 		setReferencesSent(referencesSent);
-		setShowModal(true);
+		setReferenceModal(true);
+	};
+
+	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent) => {
+		setAppSysId(sysId);
+		setRejectionEmailSent(rejectionEmailSent);
+		setRejectionEmailModal(true);
 	};
 
 	const applicantColumns = [
@@ -253,12 +276,15 @@ const applicantList = (props) => {
 			render: (_, record) => (
 				<Button
 					data-testid='send-regret-email-button'
-					// onClick={() => {}}
+					onClick={() =>
+						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent)
+					}
 				>
 					Send Regret Email
 				</Button>
-			)
+			),
 		});
+
 	}
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
@@ -864,10 +890,17 @@ const applicantList = (props) => {
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}
-				showModal={showModal}
-				setShowModal={setShowModal}
+				referenceModal={referenceModal}
+				setReferenceModal={setReferenceModal}
 				sendReferences={sendReferences}
 				referencesSent={referencesSent}
+			/>
+			<RejectionEmailModal
+				appSysId={appSysId}
+				rejectionEmailModal={rejectionEmailModal}
+				setRejectionEmailModal={setRejectionEmailModal}
+				sendRejectionEmail={sendRejectionEmail}
+				rejectionEmailSent={rejectionEmailSent}
 			/>
 		</>
 	);
