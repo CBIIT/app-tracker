@@ -1,15 +1,15 @@
-import { Button, Modal, Typography } from 'antd';
-const { Paragraph } = Typography;
-import { WarningOutlined } from '@ant-design/icons';
+import CandidateDidNotInterview from './CandidateDidNotInterview/CandidateDidNotInterview';
+import CandidateDidInterview from './CandidateDidInterview/CandidateDidInterview';
 
 const rejectionEmailModal = (props) => {
-    // console.log('RejectionEmailModal props:', props);
 	const appSysId = props.appSysId;
+    const referredToInterview = props.referredToInterview;
+    const rejectionEmailModal = props.rejectionEmailModal;
 	const rejectionEmailSent = props.rejectionEmailSent;
 	const sendRejectionEmail = props.sendRejectionEmail;
 	const setRejectionEmailModal = props.setRejectionEmailModal;
-	const rejectionEmailModal = props.rejectionEmailModal;
-
+	
+console.log('referredToInterview', referredToInterview);
 	const handleRejectionEmailSubmit = () => {
 		sendRejectionEmail(appSysId);
 		setRejectionEmailModal(false);
@@ -19,36 +19,26 @@ const rejectionEmailModal = (props) => {
 		setRejectionEmailModal(false);
 	};
 
-	return rejectionEmailSent === '0' ? (
-		<Modal
-			title={
-				<Paragraph>
-					<WarningOutlined /> Ready to Send Rejection Email
-				</Paragraph>
-			}
-			open={rejectionEmailModal}
-			onOk={handleRejectionEmailSubmit}
-			onCancel={handleRejectionEmailCancel}
-			closable={false}
-			footer={[
-				<Button key='modal-button' onClick={handleRejectionEmailSubmit}>
-					Send Rejection Email
-				</Button>,
-				<Button key='modal-cancel' onClick={handleRejectionEmailCancel}>
-					Cancel
-				</Button>,
-			]}
-		>
-			<Paragraph>
-				Are you sure you want to send the rejection email to this applicant? The
-				email will be sent immediately upon your confirmation.
-			</Paragraph>
-		</Modal>
+	return referredToInterview === 'yes' ? (
+		<CandidateDidInterview
+            appSysId={appSysId}
+            rejectionEmailModal={rejectionEmailModal}
+            setRejectionEmailModal={setRejectionEmailModal}
+            rejectionEmailSent = {rejectionEmailSent}
+	        sendRejectionEmail = {sendRejectionEmail}
+            handleRejectionEmailSubmit={handleRejectionEmailSubmit}
+            handleRejectionEmailCancel={handleRejectionEmailCancel}
+        />
 	) : (
-		<Modal
-
-        >
-        </Modal>
+		<CandidateDidNotInterview
+            appSysId={appSysId}
+            rejectionEmailModal={rejectionEmailModal}
+            setRejectionEmailModal={setRejectionEmailModal}
+            rejectionEmailSent = {rejectionEmailSent}
+	        sendRejectionEmail = {sendRejectionEmail}
+            handleRejectionEmailSubmit={handleRejectionEmailSubmit}
+            handleRejectionEmailCancel={handleRejectionEmailCancel}
+        />
 	);
 };
 

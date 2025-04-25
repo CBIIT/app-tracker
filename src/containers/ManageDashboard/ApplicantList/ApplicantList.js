@@ -73,7 +73,6 @@ const displayTriage = (userRole, committeeRole) => {
 const defaultApplicantSort = 'ascend';
 
 const applicantList = (props) => {
-	// console.log('ApplicantList props', props);
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
 	const [pageSize, setPageSize] = useState(10);
@@ -82,6 +81,7 @@ const applicantList = (props) => {
 	const [appSysId, setAppSysId] = useState();
 	const [referenceModal, setReferenceModal] = useState(false);
 	const [rejectionEmailModal, setRejectionEmailModal] = useState(false);
+	const [referredToInterview, setReferredToInterview] = useState();
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
 		displayTriage(props.userRoles, props.userCommitteeRole)
@@ -128,10 +128,11 @@ const applicantList = (props) => {
 		setReferenceModal(true);
 	};
 
-	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent) => {
+	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
 		setAppSysId(sysId);
 		setRejectionEmailSent(rejectionEmailSent);
 		setRejectionEmailModal(true);
+		setReferredToInterview(referredToInterview);
 	};
 
 	const applicantColumns = [
@@ -277,7 +278,7 @@ const applicantList = (props) => {
 				<Button
 					data-testid='send-regret-email-button'
 					onClick={() =>
-						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent)
+						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)
 					}
 				>
 					Send Regret Email
@@ -901,6 +902,7 @@ const applicantList = (props) => {
 				setRejectionEmailModal={setRejectionEmailModal}
 				sendRejectionEmail={sendRejectionEmail}
 				rejectionEmailSent={rejectionEmailSent}
+				referredToInterview={referredToInterview}
 			/>
 		</>
 	);
