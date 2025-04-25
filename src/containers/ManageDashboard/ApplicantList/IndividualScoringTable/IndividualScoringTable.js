@@ -68,6 +68,8 @@ const individualScoringTable = (props) => {
 	const contextValue = useContext(SearchContext);
 	const [referencesSent, setReferencesSent] = useState(false);
 	const [rejectionEmailSent, setRejectionEmailSent] = useState(false);
+	const [rejectionEmailModal, setRejectionEmailModal] = useState(false);
+	const [referredToInterview, setReferredToInterview] = useState();
 	const {
 		searchText,
 		setSearchText,
@@ -90,7 +92,6 @@ const individualScoringTable = (props) => {
 	const onTextAreaChangeHandler = (event) => {
 		setCommitteeComments(event.target.value);
 	};
-	// console.log('IndividualScoringTable props:: ', props);
 
 	const handleCommentSave = async (comment, sysId) => {
 		try {
@@ -131,17 +132,17 @@ const individualScoringTable = (props) => {
 		}
 	};
 
-	// const sendRejectionEmail = async (sysId) => {
-	// 	try {
-	// 		const response = await axios.get(SEND_REGRET_EMAIL + sysId);
-	// 		message.success(response.data.result.message);
-	// 		reloadVacancyAndApplicants();
-	// 	} catch (e) {
-	// 		message.error(
-	// 			'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
-	// 		);
-	// 	}
-	// };
+	const sendRejectionEmail = async (sysId) => {
+		try {
+			const response = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(response.data.result.message);
+			reloadVacancyAndApplicants();
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+			);
+		}
+	};
 
 	const reloadVacancyAndApplicants = () => {
 		props.reloadVacancy();
@@ -153,11 +154,12 @@ const individualScoringTable = (props) => {
 		setShowReferenceModal(true);
 	};
 
-	// const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent) => {
-	// 	setAppicantSysId(sysId);
-	// 	setRejectionEmailSent(rejectionEmailSent);
-	// 	setShowReferenceModal(true);
-	// };
+	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
+		setAppicantSysId(sysId);
+		setRejectionEmailSent(rejectionEmailSent);
+		setRejectionEmailModal(true);
+		setReferredToInterview(referredToInterview);
+	};
 
 	const getColumns = () => {
 		const columns = [
@@ -385,19 +387,19 @@ const individualScoringTable = (props) => {
 				});
 			}
 
-			// columns.push({
-			// 	title: '',
-			// 	align: 'center',
-			// 	width: 200,
-			// 	render: (_, record) => (
-			// 		<Button
-			// 			data-testid='send-regret-email-button'
-			// 			onClick={() => onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent)}
-			// 		>
-			// 			Send Regret Email
-			// 		</Button>
-			// 	),
-			// });
+			columns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='send-regret-email-button'
+						onClick={() => onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)}
+					>
+						Send Regret Email
+					</Button>
+				),
+			});
 		}
 
 		return columns;
@@ -471,18 +473,19 @@ const individualScoringTable = (props) => {
 			</Modal>
 			<ReferenceModal
 				appSysId={applicantSysId}
-				showModal={showReferenceModal}
-				setShowModal={setShowReferenceModal}
+				referenceModal={showReferenceModal}
+				setReferenceModal={setShowReferenceModal}
 				sendReferences={sendReferences}
 				referencesSent={referencesSent}
 			/>
-			{/* <RejectionEmailModal
+			<RejectionEmailModal
 				appSysId={applicantSysId}
-				showModal={showReferenceModal}
-				setShowModal={setShowReferenceModal}
+				rejectionEmailModal={rejectionEmailModal}
+				setRejectionEmailModal={setRejectionEmailModal}
 				sendRejectionEmail={sendRejectionEmail}
 				rejectionEmailSent={rejectionEmailSent}
-			/> */}
+				referredToInterview={referredToInterview}
+			/>
 		</>
 	);
 };
