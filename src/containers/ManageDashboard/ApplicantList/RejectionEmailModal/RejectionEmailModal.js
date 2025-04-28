@@ -9,7 +9,6 @@ const rejectionEmailModal = (props) => {
 	const sendRejectionEmail = props.sendRejectionEmail;
 	const setRejectionEmailModal = props.setRejectionEmailModal;
 	
-console.log('referredToInterview', referredToInterview);
 	const handleRejectionEmailSubmit = () => {
 		sendRejectionEmail(appSysId);
 		setRejectionEmailModal(false);

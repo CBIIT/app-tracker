@@ -134,8 +134,8 @@ const individualScoringTable = (props) => {
 
 	const sendRejectionEmail = async (sysId) => {
 		try {
-			const response = await axios.get(SEND_REGRET_EMAIL + sysId);
-			message.success(response.data.result.message);
+			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(rejectionResponse.data.result.response.message);
 			reloadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
