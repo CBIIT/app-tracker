@@ -69,7 +69,6 @@ describe('EmailTemplates', () => {
             expect(candidatesWhoDidNotInterviewHeader).toBeInTheDocument();
             expect(candidatesWhoDidNotInterviewText).toBeInTheDocument();
 
-
             const candidatesWhoDidInterviewHeader = screen.getByText('Candidates Who Did Interview');
             const candidatesWhoDidInterviewText = screen.getByText("<p>Dear Dr. #Candidate_First_Name# #Candidate_Last_Name#,</p><br><p>Thank you for interviewing for the #Position Title# position with #IC#, National Institutes of Health.</p><p>We enjoyed the opportunity to interview you and hear your views regarding the #Position Title# position. After a much difficult discussion, we are no longer considering you for this position. We encourage you to continue to apply for other positions at the NIH in areas that you have interest.</p><p>Thank you again for your interest in this position.</p><br><p>Sincerely,</p><p>#IC#</p><p>National Institutes of Health</p>");
             expect(candidatesWhoDidInterviewHeader).toBeInTheDocument();
