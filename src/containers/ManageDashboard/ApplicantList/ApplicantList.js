@@ -117,7 +117,7 @@ const applicantList = (props) => {
 			loadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
-				'Sorry, there was an error sending the rejection email.  Try refreshing the browser.'
+				'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
 			);
 		}
 	};
@@ -546,6 +546,7 @@ const applicantList = (props) => {
 										vacancyState={vacancyState}
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+										reloadVacancy={loadVacancyAndApplicants}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -560,6 +561,7 @@ const applicantList = (props) => {
 										vacancyState={vacancyState}
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+										reloadVacancy={loadVacancyAndApplicants}
 									/>
 								</Panel>
 							</Collapse>
@@ -580,6 +582,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -594,6 +597,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 						</Collapse>
@@ -648,6 +652,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											reloadVacancy={loadVacancyAndApplicants}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -666,6 +671,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											reloadVacancy={loadVacancyAndApplicants}
 										/>
 									</Panel>
 								</Collapse>
@@ -704,6 +710,7 @@ const applicantList = (props) => {
 												refCollection={props.referenceCollection}
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
+												reloadVacancy={loadVacancyAndApplicants}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -722,6 +729,7 @@ const applicantList = (props) => {
 												refCollection={props.referenceCollection}
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
+												reloadVacancy={loadVacancyAndApplicants}
 											/>
 										</Panel>
 									</Collapse>

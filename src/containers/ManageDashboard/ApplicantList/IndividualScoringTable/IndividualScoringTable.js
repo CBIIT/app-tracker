@@ -139,7 +139,7 @@ const individualScoringTable = (props) => {
 			reloadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
-				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+				'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
 			);
 		}
 	};
@@ -370,8 +370,8 @@ const individualScoringTable = (props) => {
 				}
 			);
 		}
-		if (props.isVacancyManager) {
-			if (props.refCollection) {
+
+		if (props.refCollection && props.isVacancyManager) {
 				columns.push({
 					title: '',
 					align: 'center',
@@ -385,8 +385,9 @@ const individualScoringTable = (props) => {
 						</Button>
 					),
 				});
-			}
+		}
 
+		if (props.isVacancyManager) {
 			columns.push({
 				title: '',
 				align: 'center',
@@ -401,7 +402,7 @@ const individualScoringTable = (props) => {
 				),
 			});
 		}
-
+			
 		return columns;
 	};
 
