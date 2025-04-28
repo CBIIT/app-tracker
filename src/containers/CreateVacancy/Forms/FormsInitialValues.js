@@ -47,5 +47,15 @@ export const initialValues = {
 			active: true,
 			text: '<p>Dear Dr. #APP_LAST_NAME#, <br><br></p><p>Good news! Your application for the position of #POSITION# at the #IC#, National Institutes of Health <b>has been submitted.</b></p><p>You may view the status of your application at any time by following #APP_URL#.</p><p>If you should have any questions, please contact #VACANCY_POC_NAME#.  </p><p>Thank you for your interest in the National Institutes of Health.</p>',
 		},
+		{
+			type: 'Candidates Who Did Not Interview',
+			active: true,
+			text: "<p>Dear Dr. #Candidate_First_Name# #Candidate_Last_Name#,</p><br><p>We have received the application you submitted for the #Position_Title# position with #IC#, National Institutes of Health.</p><p>We wanted to let you know how much we appreciated the opportunity to review your application.  While we will no longer be considering you for this position, we encourage you to continue to apply for other positions at the NIH in areas that you have interest.</p><p>Best wishes in your future career endeavors.</p><br><p>Sincerely,</p><p>#IC#</p><p>National Institutes of Health</p>"
+		},
+		{
+			type: 'Candidates Who Did Interview',
+			active: true,
+			text: "<p>Dear Dr. #Candidate_First_Name# #Candidate_Last_Name#,</p><br><p>Thank you for interviewing for the #Position_Title# position with #IC#, National Institutes of Health.</p><p>We enjoyed the opportunity to interview you and hear your views regarding the #Position_Title# position. After a much difficult discussion, we are no longer considering you for this position. We encourage you to continue to apply for other positions at the NIH in areas that you have interest.</p><p>Thank you again for your interest in this position.</p><br><p>Sincerely,</p><p>#IC#</p><p>National Institutes of Health</p>"
+		},
 	],
 };
