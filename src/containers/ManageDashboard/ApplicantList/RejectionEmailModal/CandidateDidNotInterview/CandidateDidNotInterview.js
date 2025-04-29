@@ -9,6 +9,15 @@ const candidateDidNotInterview = (props) => {
 	const sendRejectionEmail = props.sendRejectionEmail;
 	const setRejectionEmailModal = props.setRejectionEmailModal;
 
+    const handleRejectionEmailSubmit = () => {
+		sendRejectionEmail(appSysId);
+		setRejectionEmailModal(false);
+	};
+
+	const handleRejectionEmailCancel = () => {
+		setRejectionEmailModal(false);
+	};
+
     return rejectionEmailSent === '0' ? (
         <Modal
             title={
@@ -17,24 +26,12 @@ const candidateDidNotInterview = (props) => {
                 </Paragraph>
             }
             open={rejectionEmailModal}
-            onOk={() => {
-                sendRejectionEmail(appSysId);
-                setRejectionEmailModal(false);
-            }}
-            onCancel={() => {
-                setRejectionEmailModal(false);
-            }}
             closable={false}
             footer={[
-                <Button key='modal-button' onClick={() => {
-                    sendRejectionEmail(appSysId);
-                    setRejectionEmailModal(false);
-                }}>
+                <Button key='modal-button' onClick={handleRejectionEmailSubmit}>
                     Send Rejection Email
                 </Button>,
-                <Button key='modal-cancel' onClick={() => {
-                    setRejectionEmailModal(false);
-                }}>
+                <Button key='modal-cancel' onClick={handleRejectionEmailCancel}>
                     Cancel
                 </Button>,
             ]}
@@ -52,24 +49,12 @@ const candidateDidNotInterview = (props) => {
                 </Paragraph>
             }
             open={rejectionEmailModal}
-            onOk={() => {
-                sendRejectionEmail(appSysId);
-                setRejectionEmailModal(false);
-            }}
-            onCancel={() => {
-                setRejectionEmailModal(false);
-            }}
             closable={false}
             footer={[
-                <Button key='modal-button' onClick={() => {
-                    sendRejectionEmail(appSysId);
-                    setRejectionEmailModal(false);
-                }}>
+                <Button key='modal-button' onClick={handleRejectionEmailSubmit}>
                     Send Rejection Email Again
                 </Button>,
-                <Button key='modal-cancel' onClick={() => {
-                    setRejectionEmailModal(false);
-                }}>
+                <Button key='modal-cancel' onClick={handleRejectionEmailCancel}>
                     Cancel
                 </Button>,
             ]}

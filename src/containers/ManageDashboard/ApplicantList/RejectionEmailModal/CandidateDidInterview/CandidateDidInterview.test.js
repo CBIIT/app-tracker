@@ -7,12 +7,16 @@ describe('CandidateDidInterview', () => {
     let mockSetRejectionEmailModal;
     let mockSendRejectionEmail;
     let mockRejectionEmailSent;
+    let mockOnOkay;
+    let mockOnCancel;
 
     beforeEach(() => {
         mockAppSysId = '1234';
         mockRejectionEmailModal = true;
         mockSetRejectionEmailModal = jest.fn();
         mockSendRejectionEmail = jest.fn();
+        mockOnOkay = jest.fn();
+        mockOnCancel = jest.fn();
     });
 
     afterEach(() => {

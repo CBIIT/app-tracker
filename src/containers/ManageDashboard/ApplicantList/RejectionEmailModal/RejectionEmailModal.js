@@ -8,15 +8,6 @@ const rejectionEmailModal = (props) => {
 	const rejectionEmailSent = props.rejectionEmailSent;
 	const sendRejectionEmail = props.sendRejectionEmail;
 	const setRejectionEmailModal = props.setRejectionEmailModal;
-	
-	const handleRejectionEmailSubmit = () => {
-		sendRejectionEmail(appSysId);
-		setRejectionEmailModal(false);
-	};
-
-	const handleRejectionEmailCancel = () => {
-		setRejectionEmailModal(false);
-	};
 
 	return referredToInterview === 'yes' ? (
 		<CandidateDidInterview
@@ -25,8 +16,6 @@ const rejectionEmailModal = (props) => {
             setRejectionEmailModal={setRejectionEmailModal}
             rejectionEmailSent = {rejectionEmailSent}
 	        sendRejectionEmail = {sendRejectionEmail}
-            handleRejectionEmailSubmit={handleRejectionEmailSubmit}
-            handleRejectionEmailCancel={handleRejectionEmailCancel}
         />
 	) : (
 		<CandidateDidNotInterview
@@ -35,8 +24,6 @@ const rejectionEmailModal = (props) => {
             setRejectionEmailModal={setRejectionEmailModal}
             rejectionEmailSent = {rejectionEmailSent}
 	        sendRejectionEmail = {sendRejectionEmail}
-            handleRejectionEmailSubmit={handleRejectionEmailSubmit}
-            handleRejectionEmailCancel={handleRejectionEmailCancel}
         />
 	);
 };
