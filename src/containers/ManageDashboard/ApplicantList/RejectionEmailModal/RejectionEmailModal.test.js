@@ -3,7 +3,6 @@ import RejectionEmailmodal from './RejectionEmailModal';
 import CandidateDidInterview from './CandidateDidInterview/CandidateDidInterview';
 import CandidateDidNotInterview from './CandidateDidNotInterview/CandidateDidNotInterview';
 
-// Mock import components
 jest.mock('./CandidateDidInterview/CandidateDidInterview', () => jest.fn(() => <div>Mocked CandidateDidInterview</div>));
 jest.mock('./CandidateDidNotInterview/CandidateDidNotInterview', () => jest.fn(() => <div>Mocked CandidateDidNotInterview</div>));
 
