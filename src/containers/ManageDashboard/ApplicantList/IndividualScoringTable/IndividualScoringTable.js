@@ -6,19 +6,25 @@ import axios from 'axios';
 import SearchContext from '../../Util/SearchContext';
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import ReferenceModal from '../ReferenceModal/ReferenceModal';
+import RejectionEmailModal from '../RejectionEmailModal/RejectionEmailModal';
 import {
 	INTERVIEW,
 	SELECTED,
 	REFERRED_TO_SELECTING_OFFICIAL,
 	SUBMIT_COMMITTEE_COMMENTS,
-	COLLECT_REFERENCES
+	COLLECT_REFERENCES,
+	SEND_REGRET_EMAIL,
 } from '../../../../constants/ApiEndpoints';
 import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	ROLLING_CLOSE,
 	VOTING_COMPLETE,
 } from '../../../../constants/VacancyStates';
-import { IN_REVIEW, COMPLETED, REVIEW_COMPLETE } from '../../../../constants/ApplicationStates';
+import {
+	IN_REVIEW,
+	COMPLETED,
+	REVIEW_COMPLETE,
+} from '../../../../constants/ApplicationStates';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -61,12 +67,15 @@ const individualScoringTable = (props) => {
 	const [committeeMembersComments, setCommitteeMembersComments] = useState([]);
 	const contextValue = useContext(SearchContext);
 	const [referencesSent, setReferencesSent] = useState(false);
+	const [rejectionEmailSent, setRejectionEmailSent] = useState(false);
+	const [rejectionEmailModal, setRejectionEmailModal] = useState(false);
+	const [referredToInterview, setReferredToInterview] = useState();
 	const {
 		searchText,
 		setSearchText,
 		searchedColumn,
 		setSearchedColumn,
-		searchInput
+		searchInput,
 	} = contextValue;
 
 	const onCommentButtonClick = (comment, sysId) => {
@@ -114,26 +123,43 @@ const individualScoringTable = (props) => {
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
-			message.success(
-				response.data.result.message
-			);
+			message.success(response.data.result.message);
 			reloadVacancyAndApplicants();
 		} catch (e) {
 			message.error(
 				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
 			);
 		}
-	}
+	};
+
+	const sendRejectionEmail = async (sysId) => {
+		try {
+			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(rejectionResponse.data.result.response.message);
+			reloadVacancyAndApplicants();
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
+			);
+		}
+	};
 
 	const reloadVacancyAndApplicants = () => {
 		props.reloadVacancy();
-	}
+	};
 
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppicantSysId(sysId);
 		setReferencesSent(referencesSent);
 		setShowReferenceModal(true);
-	}
+	};
+
+	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
+		setAppicantSysId(sysId);
+		setRejectionEmailSent(rejectionEmailSent);
+		setRejectionEmailModal(true);
+		setReferredToInterview(referredToInterview);
+	};
 
 	const getColumns = () => {
 		const columns = [
@@ -141,7 +167,7 @@ const individualScoringTable = (props) => {
 				title: 'Applicant',
 				dataIndex: 'applicant_name',
 				key: 'name',
-				sorter: (a, b) =>{
+				sorter: (a, b) => {
 					if (a.applicant_name < b.applicant_name) {
 						return -1;
 					}
@@ -199,7 +225,10 @@ const individualScoringTable = (props) => {
 		];
 
 		if (
-			(props.vacancyState === ROLLING_CLOSE && (props.filter === IN_REVIEW || props.filter === COMPLETED || props.filter === REVIEW_COMPLETE)) ||
+			(props.vacancyState === ROLLING_CLOSE &&
+				(props.filter === IN_REVIEW ||
+					props.filter === COMPLETED ||
+					props.filter === REVIEW_COMPLETE)) ||
 			props.vacancyState === VOTING_COMPLETE ||
 			props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS
 		) {
@@ -229,7 +258,11 @@ const individualScoringTable = (props) => {
 				),
 			});
 
-			if (props.vacancyState === VOTING_COMPLETE || (props.vacancyState === ROLLING_CLOSE && props.filter === REVIEW_COMPLETE)) {
+			if (
+				props.vacancyState === VOTING_COMPLETE ||
+				(props.vacancyState === ROLLING_CLOSE &&
+					props.filter === REVIEW_COMPLETE)
+			) {
 				columns.push({
 					title: 'Referred to Selecting Official',
 					dataIndex: 'referred_to_selecting_official',
@@ -337,9 +370,9 @@ const individualScoringTable = (props) => {
 				}
 			);
 		}
-		if (props.isVacancyManager && props.refCollection) {
-			columns.push(
-				{
+
+		if (props.refCollection && props.isVacancyManager) {
+				columns.push({
 					title: '',
 					align: 'center',
 					width: 200,
@@ -350,11 +383,26 @@ const individualScoringTable = (props) => {
 						>
 							Collect References
 						</Button>
-					)
-				}
-			)
+					),
+				});
 		}
-		
+
+		if (props.isVacancyManager) {
+			columns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='send-regret-email-button'
+						onClick={() => onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)}
+					>
+						Send Regret Email
+					</Button>
+				),
+			});
+		}
+			
 		return columns;
 	};
 
@@ -426,10 +474,18 @@ const individualScoringTable = (props) => {
 			</Modal>
 			<ReferenceModal
 				appSysId={applicantSysId}
-				showModal={showReferenceModal}
-				setShowModal={setShowReferenceModal}
+				referenceModal={showReferenceModal}
+				setReferenceModal={setShowReferenceModal}
 				sendReferences={sendReferences}
 				referencesSent={referencesSent}
+			/>
+			<RejectionEmailModal
+				appSysId={applicantSysId}
+				rejectionEmailModal={rejectionEmailModal}
+				setRejectionEmailModal={setRejectionEmailModal}
+				sendRejectionEmail={sendRejectionEmail}
+				rejectionEmailSent={rejectionEmailSent}
+				referredToInterview={referredToInterview}
 			/>
 		</>
 	);

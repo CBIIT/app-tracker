@@ -13,6 +13,7 @@ import axios from 'axios';
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
 import ReferenceModal from './ReferenceModal/ReferenceModal';
+import RejectionEmailModal from './RejectionEmailModal/RejectionEmailModal';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -39,6 +40,7 @@ import {
 	GET_APPLICANT_LIST,
 	COLLECT_REFERENCES,
 	GET_ROLLING_APPLICANT_LIST,
+	SEND_REGRET_EMAIL,
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
@@ -77,7 +79,9 @@ const applicantList = (props) => {
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
-	const [showModal, setShowModal] = useState(false);
+	const [referenceModal, setReferenceModal] = useState(false);
+	const [rejectionEmailModal, setRejectionEmailModal] = useState(false);
+	const [referredToInterview, setReferredToInterview] = useState();
 	const contextValue = useContext(SearchContext);
 	const [filter, setFilter] = useState(
 		displayTriage(props.userRoles, props.userCommitteeRole)
@@ -85,6 +89,7 @@ const applicantList = (props) => {
 			: SCORING
 	);
 	const [referencesSent, setReferencesSent] = useState();
+	const [rejectionEmailSent, setRejectionEmailSent] = useState();
 	const {
 		searchText,
 		setSearchText,
@@ -105,10 +110,29 @@ const applicantList = (props) => {
 		}
 	};
 
+	const sendRejectionEmail = async (sysId) => {
+		try {
+			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(rejectionResponse.data.result.response.message);
+			loadVacancyAndApplicants();
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
+			);
+		}
+	};
+
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
 		setReferencesSent(referencesSent);
-		setShowModal(true);
+		setReferenceModal(true);
+	};
+
+	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
+		setAppSysId(sysId);
+		setRejectionEmailSent(rejectionEmailSent);
+		setRejectionEmailModal(true);
+		setReferredToInterview(referredToInterview);
 	};
 
 	const applicantColumns = [
@@ -227,22 +251,41 @@ const applicantList = (props) => {
 		});
 	}
 
-	if (props.referenceCollection && props.userRoles.includes(OWM_TEAM)) {
+	if (props.userRoles.includes(OWM_TEAM)) {
+		if (props.referenceCollection) {
+			applicantColumns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='collect-references-button'
+						onClick={() =>
+							onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+						}
+					>
+						Collect References
+					</Button>
+				),
+			});
+		}
+
 		applicantColumns.push({
 			title: '',
 			align: 'center',
 			width: 200,
 			render: (_, record) => (
 				<Button
-					data-testid='collect-references-button'
+					data-testid='send-regret-email-button'
 					onClick={() =>
-						onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)
 					}
 				>
-					Collect References
+					Send Regret Email
 				</Button>
 			),
 		});
+
 	}
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
@@ -503,6 +546,7 @@ const applicantList = (props) => {
 										vacancyState={vacancyState}
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+										reloadVacancy={loadVacancyAndApplicants}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -517,6 +561,7 @@ const applicantList = (props) => {
 										vacancyState={vacancyState}
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+										reloadVacancy={loadVacancyAndApplicants}
 									/>
 								</Panel>
 							</Collapse>
@@ -537,6 +582,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -551,6 +597,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
+									reloadVacancy={loadVacancyAndApplicants}
 								/>
 							</Panel>
 						</Collapse>
@@ -605,6 +652,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											reloadVacancy={loadVacancyAndApplicants}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -623,6 +671,7 @@ const applicantList = (props) => {
 											refCollection={props.referenceCollection}
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
+											reloadVacancy={loadVacancyAndApplicants}
 										/>
 									</Panel>
 								</Collapse>
@@ -661,6 +710,7 @@ const applicantList = (props) => {
 												refCollection={props.referenceCollection}
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
+												reloadVacancy={loadVacancyAndApplicants}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -679,6 +729,7 @@ const applicantList = (props) => {
 												refCollection={props.referenceCollection}
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
+												reloadVacancy={loadVacancyAndApplicants}
 											/>
 										</Panel>
 									</Collapse>
@@ -848,10 +899,18 @@ const applicantList = (props) => {
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}
-				showModal={showModal}
-				setShowModal={setShowModal}
+				referenceModal={referenceModal}
+				setReferenceModal={setReferenceModal}
 				sendReferences={sendReferences}
 				referencesSent={referencesSent}
+			/>
+			<RejectionEmailModal
+				appSysId={appSysId}
+				rejectionEmailModal={rejectionEmailModal}
+				setRejectionEmailModal={setRejectionEmailModal}
+				sendRejectionEmail={sendRejectionEmail}
+				rejectionEmailSent={rejectionEmailSent}
+				referredToInterview={referredToInterview}
 			/>
 		</>
 	);

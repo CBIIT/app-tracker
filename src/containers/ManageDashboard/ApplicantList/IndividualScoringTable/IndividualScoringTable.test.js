@@ -58,5 +58,6 @@ describe('individualScoringTable', () => {
 		expect(screen.getByText('Average Score')).toBeInTheDocument();
 		expect(screen.getByText('Scoring Status')).toBeInTheDocument();
 		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
+		expect(screen.getByTestId('send-regret-email-button')).toBeInTheDocument();
 	});
 });
