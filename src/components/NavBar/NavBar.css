@@ -40,25 +40,38 @@
 }
 
 .NavBar .ant-menu-horizontal > .ant-menu-item-active {
-	border-bottom: 5px solid white !important;
 	color: white !important;
 }
 
 .NavBar .ant-menu-horizontal > .ant-menu-item-selected {
-	border-bottom: 5px solid white !important;
+	border-bottom: 2px solid white !important;
 }
 
-.NavBar .ant-menu-horizontal .ant-menu-submenu {
-	opacity: 0.8 !important;
-	background: white;
-	width: 50px;
-	text-align: center;
+.NavBar .ant-menu-title-content  {
+	color: white !important;
 }
 
-.NavBar .ant-menu-horizontal .ant-menu-submenu-selected {
-	border-bottom: 5px solid #015ea2 !important;
+/* .NavBar .ant-menu-horizontal .ant-menu-submenu-open {
+	border-bottom: 6px solid white !important;
+	margin-top: 0px;
+} */
+
+.NavBar .ant-menu-horizontal .ant-menu-item, .ant-menu-horizontal .ant-menu-submenu {
+    margin: 0px;
 }
 
-.NavBar .ant-menu-horizontal .ant-menu-submenu-active {
-	border-bottom: 5px solid #015ea2 !important;
+.VacanciesSubMenu {
+	background: #01477a;
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.ant-menu-item a {
+	color: white;
+}
+
+.ant-menu-submenu-popup > .ant-menu {
+	background: #01477a;
 }
