@@ -1,0 +1,70 @@
+import { Button, Modal, Typography } from 'antd';
+const { Paragraph } = Typography;
+import { WarningOutlined } from '@ant-design/icons';
+
+const candidateDidInterview = (props) => {
+    const appSysId = props.appSysId;
+    const rejectionEmailModal = props.rejectionEmailModal;
+	const rejectionEmailSent = props.rejectionEmailSent;
+	const sendRejectionEmail = props.sendRejectionEmail;
+	const setRejectionEmailModal = props.setRejectionEmailModal;
+
+    const handleRejectionEmailSubmit = () => {
+		sendRejectionEmail(appSysId);
+		setRejectionEmailModal(false);
+	};
+
+	const handleRejectionEmailCancel = () => {
+		setRejectionEmailModal(false);
+	};
+
+    return rejectionEmailSent === '0' ? (
+        <Modal
+            title={
+                <Paragraph>
+                    <WarningOutlined /> Ready to Send Candidate Did Interview Rejection Email
+                </Paragraph>
+            }
+            open={rejectionEmailModal}
+            closable={false}
+            footer={[
+                <Button key='modal-button' onClick={handleRejectionEmailSubmit}>
+                    Send Rejection Email
+                </Button>,
+                <Button key='modal-cancel' onClick={handleRejectionEmailCancel}>
+                    Cancel
+                </Button>,
+            ]}
+        >
+            <Paragraph>
+                Are you sure you want to send the rejection email to this applicant? The
+                email will be sent immediately upon your confirmation.
+            </Paragraph>
+        </Modal>
+    ) : (
+        <Modal
+            title={
+                <Paragraph>
+                    <WarningOutlined /> Candidate Did Interview Rejection Email Already Sent.
+                </Paragraph>
+            }
+            open={rejectionEmailModal}
+            closable={false}
+            footer={[
+                <Button key='modal-button' onClick={handleRejectionEmailSubmit}>
+                    Send Rejection Email Again
+                </Button>,
+                <Button key='modal-cancel' onClick={handleRejectionEmailCancel}>
+                    Cancel
+                </Button>,
+            ]}
+        >
+            <Paragraph>
+            Are you sure you want to send the rejection email to this applicant again? The
+            email will be sent immediately upon your confirmation.
+            </Paragraph>
+        </Modal>
+    );
+}
+
+export default candidateDidInterview;

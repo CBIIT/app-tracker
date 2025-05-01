@@ -81,7 +81,26 @@ describe('ApplicantList', () => {
 
 		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
 		expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+
+		expect(screen.getByText('Applicant')).toBeInTheDocument();
+		expect(screen.getByText('Email')).toBeInTheDocument();
+		const vmTriage = screen.getByText('Vacancy Manager Triage Decision');
+		expect(vmTriage).toBeInTheDocument();
+		const chairTriage = screen.getByText('Chair Triage Decision');
+		expect(chairTriage).toBeInTheDocument();
+
+		waitFor(() => {
+			const applicantName = screen.getByText('Doe, John');
+			expect(applicantName).toBeInTheDocument();
+			const email = screen.getByText('user@mail.com');
+			expect(email).toBeInTheDocument();
+			const collectReferences = screen.getByText('Collect References');
+			expect(collectReferences).toBeInTheDocument();
+			const sendRegretEmail = screen.getByText('Send Regret Email');
+			expect(sendRegretEmail).toBeInTheDocument();
+		})
 	});
+
 	test('should render PATS reminder text for set close date vacancies in the Voting Complete state', async () => {
 		var mockOffset = 1;
 		var mockLimit = 10;
@@ -116,6 +135,5 @@ describe('ApplicantList', () => {
 			const patsReminder = screen.getByText('REMINDER: Once an individual has been marked selected, a New Appointment package will be prompted in the PATS system with the Position Classification, Organizational Code, and PATS Initiator identified in the Basic Vacancy Information section.');
 			expect(patsReminder).toBeInTheDocument();
 		});
-		
 	});
 });

@@ -3,25 +3,29 @@ const { Paragraph } = Typography;
 import { WarningOutlined } from '@ant-design/icons';
 
 const referenceModal = (props) => {
+	const appSysId = props.appSysId;
+	const referenceModal = props.referenceModal;
+	const referencesSent = props.referencesSent;
 	const sendReferences = props.sendReferences;
+	const setReferenceModal = props.setReferenceModal;
 
 	const handleReferenceSubmit = () => {
-		sendReferences(props.appSysId);
-		props.setShowModal(false);
+		sendReferences(appSysId);
+		setReferenceModal(false);
 	};
 
 	const handleReferenceCancel = () => {
-		props.setShowModal(false);
+		setReferenceModal(false);
 	};
 
-	return props.referencesSent === '0' ? (
+	return referencesSent === '0' ? (
 		<Modal
 			title={
 				<Paragraph>
 					<WarningOutlined /> Ready To Send Reference Letter Collection Notifications
 				</Paragraph>
 			}
-			open={props.showModal}
+			open={referenceModal}
 			onOk={handleReferenceSubmit}
 			onCancel={handleReferenceCancel}
 			closable={false}
@@ -47,7 +51,7 @@ const referenceModal = (props) => {
 					<WarningOutlined /> Reference Letter Collection Notifications Have Already Been Sent.
 				</Paragraph>
 			}
-			open={props.showModal}
+			open={referenceModal}
 			onOk={handleReferenceSubmit}
 			onCancel={handleReferenceCancel}
 			closable={false}

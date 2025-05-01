@@ -44,6 +44,8 @@ export const SCORES = '/api/x_g_nci_app_tracke/application/scores/';
 
 export const SELECTED = '/api/x_g_nci_app_tracke/application/selected';
 
+export const SEND_REGRET_EMAIL = '/api/x_g_nci_app_tracke/application/send_regret_email/';
+
 export const REFERRED_TO_SELECTING_OFFICIAL =
 	'/api/x_g_nci_app_tracke/application/selecting-official';
 
