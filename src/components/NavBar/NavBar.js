@@ -15,14 +15,15 @@ import './NavBar.css';
 
 const navBar = () => {
 	
-	const { auth, tenants, currentTenant } = useAuth();
-	const { isUserLoggedIn, user } = auth;
+	const { auth, currentTenant } = useAuth();
+	const { isUserLoggedIn, user, tenants } = auth;
 	const [validExecSecRole, setValidExecSecRole] = useState(isExecSec(currentTenant, tenants));
 	const [validChairRole, setValidChairRole] = useState(isChair(currentTenant, tenants));
 
 	useEffect(() => {
 		if (user.isManager === true) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
+			setValidChairRole(isChair(currentTenant, tenants));
 		}
 	}, [currentTenant]);
 

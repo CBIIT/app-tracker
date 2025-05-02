@@ -144,3 +144,5 @@ export const SUBMIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/submit_vacancy';
 export const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 
 export const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
+
+export const USER_LIST = '/api/x_g_nci_app_tracke/user/get_user_list?sysparm_query=';
