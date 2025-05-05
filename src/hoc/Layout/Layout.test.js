@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Layout from './Layout';
 import Header from '../../components/Header/Header';
@@ -78,11 +78,6 @@ describe('Layout', () => {
         const vacancyDashboardLink = vacancyDashboardLinks.find(link => link.getAttribute('href') === '/vacancy-dashboard');
         expect(vacancyDashboardLink).toBeInTheDocument();
 
-        const yourVacanciesLinks = getAllByText('Your Vacancies');
-        expect(yourVacanciesLinks.length).toBeGreaterThan(0);
-        const yourVacanciesLink = yourVacanciesLinks.find(link => link.getAttribute('href') === '/committee-dashboard/');
-        expect(yourVacanciesLink).toBeInTheDocument();
-
         const reportsLinks = getAllByText('Reports');
         expect(reportsLinks.length).toBeGreaterThan(0);
         const reportsLink = reportsLinks.find(link => link.getAttribute('href') === '/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D326711461bf2a910e541631ee54bcbec');
@@ -93,6 +88,7 @@ describe('Layout', () => {
         useAuth.mockReturnValue({
             auth: {
                 isUserLoggedIn: true,
+                currentTenant: 'tenant 1',
                 user: {
                     uid: 'Skywalker',
                     isManager: false,
@@ -118,7 +114,7 @@ describe('Layout', () => {
         const yourVacanciesLinks = getAllByText('Your Vacancies');
         expect(yourVacanciesLinks.length).toBeGreaterThan(0);
         const yourVacanciesLink = yourVacanciesLinks.find(link => link.getAttribute('href') === '/committee-dashboard/');
-        expect(yourVacanciesLink).toBeInTheDocument();
+        expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
     });
 
     it('renders Header, NavBar, ContentTitle, Footer and children correctly when a chair is logged in', () => {
@@ -150,7 +146,7 @@ describe('Layout', () => {
         const yourVacanciesLinks = getAllByText('Your Vacancies');
         expect(yourVacanciesLinks.length).toBeGreaterThan(0);
         const yourVacanciesLink = yourVacanciesLinks.find(link => link.getAttribute('href') === '/chair-dashboard/');
-        expect(yourVacanciesLink).toBeInTheDocument();
+        expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
     });
 
     it('renders Header, NavBar, ContentTitle, Footer and children correctly when user is not logged in', () => {

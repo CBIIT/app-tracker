@@ -282,6 +282,7 @@ const manageDashboard = () => {
 								} else if (user.isChair == true) {
 									history.push(CHAIR_DASHBOARD);
 								} else {
+									// This could take you back to Exec Sc view or Comm member view ?
 									history.push(COMMITTEE_DASHBOARD);
 								}
 							}}

@@ -15,3 +15,9 @@ export const isChair = (currentTenant, tenants) => {
     const isChair = foundTenant ? foundTenant.is_chair : false;
     return isChair;
 };
+
+export const atleastOneChair = (tenants) => {
+    var foundTenant = tenants.find((element) => ( element.is_chair === true))
+    const atleastOneChair = foundTenant ? foundTenant.is_chair : false;
+    return atleastOneChair;
+};

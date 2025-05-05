@@ -17,11 +17,13 @@ const navBar = () => {
 	
 	const { auth, currentTenant } = useAuth();
 	const { isUserLoggedIn, user, tenants } = auth;
-	const [validExecSecRole, setValidExecSecRole] = useState(isExecSec(currentTenant, tenants));
-	const [validChairRole, setValidChairRole] = useState(isChair(currentTenant, tenants));
+	const [validExecSecRole, setValidExecSecRole] = useState(
+		tenants ? isExecSec(currentTenant, tenants) : false);
+	const [validChairRole, setValidChairRole] = useState(
+		tenants ?  isChair(currentTenant, tenants) : false);
 
 	useEffect(() => {
-		if (user.isManager === true) {
+		if (tenants && user.isManager === true) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
 		}
@@ -79,7 +81,7 @@ const navBar = () => {
 			<Menu.Item
 				key='your-vacancies'
 				onClick={emptyClick} >
-				<Menu.SubMenu className='VacanciesSubMenu' title="Your vacancies">
+				<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
 					{myVacanciesItems}
 				</Menu.SubMenu>
 			</Menu.Item>

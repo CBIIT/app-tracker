@@ -44,6 +44,7 @@ import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
 import { transformDateTimeToDisplay } from './components/Util/Date/Date';
+import { atleastOneChair } from './components/Util/RoleValidator/RoleValidator'
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -54,14 +55,14 @@ const app = () => {
 	}, []);
 
 	let routes = [];
-	const { isUserLoggedIn, user } = auth;
+	const { isUserLoggedIn, user, tenants } = auth;
 
 	if (user && isUserLoggedIn) {
 		console.log(`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`);
 	}
 
 	if (isUserLoggedIn) {
-		if (user.isChair) {
+		if (atleastOneChair(tenants)) {
 			routes.push(
 				<ProtectedRoute
 					key='chair-dashboard'
@@ -109,7 +110,7 @@ const app = () => {
 			);
 
 		if (
-			user.isChair ||
+			atleastOneChair(tenants) ||
 			user.isManager ||
 			user.roles.includes(COMMITTEE_MEMBER_ROLE)
 		) {

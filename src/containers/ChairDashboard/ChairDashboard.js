@@ -15,6 +15,8 @@ const chairDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
+	console.log('Here **');
+
 	useEffect(() => {
 		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
 			(async () => {
