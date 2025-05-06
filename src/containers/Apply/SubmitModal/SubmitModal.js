@@ -43,6 +43,51 @@ const submitModal = ({
 		try {
 			const requests = [];
 
+			const infoToSend = transformJsonToBackend(data);
+
+			// functions that are called for new application submission
+			const saveAppDraft = async (data) => {
+				try {
+					await axios.post(SAVE_APP_DRAFT, data);
+					return;
+				} catch (e) {
+					// message.error('Sorry! There was an error when attempting to submit your application.');
+					// Should I attempt to redirect back to document upload page?
+				}
+			};
+
+			const createAppDocs = async (data) => {
+				try {
+					const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
+					const documents = saveDraftDocs.data.result.response.vacancy_documents;
+					return documents;
+				} catch (e) {
+					// message.error('Sorry! There was an error when attempting to submit your application.');
+					// Should I attempt to redirect back to document upload page?
+				}
+			};
+
+			const attachmentCheck = async (draftId) => {
+				try {
+					const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
+					const mandatoryDocuments = verifyAttachments.data.result.messages;
+					return mandatoryDocuments;
+				} catch (e) {
+					// message.error('Sorry! There was an error attempting to submit your application.');
+					// Should I attempt to redirect back to document upload page?
+				}
+			};
+
+			const submitApplication = async (infoToSend) => {
+				try {
+					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
+					return response;
+				} catch (e) {
+					message.error(response.data.result.response.message);
+				}
+			};
+
+			// function to attach documents to the application
 			const attachDocuments = async (infoToSend, documents) => {
 
 				if (editSubmitted) {
@@ -128,7 +173,7 @@ const submitModal = ({
 				}
 			};
 
-			const infoToSend = transformJsonToBackend(data);
+			// functions that are called for edit application submission
 
 			if (editSubmitted) {
 
@@ -186,23 +231,26 @@ const submitModal = ({
 				
 				setSubmitted(true);
 
-				await axios.post(SAVE_APP_DRAFT, dataToSend);
+				// await axios.post(SAVE_APP_DRAFT, dataToSend);
+				await saveAppDraft(dataToSend);
 				setPercent(20);
 
 				// creates a filename on application document table for each vacancy document
-				const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
-				const documents = saveDraftDocs.data.result.response.vacancy_documents;
+				// const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
+				// const documents = saveDraftDocs.data.result.response.vacancy_documents;
+				const documents = await createAppDocs(data);
 				setPercent(40);
 
 				await attachDocuments(infoToSend, documents);
 				setPercent(60);
 
-				const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
-				const mandatoryDocuments = verifyAttachments.data.result.messages;
+				// const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
+				// const mandatoryDocuments = verifyAttachments.data.result.messages;
+				const mandatoryDocuments = await attachmentCheck(draftId);
 				setPercent(80);
 
 				if (checkAttachments(mandatoryDocuments) == true) {
-					const response = await axios.post(SUBMIT_APPLICATION, infoToSend);
+					const response = await submitApplication(infoToSend);
 					if (response.data.result.status == 200) {
 						setPercent(100);
 						setAppSysId(response.data.result.application_sys_id);
