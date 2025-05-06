@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { Table } from 'antd';
+import { Table, message } from 'antd';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
@@ -14,8 +14,6 @@ const chairDashboard = () => {
 	const { auth: { tenants }, currentTenant } = useAuth();
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-
-	console.log('Here **');
 
 	useEffect(() => {
 		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
@@ -34,7 +32,8 @@ const chairDashboard = () => {
 				setIsLoading(false);
 			})();
 		} else {
-			setIsLoading(false);
+			message.error('Please select a tenant to see Your Vacancies');
+			// setIsLoading(false);
 		}
 	}, [currentTenant]);
 

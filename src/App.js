@@ -51,7 +51,7 @@ const app = () => {
 	const { auth, setAuth } = useAuth();	// this populates auth
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
-		if (!auth.isUserLoggedIn) checkAuth();
+		if (!auth.isUserLoggedIn) checkAuth(setIsLoading, setAuth);
 	}, []);
 
 	let routes = [];
