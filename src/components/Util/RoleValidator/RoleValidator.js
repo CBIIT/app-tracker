@@ -16,6 +16,12 @@ export const isChair = (currentTenant, tenants) => {
     return isChair;
 };
 
+export const isCommitteMember = (currentTenant, tenants) => {
+    var foundTenant = tenants ? tenants.find((element) => (element.value === currentTenant && element.roles.includes('x_g_nci_app_tracke.committee_member'))) : null;
+    const isCommitteMember = foundTenant ? true : false;
+    return isCommitteMember;
+};
+
 export const atleastOneChair = (tenants) => {
     var foundTenant = tenants ? tenants.find((element) => ( element.is_chair === true)) : null;
     const atleastOneChair = foundTenant ? foundTenant.is_chair : false;

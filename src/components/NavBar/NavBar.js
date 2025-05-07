@@ -11,7 +11,7 @@ import {
 } from '../../constants/Routes';
 
 import useAuth from '../../hooks/useAuth';
-import { isExecSec, isChair } from '../../components/Util/RoleValidator/RoleValidator';
+import { isExecSec, isChair, isCommitteMember } from '../../components/Util/RoleValidator/RoleValidator';
 import './NavBar.css';
 
 const navBar = () => {
@@ -22,11 +22,14 @@ const navBar = () => {
 		tenants ? isExecSec(currentTenant, tenants) : false);
 	const [validChairRole, setValidChairRole] = useState(
 		tenants ?  isChair(currentTenant, tenants) : false);
+	const [validCommitteMember, setValidCommitteMember] = useState(
+			tenants ?  isCommitteMember(currentTenant, tenants) : false);
 
 	useEffect(() => {
 		if (tenants && user.isManager === true) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
+			setValidCommitteMember(isCommitteMember(currentTenant, tenants))
 		}
 	}, [currentTenant]);
 
@@ -80,7 +83,7 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-		if (currentTenant && user.roles.includes('x_g_nci_app_tracke.committee_member')) {
+		if (currentTenant && validCommitteMember) {
 			myVacanciesItems.push(
 				<Menu.Item key='your-vacancies-committee-member' className='VacanciesSubMenu'>
 					<Link to={COMMITTEE_DASHBOARD}>Committee Member</Link>
