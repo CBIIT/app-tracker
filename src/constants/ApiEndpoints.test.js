@@ -94,7 +94,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for CHECK_AUTH', () => {
-        expect(ApiEndpoints.CHECK_AUTH).toBe('/api/x_g_nci_app_tracke/login/v2/check_auth');
+        expect(ApiEndpoints.CHECK_AUTH).toBe('/api/x_g_nci_app_tracke/login/check_auth');
     });
 
     it('should have the correct value for EXTEND_VACANCY', () => {

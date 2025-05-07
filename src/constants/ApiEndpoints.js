@@ -71,7 +71,7 @@ export const WITHDRAW_USER_APPLICATION =
 	'/api/x_g_nci_app_tracke/application/withdraw/';
 
 // Login Scripted REST API Endpoints
-export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/v2/check_auth';
+export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/check_auth';
 
 export const CREATE_OKTA_USER =
 	'/api/x_g_nci_app_tracke/login/create_okta_user';
