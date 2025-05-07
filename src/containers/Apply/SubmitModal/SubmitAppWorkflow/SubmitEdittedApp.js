@@ -8,12 +8,21 @@ import {
 } from '../../../../constants/ApiEndpoints';
 import { transformJsonToBackend } from '../../Util/TransformJsonToBackend';
 
-const submitEdittedApp = async () => {
+const submitEdittedApp = async (
+	setConfirmLoading,
+	data,
+	submittedAppSysId,
+	setSubmitted,
+	setPercent,
+	setAppSysId,
+	history,
+	checkAuth,
+	setAuth
+) => {
 	const requests = [];
 	const infoToSend = transformJsonToBackend(data);
 	infoToSend['app_sys_id'] = submittedAppSysId;
 
-	// setConfirmLoading(true);
 	setSubmitted(true);
 	setPercent(25);
 
@@ -120,24 +129,27 @@ const submitEdittedApp = async () => {
 		}
 	};
 
-    const submitApp = async () => {
-        var submitApp;
-        try {
-            submitApp = await axios.put(APPLICATION_SUBMISSION, infoToSend);
+	const submitApp = async () => {
+		try {
+			const submitApp = await axios.put(APPLICATION_SUBMISSION, infoToSend);
 
-            if (submitApp.data.result.status == 200) {
-                setPercent(100);
-                setAppSysId(submittedAppSysId);
-            }
-            await Promise.all(requests);
-        } catch (e) {
-            setSubmitted(false);
-            message.error(submitApp.data.result.message);
-        } finally {
-            setConfirmLoading(false);
+			if (submitApp.data.result.status == 200) {
+				setPercent(100);
+				setAppSysId(submittedAppSysId);
+			}
+			await Promise.all(requests);
+		} catch (e) {
+			if (e == 'Error: Request failed with status code 400') {
+				message.error('Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.');
+			} else {
+				message.error('Sorry! There was an error with submitting your application.');
+			}
+			setSubmitted(false);
+		} finally {
+			setConfirmLoading(false);
 			checkAuth(setConfirmLoading, setAuth);
-        }
-    }
+		}
+	};
 
 	attachDocuments();
 };

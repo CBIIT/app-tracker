@@ -23,7 +23,6 @@ const submitNewApp = async (
     setAuth
 ) => {
 	const requests = [];
-	// setConfirmLoading(true);
 
 	let dataToSend = {
 		jsonobj: JSON.stringify(data),
@@ -170,17 +169,20 @@ const submitNewApp = async (
 	};
 
 	const submitApplication = async () => {
-		var submitApp;
 		try {
-			submitApp = await axios.post(SUBMIT_APPLICATION, infoToSend);
+			const submitApp = await axios.post(SUBMIT_APPLICATION, infoToSend);
 
 			if (submitApp.data.result.status == 200) {
 				setPercent(100);
 				setAppSysId(submitApp.data.result.application_sys_id);
 			}
 		} catch (e) {
+			if (e == 'Error: Request failed with status code 400') {
+				message.error('Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.');
+			} else {
+				message.error('Sorry! There was an error with submitting your application.');
+			}
 			setSubmitted(false);
-			message.error(submitApp.data.result.response.message);
 		} finally {
 			setConfirmLoading(false);
 			checkAuth(setConfirmLoading, setAuth);
