@@ -23,7 +23,7 @@ const submitNewApp = async (
     setAuth
 ) => {
 	const requests = [];
-	setConfirmLoading(true);
+	// setConfirmLoading(true);
 
 	let dataToSend = {
 		jsonobj: JSON.stringify(data),

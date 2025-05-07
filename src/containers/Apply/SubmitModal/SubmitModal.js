@@ -1,19 +1,13 @@
 import { useState } from 'react';
-import axios from 'axios';
-import { Modal, notification, Progress } from 'antd';
+import { Modal, Progress } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import './SubmitModal.css';
-import {
-	APPLICATION_SUBMISSION,
-	SERVICE_NOW_FILE_ATTACHMENT,
-	SERVICE_NOW_ATTACHMENT,
-	ATTACHMENT_CHECK_FOR_APPLICATIONS,
-} from '../../../constants/ApiEndpoints';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
 import { checkAuth } from '../../../constants/checkAuth';
 import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
+import submitEdittedApp from './SubmitAppWorkflow/SubmitEdittedApp';
 
 const submitModal = ({
 	data,
@@ -36,105 +30,18 @@ const submitModal = ({
 	const handleOk = async () => {
 		setConfirmLoading(true);
 
-		// function to attach documents to the application
-		const attachDocuments = async (infoToSend, documents) => {
-			const documentsToDelete = infoToSend.vacancy_documents.map((document) => {
-				if (document?.uploadedDocument?.markedToDelete) {
-					return axios.delete(
-						SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-					);
-				}
-			});
-
-			const documentsToUpload = infoToSend.vacancy_documents.map((document) => {
-				if (document.file.file || document.file.fileList.length > 0) {
-					const file = document.file.file
-						? document.file.file
-						: document.file.fileList[0];
-					const options = {
-						params: {
-							file_name: file.name,
-							table_name: document.table_name,
-							table_sys_id: document.table_sys_id,
-						},
-						headers: {
-							'Content-Type': file.type,
-						},
-					};
-					return axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options);
-				}
-			});
-
-			await Promise.all([...documentsToDelete, ...documentsToUpload]);
-			return;
-		};
-
-		const checkAttachments = (documents) => {
-			// Filters out optional documents
-			const filterOutOptional = documents.filter(
-				(doc) => doc.is_optional == 'false'
-			);
-
-			// Filters out the documents that return exists as false
-			const filterByFalse = filterOutOptional.filter(
-				(doc) => doc.exists == false
-			);
-
-			// If the length of the filterByFalse is greater than 0, return false, else return true
-			if (filterByFalse.length > 0) {
-				return false;
-			} else {
-				return true;
-			}
-		};
-
-		// functions that are called for edit application submission
-
 		if (editSubmitted) {
-			infoToSend['app_sys_id'] = submittedAppSysId;
-			setSubmitted(true);
-			setPercent(25);
-
-			await attachDocuments(infoToSend);
-			setPercent(50);
-
-			const checkDocuments = await axios.get(
-				ATTACHMENT_CHECK_FOR_APPLICATIONS + submittedAppSysId
-			);
-			const mandatoryDocuments = checkDocuments.data.result.messages;
-			setPercent(75);
-
-			if (checkAttachments(mandatoryDocuments) == true) {
-				const submitApp = await axios.put(APPLICATION_SUBMISSION, infoToSend);
-				if (submitApp.data.result.status == 200) {
-					setPercent(100);
-					setAppSysId(submittedAppSysId);
-				}
-				await Promise.all(requests);
-			} else {
-				setSubmitted(false);
-				notification.error({
-					message: 'Sorry! There was an error with submitting the attachments.',
-					description: (
-						<>
-							<p>
-								Please re-upload the attachment(s) and try again. If the issue
-								continues, contact the Help Desk by emailing{' '}
-								<a href='mailto:NCIAppSupport@mail.nih.gov'>
-									NCIAppSupport@mail.nih.gov
-								</a>
-							</p>
-						</>
-					),
-					duration: 30,
-					style: {
-						height: '225px',
-						display: 'flex',
-						alignItems: 'center',
-					},
-				});
-				history.goBack();
-			}
+			submitEdittedApp(
+				setConfirmLoading,
+				data,
+				submittedAppSysId,
+				setSubmitted,
+				setPercent,
+				setAppSysId,
+				history,
+				checkAuth,
+				setAuth
+			)
 		} else {
 			submitNewApp(
 				setConfirmLoading,
@@ -150,8 +57,6 @@ const submitModal = ({
 			);
 		}
 	};
-
-	// if variable catches error, make a call to delete documents
 
 	const handleClose = () => {
 		history.push('/');
