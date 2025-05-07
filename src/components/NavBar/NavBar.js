@@ -39,9 +39,16 @@ const navBar = () => {
 	];
 
 	const myVacanciesItems = [];
-	const emptyClick = () => {
+	const emptyClickYourVacancies = () => {
 		if (!currentTenant) {
-			message.error('Please select a tenant to see Your Vacancies');
+			message.destroy();
+			message.error({ duration: 3, content: 'Please select a tenant to see Your Vacancies.' });
+		}
+	}
+	const emptyClickVacancyDashboard = () => {
+		if (!currentTenant) {
+			message.destroy();
+			message.error({ duration: 3, content: 'Please select a tenant to see Vacancy Dashboard.'});
 		}
 	}
 
@@ -49,8 +56,11 @@ const navBar = () => {
 		var includedReports = false;
 		if (user.isManager === true) {
 			menuItems.push(
-				<Menu.Item key='vacancy-dashboard'>
-					<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
+				<Menu.Item
+					key='vacancy-dashboard'
+					onClick={emptyClickVacancyDashboard}>
+						{currentTenant && <Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>}
+						{!currentTenant && <Link to={null}>Vacancy Dashboard</Link>}
 				</Menu.Item>
 			);
 
@@ -81,7 +91,7 @@ const navBar = () => {
 		menuItems.push(
 			<Menu.Item
 				key='your-vacancies'
-				onClick={emptyClick} >
+				onClick={emptyClickYourVacancies} >
 				<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
 					{myVacanciesItems}
 				</Menu.SubMenu>

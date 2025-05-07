@@ -32,7 +32,8 @@ const chairDashboard = () => {
 				setIsLoading(false);
 			})();
 		} else {
-			message.error('Please select a tenant to see Your Vacancies.');
+			message.destroy();
+			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
 			setIsLoading(false);
 		}
 	}, [currentTenant]);

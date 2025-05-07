@@ -56,6 +56,7 @@ const vacancyDashboard = () => {
 	const [activeTab, setActiveTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
 	const [filter, setFilter] = useState('all');
+	const [disabledCreateVacancy, setDisabledCreateVacancy] = useState(true);
 
 	const { auth: { tenants}, currentTenant } = useAuth();
 
@@ -85,6 +86,7 @@ const vacancyDashboard = () => {
 
 	useEffect(() => {
 		if (validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)) {
+			setDisabledCreateVacancy(false);
 			(async () => {
 				setIsLoading(true);
 				let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
@@ -105,7 +107,9 @@ const vacancyDashboard = () => {
 				setIsLoading(false);
 			})();
 		} else {
-			message.error('Please select a tenant to see Your Vacancies.');
+			message.destroy();
+			message.error({ duration: 3, content: 'Sorry! You do not have vacancy manager access in the selected tenant.'});
+			setDisabledCreateVacancy(true);
 			setIsLoading(false);
 		}
 		return () => {
@@ -572,7 +576,7 @@ const vacancyDashboard = () => {
 											float: 'right',
 										}}
 										link='true'
-										disabled={currentTenant ? false : true}
+										disabled={disabledCreateVacancy}
 									>
 										+ Create Vacancy
 									</Button>

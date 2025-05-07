@@ -49,6 +49,7 @@ describe('Layout', () => {
 
     it('renders Header, NavBar, ContentTitle, Footer and children correctly when a manager is logged in', () => {
         useAuth.mockReturnValue({
+            currentTenant: 'tenant 1',
             auth: {
                 isUserLoggedIn: true,
                 user: {
@@ -58,7 +59,20 @@ describe('Layout', () => {
                     isChair: false,
                     roles: [],
                     hasApplications: false
-                }
+                },
+                tenants: [
+                    {
+                        "value": "f24965fc1b9c11106daea681f54bcb04",
+                        "label": "tenant 1",
+                        "roles": [
+                            "x_g_nci_app_tracke.vacancy_manager",
+                            "x_g_nci_app_tracke.committee_member"
+                        ],
+                        "is_exec_sec": true,
+                        "is_read_only_user": true,
+                        "is_chair": true,
+                    }
+                ],
             }
         });
 
@@ -75,6 +89,7 @@ describe('Layout', () => {
 
         const vacancyDashboardLinks = getAllByText('Vacancy Dashboard');
         expect(vacancyDashboardLinks.length).toBeGreaterThan(0);
+        console.log(vacancyDashboardLinks);
         const vacancyDashboardLink = vacancyDashboardLinks.find(link => link.getAttribute('href') === '/vacancy-dashboard');
         expect(vacancyDashboardLink).toBeInTheDocument();
 
