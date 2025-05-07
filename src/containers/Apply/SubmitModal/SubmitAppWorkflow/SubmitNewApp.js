@@ -43,9 +43,7 @@ const submitNewApp = async (
 			setPercent(20);
 		} catch (e) {
 			setSubmitted(false);
-			message.error(
-				'Sorry! There was an error when attempting to submit your application.'
-			);
+			message.error('Sorry! There was an error when attempting to submit your application.');
 		} finally {
 			createAppDocs();
 		}
@@ -59,9 +57,7 @@ const submitNewApp = async (
 			setPercent(40);
 		} catch (e) {
 			setSubmitted(false);
-			message.error(
-				'Sorry! There was an error when attempting to submit your application.'
-			);
+			message.error('Sorry! There was an error when attempting to submit your application.');
 		} finally {
 			attachDocuments(documents);
 		}
@@ -98,9 +94,7 @@ const submitNewApp = async (
 			setPercent(60);
 		} catch (e) {
 			setSubmitted(false);
-			message.error(
-				'Sorry! There was an error when attempting to submit your application.'
-			);
+			message.error('Sorry! There was an error when attempting to submit your application.');
 		} finally {
 			checkAttachments();
 		}
@@ -114,9 +108,7 @@ const submitNewApp = async (
 			setPercent(80);
 		} catch (e) {
 			setSubmitted(false);
-			message.error(
-				'Sorry! There was an error attempting to submit your application.'
-			);
+			message.error('Sorry! There was an error attempting to submit your application.');
 		} finally {
 			attachmentVerify(mandatoryDocuments);
 		}
