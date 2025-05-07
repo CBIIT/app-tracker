@@ -6,7 +6,8 @@ import {
 	VACANCY_DASHBOARD,
 	CHAIR_DASHBOARD,
 	APPLICANT_DASHBOARD,
-	PROFILE
+	PROFILE,
+	EXE_SEC_DASHBOARD,
 } from '../../constants/Routes';
 
 import useAuth from '../../hooks/useAuth';
@@ -56,7 +57,7 @@ const navBar = () => {
 			if (currentTenant && validExecSecRole) {
 				myVacanciesItems.push(
 					<Menu.Item key='your-vacancies-exec-sec' className='VacanciesSubMenu'>
-						<Link to={COMMITTEE_DASHBOARD}>Executive Secretary</Link>
+						<Link to={EXE_SEC_DASHBOARD}>Executive Secretary</Link>
 					</Menu.Item>
 				);
 			}

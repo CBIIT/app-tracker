@@ -22,6 +22,7 @@ import {
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
 	PROFILE,
+	EXE_SEC_DASHBOARD,
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -79,6 +80,11 @@ const app = () => {
 					path={VACANCY_DASHBOARD + '/:tab?'}
 					exact
 					component={VacancyDashboard}
+				/>,
+				<ProtectedRoute
+					key='exe-sec-dashboard'
+					path={EXE_SEC_DASHBOARD}
+					component={CommitteeDashboard}
 				/>,
 				<ProtectedRoute
 					key='create-vacancy'

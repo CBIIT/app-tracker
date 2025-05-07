@@ -105,6 +105,7 @@ const vacancyDashboard = () => {
 				setIsLoading(false);
 			})();
 		} else {
+			message.error('Please select a tenant to see Your Vacancies.');
 			setIsLoading(false);
 		}
 		return () => {

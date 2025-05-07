@@ -32,8 +32,8 @@ const chairDashboard = () => {
 				setIsLoading(false);
 			})();
 		} else {
-			message.error('Please select a tenant to see Your Vacancies');
-			// setIsLoading(false);
+			message.error('Please select a tenant to see Your Vacancies.');
+			setIsLoading(false);
 		}
 	}, [currentTenant]);
 

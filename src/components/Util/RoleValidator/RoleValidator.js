@@ -5,19 +5,19 @@ export const validateRoleForCurrentTenant = (role, currentTenant, tenants) => {
 };
 
 export const isExecSec = (currentTenant, tenants) => {
-    var foundTenant = tenants.find((element) => (element.value === currentTenant && element.is_exec_sec === true))
+    var foundTenant = tenants ? tenants.find((element) => (element.value === currentTenant && element.is_exec_sec === true)) : null;
     const isExecSec = foundTenant ? foundTenant.is_exec_sec : false;
     return isExecSec;
 };
 
 export const isChair = (currentTenant, tenants) => {
-    var foundTenant = tenants.find((element) => (element.value === currentTenant && element.is_chair === true))
+    var foundTenant = tenants ? tenants.find((element) => (element.value === currentTenant && element.is_chair === true)) : null;
     const isChair = foundTenant ? foundTenant.is_chair : false;
     return isChair;
 };
 
 export const atleastOneChair = (tenants) => {
-    var foundTenant = tenants.find((element) => ( element.is_chair === true))
+    var foundTenant = tenants ? tenants.find((element) => ( element.is_chair === true)) : null;
     const atleastOneChair = foundTenant ? foundTenant.is_chair : false;
     return atleastOneChair;
 };
