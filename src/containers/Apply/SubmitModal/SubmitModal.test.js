@@ -1,30 +1,21 @@
-import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
-import checkAuth from '../../../constants/checkAuth';
-import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import { 
     mockUseAuth, 
     mockFormData,
-    mockSaveAppDraftResponse,
-    mockSaveAppDraftFailResponse,
-    mockSaveDraftDocResponse,
-    mockSaveDraftDocFailResponse,
-    mockOptions,
-    mockFile,
-    mockFileAttachResponse,
-    mockAttachmentCheckResponse,
-    mockSubmitAppResponse,
-    mockInfoToSend,
-    mockAttachmentDeleteResponse,
-    mockDocumentToDelete,
-    mockApplicationAttachmentCheckResponse,
-    mockApplicationUpdateResponse,
 } from './SubmitModalMockData';
 
 jest.mock('../../../hooks/useAuth');
 jest.mock('../../../constants/checkAuth');
 jest.mock('axios');
+jest.mock('./SubmitAppWorkflow/SubmitEdittedApp');
+jest.mock('./SubmitAppWorkflow/SubmitNewApp');
+jest.mock('react-router-dom', () => ({
+    useHistory: jest.fn(),
+    useLocation: jest.fn(),
+}));
 
 describe('SubmitModal component', () => {
     const mockVisible = true;
@@ -32,12 +23,18 @@ describe('SubmitModal component', () => {
     let mockDraftId;
     let mockEditSubmitted; // returns True or False
     let mockAppSysId;
-    let mockSubmitEdittedApp = jest.fn();
-    let mockSubmitNewApp = jest.fn();
+    let mockHistoryPush;
 
     beforeEach(() => {
         mockHandleCancel = jest.fn();
         useAuth.mockReturnValue(mockUseAuth);
+        mockHistoryPush = jest.fn();
+        useHistory.mockReturnValue({ push: mockHistoryPush });
+        delete window.location;
+        window.location = {
+            href: '',
+            assign: jest.fn(),
+        }
     });
 
     afterEach(() => {
@@ -70,7 +67,7 @@ describe('SubmitModal component', () => {
         expect(p2).toBeInTheDocument();
     });
 
-    test('should render updated modal to let user know that the application is being submitted', () => {
+    test('should render updated modal to let user know that a new application is being submitted', () => {
         mockEditSubmitted = false;
 
         render(<SubmitModal
@@ -83,11 +80,74 @@ describe('SubmitModal component', () => {
         />);
 
         const handleOkElement = screen.getByText(/Ok/i);
-        fireEvent.click(handleOkElement);
-        mockSubmitNewApp = jest.fn();
-        // mockApplicationAttachmentCheckResponse
-        
+        waitFor(() => {
+            fireEvent.click(handleOkElement);
+
+            const header = screen.getByText(/Application is being submitted/i);
+            expect(header).toBeInTheDocument();
+
+            // This will be displaying while the application is being submitted
+            const p1 = screen.getByText(/Please do not close or refresh the browser window while the system is uploading your application./i);
+            expect(p1).toBeInTheDocument();
+            expect(screen.getByTestId('percent-bar')).toBeInTheDocument();
+
+            // This will display after the application has been submitted
+            const header2 = screen.getByText(/Application Submitted/i);
+            expect(header2).toBeInTheDocument();
+
+            const p2 = screen.getByText(/View and print here./i);
+            expect(p2).toBeInTheDocument();
+        });
     });
 
-    
+    test('Should render modal letting user know that their edited app is being submitted', () => {
+        mockEditSubmitted = true;
+
+        render(<SubmitModal
+            visible={mockVisible}
+            onCancel={mockHandleCancel}
+            data={mockFormData}
+            draftId={mockDraftId}
+            editSubmitted={mockEditSubmitted}
+            submittedAppSysId={mockAppSysId}
+        />);
+
+        const handleOkElement = screen.getByText(/Ok/i);
+        waitFor(() => {
+            fireEvent.click(handleOkElement);
+
+            const header = screen.getByText(/Application is being submitted/i);
+            expect(header).toBeInTheDocument();
+
+            // This will be displaying while the application is being submitted
+            const p1 = screen.getByText(/Please do not close or refresh the browser window while the system is uploading your application./i);
+            expect(p1).toBeInTheDocument();
+            expect(screen.getByTestId('percent-bar')).toBeInTheDocument();
+
+            // This will display after the application has been submitted
+            const header2 = screen.getByText(/Application Submitted/i);
+            expect(header2).toBeInTheDocument();
+
+            const p2 = screen.getByText(/View and print here./i);
+            expect(p2).toBeInTheDocument();
+        });
+    });
+
+    test('should handle the onCancel when cancel button is clicked', () => {
+        render(<SubmitModal
+            visible={mockVisible}
+            onCancel={mockHandleCancel}
+            data={mockFormData}
+            draftId={mockDraftId}
+            editSubmitted={mockEditSubmitted}
+            submittedAppSysId={mockAppSysId}
+        />);
+
+        const handleCancelElement = screen.getByText(/Cancel/i);
+        waitFor(() => {
+            fireEvent.click(handleCancelElement);
+            expect(mockHandleCancel).toHaveBeenCalledTimes(1);
+            expect(mockHistoryPush).toHaveBeenCalledWith('/');
+        });
+    });
 });

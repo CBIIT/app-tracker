@@ -103,7 +103,7 @@ const submitModal = ({
 						Please do not close or refresh the browser window while the system
 						is uploading your application.
 					</p>
-					<Progress type='circle' percent={percent} />
+					<Progress type='circle' percent={percent} data-testid='percent-bar'/>
 				</div>
 			) : (
 				<div className='Confirmed'>

@@ -85,17 +85,15 @@ const submitEdittedApp = async (
 		var verify;
 
 		// Filters out optional documents
-		const filterOutOptional = mandatoryDocuments.filter(
-			(doc) => doc.is_optional == 'false'
-		);
+		const filterOutOptional = mandatoryDocuments ?
+		mandatoryDocuments.filter((doc) => doc.is_optional == 'false') : null;
 
 		// Filters out the documents that return exists as false
-		const filterByFalse = filterOutOptional.filter(
-			(doc) => doc.exists == false
-		);
+		const filterByFalse = filterOutOptional ?
+		filterOutOptional.filter((doc) => doc.exists == false) : null;
 
 		// If the length of the filterByFalse is greater than 0, return false, else return true
-		if (filterByFalse.length > 0) {
+		if (filterByFalse && filterByFalse.length > 0) {
 			verify = false;
 		} else {
 			verify = true;
