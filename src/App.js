@@ -22,6 +22,7 @@ import {
 	VIEW_VACANCY,
 	VIEW_APPLICATION,
 	PROFILE,
+	EXE_SEC_DASHBOARD,
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -44,24 +45,25 @@ import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
 import { transformDateTimeToDisplay } from './components/Util/Date/Date';
+import { atleastOneChair } from './components/Util/RoleValidator/RoleValidator'
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const { auth, setAuth } = useAuth();	// this populates auth
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
-		if (!auth.isUserLoggedIn) checkAuth();
+		if (!auth.isUserLoggedIn) checkAuth(setIsLoading, setAuth);
 	}, []);
 
 	let routes = [];
-	const { isUserLoggedIn, user } = auth;
+	const { isUserLoggedIn, user, tenants } = auth;
 
 	if (user && isUserLoggedIn) {
 		console.log(`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`);
 	}
 
 	if (isUserLoggedIn) {
-		if (user.isChair) {
+		if (atleastOneChair(tenants)) {
 			routes.push(
 				<ProtectedRoute
 					key='chair-dashboard'
@@ -78,6 +80,11 @@ const app = () => {
 					path={VACANCY_DASHBOARD + '/:tab?'}
 					exact
 					component={VacancyDashboard}
+				/>,
+				<ProtectedRoute
+					key='exe-sec-dashboard'
+					path={EXE_SEC_DASHBOARD}
+					component={CommitteeDashboard}
 				/>,
 				<ProtectedRoute
 					key='create-vacancy'
@@ -109,7 +116,7 @@ const app = () => {
 			);
 
 		if (
-			user.isChair ||
+			atleastOneChair(tenants) ||
 			user.isManager ||
 			user.roles.includes(COMMITTEE_MEMBER_ROLE)
 		) {

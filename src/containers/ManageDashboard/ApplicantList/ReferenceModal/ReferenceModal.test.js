@@ -24,8 +24,8 @@ describe('ReferenceModal', () => {
 
         render(<ReferenceModal 
             appSysId={mockAppSysId}
-            showModal={mockShowModal}
-            setShowModal={mockSetShowModal}
+            referenceModal={mockShowModal}
+            setReferenceModal={mockSetShowModal}
             sendReferences={mockSendReferences}
             referencesSent={mockReferencesSent}
         />);
@@ -41,8 +41,8 @@ describe('ReferenceModal', () => {
 
         render(<ReferenceModal 
             appSysId={mockAppSysId}
-            showModal={mockShowModal}
-            setShowModal={mockSetShowModal}
+            referenceModal={mockShowModal}
+            setReferenceModal={mockSetShowModal}
             sendReferences={mockSendReferences}
             referencesSent={mockReferencesSent}
         />);
@@ -58,8 +58,8 @@ describe('ReferenceModal', () => {
 
         render(<ReferenceModal 
             appSysId={mockAppSysId}
-            showModal={mockShowModal}
-            setShowModal={mockSetShowModal}
+            referenceModal={mockShowModal}
+            setReferenceModal={mockSetShowModal}
             sendReferences={mockSendReferences}
             referencesSent={mockReferencesSent}
         />);
@@ -76,8 +76,8 @@ describe('ReferenceModal', () => {
 
         render(<ReferenceModal 
             appSysId={mockAppSysId}
-            showModal={mockShowModal}
-            setShowModal={mockSetShowModal}
+            referenceModal={mockShowModal}
+            setReferenceModal={mockSetShowModal}
             sendReferences={mockSendReferences}
             referencesSent={mockReferencesSent}
         />);

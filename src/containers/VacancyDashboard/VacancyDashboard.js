@@ -42,6 +42,8 @@ import CountTile from './CountTile/CountTile';
 import ExtendModal from './ExtendModal/ExtendModal';
 import './VacancyDashboard.css';
 import useAuth from '../../hooks/useAuth';
+import { OWM_TEAM } from '../../constants/Roles';
+import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 
 
 const vacancyDashboard = () => {
@@ -54,9 +56,9 @@ const vacancyDashboard = () => {
 	const [activeTab, setActiveTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
 	const [filter, setFilter] = useState('all');
+	const [disabledCreateVacancy, setDisabledCreateVacancy] = useState(true);
 
-	const { currentTenant } = useAuth();
-
+	const { auth: { tenants}, currentTenant } = useAuth();
 
 	const tabs = {
 		PREFLIGHT: 'preflight',
@@ -83,29 +85,33 @@ const vacancyDashboard = () => {
 	const cancelToken = axios.CancelToken.source();
 
 	useEffect(() => {
-		(async () => {
-			setIsLoading(true);
-			let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
-			if (tab) {
-				dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
-				setActiveTab(tab);
-			}
-
-			setFilter('all');
-
-			try {
-				const currentData = await axios.get(dataUrl, {
-					cancelToken: cancelToken.token,
-				});
-
-				setData(currentData.data.result);
-			} catch (err) {
-				if (!axios.isCancel)
-					message.error('Sorry!  An error occurred while loading.');
-			}
+		if (validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)) {
+			setDisabledCreateVacancy(false);
+			(async () => {
+				setIsLoading(true);
+				let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
+				if (tab) {
+					dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
+					setActiveTab(tab);
+				}
+				setFilter('all');
+				try {
+					const currentData = await axios.get(dataUrl, {
+						cancelToken: cancelToken.token,
+					});
+					setData(currentData.data.result);
+				} catch (err) {
+					if (!axios.isCancel)
+						message.error('Sorry!  An error occurred while loading.');
+				}
+				setIsLoading(false);
+			})();
+		} else {
+			message.destroy();
+			message.error({ duration: 3, content: 'Sorry! You do not have vacancy manager access in the selected tenant.'});
+			setDisabledCreateVacancy(true);
 			setIsLoading(false);
-		})();
-
+		}
 		return () => {
 			cancelToken.cancel();
 		};
@@ -570,7 +576,7 @@ const vacancyDashboard = () => {
 											float: 'right',
 										}}
 										link='true'
-										disabled={currentTenant ? false : true}
+										disabled={disabledCreateVacancy}
 									>
 										+ Create Vacancy
 									</Button>
@@ -592,6 +598,7 @@ const vacancyDashboard = () => {
 									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.PREFLIGHT}
 									data={data}
 									currentTenant={currentTenant}
+									tenants={tenants}
 								/>
 							}
 							key={tabs.PREFLIGHT}
@@ -633,6 +640,7 @@ const vacancyDashboard = () => {
 									title='live vacancies'
 									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.LIVE}
 									currentTenant={currentTenant}
+									tenants={tenants}
 								/>
 							}
 							key={tabs.LIVE}
@@ -674,6 +682,7 @@ const vacancyDashboard = () => {
 									title='rolling close vacancies'
 									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.ROLLING}
 									currentTenant={currentTenant}
+									tenants={tenants}
 								/>
 							}
 							key={tabs.ROLLING}
@@ -715,6 +724,7 @@ const vacancyDashboard = () => {
 									title='closed vacancies'
 									apiUrl={VACANCY_COUNTS + currentTenant + '?state=' + tabs.CLOSED}
 									currentTenant={currentTenant}
+									tenants={tenants}
 								/>
 							}
 							key={tabs.CLOSED}

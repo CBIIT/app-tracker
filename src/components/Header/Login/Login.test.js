@@ -8,12 +8,6 @@ jest.mock('react-router-dom', () => ({
     useHistory: jest.fn(),
     useLocation: jest.fn(),
 }));
-// const mockedUsedNavigate = jest.fn();
-// jest.mock('react-router-dom', () => ({
-//     ...jest.requireActual('react-router-dom'),
-//     useNavigate: () => mockedUsedNavigate,
-//     useLocation: () => mockedUsedLocation,
-// }));
 
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
@@ -32,7 +26,6 @@ describe('Login Component', () => {
                 isUserLoggedIn: false,
                 user: { firstName: 'John', lastInitial: 'D' },
                 oktaLoginAndRedirectUrl: 'https://test.okta.com',
-
             },
         };
         useAuth.mockReturnValue(mockUseAuth);
@@ -102,6 +95,64 @@ describe('Login Component', () => {
         fireEvent.click(screen.getByTestId('nih-register-item'));
         expect(mockHistoryPush).toHaveBeenCalledWith('/register-okta');
     });
+
+    test('Tenant dropdown shows for vacancy manager', async () => {
+        let mockUseAuthVM = {
+            auth: {
+                iTrustGlideSsoId: 'testSsoId',
+                iTrustUrl: 'https://test.itrust.com',
+                isUserLoggedIn: true,
+                user: { 
+                    firstName: 'John', 
+                    lastInitial: 'D',
+                    isManager: true,
+                 },
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+            },
+        };
+        useAuth.mockReturnValue(mockUseAuthVM);
+        render(<Login />);
+        expect(screen.getByTestId('tenant-select-item')).toBeInTheDocument();
+    });
+
+    test('Tenant dropdown shows for committee member', async () => {
+        let mockUseAuthCommMember = {
+            auth: {
+                iTrustGlideSsoId: 'testSsoId',
+                iTrustUrl: 'https://test.itrust.com',
+                isUserLoggedIn: true,
+                user: { 
+                    firstName: 'John', 
+                    lastInitial: 'D',
+                    isCommitteeMember: true,
+                 },
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+            },
+        };
+        useAuth.mockReturnValue(mockUseAuthCommMember);
+        render(<Login />);
+        expect(screen.getByTestId('tenant-select-item')).toBeInTheDocument();
+    });
+
+    test('Tenant dropdown shows for committee chair', async () => {
+        let mockUseAuthCommMember = {
+            auth: {
+                iTrustGlideSsoId: 'testSsoId',
+                iTrustUrl: 'https://test.itrust.com',
+                isUserLoggedIn: true,
+                user: { 
+                    firstName: 'John', 
+                    lastInitial: 'D',
+                    isCommitteeMember: true,
+                 },
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+            },
+        };
+        useAuth.mockReturnValue(mockUseAuthCommMember);
+        render(<Login />);
+        expect(screen.getByTestId('tenant-select-item')).toBeInTheDocument();
+    });
+
 
 });
 

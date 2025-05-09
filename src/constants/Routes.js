@@ -6,6 +6,7 @@ const EDIT_VACANCY = '/manage/vacancy/edit/';
 const CHAIR_DASHBOARD = '/chair-dashboard/';
 const VACANCY_DASHBOARD = '/vacancy-dashboard';
 const COMMITTEE_DASHBOARD = '/committee-dashboard/';
+const EXE_SEC_DASHBOARD = '/exe-sec-dashboard/';
 const APPLICANT_DASHBOARD = '/applicant-dashboard/';
 const APPLY = '/apply/';
 const VIEW_APPLICATION = '/apply/view/';
@@ -15,7 +16,7 @@ const VIEW_VACANCY = '/vacancy/';
 const CREATE_PROFILE = '/create-profile';
 const PROFILE = '/profile/';
 const EDIT_PROFILE = 'manage/profile/edit/';
-const TENANT_CHECK_ROUTES = [CREATE_VACANCY, EDIT_VACANCY, EDIT_DRAFT];
+const TENANT_CHECK_ROUTES = [CREATE_VACANCY, EDIT_VACANCY, EDIT_DRAFT, MANAGE_VACANCY];
 export {
 	MANAGE_APPLICATION,
 	MANAGE_VACANCY,
@@ -23,6 +24,7 @@ export {
 	VACANCY_DASHBOARD,
 	CHAIR_DASHBOARD,
 	COMMITTEE_DASHBOARD,
+	EXE_SEC_DASHBOARD,
 	APPLICANT_DASHBOARD,
 	APPLY,
 	REGISTER_OKTA,

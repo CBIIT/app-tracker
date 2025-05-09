@@ -44,6 +44,8 @@ export const SCORES = '/api/x_g_nci_app_tracke/application/scores/';
 
 export const SELECTED = '/api/x_g_nci_app_tracke/application/selected';
 
+export const SEND_REGRET_EMAIL = '/api/x_g_nci_app_tracke/application/send_regret_email/';
+
 export const REFERRED_TO_SELECTING_OFFICIAL =
 	'/api/x_g_nci_app_tracke/application/selecting-official';
 
@@ -69,7 +71,7 @@ export const WITHDRAW_USER_APPLICATION =
 	'/api/x_g_nci_app_tracke/application/withdraw/';
 
 // Login Scripted REST API Endpoints
-export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/v2/check_auth';
+export const CHECK_AUTH = '/api/x_g_nci_app_tracke/login/check_auth';
 
 export const CREATE_OKTA_USER =
 	'/api/x_g_nci_app_tracke/login/create_okta_user';
@@ -86,15 +88,15 @@ export const CHECK_HAS_PROFILE = '/api/x_g_nci_app_tracke/user/check_profile';
 
 // Vacancy Scripted REST API Endpoints
 export const GET_COMMITTEE_CHAIR_VACANCIES =
-	'/api/x_g_nci_app_tracke/vacancy/chair';
+	'/api/x_g_nci_app_tracke/vacancy/chair/';
 
 export const CHANGE_VACANCY_STATUS =
 	'/api/x_g_nci_app_tracke/vacancy/change_status/';
 
 export const GET_COMMITTEE_MEMBER_VIEW =
-	'/api/x_g_nci_app_tracke/vacancy/committee';
+	'/api/x_g_nci_app_tracke/vacancy/committee/';
 
-export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/v2/counts/';
+export const VACANCY_COUNTS = '/api/x_g_nci_app_tracke/vacancy/counts/';
 
 export const EDIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/edit';
 
@@ -107,7 +109,7 @@ export const GET_APPLICANT_LIST =
 	'/api/x_g_nci_app_tracke/vacancy/get_applicant_list/';
 
 export const DASHBOARD_VACANCIES =
-	'/api/x_g_nci_app_tracke/vacancy/v2/get_dashboard_vacancy_list/';
+	'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/';
 
 export const GET_DRAFT = '/api/x_g_nci_app_tracke/vacancy/get_draft/';
 
@@ -134,7 +136,7 @@ export const REMOVE_DRAFT_VACANCY =
 export const REQUEST_CHAIR_TRIAGE =
 	'/api/x_g_nci_app_tracke/vacancy/request_chair_triage/';
 
-export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/v2/save_draft';
+export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/save_draft';
 
 export const SUBMIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/submit_vacancy';
 
@@ -142,3 +144,5 @@ export const SUBMIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/submit_vacancy';
 export const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 
 export const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
+
+export const USER_LIST = '/api/x_g_nci_app_tracke/user/get_user_list?sysparm_query=';
