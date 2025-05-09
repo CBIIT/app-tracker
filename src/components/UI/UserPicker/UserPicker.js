@@ -2,10 +2,13 @@ import { useState } from 'react';
 import axios from 'axios';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { components } from 'react-select';
+import useAuth from '../../../hooks/useAuth';
+import { USER_LIST } from '../../../constants/ApiEndpoints.js';
 
 import './UserPicker.css';
 
 const referenceField = ({ value = {}, onChange }) => {
+	const { currentTenant } = useAuth();
 	const [user, setUser] = useState(value);
 
 	const filterOption = (option, search) => {
@@ -61,8 +64,7 @@ const referenceField = ({ value = {}, onChange }) => {
 	};
 
 	const buildUrl = (searchQuery, offset) => {
-		const url = ['/api/x_g_nci_app_tracke/user/get_user_list?sysparm_query='];
-		// const url = ['/api/now/table/x_g_nci_app_tracke_user?sysparm_query='];
+		const url = [USER_LIST];
 		const responseFields = ['sys_id', 'name', 'email', 'organization'];
 
 		if (searchQuery) {
@@ -75,6 +77,7 @@ const referenceField = ({ value = {}, onChange }) => {
 		url.push('&sysparm_limit=' + 20);
 		url.push('&sysparm_offset=' + offset);
 		url.push('&sysparm_display_value=all');
+		url.push('&sysparm_tenant=' + currentTenant);
 
 		return url.join('');
 	};

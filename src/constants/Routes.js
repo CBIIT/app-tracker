@@ -6,6 +6,7 @@ const EDIT_VACANCY = '/manage/vacancy/edit/';
 const CHAIR_DASHBOARD = '/chair-dashboard/';
 const VACANCY_DASHBOARD = '/vacancy-dashboard';
 const COMMITTEE_DASHBOARD = '/committee-dashboard/';
+const EXE_SEC_DASHBOARD = '/exe-sec-dashboard/';
 const APPLICANT_DASHBOARD = '/applicant-dashboard/';
 const APPLY = '/apply/';
 const VIEW_APPLICATION = '/apply/view/';
@@ -23,6 +24,7 @@ export {
 	VACANCY_DASHBOARD,
 	CHAIR_DASHBOARD,
 	COMMITTEE_DASHBOARD,
+	EXE_SEC_DASHBOARD,
 	APPLICANT_DASHBOARD,
 	APPLY,
 	REGISTER_OKTA,

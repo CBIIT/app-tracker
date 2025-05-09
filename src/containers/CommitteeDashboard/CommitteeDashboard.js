@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MANAGE_VACANCY } from '../../constants/Routes.js';
+import {  useLocation } from 'react-router';
+import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty, message } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
-import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js'
-import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
+import { COMMITTEE_MEMBER_ROLE, COMMITTEE_EXEC_SEC } from '../../constants/Roles.js'
+import { validateRoleForCurrentTenant, isExecSec } from '../../components/Util/RoleValidator/RoleValidator';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -22,8 +23,9 @@ const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [readOnly, setreadOnly] = useState(false);
-	const { auth: { user, tenants }, currentTenant } = useAuth();
+	const { auth: { user, tenants }, currentTenant} = useAuth();
 
+	const location = useLocation();
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
 			<Empty
@@ -34,19 +36,27 @@ const committeeDashboard = () => {
 	);
 
 	useEffect(() => {
-		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
+		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants) || isExecSec(currentTenant, tenants)) {
 			(async () => {
 				setIsLoading(true);
 				try {
 					setreadOnly(user.isReadOnlyUser)
 					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant
 					const currentData = await axios.get(url);
-					setData(currentData.data.result);
+
+					const committeeMemberData = (location.pathname === EXE_SEC_DASHBOARD) ?
+						currentData.data.result.filter(
+							(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC) : currentData.data.result;
+					setData(committeeMemberData);
 				} catch (err) {
 					message.error('Sorry!  An error occurred.');
 				}
 				setIsLoading(false);
 			})();
+		} else {
+			message.destroy();
+			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
+			setIsLoading(false);
 		}
 	}, [currentTenant]);
 

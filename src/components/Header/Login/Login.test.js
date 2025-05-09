@@ -8,12 +8,6 @@ jest.mock('react-router-dom', () => ({
     useHistory: jest.fn(),
     useLocation: jest.fn(),
 }));
-// const mockedUsedNavigate = jest.fn();
-// jest.mock('react-router-dom', () => ({
-//     ...jest.requireActual('react-router-dom'),
-//     useNavigate: () => mockedUsedNavigate,
-//     useLocation: () => mockedUsedLocation,
-// }));
 
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
@@ -149,7 +143,7 @@ describe('Login Component', () => {
                 user: { 
                     firstName: 'John', 
                     lastInitial: 'D',
-                    isChair: true,
+                    isCommitteeMember: true,
                  },
                 oktaLoginAndRedirectUrl: 'https://test.okta.com',            
             },

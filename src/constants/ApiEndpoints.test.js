@@ -6,7 +6,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for GET_COMMITTEE_CHAIR_VACANCIES', () => {
-        expect(ApiEndpoints.GET_COMMITTEE_CHAIR_VACANCIES).toBe('/api/x_g_nci_app_tracke/vacancy/v2/chair/');
+        expect(ApiEndpoints.GET_COMMITTEE_CHAIR_VACANCIES).toBe('/api/x_g_nci_app_tracke/vacancy/chair/');
     });
 
     it('should have the correct value for GET_APPLICATION', () => {
@@ -58,7 +58,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for GET_COMMITTEE_MEMBER_VIEW', () => {
-        expect(ApiEndpoints.GET_COMMITTEE_MEMBER_VIEW).toBe('/api/x_g_nci_app_tracke/vacancy/v2/committee/');
+        expect(ApiEndpoints.GET_COMMITTEE_MEMBER_VIEW).toBe('/api/x_g_nci_app_tracke/vacancy/committee/');
     });
 
     it('should have the correct value for SUBMIT_TRIAGE', () => {
@@ -78,7 +78,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for SAVE_VACANCY_DRAFT', () => {
-        expect(ApiEndpoints.SAVE_VACANCY_DRAFT).toBe('/api/x_g_nci_app_tracke/vacancy/v2/save_draft');
+        expect(ApiEndpoints.SAVE_VACANCY_DRAFT).toBe('/api/x_g_nci_app_tracke/vacancy/save_draft');
     });
 
     it('should have the correct value for ADVANCE_VACANCY_TO_NEXT_STEP', () => {
@@ -94,7 +94,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for CHECK_AUTH', () => {
-        expect(ApiEndpoints.CHECK_AUTH).toBe('/api/x_g_nci_app_tracke/login/v2/check_auth');
+        expect(ApiEndpoints.CHECK_AUTH).toBe('/api/x_g_nci_app_tracke/login/check_auth');
     });
 
     it('should have the correct value for EXTEND_VACANCY', () => {
@@ -150,11 +150,11 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have the correct value for VACANCY_COUNTS', () => {
-        expect(ApiEndpoints.VACANCY_COUNTS).toBe('/api/x_g_nci_app_tracke/vacancy/v2/counts/');
+        expect(ApiEndpoints.VACANCY_COUNTS).toBe('/api/x_g_nci_app_tracke/vacancy/counts/');
     });
 
     it('should have the correct value for DASHBOARD_VACANCIES', () => {
-        expect(ApiEndpoints.DASHBOARD_VACANCIES).toBe('/api/x_g_nci_app_tracke/vacancy/v2/get_dashboard_vacancy_list/');
+        expect(ApiEndpoints.DASHBOARD_VACANCIES).toBe('/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/');
     });
 
     it('should have the correct value for SAVE_APP_DRAFT', () => {

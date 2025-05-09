@@ -239,6 +239,11 @@ const createVacancy = (props) => {
 	const save = async (data) => {
 		if (!isCurrentStepEditable()) return true;
 
+		if (!currentTenant || currentTenant === '') {
+			message.error('A tenant needs to be selected before proceeding.');
+			return false;
+		}
+
 		if (!data.basicInfo.title || data.basicInfo.title == '') {
 			message.error('A vacancy title is required.');
 			return false;

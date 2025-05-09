@@ -1,5 +1,13 @@
 import ChairDashboard from './ChairDashboard';
+import { message } from 'antd';
 import { rtRender } from '../test-utils';
+
+jest.mock('antd', () => ({
+    ...jest.requireActual('antd'),
+    message: {
+        error: jest.fn(),
+    }
+}));
 
 // Mock window.matchMedia
 window.matchMedia = window.matchMedia || function () {

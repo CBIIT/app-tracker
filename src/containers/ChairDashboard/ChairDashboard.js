@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { Table } from 'antd';
+import { Table, message } from 'antd';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
@@ -32,6 +32,8 @@ const chairDashboard = () => {
 				setIsLoading(false);
 			})();
 		} else {
+			message.destroy();
+			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
 			setIsLoading(false);
 		}
 	}, [currentTenant]);
