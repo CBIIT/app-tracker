@@ -543,7 +543,7 @@ const basicInformation = (props) => {
 						<p>
 							The selections made in the fields below will be included in the
 							package sent to{' '}
-							<a target='_blank' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+							<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
 								PATS
 							</a>{' '}
 							upon selecting a candidate.
