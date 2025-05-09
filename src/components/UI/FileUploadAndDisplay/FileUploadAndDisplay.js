@@ -57,7 +57,7 @@ const onDeleteButtonClick = (
 		onOk() {
 			onDeleteConfirm(onDeleteSuccess, deleteUrl, deleteSuccessMessage);
 		},
-		onCancel() {},
+		onCancel() { },
 	});
 };
 
@@ -98,6 +98,7 @@ const fileUploadAndDisplay = (props) => (
 						)
 					}
 					icon={<DeleteOutlined />}
+					data-testid='delete-button'
 				></Button>
 			</>
 		) : (

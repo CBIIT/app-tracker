@@ -110,25 +110,44 @@ describe('FileUploadAndDisplay Component', () => {
         );
     });
 
-    it('calls onDeleteButtonClick when delete button is clicked', () => {
+    it('confirm modal should display after delete button is clicked', async () => {
         Modal.confirm = jest.fn();
+        axios.delete.mockResolvedValueOnce({});
         const props = {
             ...defaultProps,
             downloadLink: '/file-download',
             fileName: 'test-file.txt',
         };
         render(<FileUploadAndDisplay {...props} />);
-        const deleteButton = screen.getByRole('button');
+        // const deleteButton = screen.getByRole('button');
+        const deleteButton = screen.getByTestId('delete-button');
+        fireEvent.click(deleteButton);
+        // expect(screen.getByRole('dialog')).toBeInTheDocument();
+        const confirmOkButton = await screen.findByRole('button', { name: /ok/i });
+        expect(confirmOkButton).toBeInTheDocument();
+        expect(screen.getByText(defaultProps.deleteConfirmTitle)).toBeInTheDocument();
+        expect(screen.getByText(defaultProps.deleteConfirmText)).toBeInTheDocument();
+    });
+    it('calls the onDeleteSuccess callback after successful deletion', async () => {
+        message.success = jest.fn();
+        axios.delete.mockResolvedValueOnce({});
+        const props = {
+            ...defaultProps,
+            downloadLink: '/file-download',
+            fileName: 'test-file.txt',
+        };
+        render(<FileUploadAndDisplay {...props} />);
+        const deleteButton = screen.getByTestId('delete-button');
 
         fireEvent.click(deleteButton);
-        // Check if Modal.confirm was called'
-        // Test failing with no calls being made to Modal.confirm
-        expect(Modal.confirm).toHaveBeenCalledWith({
-            title: props.deleteConfirmTitle,
-            icon: expect.anything(),
-            content: props.deleteConfirmText,
-            onOk: expect.any(Function),
-            onCancel: expect.any(Function),
-        });
+
+        // Simulate Modal confirm OK button click
+        const confirmOkButton = await screen.findByRole('button', { name: /ok/i });
+        fireEvent.click(confirmOkButton);
+
+        await new Promise((resolve) => setTimeout(resolve, 0)); // Wait for async actions
+
+        expect(message.success).toHaveBeenCalledWith(props.deleteSuccessMessage);
+        expect(props.onDeleteSuccess).toHaveBeenCalled();
     });
 });
