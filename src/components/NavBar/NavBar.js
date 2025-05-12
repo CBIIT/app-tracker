@@ -26,9 +26,8 @@ const navBar = () => {
 			tenants ?  isCommitteMember(currentTenant, tenants) : false);
 
 	useEffect(() => {
-		if (tenants && user.isManager === true) {
+		if (tenants) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
-		} else {
 			setValidChairRole(isChair(currentTenant, tenants));
 			setValidCommitteMember(isCommitteMember(currentTenant, tenants))
 		}
