@@ -80,4 +80,16 @@ describe('SubmitNewApp component', () => {
         expect(saveDraft).toEqual(mockSaveDraftDocResponse);
         // expect(mockSetPercent).toBe(40);
     });
+
+    test('Should handle failed createAppDocs function call', async () => {
+        axios.post.mockResolvedValueOnce(mockSaveDraftDocFailResponse);
+
+        const saveDraft = await axios.post(CREATE_APP_DOCS, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(CREATE_APP_DOCS, mockFormData);
+        expect(saveDraft).toEqual(mockSaveDraftDocFailResponse);
+        waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application")).toBeInTheDocument());
+        // expect(mockSetSubmitted).toBe(false);
+    });
 });
