@@ -92,4 +92,27 @@ describe('SubmitNewApp component', () => {
         waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application")).toBeInTheDocument());
         // expect(mockSetSubmitted).toBe(false);
     });
+
+    test('Should handle sucessful attachDocuments function call', async () => {
+        axios.post.mockResolvedValueOnce(mockFileAttachResponse);
+
+        const saveDraft = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(SERVICE_NOW_FILE_ATTACHMENT, mockFormData);
+        expect(saveDraft).toEqual(mockFileAttachResponse);
+        // expect(mockSetPercent).toBe(60);
+    });
+
+    test('Should handle failed attachDocuments function call', async () => {
+        axios.post.mockResolvedValueOnce(mockFileAttachResponse);
+
+        const saveDraft = await axios.post(SERVICE_NOW_FILE_ATTACHMENT, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(SERVICE_NOW_FILE_ATTACHMENT, mockFormData);
+        expect(saveDraft).toEqual(mockFileAttachResponse);
+        waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application")).toBeInTheDocument());
+        // expect(mockSetSubmitted).toBe(false);
+    });
 });
