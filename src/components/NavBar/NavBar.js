@@ -26,14 +26,12 @@ const navBar = () => {
 			tenants ?  isCommitteMember(currentTenant, tenants) : false);
 
 	useEffect(() => {
-		if (tenants && user.isManager === true) {
+		if (tenants) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
 			setValidCommitteMember(isCommitteMember(currentTenant, tenants))
 		}
 	}, [currentTenant]);
-
-
 
 	const menuItems = [
 		<Menu.Item key='home'>
@@ -91,15 +89,17 @@ const navBar = () => {
 			);
 		}
 
-		menuItems.push(
-			<Menu.Item
-				key='your-vacancies'
-				onClick={emptyClickYourVacancies} >
-				<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
-					{myVacanciesItems}
-				</Menu.SubMenu>
-			</Menu.Item>
-		);
+		if (myVacanciesItems.length > 0) {
+			menuItems.push(
+				<Menu.Item
+					key='your-vacancies'
+					onClick={emptyClickYourVacancies} >
+					<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
+						{myVacanciesItems}
+					</Menu.SubMenu>
+				</Menu.Item>
+			);
+		}
 		
 		if (user.hasApplications === true) {
 			menuItems.push(

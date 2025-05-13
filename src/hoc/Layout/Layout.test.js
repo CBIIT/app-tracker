@@ -103,7 +103,6 @@ describe('Layout', () => {
         useAuth.mockReturnValue({
             auth: {
                 isUserLoggedIn: true,
-                currentTenant: 'tenant 1',
                 user: {
                     uid: 'Skywalker',
                     isManager: false,
@@ -111,8 +110,23 @@ describe('Layout', () => {
                     isChair: false,
                     roles: ['x_g_nci_app_tracke.committee_member'],
                     hasApplications: false
-                }
-            }
+                },
+                tenants: [
+                    {
+                        "value": "tenant 1",
+                        "label": "tenant 1",
+                        "roles": [
+                            "x_g_nci_app_tracke.vacancy_manager",
+                            "x_g_nci_app_tracke.committee_member"
+                        ],
+                        "is_exec_sec": true,
+                        "is_read_only_user": true,
+                        "is_chair": true,
+                    }
+                ],
+
+            },
+            currentTenant: 'tenant 1',
         });
 
         const { getAllByText } = render(
@@ -143,8 +157,22 @@ describe('Layout', () => {
                     isChair: true,
                     roles: [],
                     hasApplications: false
-                }
-            }
+                },
+                tenants: [
+                    {
+                        "value": "f24965fc1b9c11106daea681f54bcb04",
+                        "label": "tenant 1",
+                        "roles": [
+                            "x_g_nci_app_tracke.vacancy_manager",
+                            "x_g_nci_app_tracke.committee_member"
+                        ],
+                        "is_exec_sec": true,
+                        "is_read_only_user": true,
+                        "is_chair": true,
+                    }
+                ],
+            },
+            currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
         });
 
         const { getAllByText } = render(
