@@ -22,6 +22,7 @@ import {
 	mockAttachmentCheckFailResponse,
 	mockSubmitAppResponse,
 	mockSubmitAppFailResponse,
+    mockClosedVacancyResponse,
 	mockDocumentToDelete,
 	mockAttachmentDeleteResponse,
 	mockApplicationAttachmentCheckResponse,
@@ -32,6 +33,7 @@ import {
 } from '../SubmitModalMockData';
 
 jest.mock('axios');
+jest.mock('../../Util/TransformJsonToBackend');
 
 describe('SubmitNewApp component', () => {
 	let mockSetPercent;
@@ -113,6 +115,69 @@ describe('SubmitNewApp component', () => {
         expect(axios.post).toHaveBeenCalledWith(SERVICE_NOW_FILE_ATTACHMENT, mockFormData);
         expect(saveDraft).toEqual(mockFileAttachResponse);
         waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application")).toBeInTheDocument());
+        // expect(mockSetSubmitted).toBe(false);
+    });
+
+    test('should handle sucessful checkAttachments function call', async () => {
+        axios.post.mockResolvedValueOnce(mockAttachmentCheckResponse);
+
+        const checkAttachments = await axios.post(ATTACHMENT_CHECK, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(ATTACHMENT_CHECK, mockFormData);
+        expect(checkAttachments).toEqual(mockAttachmentCheckResponse);
+        // expect(mockSetPercent).toBe(80);
+    });
+
+    test('should handle failed checkAttachments function call', async () => {
+        axios.post.mockResolvedValueOnce(mockAttachmentCheckFailResponse);
+
+        const checkAttachments = await axios.post(ATTACHMENT_CHECK, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(ATTACHMENT_CHECK, mockFormData);
+        expect(checkAttachments).toEqual(mockAttachmentCheckFailResponse);
+        waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application")).toBeInTheDocument());
+        // expect(mockSetSubmitted).toBe(false);
+    });
+
+    // test to verify if attachments are attached success
+
+    // test to verify if attachments are attached failed and handle document deletion and redirect
+
+    test('should handle sucessful submitApplication function call', async () => {
+        axios.post.mockResolvedValueOnce(mockSubmitAppResponse);
+
+        const submitApplication = await axios.post(SUBMIT_APPLICATION, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(SUBMIT_APPLICATION, mockFormData);
+        expect(submitApplication).toEqual(mockSubmitAppResponse);
+        // expect(mockSetPercent).toBe(100);
+        // expect(mockSetAppSysId).toBe(mockSubmitAppResponse.data.result.sys_id);
+    });
+
+    test('should handle error on submitApplication function call', async () => {
+        axios.post.mockResolvedValueOnce(mockSubmitAppFailResponse);
+
+        const submitApplication = await axios.post(SUBMIT_APPLICATION, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(SUBMIT_APPLICATION, mockFormData);
+        expect(submitApplication).toEqual(mockSubmitAppFailResponse);
+        waitFor (() => expect(screen.getAllByText("Sorry! There was an error when attempting to submit your application")).toBeInTheDocument());
+        // expect(mockSetSubmitted).toBe(false);
+    });
+
+    test('should handle closed vacancy error on submitApplication function call', async () => {
+        axios.post.mockResolvedValueOnce(mockClosedVacancyResponse);
+
+        const submitApplication = await axios.post(SUBMIT_APPLICATION, mockFormData);
+
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledWith(SUBMIT_APPLICATION, mockFormData);
+        expect(submitApplication).toEqual(mockClosedVacancyResponse);
+        waitFor (() => expect(screen.getAllByText("Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.")).toBeInTheDocument());
         // expect(mockSetSubmitted).toBe(false);
     });
 });
