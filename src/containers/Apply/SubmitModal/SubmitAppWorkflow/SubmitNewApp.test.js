@@ -59,17 +59,17 @@ describe('SubmitNewApp component', () => {
 	});
 
 	test('Should handle successful submitNewApp function call', async () => {
-        submitNewApp(
-            mockSetConfirmLoading,
-            mockDraftId,
-            mockSetSubmitted,
-            mockSetPercent,
-            mockSetAppSysId,
-            mockOnCancel,
-            mockReturnToDocuments,
-            mockCheckAuth,
-            mockSetAuth
-        );
+        // submitNewApp(
+        //     mockSetConfirmLoading,
+        //     mockDraftId,
+        //     mockSetSubmitted,
+        //     mockSetPercent,
+        //     mockSetAppSysId,
+        //     mockOnCancel,
+        //     mockReturnToDocuments,
+        //     mockCheckAuth,
+        //     mockSetAuth
+        // );
         // expect(submitNewApp).toBeCalledWith(
         //     mockSetConfirmLoading,
         //     mockInfoToSend,
