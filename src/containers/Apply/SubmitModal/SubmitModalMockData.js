@@ -150,6 +150,18 @@ export const mockSubmitAppFailResponse = {
 	},
 };
 
+// mocks a closed vacancy error response from the SUBMIT_APPLICATION endpoint
+export const mockClosedVacancyResponse = {
+	data: {
+		result: {
+			response: {
+				status: 404,
+				message: 'Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.',
+			},
+		},
+	},
+};
+
 // Mocks documentToDelete
 export const mockDocumentToDelete = {
 	uploadedDocument: {
