@@ -36,6 +36,7 @@ jest.mock('axios');
 jest.mock('../../Util/TransformJsonToBackend');
 jest.mock('./SubmitNewApp');
 
+// unable to get ay coverage on the api axios calls. will need to revist when time permits
 describe('SubmitNewApp component', () => {
 	const mockSetConfirmLoading = jest.fn();
 	let mockDraftId;
