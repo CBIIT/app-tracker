@@ -3,6 +3,7 @@ import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
+import Cookies from 'js-cookie';
 
 import { REGISTER_OKTA, TENANT_CHECK_ROUTES} from '../../../constants/Routes';
 
@@ -117,9 +118,13 @@ const login = () => {
 							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
 						options={tenants}
 						onChange={(value) => {
-							const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
-							previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '';
-							setCurrentTenant(value);}} 
+							let routeToCheck = '';
+							if (locationX) {
+								routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
+							}
+							previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '' ;
+							setCurrentTenant(value);
+							Cookies.set('lastSelectedTenant', value, { expires: 7 });}} 
 						value={currentTenant} />
 				</div> :
 				<div className='LeftContainerSub'>{''}</div>
