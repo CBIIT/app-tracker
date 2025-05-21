@@ -636,6 +636,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 											className='wider-button'
 											style={{ border: 'none', color: '#015EA2' }}
 											onClick={save}
+											data-testid='save-application-button'
 										>
 											<SaveOutlined /> Save Application
 										</Button>
