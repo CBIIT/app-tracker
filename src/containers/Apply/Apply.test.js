@@ -15,12 +15,12 @@ import {
 	mockProfileResponse,
 	mockFormData,
 } from './ApplyMockData';
-
 import {
 	VACANCY_DETAILS_FOR_APPLICANTS,
 	SAVE_APP_DRAFT,
 	GET_PROFILE,
 } from '../../constants/ApiEndpoints';
+
 
 jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
 	return {
@@ -53,7 +53,6 @@ jest.mock('react-router-dom', () => ({
 describe('Apply component', () => {
 	let mockVacancyId;
 	let mockDraftId;
-
 	beforeAll(() => {
 		Object.defineProperty(window, 'matchMedia', {
 			writable: true,
@@ -69,20 +68,16 @@ describe('Apply component', () => {
 			})),
 		});
 	});
-
 	beforeEach(() => {
 		useAuth.mockReturnValue(mockUseAuth);
 	});
-
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
-
 	test('Should render new application form', async () => {
 		mockVacancyId = '222';
 		mockDraftId = '333';
 		useParams.mockReturnValue({ id: '' });
-
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancyResponse)
 		);
@@ -92,7 +87,6 @@ describe('Apply component', () => {
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockSaveAppDraftResponse)
 		);
-
 		await waitFor(() => {
 			render(
 				<MemoryRouter initialEntries={['/apply']}>
@@ -103,7 +97,9 @@ describe('Apply component', () => {
 
 		expect(axios.get).toHaveBeenCalledTimes(3);
 		expect(axios.post).toHaveBeenCalledTimes(1);
+		expect(screen.getByTestId('back-button')).toBeInTheDocument();
 		expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+		expect(screen.getByTestId('next-button')).toBeInTheDocument();
 	});
 
 	test('should handle error on save app functionality', async () => {
@@ -142,6 +138,51 @@ describe('Apply component', () => {
 				})
 			);
 			expect(screen.getByText('Sorry! There was an error saving your application. Please try again. If the issue persists, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov')).toBeInTheDocument();
+		});
+	});
+
+	test('should move to next page on click of next button', async () => {
+		mockVacancyId = '222';
+		mockDraftId = '333';
+		useParams.mockReturnValue({ id: '' });
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockVacancyResponse)
+		);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockProfileResponse)
+		);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockSaveAppDraftResponse)
+		);
+
+		await waitFor(() => {
+			render(
+				<MemoryRouter initialEntries={['/apply']}>
+					<Apply />
+				</MemoryRouter>
+			);
+		});
+
+		fireEvent.click(screen.getByTestId('next-button'));
+
+		waitFor(() => {
+			expect(screen.getByTestId('back-button')).toBeInTheDocument();
+			expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+			expect(screen.getByTestId('next-button')).toBeInTheDocument();
+		})
+
+		fireEvent.click(screen.getByTestId('next-button'));
+
+		waitFor(() => {
+			expect(axios.post).toHaveBeenCalledWith(
+				1,
+				SAVE_APP_DRAFT,
+				expect.objectContaining({
+					jsonobj: JSON.stringify(mockFormData),
+					draft_id: mockDraftId,
+				})
+			);
+			expect(screen.getByText('Application successfully saved ')).toBeInTheDocument();
 		});
 
 	});
