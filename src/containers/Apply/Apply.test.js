@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import Apply from './Apply';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -22,7 +22,17 @@ import {
 	GET_PROFILE,
 } from '../../constants/ApiEndpoints';
 
-jest.mock('../../hooks/useAuth');
+jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
+	return {
+		auth: {
+			iTrustGlideSsoId: 'mockId',
+			iTrustUrl: 'mockUrl',
+			isUserLoggedIn: true,
+			user: { name: 'Mock User' },
+			oktaLoginAndRedirectUrl: 'mockRedirectUrl',
+		},
+	}
+}));
 jest.mock('../../constants/checkAuth');
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -30,6 +40,15 @@ jest.mock('react-router-dom', () => ({
 	useParams: jest.fn(),
 }));
 jest.mock('../Profile/Util/ConvertDataFromBackend');
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	Link: jest.fn(),
+	useLocation: jest.fn().mockImplementation(() => {
+		return {
+			pathname: '/apply',
+		}
+	})
+}));
 
 describe('Apply component', () => {
 	let mockVacancyId;
@@ -82,18 +101,48 @@ describe('Apply component', () => {
 			);
 		});
 
-		const vacancy = await axios.get(1, VACANCY_DETAILS_FOR_APPLICANTS + mockVacancyId);
-		const profile = await axios.get(2, GET_PROFILE + mockUseAuth.auth.user.uid);
-		const saveDraft = await axios.post(1, SAVE_APP_DRAFT, {
-			jsonobj: JSON.stringify(mockFormData),
-			draft_id: mockDraftId,
+		expect(axios.get).toHaveBeenCalledTimes(3);
+		expect(axios.post).toHaveBeenCalledTimes(1);
+		expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+	});
+
+	test('should handle error on save app functionality', async () => {
+		mockVacancyId = '222';
+		mockDraftId = '333';
+		useParams.mockReturnValue({ id: '' });
+		const mockEmptyData = {};
+
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockVacancyResponse)
+		);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockProfileResponse)
+		);
+		axios.get.mockImplementationOnce(() =>
+			Promise.resolve(mockSaveAppDraftResponse)
+		);
+
+		await waitFor(() => {
+			render(
+				<MemoryRouter initialEntries={['/apply']}>
+					<Apply />
+				</MemoryRouter>
+			);
 		});
 
-		expect(axios.get).toHaveBeenCalledTimes(5);
-		expect(axios.post).toHaveBeenCalledTimes(2);
+		fireEvent.click(screen.getByTestId('save-application-button'));
 
-		//expect(vacancy).toEqual(mockVacancyResponse);
-		//expect(profile).toEqual(mockProfileResponse);
-		//expect(saveDraft).toEqual(mockSaveAppDraftResponse);
+		waitFor(() => {
+			expect(axios.post).toHaveBeenCalledWith(
+				1,
+				SAVE_APP_DRAFT,
+				expect.objectContaining({
+					jsonobj: JSON.stringify(mockEmptyData),
+					draft_id: mockDraftId,
+				})
+			);
+			expect(screen.getByText('Sorry! There was an error saving your application. Please try again. If the issue persists, contact the Help Desk by emailing NCIAppSupport@mail.nih.gov')).toBeInTheDocument();
+		});
+
 	});
 });

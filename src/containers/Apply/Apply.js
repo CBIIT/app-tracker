@@ -381,20 +381,18 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			),
 		});
 
-	steps.push(
-		{
-			key: 'review',
-			title: 'Review',
-			content: (
-				<Review
-					vacancyTenantType={vacancyTenantType}
-					onEditButtonClick={(step) => onEditButtonClick(step)}
-				/>
-			),
-			description: 'Review before submitting',
-			longDescription: 'Please review key information entered in each section.',
-		}
-	);
+	steps.push({
+		key: 'review',
+		title: 'Review',
+		content: (
+			<Review
+				vacancyTenantType={vacancyTenantType}
+				onEditButtonClick={(step) => onEditButtonClick(step)}
+			/>
+		),
+		description: 'Review before submitting',
+		longDescription: 'Please review key information entered in each section.',
+	});
 
 	const onEditButtonClick = (step) => {
 		const index = steps.findIndex((item) => item.key === step);
@@ -517,7 +515,26 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					setDraftId(saveDraftResponse.data.result.draft_id);
 				}
 			} catch (error) {
-				message.error('Sorry! There was an error saving.');
+				notification.error({
+					message: 'Sorry! There was an error saving your application.',
+					description: (
+						<>
+							<p>
+								Please try again. If the issue persists, contact the Help Desk
+								by emailing{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 1000,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
 			} finally {
 				checkAuth(setIsLoading, setAuth);
 			}
@@ -619,6 +636,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 											className='wider-button'
 											style={{ border: 'none', color: '#015EA2' }}
 											onClick={save}
+											data-testid='save-application-button'
 										>
 											<SaveOutlined /> Save Application
 										</Button>
