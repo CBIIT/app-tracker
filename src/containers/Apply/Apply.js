@@ -413,6 +413,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
+				if (currentStep == 1) {
+					save();
+				}
 				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
@@ -609,6 +612,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 										type='primary'
 										ghost
 										className='wider-button'
+										data-testid='back-button'
 									>
 										{currentStep === 0 ? 'Cancel' : 'Back'}
 									</Button>
@@ -619,6 +623,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 											className='wider-button'
 											style={{ border: 'none', color: '#015EA2' }}
 											onClick={save}
+											data-testid='save-application-button'
 										>
 											<SaveOutlined /> Save Application
 										</Button>
@@ -629,6 +634,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 										type='primary'
 										onClick={next}
 										className='wider-button'
+										data-testid='next-button'
 									>
 										{currentStep == steps.length - 1
 											? 'Submit Application'
