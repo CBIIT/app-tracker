@@ -24,6 +24,7 @@ import {
 	CHAIR_DASHBOARD,
 	COMMITTEE_DASHBOARD,
 	EDIT_VACANCY,
+	EXE_SEC_DASHBOARD,
 } from '../../constants/Routes';
 import {
 	ADVANCE_VACANCY_TO_NEXT_STEP,
@@ -49,6 +50,7 @@ import {
 } from '../../constants/VacancyStates';
 import Loading from '../../components/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
+import { validateRoleForCurrentTenant, isChair, isExecSec } from '../../components/Util/RoleValidator/RoleValidator';
 
 import './ManageDashboard.css';
 
@@ -168,7 +170,7 @@ const manageDashboard = () => {
 
 	const history = useHistory();
 	const {
-		auth: { user }, setStep
+		auth: { user, tenants }, setStep, currentTenant,
 	} = useAuth();
 
 	useEffect(() => {
@@ -277,9 +279,13 @@ const manageDashboard = () => {
 						<Button
 							type='link'
 							onClick={() => {
-								if (user.isManager == true) {
-									history.push(VACANCY_DASHBOARD);
-								} else if (user.isChair == true) {
+								if (validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)) {
+									if (isExecSec(currentTenant, tenants)) {
+										history.push(EXE_SEC_DASHBOARD);
+									} else {
+										history.push(VACANCY_DASHBOARD);
+									}
+								} else if (isChair(currentTenant, tenants)) {
 									history.push(CHAIR_DASHBOARD);
 								} else {
 									history.push(COMMITTEE_DASHBOARD);
