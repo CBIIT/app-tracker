@@ -94,22 +94,12 @@ describe('Apply component', () => {
 				</MemoryRouter>
 			);
 		});
-		const vacancy = await axios.get(1, VACANCY_DETAILS_FOR_APPLICANTS + mockVacancyId);
-		const profile = await axios.get(2, GET_PROFILE + mockUseAuth.auth.user.uid);
-		const saveDraft = await axios.post(1, SAVE_APP_DRAFT, {
-			jsonobj: JSON.stringify(mockFormData),
-			draft_id: mockDraftId,
-		});
 
-		expect(axios.get).toHaveBeenCalledTimes(5);
-		expect(axios.post).toHaveBeenCalledTimes(2);
+		expect(axios.get).toHaveBeenCalledTimes(3);
+		expect(axios.post).toHaveBeenCalledTimes(1);
 		expect(screen.getByTestId('back-button')).toBeInTheDocument();
 		expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
 		expect(screen.getByTestId('next-button')).toBeInTheDocument();
-
-		// expect(vacancy).toEqual(mockVacancyResponse);
-		// expect(profile).toEqual(mockProfileResponse);
-		// expect(saveDraft).toEqual(mockSaveAppDraftResponse);
 	});
 
 	test('should handle error on save app functionality', async () => {
