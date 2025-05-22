@@ -528,7 +528,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 							</p>
 						</>
 					),
-					duration: 30,
+					duration: 1000,
 					style: {
 						height: '225px',
 						display: 'flex',
