@@ -1,7 +1,6 @@
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 
 import './App.less';
 import Layout from './hoc/Layout/Layout';
@@ -50,7 +49,7 @@ import { atleastOneChair } from './components/Util/RoleValidator/RoleValidator'
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
-	const { auth, setAuth, setCurrentTenant } = useAuth();	// this populates auth
+	const { auth, setAuth } = useAuth();	// this populates auth
 	
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
@@ -59,13 +58,6 @@ const app = () => {
 
 	let routes = [];
 	const { isUserLoggedIn, user, tenants } = auth;
-
-	// setup selected value of current Tenant, either default to lastSelectedTenantCookie, or if
-	// total of tenants for the user is 1, use the single tenant assigned
-	let lastSelectedTenantCookie = Cookies.get('lastSelectedTenant');
-	let singleTenant = tenants && tenants.length === 1 ? tenants[0] : null
-	const currentTenant = lastSelectedTenantCookie ? lastSelectedTenantCookie : singleTenant;
-	setCurrentTenant(currentTenant);
 
 	if (user && isUserLoggedIn) {
 		console.log(`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`);
