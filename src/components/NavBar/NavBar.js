@@ -11,7 +11,7 @@ import {
 } from '../../constants/Routes';
 
 import useAuth from '../../hooks/useAuth';
-import { isExecSec, isChair, isCommitteMember } from '../../components/Util/RoleValidator/RoleValidator';
+import { isExecSec, isChair, isCommitteMember, isHrSpecialist } from '../../components/Util/RoleValidator/RoleValidator';
 import './NavBar.css';
 
 const navBar = () => {
@@ -24,12 +24,15 @@ const navBar = () => {
 		tenants ?  isChair(currentTenant, tenants) : false);
 	const [validCommitteMember, setValidCommitteMember] = useState(
 			tenants ?  isCommitteMember(currentTenant, tenants) : false);
+	const [validHrSpecialist, setValidHrSpecialist] = useState(
+		tenants ? isHrSpecialist(currentTenant, tenants) : false);
 
 	useEffect(() => {
 		if (tenants) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
 			setValidCommitteMember(isCommitteMember(currentTenant, tenants))
+			setValidHrSpecialist(isHrSpecialist(currentTenant, tenants));
 		}
 	}, [currentTenant]);
 
@@ -59,7 +62,8 @@ const navBar = () => {
 			menuItems.push(
 				<Menu.Item
 					key='vacancy-dashboard'
-					onClick={emptyClickVacancyDashboard}>
+					onClick={emptyClickVacancyDashboard}
+				>
 						{currentTenant && <Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>}
 						{!currentTenant && <Link to={null}>Vacancy Dashboard</Link>}
 				</Menu.Item>
@@ -88,12 +92,21 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
+		if (currentTenant && validHrSpecialist) {
+			myVacanciesItems.push(
+				<Menu.Item key='your-vacancies-hr-specialist' className='VacanciesSubMenu'>
+					<Link to={COMMITTEE_DASHBOARD}>HR Specialist</Link>
+				</Menu.Item>
+			);
+		}
 
 		if (myVacanciesItems.length > 0) {
 			menuItems.push(
 				<Menu.Item
 					key='your-vacancies'
-					onClick={emptyClickYourVacancies} >
+					onClick={emptyClickYourVacancies}
+					role='menu'
+				>
 					<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
 						{myVacanciesItems}
 					</Menu.SubMenu>
@@ -132,6 +145,7 @@ const navBar = () => {
 						'_blank'
 					)
 				}
+				// role='menuitem'
 			>
 				The NIH Hiring Experience
 			</Menu.Item>
@@ -141,7 +155,7 @@ const navBar = () => {
 	return (
 		<div className='OuterDiv'>
 			<div className='NavBar'>
-				<Menu mode='horizontal'>{menuItems}</Menu>
+				<Menu mode='horizontal' role='menubar'>{menuItems}</Menu>
 			</div>
 		</div>
 	);

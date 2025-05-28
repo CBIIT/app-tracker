@@ -24,6 +24,12 @@ export const isCommitteMember = (currentTenant, tenants) => {
     return isCommitteMember;
 };
 
+export const isHrSpecialist = (currentTenant, tenants) => {
+    var foundTenant = tenants ? tenants.find((element) => (element.value === currentTenant && element.is_hr === true)) : null;
+    const isHrSpecialist = foundTenant ? true : false;
+    return isHrSpecialist;
+}
+
 export const atleastOneChair = (tenants) => {
     var foundTenant = tenants ? tenants.find((element) => ( element.is_chair === true)) : null;
     const atleastOneChair = foundTenant ? foundTenant.is_chair : false;

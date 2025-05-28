@@ -49,6 +49,7 @@
 
 .NavBar .ant-menu-title-content  {
 	color: white !important;
+	text-decoration: underline;
 }
 
 .NavBar .ant-menu-horizontal .ant-menu-item, .ant-menu-horizontal .ant-menu-submenu {
@@ -65,6 +66,11 @@
 
 .ant-menu-item a {
 	color: white;
+}
+
+.ant-menu-item a:hover {
+	color: white;
+	text-decoration: underline;
 }
 
 .ant-menu-submenu-popup > .ant-menu {
