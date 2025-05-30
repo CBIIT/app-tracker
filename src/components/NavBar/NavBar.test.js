@@ -156,6 +156,43 @@ describe('NavBar', () => {
         expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
     });
 
+    it('renders Your Vacancies link for HR Specialist', () => {
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                user: {
+                    isManager: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants: [
+                    {
+                        "value": "f24965fc1b9c11106daea681f54bcb04",
+                        "label": "tenant 1",
+                        "roles": [
+                            "x_g_nci_app_tracke.vacancy_manager",
+                            "x_g_nci_app_tracke.committee_member"
+                        ],
+                        "is_exec_sec": false,
+                        "is_read_only_user": false,
+                        "is_chair": false,
+                        "is_hr": true,
+                    }
+                ],
+            },
+            currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+        });
+
+         render(
+            <MemoryRouter>
+                <NavBar />
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
+    });
+
     it('renders Your Applications link for applicants', () => {
         useAuth.mockReturnValue({
             auth: {
