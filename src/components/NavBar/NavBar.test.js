@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import NavBar from './NavBar';
 import useAuth from '../../hooks/useAuth';
@@ -68,6 +68,7 @@ describe('NavBar', () => {
                         "is_exec_sec": true,
                         "is_read_only_user": true,
                         "is_chair": true,
+                        "is_hr": false,
                     }
                 ],
             },
@@ -104,6 +105,7 @@ describe('NavBar', () => {
                         "is_exec_sec": true,
                         "is_read_only_user": true,
                         "is_chair": true,
+                        "is_hr": false,
                     }
                 ],
             },
@@ -140,6 +142,7 @@ describe('NavBar', () => {
                         "is_exec_sec": true,
                         "is_read_only_user": true,
                         "is_chair": true,
+                        "is_hr": false,
                     }
                 ],
             },
@@ -255,4 +258,93 @@ describe('NavBar', () => {
 
         expect(screen.getByText('The NIH Hiring Experience')).toBeInTheDocument();
     });
+
+    it('renders message to select a tenant when clicking Vacancy Dashboard', () => {
+         useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                user: {
+                    isManager: true,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants: [
+                    {
+                        "value": "f24965fc1b9c11106daea681f54bcb04",
+                        "label": "tenant 1",
+                        "roles": [
+                            "x_g_nci_app_tracke.vacancy_manager",
+                            "x_g_nci_app_tracke.committee_member"
+                        ],
+                        "is_exec_sec": true,
+                        "is_read_only_user": true,
+                        "is_chair": true,
+                        "is_hr": false,
+                    }
+                ],
+            },
+            currentTenant: '123',
+        });
+
+        render(
+            <MemoryRouter>
+                <NavBar />
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('Vacancy Dashboard')).toBeInTheDocument();
+        fireEvent.click(screen.getByText('Vacancy Dashboard'));
+
+        waitFor(() => {
+            expect(screen.getByText('Please select a tenant to see Vacancy Dashboard.')).toBeInTheDocument();
+        });
+    });
+
+    // leave as a comment for future use when we can figure out how to cover lines 46-57 in NvaBar
+    
+    // it('renders message to select a tenant when clicking Your Vacancies', () => {
+    //     useAuth.mockReturnValue({
+    //         auth: {
+    //             isUserLoggedIn: true,
+    //             user: {
+    //                 isManager: true,
+    //                 roles: [
+    //                      "x_g_nci_app_tracke.vacancy_manager",
+    //                      "x_g_nci_app_tracke.committee_member"
+    //                ],
+    //                 hasApplications: false,
+    //                 uid: '123'
+    //             },
+    //             tenants: [
+    //                 {
+    //                     "value": "f24965fc1b9c11106daea681f54bcb04",
+    //                     "label": "tenant 1",
+    //                     "roles": [
+    //                         "x_g_nci_app_tracke.vacancy_manager",
+    //                         "x_g_nci_app_tracke.committee_member"
+    //                     ],
+    //                     "is_exec_sec": true,
+    //                     "is_read_only_user": true,
+    //                     "is_chair": true,
+    //                     "is_hr": false,
+    //                 }
+    //             ],
+    //         },
+    //         currentTenant: '123',
+    //     });
+
+    //     render(
+    //         <MemoryRouter>
+    //             <NavBar />
+    //         </MemoryRouter>
+    //     );
+
+    //     expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
+    //     fireEvent.click(screen.getByText('Your Vacancies'));
+
+    //     waitFor(() => {
+    //         expect(screen.getByText('Please select a tenant to see Your Vacancies.')).toBeInTheDocument();
+    //     });
+    // });
 });
