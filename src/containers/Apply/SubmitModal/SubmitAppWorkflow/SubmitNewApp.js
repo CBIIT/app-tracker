@@ -42,7 +42,25 @@ const submitNewApp = async (
 			setPercent(20);
 		} catch (e) {
 			setSubmitted(false);
-			message.error('Sorry! There was an error when attempting to submit your application.');
+			notification.error({
+					message: 'Sorry! There was an error when attempting to submit your application.',
+					description: (
+						<>
+							<p>
+								Please try again. If the issue continues, contact the Help Desk{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 0,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
 		} finally {
 			createAppDocs();
 		}
@@ -56,7 +74,25 @@ const submitNewApp = async (
 			setPercent(40);
 		} catch (e) {
 			setSubmitted(false);
-			message.error('Sorry! There was an error when attempting to submit your application.');
+			notification.error({
+					message: 'Sorry! There was an error when attempting to submit your application.',
+					description: (
+						<>
+							<p>
+								Please try again. If the issue continues, contact the Help Desk{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 0,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
 		} finally {
 			attachDocuments(documents);
 		}
@@ -93,7 +129,25 @@ const submitNewApp = async (
 			setPercent(60);
 		} catch (e) {
 			setSubmitted(false);
-			message.error('Sorry! There was an error when attempting to submit your application.');
+			notification.error({
+					message: 'Sorry! There was an error when attempting to submit your application.',
+					description: (
+						<>
+							<p>
+								Please try again. If the issue continues, contact the Help Desk{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 0,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
 		} finally {
 			checkAttachments();
 		}
@@ -107,7 +161,25 @@ const submitNewApp = async (
 			setPercent(80);
 		} catch (e) {
 			setSubmitted(false);
-			message.error('Sorry! There was an error attempting to submit your application.');
+			notification.error({
+					message: 'Sorry! There was an error when attempting to submit your application.',
+					description: (
+						<>
+							<p>
+								Please try again. If the issue continues, contact the Help Desk{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 0,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
 		} finally {
 			attachmentVerify(mandatoryDocuments);
 		}
@@ -178,7 +250,25 @@ const submitNewApp = async (
 			if (e == 'Error: Request failed with status code 400') {
 				message.error('Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.');
 			} else {
-				message.error('Sorry! There was an error with submitting your application.');
+				notification.error({
+					message: 'Sorry! There was an error when attempting to submit your application.',
+					description: (
+						<>
+							<p>
+								Please try again. If the issue continues, contact the Help Desk{' '}
+								<a href='mailto:NCIAppSupport@mail.nih.gov'>
+									NCIAppSupport@mail.nih.gov
+								</a>
+							</p>
+						</>
+					),
+					duration: 0,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
 			}
 			setSubmitted(false);
 		} finally {
