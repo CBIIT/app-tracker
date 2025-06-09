@@ -333,35 +333,34 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			data['sys_id'] = draftId;
 		}
 
-		const saveDraftResponse = await axios
-			.post(SAVE_APP_DRAFT, data)
-			.catch(function () {
-				notification.error({
-					message: 'Save Failed ',
-					description: (
-						<>
-							<p>
-								Please verify if the vacancy has closed. If not, please log out
-								and re-login to resubmit your application. If the issue
-								continues, contact the Help Desk by emailing{' '}
-								<a href='mailto:NCIAppSupport@mail.nih.gov'>
-									NCIAppSupport@mail.nih.gov
-								</a>
-							</p>
-						</>
-					),
-					duration: 30,
-					style: {
-						height: '225px',
-						display: 'flex',
-						alignItems: 'center',
-					},
-				});
-				history.goBack();
-			})
-
-		if (saveDraftResponse) {
+		try{ 
+			const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+			if (saveDraftResponse) {
 			setDraftId(saveDraftResponse.data.result.draft_id);
+			}
+		} catch (e) {
+			notification.error({
+				message: 'Save Failed',
+				description: (
+					<>
+						<p>
+							Please verify if the vacancy has closed. If not, please log out
+							and re-login to resubmit your application. If the issue continues,
+							contact the Help Desk by emailing{' '}
+							<a href='mailto:NCIAppSupport@mail.nih.gov'>
+								NCIAppSupport@mail.nih.gov
+							</a>
+						</p>
+					</>
+				),
+				duration: 30,
+				style: {
+					height: '225px',
+					display: 'flex',
+					alignItems: 'center',
+				},
+			});
+			history.goBack();
 		}
 	};
 
