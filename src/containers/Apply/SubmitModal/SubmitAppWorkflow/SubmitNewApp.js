@@ -28,11 +28,12 @@ const submitNewApp = async (
 		jsonobj: JSON.stringify(data),
 	};
 
-	if (draftId) {
-		dataToSend['draft_id'] = draftId;
-	}
-
 	const infoToSend = transformJsonToBackend(data);
+	
+	if (draftId) {
+		dataToSend['draft_id'] = draftId
+		infoToSend['draft_id'] = draftId
+	}
 
 	setSubmitted(true);
 
