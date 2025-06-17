@@ -503,6 +503,7 @@ const applicantList = (props) => {
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
+									vacancyState={vacancyState}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -514,6 +515,7 @@ const applicantList = (props) => {
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
+									vacancyState={vacancyState}
 								/>
 							</Panel>
 						</Collapse>
@@ -617,6 +619,7 @@ const applicantList = (props) => {
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
+											vacancyState={vacancyState}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -632,6 +635,7 @@ const applicantList = (props) => {
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
+											vacancyState={vacancyState}
 										/>
 									</Panel>
 								</Collapse>

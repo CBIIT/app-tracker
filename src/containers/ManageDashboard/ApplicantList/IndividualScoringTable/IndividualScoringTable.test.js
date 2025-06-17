@@ -6,6 +6,9 @@ import {
 	mockRecommendedApplicantsTablePagination,
 	mockUserRoles,
 } from './IndividualScoringTableMockData';
+import {
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+} from '../../../../constants/VacancyStates';
 
 describe('individualScoringTable', () => {
 	let mockRecommendedApplicantsTableLoading;
@@ -55,6 +58,34 @@ describe('individualScoringTable', () => {
 
 		expect(screen.getByText('Applicant')).toBeInTheDocument();
 		expect(screen.getByText('Email')).toBeInTheDocument();
+		expect(screen.getByText('Average Score')).toBeInTheDocument();
+		expect(screen.getByText('Scoring Status')).toBeInTheDocument();
+		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
+		expect(screen.getByTestId('send-regret-email-button')).toBeInTheDocument();
+	});
+
+	test('renders individualScoringTable component scoring phase with focus area column', () => {
+		mockReferenceCollection = true;
+		mockRecommendedApplicantsTableLoading = true;
+
+		render(
+			<HashRouter>
+				<IndividualScoringTable
+					applicants={mockRecommendedApplicants}
+					pagination={mockRecommendedApplicantsTablePagination}
+					loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
+					onTableChange={mockLoadRecommendedApplicants}
+					refCollection={mockReferenceCollection}
+					isVacancyManager={true}
+					reloadVacancy={mockLoadVacancyAndApplicants}
+					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
+				/>
+			</HashRouter>
+		);
+
+		expect(screen.getByText('Applicant')).toBeInTheDocument();
+		expect(screen.getByText('Email')).toBeInTheDocument();
+		expect(screen.getByText('Focus Area')).toBeInTheDocument();
 		expect(screen.getByText('Average Score')).toBeInTheDocument();
 		expect(screen.getByText('Scoring Status')).toBeInTheDocument();
 		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
