@@ -19,11 +19,13 @@ import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
 	ROLLING_CLOSE,
 	VOTING_COMPLETE,
+	INDIVIDUAL_SCORING_IN_PROGRESS,
 } from '../../../../constants/VacancyStates';
 import {
 	IN_REVIEW,
 	COMPLETED,
 	REVIEW_COMPLETE,
+	SCORING,
 } from '../../../../constants/ApplicationStates';
 
 const { Option } = Select;
@@ -77,6 +79,36 @@ const individualScoringTable = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
+
+	let focusAreaOptions = [];
+	let uniqueFocusAreaOptions = [];
+	if (props.applicants.length > 0) {
+		// concat primary and secondary focus area
+		props.applicants.forEach((applicant) => {		
+			if ( applicant.primary_focus_area && applicant.secondary_focus_area) {
+				applicant.focus_area = applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+			}
+		});
+
+		// add all primary focus area to options
+		focusAreaOptions = props.applicants?.map((a) => ({
+			text: a.primary_focus_area,
+			value: a.primary_focus_area,
+		}));
+
+		// add all secondary focus area to options
+		props.applicants?.forEach((a) => focusAreaOptions.push({
+			text: a.secondary_focus_area,
+			value: a.secondary_focus_area,
+		}));
+
+		// remove duplicates
+		console.log('before delete ', focusAreaOptions);
+		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
+		//console.log('result ', result);
+
+		uniqueFocusAreaOptions = focusAreaOptions.filter((item, index) => focusAreaOptions.indexOf(item));	
+	}
 
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
@@ -203,6 +235,67 @@ const individualScoringTable = (props) => {
 					searchInput
 				),
 			},
+			// {
+			// 	title: 'Average Score',
+			// 	dataIndex: 'average_member_score',
+			// 	width: 50,
+			// 	render: (text) => {
+			// 		if (!text || text == 'NaN') {
+			// 			return (
+			// 				<span style={{ color: 'rgba(0,0,0,0.25)' }}>
+			// 					{(text = 'Pending')}
+			// 				</span>
+			// 			);
+			// 		} else {
+			// 			return parseFloat(text).toFixed(2);
+			// 		}
+			// 	},
+			// 	sorter: {
+			// 		compare: (a, b) => a.average_member_score - b.average_member_score,
+			// 	},
+			// },
+		];
+
+		if (
+			(props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) || 
+			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS			
+		){
+			if (uniqueFocusAreaOptions.length > 0) {
+				columns.push({
+					title: 'Focus Area',
+					dataIndex: 'focus_area',
+					render: (focus_area) => {
+						return focus_area;
+					},
+					filters: uniqueFocusAreaOptions ? uniqueFocusAreaOptions : [],
+					// filterSearch: true,
+					// filterMode: "tree",
+					onFilter: (value, record) => record.focus_area.includes(value),
+					sorter: (a, b) => {
+						if (a.focus_area < b.focus_area) {
+							return -1;
+						}
+						if (a.focus_area > b.focus_area) {
+							return 1;
+						}
+						return 0;
+					},
+					width: 250,
+				});
+			} else {
+				columns.push({
+					title: 'Focus Area',
+					dataIndex: 'focus_area',
+					render: (focus_area) => {
+						return (focus_area ? focus_area : 'n/a');
+					},
+					width: 250,
+				});
+			}
+		}
+
+		// Add average score after Focus area
+		columns.push(
 			{
 				title: 'Average Score',
 				dataIndex: 'average_member_score',
@@ -222,7 +315,7 @@ const individualScoringTable = (props) => {
 					compare: (a, b) => a.average_member_score - b.average_member_score,
 				},
 			},
-		];
+		);
 
 		if (
 			(props.vacancyState === ROLLING_CLOSE &&
@@ -409,6 +502,10 @@ const individualScoringTable = (props) => {
 	const handleOtherCommentsModalClose = () => {
 		setIsOtherCommentsModalVisible(false);
 	};
+
+	
+
+	
 
 	const columns = getColumns();
 
