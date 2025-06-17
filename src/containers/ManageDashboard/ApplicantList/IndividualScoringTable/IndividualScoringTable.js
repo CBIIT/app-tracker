@@ -102,12 +102,9 @@ const individualScoringTable = (props) => {
 			value: a.secondary_focus_area,
 		}));
 
-		// remove duplicates
-		console.log('before delete ', focusAreaOptions);
+		// remove null and duplicates
 		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
-		//console.log('result ', result);
-
-		uniqueFocusAreaOptions = focusAreaOptions.filter((item, index) => focusAreaOptions.indexOf(item));	
+		uniqueFocusAreaOptions = focusAreaOptions.filter((item) => focusAreaOptions.indexOf(item));
 	}
 
 	const onCommentButtonClick = (comment, sysId) => {
