@@ -7,5 +7,8 @@ module.exports = {
   moduleNameMapper: {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js'
-  }
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!@ant-design|@babel/runtime|antd|react|react-dom|react-router-dom|axios)',
+  ],
 }
