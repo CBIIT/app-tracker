@@ -435,7 +435,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			try {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
-				if (currentStep == 1) {
+				if (currentStep == 1 && !editSubmitted) {
 					save();
 				}
 				setCurrentStep(currentStep + 1);
