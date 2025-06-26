@@ -95,6 +95,7 @@ const basicInformation = (props) => {
 	const { auth, currentTenant } = useAuth();
 	const { user, tenants } = auth;
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
+	const focusAreaEnabled = tname.properties?.find((p) => p.name === 'enableFocusArea')?.value;
 
 	const newValues = {
 		...props.initialValues,
@@ -461,14 +462,17 @@ const basicInformation = (props) => {
 				</div>
 			)}
 
-			{tname && tname.label && tname.label.trim().toLowerCase() === 'stadtman' ? (
+			{focusAreaEnabled && focusAreaEnabled === 'true' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'
 					valuePropName='checked'
 				>
-					<Checkbox>Enable Focus Area</Checkbox>
+				<div>
+					<Checkbox checked={true} disabled>{<div style={{ color: "#333333", fontFamily: "Noto Sans", fontSize: "16px" }}>Enable Focus Area</div>}</Checkbox>
+				</div>
 				</Form.Item>
+
 			) : null}
 
 			<Form.Item label='Application Documents' name='applicationDocuments'>

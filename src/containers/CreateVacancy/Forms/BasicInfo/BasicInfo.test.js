@@ -130,4 +130,80 @@ describe('BasicInfo', () => {
         )
     });
 
+    test('should render BasicInfo component with Focus Area with checkbox checked and disabled', async () => {
+		mockReadOnly = false;
+		mockIsNew = true;
+		mockPocDefined = true;
+
+		useAuth.mockReturnValue({
+			auth: {
+                isUserLoggedIn: true,
+                iTrustGlideSsoId: 'itrust123',
+                oktaGlideSsoId: 'okta123',
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants:[{value: 'tenant1', label: 'Tenant 1', properties: [{name: 'enableFocusArea', value: 'true'}]}]
+            },
+            currentTenant: 'tenant1',
+		});
+
+        render(
+            <BasicInfo
+                initialValues={mockIntialValues}
+                formInstance={result}
+                readOnly={mockReadOnly}
+                isNew={mockIsNew}
+                pocDefined={mockPocDefined}
+                isDefined={true}
+            />
+        )
+
+        expect(screen.getByText(/Enable Focus Area/i)).toBeInTheDocument();
+        const checkbox = screen.getByRole('checkbox', { name: /Enable Focus Area/i });
+        expect(checkbox).toBeInTheDocument();
+        expect(checkbox).toBeChecked();
+        expect(checkbox).toBeDisabled();
+
+	});
+
+    test('should render BasicInfo component without Focus Area checkbox', async () => {
+		mockReadOnly = false;
+		mockIsNew = true;
+		mockPocDefined = true;
+
+		useAuth.mockReturnValue({
+			auth: {
+                isUserLoggedIn: true,
+                iTrustGlideSsoId: 'itrust123',
+                oktaGlideSsoId: 'okta123',
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants:[{value: 'tenant1', label: 'Tenant 1', properties: []}]
+            },
+            currentTenant: 'tenant1',
+		});
+
+        render(
+            <BasicInfo
+                initialValues={mockIntialValues}
+                formInstance={result}
+                readOnly={mockReadOnly}
+                isNew={mockIsNew}
+                pocDefined={mockPocDefined}
+                isDefined={true}
+            />
+        )
+        expect(screen.queryByRole('checkbox', { name: /Enable Focus Area/i })).toBeNull();
+	});
+
 });
