@@ -142,6 +142,33 @@ describe('CreateVacancy component tests' , () => {
         expect(screen.getByTestId('create-vacancy-container')).toBeInTheDocument();
     });
 
+    test('sets requireFocusArea to true when enableFocusArea is true', async () => {
+        jest.mock('../../hooks/useAuth', () => () => ({
+        auth: {
+            user: { uid: 'test-user' },
+            tenants: [{
+                value: 'tenant1',
+                properties: [{ name: 'enableFocusArea', value: 'true' }]
+            }]
+        },
+        currentTenant: 'tenant1',
+        previousTenant: { current: 'tenant1' },
+        setCurrentTenant: jest.fn(),
+        step: 0,
+        setStep: jest.fn(),
+        }))
+
+        const data = {
+            ...initialValues,
+            description: 'Test vacancy'
+        }
+        const sysId = '123'
+        await rtRender(<CreateVacancy initialValues={data} draftSysId={sysId} />);
+        expect(screen.getByTestId('create-vacancy-container')).toBeInTheDocument();
+  });
+
+
+
     // test('<CreateVacancy /> test with initial values', async () => {   
 
     //     const data = {}

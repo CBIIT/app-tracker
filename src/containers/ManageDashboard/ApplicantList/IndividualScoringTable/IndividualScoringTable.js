@@ -27,6 +27,7 @@ import {
 	REVIEW_COMPLETE,
 	SCORING,
 } from '../../../../constants/ApplicationStates';
+import useAuth from '../../../../hooks/useAuth';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -79,6 +80,10 @@ const individualScoringTable = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
+
+	const { auth: { tenants }, currentTenant } = useAuth();
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
+	const focusAreaEnabled = tname.properties?.find((p) => p.name === 'enableFocusArea')?.value;
 
 	let focusAreaOptions = [];
 	let uniqueFocusAreaOptions = [];
@@ -253,9 +258,11 @@ const individualScoringTable = (props) => {
 			// },
 		];
 
-		if (
-			(props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) || 
-			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS			
+		console.log('focusAreaEnabled 1', focusAreaEnabled);
+
+		if ((focusAreaEnabled && focusAreaEnabled === 'true') &&
+			((props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) ||
+			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
 		){
 			if (uniqueFocusAreaOptions.length > 0) {
 				columns.push({
@@ -276,15 +283,6 @@ const individualScoringTable = (props) => {
 							return 1;
 						}
 						return 0;
-					},
-					width: 250,
-				});
-			} else {
-				columns.push({
-					title: 'Focus Area',
-					dataIndex: 'focus_area',
-					render: (focus_area) => {
-						return (focus_area ? focus_area : 'n/a');
 					},
 					width: 250,
 				});
