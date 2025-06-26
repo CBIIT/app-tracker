@@ -258,8 +258,6 @@ const individualScoringTable = (props) => {
 			// },
 		];
 
-		console.log('focusAreaEnabled 1', focusAreaEnabled);
-
 		if ((focusAreaEnabled && focusAreaEnabled === 'true') &&
 			((props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) ||
 			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
