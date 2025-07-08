@@ -107,9 +107,22 @@ const individualScoringTable = (props) => {
 			value: a.secondary_focus_area,
 		}));
 
-		// remove null and duplicates
+		// remove null focus areas
 		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
-		uniqueFocusAreaOptions = focusAreaOptions.filter((item) => focusAreaOptions.indexOf(item));
+		if (focusAreaOptions.length > 2) {
+			// remove duplicates
+			const seen = new Set();
+			uniqueFocusAreaOptions = focusAreaOptions.filter((item) => {
+				if (seen.has(item.value)) return false;
+				seen.add(item.value);
+				return true;
+			});
+		} else {
+			uniqueFocusAreaOptions = focusAreaOptions.map((fa) => ({
+				text: fa.text,
+				value: fa.text,
+			}));
+		}
 	}
 
 	const onCommentButtonClick = (comment, sysId) => {
@@ -237,25 +250,6 @@ const individualScoringTable = (props) => {
 					searchInput
 				),
 			},
-			// {
-			// 	title: 'Average Score',
-			// 	dataIndex: 'average_member_score',
-			// 	width: 50,
-			// 	render: (text) => {
-			// 		if (!text || text == 'NaN') {
-			// 			return (
-			// 				<span style={{ color: 'rgba(0,0,0,0.25)' }}>
-			// 					{(text = 'Pending')}
-			// 				</span>
-			// 			);
-			// 		} else {
-			// 			return parseFloat(text).toFixed(2);
-			// 		}
-			// 	},
-			// 	sorter: {
-			// 		compare: (a, b) => a.average_member_score - b.average_member_score,
-			// 	},
-			// },
 		];
 
 		if ((focusAreaEnabled && focusAreaEnabled === 'true') &&
@@ -269,19 +263,8 @@ const individualScoringTable = (props) => {
 					render: (focus_area) => {
 						return focus_area;
 					},
-					filters: uniqueFocusAreaOptions ? uniqueFocusAreaOptions : [],
-					// filterSearch: true,
-					// filterMode: "tree",
+					filters: uniqueFocusAreaOptions,
 					onFilter: (value, record) => record.focus_area.includes(value),
-					sorter: (a, b) => {
-						if (a.focus_area < b.focus_area) {
-							return -1;
-						}
-						if (a.focus_area > b.focus_area) {
-							return 1;
-						}
-						return 0;
-					},
 					width: 250,
 				});
 			}
