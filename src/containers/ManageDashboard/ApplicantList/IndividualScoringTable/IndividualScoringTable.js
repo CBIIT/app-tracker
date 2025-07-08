@@ -111,7 +111,12 @@ const individualScoringTable = (props) => {
 		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
 		if (focusAreaOptions.length > 2) {
 			// remove duplicates
-			uniqueFocusAreaOptions = focusAreaOptions.filter((fa) => fa.text);
+			const seen = new Set();
+			uniqueFocusAreaOptions = focusAreaOptions.filter((item) => {
+				if (seen.has(item.value)) return false;
+				seen.add(item.value);
+				return true;
+			});
 		} else {
 			uniqueFocusAreaOptions = focusAreaOptions.map((fa) => ({
 				text: fa.text,

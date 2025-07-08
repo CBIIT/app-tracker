@@ -5,6 +5,7 @@ import {
 	mockRecommendedApplicants,
 	mockRecommendedApplicantsTablePagination,
 	mockApplicantsWithFocusAreas,
+	mockApplicantsWithFocusAreasWithRepeat,
 } from './IndividualScoringTableMockData';
 import {
 	INDIVIDUAL_SCORING_IN_PROGRESS,
@@ -169,5 +170,50 @@ describe('individualScoringTable', () => {
 		expect(within(filterDropdown).getByText('Genetics')).toBeInTheDocument();
 		expect(within(filterDropdown).getByText('Chemistry')).toBeInTheDocument();
 		expect(within(filterDropdown).getByText('Physics')).toBeInTheDocument();
+	});
+
+	test('displays all Focus Area filter options remove duplicates', async () => {
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [
+					{
+						value: 'tenant1',
+						properties: [{ name: 'enableFocusArea', value: 'true' }],
+					},
+				],
+			},
+			currentTenant: 'tenant1',
+		});
+		render(
+			<HashRouter>
+				<IndividualScoringTable
+					applicants={mockApplicantsWithFocusAreasWithRepeat}
+					pagination={mockRecommendedApplicantsTablePagination}
+					loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
+					onTableChange={mockLoadRecommendedApplicants}
+					refCollection={mockReferenceCollection}
+					isVacancyManager={true}
+					reloadVacancy={mockLoadVacancyAndApplicants}
+					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
+				/>
+			</HashRouter>
+
+		);
+
+		// Find the Focus Area column header and open the filter dropdown, click the filter button
+		const focusAreaHeader = screen.getByText('Focus Area');
+		const th = focusAreaHeader.closest('th');
+		const filterButton = within(th).getByLabelText('filter');
+		fireEvent.click(filterButton);
+
+		const filterDropdown = document.querySelector('.ant-table-filter-dropdown');
+		expect(filterDropdown).toBeInTheDocument();
+
+		// Check that all unique focus area options are displayed
+		expect(within(filterDropdown).getByText('Biology')).toBeInTheDocument();
+		expect(within(filterDropdown).getByText('Genetics')).toBeInTheDocument();
+		expect(within(filterDropdown).getByText('Chemistry')).toBeInTheDocument();
+
+		expect(within(filterDropdown).queryAllByText('Biology').length).toBe(1);
 	});
 });
