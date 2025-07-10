@@ -8,6 +8,12 @@ import {
 import { getColumnSearchProps } from '../../ManageDashboard/Util/ColumnSearchProps'
 import SearchContext from '../../ManageDashboard/Util/SearchContext';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
+import useAuth from '../../../hooks/useAuth';
+import {
+	ROLLING_CLOSE,
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+} from '../../../constants/VacancyStates';
+import { SCORING } from '../../../constants/ApplicationStates';
 
 import './ApplicantList.css';
 
@@ -115,6 +121,71 @@ const applicantList = (props) => {
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 	];
+
+	const { auth: { tenants }, currentTenant } = useAuth();
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
+	const focusAreaEnabled = tname.properties?.find((p) => p.name === 'enableFocusArea')?.value;
+
+	let focusAreaOptions = [];
+	let uniqueFocusAreaOptions = [];
+	if (applicants.length > 0) {
+		// concat primary and secondary focus area
+		applicants.forEach((applicant) => {
+			if ( applicant.primary_focus_area && applicant.secondary_focus_area) {
+				applicant.focus_area = applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+			}
+		});
+
+		// add all primary focus area to options
+		focusAreaOptions = applicants?.map((a) => ({
+			text: a.primary_focus_area,
+			value: a.primary_focus_area,
+		}));
+
+		// add all secondary focus area to options
+		applicants?.forEach((a) => focusAreaOptions.push({
+			text: a.secondary_focus_area,
+			value: a.secondary_focus_area,
+		}));
+
+		// remove null focus areas
+		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
+		if (focusAreaOptions.length > 2) {
+			// remove duplicates
+			const seen = new Set();
+			uniqueFocusAreaOptions = focusAreaOptions.filter((item) => {
+				if (seen.has(item.value)) return false;
+				seen.add(item.value);
+				return true;
+			});
+		} else {
+			uniqueFocusAreaOptions = focusAreaOptions.map((fa) => ({
+				text: fa.text,
+				value: fa.text,
+			}));
+		}
+	}
+
+	if ((focusAreaEnabled && focusAreaEnabled === 'true') &&
+		((props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) ||
+			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
+	) {
+		if (uniqueFocusAreaOptions.length > 0) {
+			console.log('focus area enabled 1', applicantColumns);
+			// Insert focus area column at index 2
+			applicantColumns.splice(3, 0, {
+				title: 'Focus Area',
+				dataIndex: 'focus_area',
+				key: 'focus_area',
+				render: (focus_area) => {
+					return focus_area;
+				},
+				filters: uniqueFocusAreaOptions,
+				onFilter: (value, record) => record.focus_area.includes(value),
+				width: 250,
+			});
+		}
+	}
 
 	return (
 		<div className='applicant-table'>

@@ -754,6 +754,7 @@ const applicantList = (props) => {
 							pagination={tablePagination}
 							onTableChange={loadAllApplicants}
 							loading={tableLoading}
+							vacancyState={vacancyState}
 						/>
 					);
 				case VOTING_COMPLETE:
@@ -779,6 +780,7 @@ const applicantList = (props) => {
 									onTableChange={loadAllApplicants}
 									loading={tableLoading}
 									filter={filter}
+									vacancyState={vacancyState}
 								/>
 							);
 						case IN_REVIEW:
@@ -817,6 +819,7 @@ const applicantList = (props) => {
 					onTableChange={loadAllApplicants}
 					loading={tableLoading}
 					filter={filter}
+					vacancyState={vacancyState}
 				/>
 			);
 		} else {
