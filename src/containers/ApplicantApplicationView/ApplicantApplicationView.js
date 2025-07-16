@@ -46,7 +46,6 @@ const applicantApplicationView = (props) => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(APPLICANT_GET_APPLICATION + appSysId);
-			console.log('🚀 ~ getApplicationInfo ~ response:', response);
 			setApplication(transformJsonFromBackend(response.data.result));
 			setIsLoading(false);
 		} catch (error) {
