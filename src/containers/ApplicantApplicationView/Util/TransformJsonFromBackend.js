@@ -1,10 +1,12 @@
 export const transformJsonFromBackend = (sourceJson) => {
-
 	const cleanseFocusArea = (localFocusAreas) => {
-		if (!localFocusAreas || localFocusAreas.length == 0 || localFocusAreas.includes("undefined"))
+		if (
+			!localFocusAreas ||
+			localFocusAreas.length == 0 ||
+			localFocusAreas.includes('undefined')
+		)
 			return [];
-		else
-			return localFocusAreas.split(',');
+		else return localFocusAreas.split(',');
 	};
 
 	return {
@@ -38,6 +40,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 				contactAllowed: reference.contact_allowed,
 				organization: reference.organization,
 				phone: reference.phone,
+				referenceReceived: reference.reference_received,
 				relationship: reference.relationship,
 				positionTitle: reference.title,
 			};
