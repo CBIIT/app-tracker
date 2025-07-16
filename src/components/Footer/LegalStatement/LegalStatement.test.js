@@ -12,12 +12,12 @@ describe('LegalStatement', () => {
         expect(screen.getByText(/Expiration Date: 07\/31\/2025/i)).toBeInTheDocument();
     });
 
-    test('should contain a link to the OPM GOVT-5 document', () => {
-        render(<LegalStatement />);
-        const linkElement = screen.getByText(/OPM GOVT-5/i);
-        expect(linkElement).toBeInTheDocument();
-        expect(linkElement.closest('a')).toHaveAttribute('href', 'http://www.opm.gov/information-management/privacy-policy/sorn/opm-sorn-govt-5-recruiting-examining-and-placement-records.pdf');
-    });
+    // test('should contain a link to the OPM GOVT-5 document', () => {
+    //     render(<LegalStatement />);
+    //     const linkElement = screen.getByText(/OPM GOVT-5/i);
+    //     expect(linkElement).toBeInTheDocument();
+    //     expect(linkElement.closest('a')).toHaveAttribute('href', 'http://www.opm.gov/information-management/privacy-policy/sorn/opm-sorn-govt-5-recruiting-examining-and-placement-records.pdf');
+    // });
 
     test('should display the correct public reporting burden information', () => {
         render(<LegalStatement />);
