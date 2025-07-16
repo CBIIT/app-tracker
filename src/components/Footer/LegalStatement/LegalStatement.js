@@ -13,10 +13,10 @@ const legalStatement = () => (
 			<p>
 				Collection of this information is authorized by The Public Health
 				Service Act, Section 411 (42 USC 285a). Rights of participants are
-				protected by The Privacy Act of 1974 under{' '}
-				<a href='http://www.opm.gov/information-management/privacy-policy/sorn/opm-sorn-govt-5-recruiting-examining-and-placement-records.pdf' className='LinkLS'>
+				protected by The Privacy Act of 1974 under OPM GOVT-5
+				{/* <a href={null} className='LinkLS'>
 					OPM GOVT-5
-				</a>
+				</a> */}
 				. Participation is voluntary, and there are no penalties for not
 				participating or withdrawing at any time. Refusal to participate will
 				not affect your benefits in any way. The information collected will be

@@ -141,7 +141,7 @@ const navBar = () => {
 				key='hiring'
 				onClick={() =>
 					window.open(
-						'https://hr.nih.gov/jobs/executive/recruit/nih-executive-experience',
+						'https://hr.nih.gov/jobs',
 						'_blank'
 					)
 				}
