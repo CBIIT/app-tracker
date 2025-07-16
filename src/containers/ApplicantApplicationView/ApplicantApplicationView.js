@@ -46,6 +46,7 @@ const applicantApplicationView = (props) => {
 		try {
 			setIsLoading(true);
 			const response = await axios.get(APPLICANT_GET_APPLICATION + appSysId);
+			console.log('🚀 ~ getApplicationInfo ~ response:', response);
 			setApplication(transformJsonFromBackend(response.data.result));
 			setIsLoading(false);
 		} catch (error) {
@@ -114,27 +115,36 @@ const applicantApplicationView = (props) => {
 					</InfoCardRow>
 				</InfoCard>
 				<Address address={application.address} />
-				{(application.focusArea && application.focusArea.filter(() => !application.focusArea.includes("null")).length > 0)  ?
-					<InfoCard title='Focus Areas'
+				{application.focusArea &&
+				application.focusArea.filter(
+					() => !application.focusArea.includes('null')
+				).length > 0 ? (
+					<InfoCard
+						title='Focus Areas'
 						style={{
 							backgroundColor: 'white',
 							minHeight: '60px',
 						}}
 					>
-						{(application.focusArea && application.focusArea.filter(() => !application.focusArea.includes("null")).length > 0) 
-							? application.focusArea?.filter(() => !application.focusArea.includes("null")).map((area, index) => {
-								return (
-									<InfoCardRow key={index}
-										style={{ paddingBottom: '5px'}}
-										>
-										<LabelValuePair value={area} style={{ marginBottom: '5px'}}/>
-									</InfoCardRow>
-								);
-						}) : null}
+						{application.focusArea &&
+						application.focusArea.filter(
+							() => !application.focusArea.includes('null')
+						).length > 0
+							? application.focusArea
+									?.filter(() => !application.focusArea.includes('null'))
+									.map((area, index) => {
+										return (
+											<InfoCardRow key={index} style={{ paddingBottom: '5px' }}>
+												<LabelValuePair
+													value={area}
+													style={{ marginBottom: '5px' }}
+												/>
+											</InfoCardRow>
+										);
+									})
+							: null}
 					</InfoCard>
-					:
-					null
-				}
+				) : null}
 				<InfoCard title='References'>
 					{application.references.map((reference, index) => {
 						return (
@@ -174,6 +184,12 @@ const applicantApplicationView = (props) => {
 									<LabelValuePair
 										label='Position Title'
 										value={reference.positionTitle}
+									/>
+								</InfoCardRow>
+								<InfoCardRow>
+									<LabelValuePair
+										label=' Reference Received'
+										value={reference.referenceReceived}
 									/>
 								</InfoCardRow>
 								{reference.contactAllowed ? (
