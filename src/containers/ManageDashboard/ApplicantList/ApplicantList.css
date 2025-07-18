@@ -29,11 +29,18 @@
 }
 
 .ant-table-filter-dropdown .ant-dropdown-menu  {
-  background-color: #01477a;
-  color: var(--color-primary);
+	background-color: white;
+	color: var(--color-primary);
+}
+.ant-table-filter-dropdown .ant-dropdown-menu:hover  {
+  color: white;
 }
 
 .ant-dropdown-menu-title-content {
+  color: #01477a;
+}
+
+.ant-dropdown-menu-title-content:hover {
   color: white;
 }
 
