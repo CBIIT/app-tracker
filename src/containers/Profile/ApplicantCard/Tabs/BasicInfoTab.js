@@ -20,6 +20,18 @@ const BasicInfoTab = () => {
 
 	return (
 		<div>
+			<div style={{ marginBottom: 20, marginRight: 20 }}>
+				<Col span={24}>
+					<Title level={4}>Applicant Information</Title>
+					<Paragraph>
+						Your user profile stores key details like your name and address
+						which are associated with any applications you submit. This
+						information helps identify open vacancies for which you are
+						eligible, and NIH hiring mangers may use it during the review
+						process to contact you.
+					</Paragraph>
+				</Col>
+			</div>
 			{!hasProfile || basicOpen ? (
 				<EditableBasicInfo setBasicOpen={setBasicOpen} />
 			) : (

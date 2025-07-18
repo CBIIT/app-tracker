@@ -9,7 +9,7 @@ import BasicInfoTab from './Tabs/BasicInfoTab';
 const tabList = [
 	{
 		key: 'basicInfo',
-		tab: 'Basic Information'
+		tab: 'Applicant Information'
 	},
 	{
 		key: 'demographics',
