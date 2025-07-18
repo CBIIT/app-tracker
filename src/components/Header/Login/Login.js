@@ -1,10 +1,10 @@
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { REGISTER_OKTA, TENANT_CHECK_ROUTES} from '../../../constants/Routes';
+import { PROFILE, REGISTER_OKTA, TENANT_CHECK_ROUTES } from '../../../constants/Routes';
 
 import './Login.css';
 
@@ -12,7 +12,14 @@ const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
 
 const login = () => {
 	const {
-		auth: { iTrustGlideSsoId, iTrustUrl, isUserLoggedIn, user, oktaLoginAndRedirectUrl, tenants},
+		auth: {
+			iTrustGlideSsoId,
+			iTrustUrl,
+			isUserLoggedIn,
+			user,
+			oktaLoginAndRedirectUrl,
+			tenants,
+		},
 		currentTenant,
 		setCurrentTenant,
 		previousTenant,
@@ -21,17 +28,16 @@ const login = () => {
 	const locationX = useLocation();
 
 	const nihClicked = () => {
-		location.href =
-			iTrustUrl + iTrustGlideSsoId;
-	}
+		location.href = iTrustUrl + iTrustGlideSsoId;
+	};
 
 	const alreadyRegisteredClicked = () => {
 		location.href = oktaLoginAndRedirectUrl;
-	}
+	};
 
 	const notRegistered = () => {
 		history.push(REGISTER_OKTA);
-	}
+	};
 
 	const handleMenuClick = (e) => {
 		switch (e.key) {
@@ -46,50 +52,32 @@ const login = () => {
 	const loginMenu = (
 		<Menu className='LoginMenu' onClick={handleMenuClick}>
 			<div>
-				<div className="login-container">
-					<div className="login-text-header">
-						FOR NIH EMPLOYEES
-					</div>
-					<div className="login-text" onClick={nihClicked}>
+				<div className='login-container'>
+					<div className='login-text-header'>FOR NIH EMPLOYEES</div>
+					<div className='login-text' onClick={nihClicked}>
 						<span className='MenuTextSpan'>Employee/ Contractor only</span>
-						<Menu.Item
-							data-testid="nih-login-item"
-							key='itrust'
-							icon={<img className='CustomIcon' src={iTrustIcon} />}
-							style={{ width: "170px" }}
-
-						>
+						<Menu.Item data-testid='nih-login-item' key='itrust' icon={<img className='CustomIcon' src={iTrustIcon} />} style={{ width: '170px' }}>
 							NIH Login
 						</Menu.Item>
 					</div>
 				</div>
 			</div>
 			<div>
-				<div className="login-container">
-					<div className="login-text-header2">
-						NON-NIH EMPLOYEES
-					</div>
-					<div className="login-text">
+				<div className='login-container'>
+					<div className='login-text-header2'>NON-NIH EMPLOYEES</div>
+					<div className='login-text'>
 						<div onClick={alreadyRegisteredClicked}>
 							<span className='MenuTextSpan'>Already registered ?</span>
 
-							<Menu.Item
-								data-testid="nih-already-item"
-								key='okta'
-								style={{ width: "100px" }}
-							>
+							<Menu.Item data-testid='nih-already-item' key='okta' style={{ width: '100px' }}>
 								Click here
 							</Menu.Item>
 						</div>
-						<div style={{ width: "300px", height: "1px" }}>&nbsp;</div>
+						<div style={{ width: '300px', height: '1px' }}>&nbsp;</div>
 						<Divider />
 						<div onClick={notRegistered}>
 							<span className='MenuTextSpan'>Not registered ?</span>
-							<Menu.Item
-								data-testid="nih-register-item"
-								key='register-okta'
-								style={{ width: "120px" }}
-							>
+							<Menu.Item data-testid='nih-register-item' key='register-okta' style={{ width: '120px' }}>
 								Register here
 							</Menu.Item>
 						</div>
@@ -100,43 +88,57 @@ const login = () => {
 	);
 
 	const logoutMenu = (
-		<Menu className='LoginMenu' data-testid="nih-logout" onClick={handleMenuClick}>
+		<Menu className='LoginMenu' data-testid='nih-logout' onClick={handleMenuClick}>
+			<div>
+				<Menu.Item key='your-profile'>
+					<Link to={PROFILE + user.uid}>User Profile</Link>
+				</Menu.Item>
+			</div>
 			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);
 
 	return isUserLoggedIn ? (
 		<div className='LoginRightContainer'>
-			{(user.isManager || user.isCommitteeMember ) ?
+			{user.isManager || user.isCommitteeMember ? (
 				<div className='RightContainerSub'>
 					<Select
-						data-testid="tenant-select-item"
-						style={{ width: "100%", border: "2px solid #015ea2"}}
-						placeholder="Select a tenant"
+						data-testid='tenant-select-item'
+						style={{ width: '100%', border: '2px solid #015ea2' }}
+						placeholder='Select a tenant'
 						filterOption={(input, option) =>
-							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+						}
 						options={tenants}
 						onChange={(value) => {
-							const routeToCheck = locationX.pathname.match(regex) ? locationX.pathname.split(regex)[0] : locationX.pathname;
-							previousTenant.current = TENANT_CHECK_ROUTES.includes(routeToCheck) ? currentTenant : '' ;
-							setCurrentTenant(value);}}
-						value={currentTenant} />
-				</div> :
+							const routeToCheck = locationX.pathname.match(regex)
+								? locationX.pathname.split(regex)[0]
+								: locationX.pathname;
+							previousTenant.current = TENANT_CHECK_ROUTES.includes(
+								routeToCheck
+							)
+								? currentTenant
+								: '';
+							setCurrentTenant(value);
+						}}
+						value={currentTenant}
+					/>
+				</div>
+			) : (
 				<div className='LeftContainerSub'>{''}</div>
-			}
+			)}
 			<div className='LeftContainerSub'>
-			<Dropdown className='Login' overlay={logoutMenu}>
-				<Button type='link'>
-					<UserOutlined />
-					{user.firstName +
-					' ' +
-					(user.lastInitial ? user.lastInitial + '.' : '')}
-					<DownOutlined />
-				</Button>
-			</Dropdown>
+				<Dropdown className='Login' overlay={logoutMenu}>
+					<Button type='link'>
+						<UserOutlined />
+						{user.firstName +
+							' ' +
+							(user.lastInitial ? user.lastInitial + '.' : '')}
+						<DownOutlined />
+					</Button>
+				</Dropdown>
 			</div>
 		</div>
-		
 	) : (
 		<Dropdown className='Login' overlay={loginMenu}>
 			<Button type='link'>
