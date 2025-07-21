@@ -1,4 +1,4 @@
-import { useHistory, useLocation, Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
@@ -38,6 +38,10 @@ const login = () => {
 	const notRegistered = () => {
 		history.push(REGISTER_OKTA);
 	};
+
+	const userProfile = () => {
+		history.push(PROFILE + user.uid);
+	}
 
 	const handleMenuClick = (e) => {
 		switch (e.key) {
@@ -89,11 +93,7 @@ const login = () => {
 
 	const logoutMenu = (
 		<Menu className='LoginMenu' data-testid='nih-logout' onClick={handleMenuClick}>
-			<div>
-				<Menu.Item key='your-profile'>
-					<Link to={PROFILE + user.uid}>User Profile</Link>
-				</Menu.Item>
-			</div>
+			<Menu.Item key='your-profile' onClick={userProfile}>User Profile</Menu.Item>
 			<Menu.Item key='logout'>Logout</Menu.Item>
 		</Menu>
 	);
