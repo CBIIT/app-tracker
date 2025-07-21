@@ -22,7 +22,6 @@ const BasicInfoTab = () => {
 		<div>
 			<div style={{ marginBottom: 20, marginRight: 20 }}>
 				<Col span={24}>
-					<Title level={4}>Applicant Information</Title>
 					<Paragraph>
 						Your user profile stores key details like your name and address
 						which are associated with any applications you submit. This

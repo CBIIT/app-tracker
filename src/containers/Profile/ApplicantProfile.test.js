@@ -84,6 +84,9 @@ describe('ApplicantProfile', () => {
 		render(<ApplicantProfile />);
 
 		await waitFor(() => {
+			expect(screen.getByText(/Applicant Information/i)).toBeInTheDocument();
+			var applicantProfileDetails = screen.getByText(/Your user profile stores key details like your name and address which are associated with any applications you submit. This information helps identify open vacancies for which you are eligible, and NIH hiring mangers may use it during the review process to contact you./i);
+			expect(applicantProfileDetails).toBeInTheDocument();
 			expect(screen.getByText(/Luke Skywalker/i)).toBeInTheDocument();
 			expect(screen.getByText(/luke.skywalker@TheForce.com/i)).toBeInTheDocument();
 			expect(screen.getByText(/123 Main St/i)).toBeInTheDocument();
@@ -91,7 +94,6 @@ describe('ApplicantProfile', () => {
 			expect(screen.getByText(/MD/i)).toBeInTheDocument();
 			expect(screen.getByText(/20855/i)).toBeInTheDocument();
 			expect(screen.getByText(/United States/i)).toBeInTheDocument();
-			expect(screen.getByText(/basic information/i)).toBeInTheDocument();
 		});
 	});
 
