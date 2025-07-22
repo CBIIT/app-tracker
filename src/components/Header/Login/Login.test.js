@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useHistory } from 'react-router-dom';
+import { PROFILE } from '../../../constants/Routes';
 import Login from './Login';
 import useAuth from '../../../hooks/useAuth';
 
@@ -77,6 +78,16 @@ describe('Login Component', () => {
         expect(mockedFunction).toHaveBeenCalled();
         expect(window.location.href).toEqual('/logout.do');
     });
+
+    test('redirects user to their Profile when User Profile is clicked', async () => {
+        mockUseAuth.auth.isUserLoggedIn = true;
+        render(<Login />);
+        fireEvent.mouseOver(screen.getByText(/John D./i));
+        await waitFor(() => screen.getByRole('menuitem', { name: /User Profile/i }));
+        fireEvent.click(screen.getByRole('menuitem', { name: /User Profile/i }));
+        expect(mockHistoryPush).toHaveBeenCalledWith(PROFILE + mockUseAuth.auth.user.uid);
+    });
+
     test('redirects to Okta login when already registered is clicked', async () => {
         render(<Login />);
 

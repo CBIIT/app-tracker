@@ -12,7 +12,7 @@ const { Title } = Typography;
 const tabList = [
 	{
 		key: 'basicInfo',
-		tab: 'Basic Information',
+		tab: 'Applicant Information',
 	},
 	// Hide demographics tab
 	// {

@@ -219,29 +219,6 @@ describe('NavBar', () => {
         expect(screen.getByText('Your Applications')).toBeInTheDocument();
     });
 
-    it('renders Profile link for logged in users', () => {
-        useAuth.mockReturnValue({
-            auth: {
-                isUserLoggedIn: true,
-                user: {
-                    isManager: false,
-                    isChair: false,
-                    roles: [],
-                    hasApplications: false,
-                    uid: '123'
-                }
-            }
-        });
-
-        render(
-            <MemoryRouter>
-                <NavBar />
-            </MemoryRouter>
-        );
-
-        expect(screen.getByText('Profile')).toBeInTheDocument();
-    });
-
     it('renders The NIH Hiring Experience link for logged out users', () => {
         useAuth.mockReturnValue({
             auth: {

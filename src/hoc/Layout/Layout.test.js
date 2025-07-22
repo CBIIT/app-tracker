@@ -36,11 +36,6 @@ describe('Layout', () => {
         const homeLink = homeLinks.find(link => link.getAttribute('href') === '/');
         expect(homeLink).toBeInTheDocument();
 
-        const profileLinks = getAllByText('Profile');
-        expect(profileLinks.length).toBeGreaterThan(0);
-        const profileLink = profileLinks.find(link => link.getAttribute('href') === '/profile/Skywalker');
-        expect(profileLink).toBeInTheDocument();
-
         const yourApplicationsLinks = getAllByText('Your Applications');
         expect(yourApplicationsLinks.length).toBeGreaterThan(0);
         const yourApplicationsLink = yourApplicationsLinks.find(link => link.getAttribute('href') === '/applicant-dashboard/');
