@@ -92,7 +92,12 @@ const individualScoringTable = (props) => {
 		props.applicants.forEach((applicant) => {		
 			if ( applicant.primary_focus_area && applicant.secondary_focus_area) {
 				applicant.focus_area = applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
-			}
+			} else if (applicant.primary_focus_area) {
+                applicant.focus_area = applicant.primary_focus_area;
+            }
+            else if (applicant.secondary_focus_area) {
+                applicant.focus_area = applicant.secondary_focus_area;
+            }
 		});
 
 		// add all primary focus area to options
