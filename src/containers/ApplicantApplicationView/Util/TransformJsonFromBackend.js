@@ -4,9 +4,13 @@ export const transformJsonFromBackend = (sourceJson) => {
 			!localFocusAreas ||
 			localFocusAreas.length == 0 ||
 			localFocusAreas.includes('undefined')
-		)
+		) {
 			return [];
-		else return localFocusAreas.split(',');
+		} else if (localFocusAreas.includes('null')) {
+			return localFocusAreas.split(',').filter((area) => area !== 'null');
+		} else {
+			return localFocusAreas.split(',');
+		}
 	};
 
 	return {
