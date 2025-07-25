@@ -90,7 +90,7 @@ const individualScoringTable = (props) => {
 	if (props.applicants.length > 0) {
 		// concat primary and secondary focus area
 		props.applicants.forEach((applicant) => {		
-			if ( applicant.primary_focus_area && applicant.secondary_focus_area) {
+			if (applicant.primary_focus_area && applicant.secondary_focus_area) {
 				applicant.focus_area = applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
 			}
 		});
@@ -123,6 +123,7 @@ const individualScoringTable = (props) => {
 				value: fa.text,
 			}));
 		}
+		console.log('uniqueFocusAreaOptions', uniqueFocusAreaOptions);
 	}
 
 	const onCommentButtonClick = (comment, sysId) => {
@@ -468,6 +469,16 @@ const individualScoringTable = (props) => {
 					>
 						Send Regret Email
 					</Button>
+				),
+			});
+
+			columns.push({
+				title: 'Reference Status',
+				dataIndex: 'total_received_references',
+				key: 'totalReceivedReferences',
+				align: 'center',
+				render: (text, record) => (
+					<span>{record.total_received_references || 0}</span>
 				),
 			});
 		}
