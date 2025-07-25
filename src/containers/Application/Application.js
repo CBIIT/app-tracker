@@ -185,7 +185,7 @@ const application = () => {
 			addCategories();
 		}
 	});
-	
+
 	const openRecuseModal = (e) => {
 		e.preventDefault();
 		setShowRecuseModal(true);
@@ -278,19 +278,20 @@ const application = () => {
 				.map((filtDoc) => filtDoc.doc_sys_id);
 			setAppDocIds(filteredAppDocs);
 
-			const refDocs = applicationResponse.data.result.references
-				.map((ref) => {
-					ref.documents.length > 0
-					return ref.ref_sys_id;
-				});
-			
-			setAppDocIds(appDocIds => appDocIds.concat(refDocs));
+			const refDocs = applicationResponse.data.result.references.map((ref) => {
+				ref.documents.length > 0;
+				return ref.ref_sys_id;
+			});
+
+			setAppDocIds((appDocIds) => appDocIds.concat(refDocs));
 
 			setApplication(application);
 			setVacancyTitle(applicationResponse.data.result.basic_info.vacancy.label);
 			setVacancyState(vacancy.data.result.basic_info.state.value);
 			setVacancyTenantType(vacancy.data.result.basic_info.tenant.label);
-			setNumOfCategories(parseInt(vacancy.data.result.basic_info.number_of_categories.value));
+			setNumOfCategories(
+				parseInt(vacancy.data.result.basic_info.number_of_categories.value)
+			);
 
 			if (vacancy.data.result.additional_documents)
 				setAdditionalDocumentLinks(vacancy.data.result.additional_documents);
@@ -312,12 +313,14 @@ const application = () => {
 				const individualScore =
 					applicationResponse.data.result.individual_scoring;
 
-				const numOfCategories = parseInt(vacancy.data.result.basic_info.number_of_categories.value);
-				const currentScore = {}
+				const numOfCategories = parseInt(
+					vacancy.data.result.basic_info.number_of_categories.value
+				);
+				const currentScore = {};
 				for (let i = 1; i <= numOfCategories; i++) {
-					const prop = "category" + i;
-					const category = "category_" + i;
-					currentScore[prop] = individualScore[category].value
+					const prop = 'category' + i;
+					const category = 'category_' + i;
+					currentScore[prop] = individualScore[category].value;
 				}
 
 				setIndividualScores(currentScore);
@@ -327,20 +330,25 @@ const application = () => {
 				setIndividualTriageChoice(individualScore.recommend.value);
 			}
 
-			setRequireFocusArea(vacancy.data.result.basic_info.require_focus_area.value);
-			setFocusArea(application?.focusArea);
+			setRequireFocusArea(
+				vacancy.data.result.basic_info.require_focus_area.value
+			);
+			setFocusArea(application.focusArea.filter((word) => word !== 'null'))
 			setIsLoading(false);
 		} catch (error) {
 			message.error('Sorry, an error occurred while loading.');
 			throw error;
 		}
 	};
-	
+
 	const addCategories = () => {
 		for (let i = 1; i <= numOfCategories; i++) {
-			individualScoreCategories.push({key: `category${i}`, title: `Category ${i}`})
+			individualScoreCategories.push({
+				key: `category${i}`,
+				title: `Category ${i}`,
+			});
 		}
-	}
+	};
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -398,7 +406,7 @@ const application = () => {
 					triage: triageChoice,
 					triage_comments: triageComments,
 				};
-				
+
 				await axios.post(SUBMIT_TRIAGE, triage);
 				message.success('Feedback and notes saved.');
 			}
@@ -440,9 +448,11 @@ const application = () => {
 			};
 
 			for (let i = 1; i <= numOfCategories; i++) {
-				const prop = "category_" + i;
-				const category = "category" + i;
-				scoresAndNotes[prop] = individualScores[category] ? individualScores[category] : 0
+				const prop = 'category_' + i;
+				const category = 'category' + i;
+				scoresAndNotes[prop] = individualScores[category]
+					? individualScores[category]
+					: 0;
 			}
 
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
@@ -489,7 +499,9 @@ const application = () => {
 		return <Loading />;
 	} else {
 		const allowHrSpecialistTriage =
-			vacancyData?.basic_info?.allow_hr_specialist_triage.value === '0' ? false : true;
+			vacancyData?.basic_info?.allow_hr_specialist_triage.value === '0'
+				? false
+				: true;
 
 		const userVacancyCommitteeRole =
 			vacancyData?.user?.committee_role_of_current_vacancy;
@@ -550,9 +562,11 @@ const application = () => {
 													</InfoCardRow>
 												);
 										  })
-										: null}
+										: ''}
 								</InfoCard>
-							) : null}
+							) : (
+								''
+							)}
 
 							<Address
 								address={application?.address}

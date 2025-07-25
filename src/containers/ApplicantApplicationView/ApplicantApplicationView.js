@@ -141,7 +141,7 @@ const applicantApplicationView = (props) => {
 											</InfoCardRow>
 										);
 									})
-							: null}
+							: ''}
 					</InfoCard>
 				) : null}
 				<InfoCard title='References'>
