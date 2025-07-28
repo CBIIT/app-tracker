@@ -92,10 +92,12 @@ const login = () => {
 	);
 
 	const logoutMenu = (
-		<Menu className='LoginMenu' data-testid='nih-logout' onClick={handleMenuClick}>
-			<Menu.Item key='your-profile' onClick={userProfile}>User Profile</Menu.Item>
-			<Menu.Item key='logout'>Logout</Menu.Item>
-		</Menu>
+		<div className='LoginMenu'>
+			<Menu data-testid='nih-logout' onClick={handleMenuClick}>
+				<Menu.Item key='your-profile' onClick={userProfile}>User Profile</Menu.Item>
+				<Menu.Item key='logout'>Logout</Menu.Item>
+			</Menu>
+		</div>
 	);
 
 	return isUserLoggedIn ? (

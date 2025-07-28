@@ -14,20 +14,20 @@
 }
 
 /*note the width here controls the menu width, 300 is good*/
+
 .LoginMenu .ant-dropdown-menu-item {
 	color: var(--color-primary);
 	/* max-width: 170px;		 */
 	text-decoration: underline;
-	text-decoration-color: #01477a;
+	text-decoration-color: var(--color-primary);
 	font-weight: bold;
 	margin: auto;
 	background-color: white;
 }
 
-.LoginMenu .ant-dropdown-menu-item:hover {
-	background-color: #01477a;
+.LoginMenu .ant-dropdown-menu > .ant-dropdown-menu-item-active {
 	color: white;
-	text-decoration: underline;
+	background-color: var(--color-primary);
 	text-decoration-color: white;
 }
 
