@@ -26,6 +26,7 @@ export const mockRecommendedApplicants = [
 		state: 'scoring',
 		sys_id: '12345',
 		total: 0,
+    total_received_references: '2 out of 5',
 		triage_comments: '',
 		triage_status: 'yes',
 		yes: 0,

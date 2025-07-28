@@ -126,6 +126,7 @@ describe('individualScoringTable', () => {
 		expect(screen.getByText('Scoring Status')).toBeInTheDocument();
 		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
 		expect(screen.getByTestId('send-regret-email-button')).toBeInTheDocument();
+		expect(screen.getByText('Reference Status')).toBeInTheDocument();
 	});
 
 	test('displays all Focus Area filter options', async () => {
