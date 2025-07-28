@@ -286,6 +286,15 @@ const applicantList = (props) => {
 			),
 		});
 
+		applicantColumns.push({
+			title: 'Reference Status',
+			dataIndex: 'total_received_references',
+			key: 'totalReceivedReferences',
+			align: 'center',
+			render: (text, record) => (
+				<span>{record.total_received_references || 0}</span>
+			),
+		});
 	}
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
@@ -856,7 +865,6 @@ const applicantList = (props) => {
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 			const response = await axios.get(apiString);
-
 			return {
 				applicants: response.data.result.applicants,
 				totalCount: response.data.result.totalCount,

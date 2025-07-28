@@ -88,6 +88,8 @@ describe('ApplicantList', () => {
 		expect(vmTriage).toBeInTheDocument();
 		const chairTriage = screen.getByText('Chair Triage Decision');
 		expect(chairTriage).toBeInTheDocument();
+		const referenceStatus = screen.getByText('Reference Status');
+		expect(referenceStatus).toBeInTheDocument();
 
 		waitFor(() => {
 			const applicantName = screen.getByText('Doe, John');
@@ -98,6 +100,7 @@ describe('ApplicantList', () => {
 			expect(collectReferences).toBeInTheDocument();
 			const sendRegretEmail = screen.getByText('Send Regret Email');
 			expect(sendRegretEmail).toBeInTheDocument();
+			expect(screen.getByText('2 out of 3')).toBeInTheDocument();
 		})
 	});
 
