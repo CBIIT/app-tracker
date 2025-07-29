@@ -125,7 +125,7 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo && basicInfo.openDate
 								? new Date(basicInfo.openDate)
-									.toLocaleString('en-us')
+									.toLocaleString('en-us', { timeZone: 'UTC' })
 									.split(',')[0]
 								: null}
 						</p>
@@ -138,7 +138,7 @@ const finalizeVacancy = (props) => {
 							<p>
 								{basicInfo && basicInfo.closeDate
 									? new Date(basicInfo.closeDate)
-										.toLocaleString('en-us')
+										.toLocaleString('en-us', { timeZone: 'UTC' })
 										.split(',')[0]
 									: null}
 							</p>
@@ -152,7 +152,7 @@ const finalizeVacancy = (props) => {
 							<p>
 								{basicInfo.scoringDueByDate
 									? new Date(basicInfo.scoringDueByDate)
-										.toLocaleString('en-us')
+										.toLocaleString('en-us', { timeZone: 'UTC' })
 										.split(',')[0]
 									: ''}
 							</p>
@@ -188,7 +188,7 @@ const finalizeVacancy = (props) => {
 						<p>
 							{basicInfo.referenceCollectionDate
 								? new Date(basicInfo.referenceCollectionDate)
-										.toLocaleString('en-us')
+										.toLocaleString('en-us', { timeZone: 'UTC' })
 										.split(',')[0]
 								: ''}
 						</p>
