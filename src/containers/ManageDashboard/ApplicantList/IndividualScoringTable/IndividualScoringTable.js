@@ -128,7 +128,6 @@ const individualScoringTable = (props) => {
 				value: fa.text,
 			}));
 		}
-		console.log('uniqueFocusAreaOptions', uniqueFocusAreaOptions);
 	}
 
 	const onCommentButtonClick = (comment, sysId) => {
