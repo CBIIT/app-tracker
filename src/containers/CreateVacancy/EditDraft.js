@@ -40,6 +40,10 @@ const editDraft = () => {
 			newBasicInfo['scoringDueByDate'] = moment(
 				json.basicInfo.scoringDueByDate
 			);
+		if (json.basicInfo.referenceCollectionDate)
+			newBasicInfo['referenceCollectionDate'] = moment(
+				json.basicInfo.referenceCollectionDate
+			);
 
 		const newJson = {
 			...json,
