@@ -90,6 +90,8 @@ const vacancyDashboard = () => {
 			(async () => {
 				setIsLoading(true);
 				let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
+				console.log("🚀 ~ removeVacancy ~ dataUrl:", dataUrl)
+				console.log("🚀 ~ removeVacancy ~ dataUrl:", dataUrl)
 				if (tab) {
 					dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
 					setActiveTab(tab);
@@ -191,8 +193,9 @@ const vacancyDashboard = () => {
 			} else if (currentVacancy.state == 'final') {
 				await axios.post(REMOVE_VACANCY + currentVacancy.sys_id);
 			}
+			const dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + (tab || tabs.PREFLIGHT);
 			const updatedRemovedData = await axios.get(
-				DASHBOARD_VACANCIES + (tab || tabs.PREFLIGHT)
+				dataUrl
 			);
 			setData(updatedRemovedData.data.result);
 			message.success('Removed vacancy');
