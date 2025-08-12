@@ -97,6 +97,7 @@ describe('CreateVacancy component tests' , () => {
                 user: { firstName: 'John', lastInitial: 'D' },
                 oktaLoginAndRedirectUrl: 'https://test.okta.com',
                 currentTenant: 'tenant 1',
+                committeeMemberOptions: [],
             },
         };
         useAuth.mockReturnValue(mockUseAuthTenant1);
