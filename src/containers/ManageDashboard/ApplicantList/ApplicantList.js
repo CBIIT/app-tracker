@@ -850,20 +850,29 @@ const applicantList = (props) => {
 				? GET_ROLLING_APPLICANT_LIST
 				: GET_APPLICANT_LIST;
 		try {
-			let apiString =
-				api +
-				sysId +
-				'?offset=' +
-				offset +
-				'&limit=' +
-				limit +
-				'&orderBy=' +
-				orderBy +
-				'&orderColumn=' +
-				orderColumn;
-
-			if (recommended) apiString += '&recommended=' + recommended;
-			if (searchText) apiString += '&search=' + searchText.toLowerCase();
+			let apiString = api + sysId;
+			// Only add pagination and sorting for ROLLING_CLOSE
+			if (props.vacancyState == ROLLING_CLOSE) {
+				apiString +=
+					'?offset=' +
+					offset +
+					'&limit=' +
+					limit +
+					'&orderBy=' +
+					orderBy +
+					'&orderColumn=' +
+					orderColumn;
+				if (recommended) apiString += '&recommended=' + recommended;
+				if (searchText) apiString += '&search=' + searchText.toLowerCase();
+			} else {
+				// For GET_APPLICANT_LIST, fetch all applicants without limit, offset, orderBy, orderColumn
+				if (recommended) {
+					apiString += '?&recommended=' + recommended;
+				}
+				if (searchText) {
+					apiString += '&search=' + searchText.toLowerCase();
+				}
+			}
 			const response = await axios.get(apiString);
 			return {
 				applicants: response.data.result.applicants,
