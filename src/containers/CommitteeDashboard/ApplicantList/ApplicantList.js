@@ -171,7 +171,6 @@ const applicantList = (props) => {
 			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
 	) {
 		if (uniqueFocusAreaOptions.length > 0) {
-			console.log('focus area enabled 1', applicantColumns);
 			// Insert focus area column at index 2
 			applicantColumns.splice(3, 0, {
 				title: 'Focus Area',
