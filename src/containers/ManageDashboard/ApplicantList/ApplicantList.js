@@ -128,7 +128,11 @@ const applicantList = (props) => {
 		setReferenceModal(true);
 	};
 
-	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
+	const onSendRejectionEmailButtonClick = async (
+		sysId,
+		rejectionEmailSent,
+		referredToInterview
+	) => {
 		setAppSysId(sysId);
 		setRejectionEmailSent(rejectionEmailSent);
 		setRejectionEmailModal(true);
@@ -261,7 +265,10 @@ const applicantList = (props) => {
 					<Button
 						data-testid='collect-references-button'
 						onClick={() =>
-							onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+							onCollectReferenceButtonClick(
+								record.sys_id,
+								record.references_sent
+							)
 						}
 					>
 						Collect References
@@ -278,7 +285,11 @@ const applicantList = (props) => {
 				<Button
 					data-testid='send-regret-email-button'
 					onClick={() =>
-						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)
+						onSendRejectionEmailButtonClick(
+							record.sys_id,
+							record.rejection_email_sent,
+							record.referred_to_interview
+						)
 					}
 				>
 					Send Regret Email
@@ -437,18 +448,22 @@ const applicantList = (props) => {
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
 				(props.vacancyState === ROLLING_CLOSE && filter !== TRIAGE))
 		) {
-			loadRecommendedApplicants(
-				1,
-				recommendedApplicantsPageSize,
-				orderBy,
-				orderColumn
-			);
-			loadNonRecommendedApplicants(
-				1,
-				nonRecommendedApplicantsPageSize,
-				orderBy,
-				orderColumn
-			);
+			if (props.vacancyState === ROLLING_CLOSE) {
+				loadRecommendedApplicants(
+					1,
+					recommendedApplicantsPageSize,
+					orderBy,
+					orderColumn
+				);
+				loadNonRecommendedApplicants(
+					1,
+					nonRecommendedApplicantsPageSize,
+					orderBy,
+					orderColumn
+				);
+			} else {
+				loadAllApplicants(1, pageSize, orderBy, orderColumn);
+			}
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
@@ -536,7 +551,11 @@ const applicantList = (props) => {
 								<p>
 									<b>REMINDER: </b> Once an individual has been marked selected,
 									a New Appointment package will be prompted in the{' '}
-									<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+									<a
+										target='_blank'
+										rel='noopener noreferrer'
+										href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+									>
 										PATS
 									</a>{' '}
 									system with the Position Classification, Organizational Code,
@@ -698,7 +717,11 @@ const applicantList = (props) => {
 											<b>REMINDER: </b> Once an individual has been marked
 											selected, a New Appointment package will be prompted in
 											the{' '}
-											<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+											<a
+												target='_blank'
+												rel='noopener noreferrer'
+												href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+											>
 												PATS
 											</a>{' '}
 											system with the Position Classification, Organizational
@@ -866,11 +889,11 @@ const applicantList = (props) => {
 				if (searchText) apiString += '&search=' + searchText.toLowerCase();
 			} else {
 				// For GET_APPLICANT_LIST, fetch all applicants without limit, offset, orderBy, orderColumn
-				if (recommended) {
-					apiString += '?&recommended=' + recommended;
-				}
+				// if (recommended) {
+				// 	apiString += '?&recommended=' + recommended;
+				// }
 				if (searchText) {
-					apiString += '&search=' + searchText.toLowerCase();
+					apiString += '?&search=' + searchText.toLowerCase();
 				}
 			}
 			const response = await axios.get(apiString);
