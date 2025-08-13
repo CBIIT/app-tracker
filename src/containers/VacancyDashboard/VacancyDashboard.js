@@ -90,8 +90,6 @@ const vacancyDashboard = () => {
 			(async () => {
 				setIsLoading(true);
 				let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
-				console.log("🚀 ~ removeVacancy ~ dataUrl:", dataUrl)
-				console.log("🚀 ~ removeVacancy ~ dataUrl:", dataUrl)
 				if (tab) {
 					dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
 					setActiveTab(tab);

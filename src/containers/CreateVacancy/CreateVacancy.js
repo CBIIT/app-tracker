@@ -19,7 +19,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 const regex = /[0-9a-fA-F]{32}/; // Regex for 32 character sys id
 
 const createVacancy = (props) => {
-	const { auth: { user, tenants }, currentTenant, previousTenant, setCurrentTenant, step, setStep } = useAuth();
+	const { auth: { user, tenants }, currentTenant, previousTenant, setCurrentTenant, step, setStep, setCommitteeMemberOptions } = useAuth();
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
 	const focusAreaEnabled = tname.properties?.find((p) => p.name === 'enableFocusArea')?.value;
 	const newValues = {
@@ -369,6 +369,7 @@ const createVacancy = (props) => {
 
 	const onOk = () => {
 		previousTenant.current = currentTenant;
+		setCommitteeMemberOptions([]);
 		if (step < 0) {
 			history.go(step);
 			setStep(0);
