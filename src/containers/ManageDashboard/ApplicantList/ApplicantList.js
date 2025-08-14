@@ -128,11 +128,7 @@ const applicantList = (props) => {
 		setReferenceModal(true);
 	};
 
-	const onSendRejectionEmailButtonClick = async (
-		sysId,
-		rejectionEmailSent,
-		referredToInterview
-	) => {
+	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
 		setAppSysId(sysId);
 		setRejectionEmailSent(rejectionEmailSent);
 		setRejectionEmailModal(true);
@@ -265,10 +261,7 @@ const applicantList = (props) => {
 					<Button
 						data-testid='collect-references-button'
 						onClick={() =>
-							onCollectReferenceButtonClick(
-								record.sys_id,
-								record.references_sent
-							)
+							onCollectReferenceButtonClick(record.sys_id, record.references_sent)
 						}
 					>
 						Collect References
@@ -285,11 +278,7 @@ const applicantList = (props) => {
 				<Button
 					data-testid='send-regret-email-button'
 					onClick={() =>
-						onSendRejectionEmailButtonClick(
-							record.sys_id,
-							record.rejection_email_sent,
-							record.referred_to_interview
-						)
+						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)
 					}
 				>
 					Send Regret Email
@@ -431,21 +420,6 @@ const applicantList = (props) => {
 		setTableLoading(false);
 		if (data && data.applicants) {
 			setApplicants(data.applicants);
-			// Filter recommended/non-recommended for non-ROLLING_CLOSE
-			const recommended = data.applicants.filter(
-				(a) => a.chair_triage_status === 'yes'
-			);
-			const nonRecommended = data.applicants.filter(
-				(a) => a.chair_triage_status !== 'yes'
-			);
-			setRecommendedApplicants(recommended);
-			setRecommendedApplicantsTotalCount(recommended.length);
-			setNonRecommendedApplicants(nonRecommended);
-			setNonRecommendedApplicantsTotalCount(nonRecommended.length);
-			setRecommendedApplicantsPageSize(pageSize);
-			setNonRecommendedApplicantsPageSize(pageSize);
-			setRecommendedApplicantsTableLoading(false);
-			setNonRecommendedApplicantsTableLoading(false);
 		}
 		if (data && data.totalCount) {
 			setTotalCount(data.totalCount);
@@ -463,23 +437,18 @@ const applicantList = (props) => {
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
 				(props.vacancyState === ROLLING_CLOSE && filter !== TRIAGE))
 		) {
-			if (props.vacancyState === ROLLING_CLOSE) {
-				loadRecommendedApplicants(
-					1,
-					recommendedApplicantsPageSize,
-					orderBy,
-					orderColumn
-				);
-				loadNonRecommendedApplicants(
-					1,
-					nonRecommendedApplicantsPageSize,
-					orderBy,
-					orderColumn
-				);
-			} else {
-				// For GET_APPLICANT_LIST, fetch all data once and filter in state
-				loadAllApplicants(1, pageSize, orderBy, orderColumn);
-			}
+			loadRecommendedApplicants(
+				1,
+				recommendedApplicantsPageSize,
+				orderBy,
+				orderColumn
+			);
+			loadNonRecommendedApplicants(
+				1,
+				nonRecommendedApplicantsPageSize,
+				orderBy,
+				orderColumn
+			);
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
@@ -567,11 +536,7 @@ const applicantList = (props) => {
 								<p>
 									<b>REMINDER: </b> Once an individual has been marked selected,
 									a New Appointment package will be prompted in the{' '}
-									<a
-										target='_blank'
-										rel='noopener noreferrer'
-										href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
-									>
+									<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
 										PATS
 									</a>{' '}
 									system with the Position Classification, Organizational Code,
@@ -733,11 +698,7 @@ const applicantList = (props) => {
 											<b>REMINDER: </b> Once an individual has been marked
 											selected, a New Appointment package will be prompted in
 											the{' '}
-											<a
-												target='_blank'
-												rel='noopener noreferrer'
-												href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
-											>
+											<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
 												PATS
 											</a>{' '}
 											system with the Position Classification, Organizational
@@ -889,24 +850,20 @@ const applicantList = (props) => {
 				? GET_ROLLING_APPLICANT_LIST
 				: GET_APPLICANT_LIST;
 		try {
-			let apiString = api + sysId;
-			if (props.vacancyState == ROLLING_CLOSE) {
-				apiString +=
-					'?offset=' +
-					offset +
-					'&limit=' +
-					limit +
-					'&orderBy=' +
-					orderBy +
-					'&orderColumn=' +
-					orderColumn;
-				if (recommended) apiString += '&recommended=' + recommended;
-				if (searchText) apiString += '&search=' + searchText.toLowerCase();
-			} else {
-				if (searchText) {
-					apiString += '?&search=' + searchText.toLowerCase();
-				}
-			}
+			let apiString =
+				api +
+				sysId +
+				'?offset=' +
+				offset +
+				'&limit=' +
+				limit +
+				'&orderBy=' +
+				orderBy +
+				'&orderColumn=' +
+				orderColumn;
+
+			if (recommended) apiString += '&recommended=' + recommended;
+			if (searchText) apiString += '&search=' + searchText.toLowerCase();
 			const response = await axios.get(apiString);
 			return {
 				applicants: response.data.result.applicants,
