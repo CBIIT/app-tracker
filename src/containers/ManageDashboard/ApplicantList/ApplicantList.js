@@ -431,6 +431,21 @@ const applicantList = (props) => {
 		setTableLoading(false);
 		if (data && data.applicants) {
 			setApplicants(data.applicants);
+			// Filter recommended/non-recommended for non-ROLLING_CLOSE
+			const recommended = data.applicants.filter(
+				(a) => a.chair_triage_status === 'yes'
+			);
+			const nonRecommended = data.applicants.filter(
+				(a) => a.chair_triage_status !== 'yes'
+			);
+			setRecommendedApplicants(recommended);
+			setRecommendedApplicantsTotalCount(recommended.length);
+			setNonRecommendedApplicants(nonRecommended);
+			setNonRecommendedApplicantsTotalCount(nonRecommended.length);
+			setRecommendedApplicantsPageSize(pageSize);
+			setNonRecommendedApplicantsPageSize(pageSize);
+			setRecommendedApplicantsTableLoading(false);
+			setNonRecommendedApplicantsTableLoading(false);
 		}
 		if (data && data.totalCount) {
 			setTotalCount(data.totalCount);
@@ -462,6 +477,7 @@ const applicantList = (props) => {
 					orderColumn
 				);
 			} else {
+				// For GET_APPLICANT_LIST, fetch all data once and filter in state
 				loadAllApplicants(1, pageSize, orderBy, orderColumn);
 			}
 		} else {
@@ -874,7 +890,6 @@ const applicantList = (props) => {
 				: GET_APPLICANT_LIST;
 		try {
 			let apiString = api + sysId;
-			// Only add pagination and sorting for ROLLING_CLOSE
 			if (props.vacancyState == ROLLING_CLOSE) {
 				apiString +=
 					'?offset=' +
@@ -888,10 +903,6 @@ const applicantList = (props) => {
 				if (recommended) apiString += '&recommended=' + recommended;
 				if (searchText) apiString += '&search=' + searchText.toLowerCase();
 			} else {
-				// For GET_APPLICANT_LIST, fetch all applicants without limit, offset, orderBy, orderColumn
-				// if (recommended) {
-				// 	apiString += '?&recommended=' + recommended;
-				// }
 				if (searchText) {
 					apiString += '?&search=' + searchText.toLowerCase();
 				}
