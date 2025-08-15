@@ -90,6 +90,7 @@ const applicantList = (props) => {
 	);
 	const [referencesSent, setReferencesSent] = useState();
 	const [rejectionEmailSent, setRejectionEmailSent] = useState();
+	const [focusAreaFilter, setFocusAreaFilter] = useState([]);
 	const {
 		searchText,
 		setSearchText,
@@ -378,7 +379,8 @@ const applicantList = (props) => {
 		page,
 		pageSize,
 		orderBy,
-		orderColumn
+		orderColumn,
+		focusArea = focusAreaFilter
 	) => {
 		setRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(
@@ -386,7 +388,8 @@ const applicantList = (props) => {
 			pageSize,
 			orderBy,
 			orderColumn,
-			'yes'
+			'yes',
+			focusArea
 		);
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
@@ -398,7 +401,8 @@ const applicantList = (props) => {
 		page,
 		pageSize,
 		orderBy,
-		orderColumn
+		orderColumn,
+		focusArea = focusAreaFilter
 	) => {
 		setNonRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(
@@ -406,7 +410,8 @@ const applicantList = (props) => {
 			pageSize,
 			orderBy,
 			orderColumn,
-			'no'
+			'no',
+			focusArea
 		);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
@@ -414,9 +419,15 @@ const applicantList = (props) => {
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
 
-	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn) => {
+	// Handler for focus area filter change from child table
+	const handleFocusAreaFilterChange = (newFilter) => {
+		setFocusAreaFilter(newFilter);
+		// Do not trigger loadAllApplicants here; only update state
+	};
+
+	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn, focusArea = focusAreaFilter) => {
 		setTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, undefined, focusArea);
 		setTableLoading(false);
 		if (data && data.applicants) {
 			setApplicants(data.applicants);
@@ -487,12 +498,15 @@ const applicantList = (props) => {
 				rowKey='sys_id'
 				pagination={tablePagination}
 				loading={tableLoading}
-				onChange={(pagination, _, sorter) => {
+				onChange={(pagination, filters, sorter) => {
+					const focusArea = (filters && filters.focus_area) ? filters.focus_area : [];
+					setFocusAreaFilter(focusArea);
 					loadAllApplicants(
 						pagination.current,
 						pagination.pageSize,
 						sorter.order,
-						sorter.field
+						sorter.field,
+						focusArea
 					);
 				}}
 			></Table>
@@ -513,6 +527,8 @@ const applicantList = (props) => {
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
 									vacancyState={vacancyState}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -525,6 +541,8 @@ const applicantList = (props) => {
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
 									vacancyState={vacancyState}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 						</Collapse>
@@ -558,6 +576,8 @@ const applicantList = (props) => {
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 										reloadVacancy={loadVacancyAndApplicants}
+										focusAreaFilter={focusAreaFilter}
+										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -573,6 +593,8 @@ const applicantList = (props) => {
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 										reloadVacancy={loadVacancyAndApplicants}
+										focusAreaFilter={focusAreaFilter}
+										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									/>
 								</Panel>
 							</Collapse>
@@ -594,6 +616,8 @@ const applicantList = (props) => {
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -609,6 +633,8 @@ const applicantList = (props) => {
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 						</Collapse>
@@ -629,6 +655,8 @@ const applicantList = (props) => {
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
 											vacancyState={vacancyState}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -645,6 +673,8 @@ const applicantList = (props) => {
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
 											vacancyState={vacancyState}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 								</Collapse>
@@ -666,6 +696,8 @@ const applicantList = (props) => {
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -685,6 +717,8 @@ const applicantList = (props) => {
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 								</Collapse>
@@ -724,6 +758,8 @@ const applicantList = (props) => {
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
 												reloadVacancy={loadVacancyAndApplicants}
+												focusAreaFilter={focusAreaFilter}
+												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -743,6 +779,8 @@ const applicantList = (props) => {
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
 												reloadVacancy={loadVacancyAndApplicants}
+												focusAreaFilter={focusAreaFilter}
+												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											/>
 										</Panel>
 									</Collapse>
@@ -841,7 +879,8 @@ const applicantList = (props) => {
 		pageSize,
 		orderBy,
 		orderColumn,
-		recommended
+		recommended,
+		focusArea
 	) => {
 		const offset = page;
 		const limit = pageSize;
@@ -864,6 +903,11 @@ const applicantList = (props) => {
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
+			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
+			if (safeFocusArea.length > 0) {
+				apiString += '&focusArea=' + safeFocusArea.join(',');
+			}
+			// If safeFocusArea is empty, do not add focusArea param at all
 			const response = await axios.get(apiString);
 			return {
 				applicants: response.data.result.applicants,

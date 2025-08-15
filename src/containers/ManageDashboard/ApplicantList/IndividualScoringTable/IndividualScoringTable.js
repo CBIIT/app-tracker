@@ -269,7 +269,7 @@ const individualScoringTable = (props) => {
 						return focus_area;
 					},
 					filters: uniqueFocusAreaOptions,
-					onFilter: (value, record) => record.focus_area.includes(value),
+					filteredValue: Array.isArray(props.focusAreaFilter) ? props.focusAreaFilter : [],
 					width: 250,
 				});
 			}
@@ -503,15 +503,24 @@ const individualScoringTable = (props) => {
 	return (
 		<>
 			<Table
-				pagination={props.pagination}
+				pagination={{
+					...props.pagination,
+					pageSizeOptions: [10, 25],
+					showSizeChanger: true
+				}}
 				dataSource={props.applicants}
 				loading={props.loading}
-				onChange={(pagination, _, sorter) => {
+				onChange={(pagination, filters, sorter) => {
+					const focusArea = Array.isArray(filters && filters.focus_area) ? filters.focus_area : [];
+					if (props.onFocusAreaFilterChange) {
+						props.onFocusAreaFilterChange(focusArea);
+					}
 					props.onTableChange(
 						pagination.current,
 						pagination.pageSize,
 						sorter.order,
-						sorter.field
+						sorter.field,
+						focusArea
 					);
 				}}
 				scroll={{ x: 'true' }}
