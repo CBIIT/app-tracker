@@ -9,7 +9,6 @@ import {
 } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
-
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
 import ReferenceModal from './ReferenceModal/ReferenceModal';
@@ -44,12 +43,8 @@ import {
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
-
 import './ApplicantList.css';
-
 const { Panel } = Collapse;
-const defaultApplicantSort = 'ascend';
-
 const renderDecision = (text) =>
 	text == 'Pending' ? (
 		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
@@ -58,37 +53,18 @@ const renderDecision = (text) =>
 	) : (
 		<span style={{ textTransform: 'capitalize' }}>{text}</span>
 	);
-
 const displayTriage = (userRole, committeeRole) => {
-	return (
+	if (
 		committeeRole === COMMITTEE_CHAIR ||
 		committeeRole === COMMITTEE_HR_SPECIALIST ||
 		userRole.includes(OWM_TEAM)
-	);
+	) {
+		return true;
+	} else {
+		return false;
+	}
 };
-
-const getFilterData = (filter, apps) => {
-	return apps.filter((applicant) => {
-		let newState = '';
-		switch (applicant.state) {
-			case 'triage':
-				newState = 'triage';
-				break;
-			case 'scoring':
-				newState = 'scoring';
-				break;
-			case 'in_review':
-				newState = 'in_review';
-				break;
-			case 'review_complete':
-			case 'completed':
-				newState = 'review_complete';
-				break;
-		}
-		return newState == filter;
-	});
-};
-
+const defaultApplicantSort = 'ascend';
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
@@ -115,27 +91,43 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
-
-	const pageSizeOptions = [10, 25];
-	const tablePagination = {
-		pageSizeOptions,
-		pageSize,
-		total: totalCount,
-		hideOnSinglePage: true,
+	const sendReferences = async (sysId) => {
+		try {
+			const response = await axios.get(COLLECT_REFERENCES + sysId);
+			message.success(response.data.result.message);
+			loadVacancyAndApplicants();
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
+			);
+		}
 	};
-	const recommendedApplicantsTablePagination = {
-		pageSizeOptions,
-		pageSize: recommendedApplicantsPageSize,
-		total: recommendedApplicantsTotalCount,
-		hideOnSinglePage: true,
+	const sendRejectionEmail = async (sysId) => {
+		try {
+			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(rejectionResponse.data.result.response.message);
+			loadVacancyAndApplicants();
+		} catch (e) {
+			message.error(
+				'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
+			);
+		}
 	};
-	const nonRecommendedApplicantsTablePagination = {
-		pageSizeOptions,
-		pageSize: nonRecommendedApplicantsPageSize,
-		total: nonRecommendedApplicantsTotalCount,
-		hideOnSinglePage: true,
+	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
+		setAppSysId(sysId);
+		setReferencesSent(referencesSent);
+		setReferenceModal(true);
 	};
-
+	const onSendRejectionEmailButtonClick = async (
+		sysId,
+		rejectionEmailSent,
+		referredToInterview
+	) => {
+		setAppSysId(sysId);
+		setRejectionEmailSent(rejectionEmailSent);
+		setRejectionEmailModal(true);
+		setReferredToInterview(referredToInterview);
+	};
 	const applicantColumns = [
 		{
 			title: 'Applicant',
@@ -196,7 +188,6 @@ const applicantList = (props) => {
 			render: (text) => renderDecision(text),
 		},
 	];
-
 	const committeeColumns = [
 		{
 			title: 'Raw Score',
@@ -205,7 +196,6 @@ const applicantList = (props) => {
 			width: 130,
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
-
 		{
 			title: 'Average Score',
 			dataIndex: 'average_score',
@@ -233,7 +223,6 @@ const applicantList = (props) => {
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 	];
-
 	if (
 		props.vacancyTenant === 'Stadtman' &&
 		!applicantColumns.some((column) => column.title === 'Complete')
@@ -251,7 +240,6 @@ const applicantList = (props) => {
 			},
 		});
 	}
-
 	if (props.userRoles.includes(OWM_TEAM)) {
 		if (props.referenceCollection) {
 			applicantColumns.push({
@@ -262,7 +250,10 @@ const applicantList = (props) => {
 					<Button
 						data-testid='collect-references-button'
 						onClick={() =>
-							onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+							onCollectReferenceButtonClick(
+								record.sys_id,
+								record.references_sent
+							)
 						}
 					>
 						Collect References
@@ -270,7 +261,6 @@ const applicantList = (props) => {
 				),
 			});
 		}
-
 		applicantColumns.push({
 			title: '',
 			align: 'center',
@@ -279,14 +269,17 @@ const applicantList = (props) => {
 				<Button
 					data-testid='send-regret-email-button'
 					onClick={() =>
-						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)
+						onSendRejectionEmailButtonClick(
+							record.sys_id,
+							record.rejection_email_sent,
+							record.referred_to_interview
+						)
 					}
 				>
 					Send Regret Email
 				</Button>
 			),
 		});
-
 		applicantColumns.push({
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
@@ -297,7 +290,6 @@ const applicantList = (props) => {
 			),
 		});
 	}
-
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
 		useState(10);
@@ -307,7 +299,6 @@ const applicantList = (props) => {
 		recommendedApplicantsTableLoading,
 		setRecommendedApplicantsTableLoading,
 	] = useState([]);
-
 	const [nonRecommendedApplicants, setNonRecommendedApplicants] = useState([]);
 	const [
 		nonRecommendedApplicantsPageSize,
@@ -321,93 +312,51 @@ const applicantList = (props) => {
 		nonRecommendedApplicantsTableLoading,
 		setNonRecommendedApplicantsTableLoading,
 	] = useState([]);
-
+	const pageSizeOptions = [10, 25];
+	const tablePagination = {
+		pageSizeOptions: pageSizeOptions,
+		pageSize: pageSize,
+		total: totalCount,
+		hideOnSinglePage: true,
+	};
+	const recommendedApplicantsTablePagination = {
+		pageSizeOptions: pageSizeOptions,
+		pageSize: recommendedApplicantsPageSize,
+		total: recommendedApplicantsTotalCount,
+		hideOnSinglePage: true,
+	};
+	const nonRecommendedApplicantsTablePagination = {
+		pageSizeOptions: pageSizeOptions,
+		pageSize: nonRecommendedApplicantsPageSize,
+		total: nonRecommendedApplicantsTotalCount,
+		hideOnSinglePage: true,
+	};
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText, filter]);
-
-	const filterChangeHandler = (e) => setFilter(e.target.value);
-	const handleFocusAreaFilterChange = (newFilter) => setFocusAreaFilter(newFilter);
-
-	const onCollectReferenceButtonClick = (sysId, referencesSent) => {
-		setAppSysId(sysId);
-		setReferencesSent(referencesSent);
-		setReferenceModal(true);
+	const filterChangeHandler = async (e) => {
+		setFilter(e.target.value);
 	};
-	const onSendRejectionEmailButtonClick = (sysId, rejectionEmailSent, referredToInterview) => {
-		setAppSysId(sysId);
-		setRejectionEmailSent(rejectionEmailSent);
-		setRejectionEmailModal(true);
-		setReferredToInterview(referredToInterview);
-	};
-
-	const sendReferences = async (sysId) => {
-		try {
-			const response = await axios.get(COLLECT_REFERENCES + sysId);
-			message.success(response.data.result.message);
-			loadVacancyAndApplicants();
-		} catch (e) {
-			message.error('Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.');
-		}
-	};
-	const sendRejectionEmail = async (sysId) => {
-		try {
-			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
-			message.success(rejectionResponse.data.result.response.message);
-			loadVacancyAndApplicants();
-		} catch (e) {
-			message.error('Sorry, there was an error sending the rejection email. Try refreshing the browser.');
-		}
-	};
-
-	const loadApplicants = async (
-		page,
-		pageSize,
-		orderBy,
-		orderColumn,
-		recommended,
-		focusArea
-	) => {
-		const offset = page;
-		const limit = pageSize;
-		const api = props.vacancyState == ROLLING_CLOSE ? GET_ROLLING_APPLICANT_LIST : GET_APPLICANT_LIST;
-		try {
-			let apiString =
-				api +
-				sysId +
-				'?offset=' +
-				offset +
-				'&limit=' +
-				limit +
-				'&orderBy=' +
-				orderBy +
-				'&orderColumn=' +
-				orderColumn;
-
-			if (recommended) apiString += '&recommended=' + recommended;
-			if (searchText) apiString += '&search=' + searchText.toLowerCase();
-			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
-			if (safeFocusArea.length > 0) {
-				apiString += '&focusArea=' + safeFocusArea.join(',');
+	const getFilterData = (filter, apps) => {
+		return apps.filter((applicant) => {
+			let newState = '';
+			switch (applicant.state) {
+				case 'triage':
+					newState = 'triage';
+					break;
+				case 'scoring':
+					newState = 'scoring';
+					break;
+				case 'in_review':
+					newState = 'in_review';
+					break;
+				case 'review_complete':
+				case 'completed':
+					newState = 'review_complete';
+					break;
 			}
-			const response = await axios.get(apiString);
-			return {
-				applicants: response.data.result.applicants,
-				totalCount: response.data.result.totalCount,
-				pageSize: pageSize,
-			};
-		} catch (error) {
-			message.error('Sorry!  An error occurred while loading the page.  Try reloading.');
-		}
-	};
-
-	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn, focusArea = focusAreaFilter) => {
-		setTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, undefined, focusArea);
-		setTableLoading(false);
-		if (data && data.applicants) setApplicants(data.applicants);
-		if (data && data.totalCount) setTotalCount(data.totalCount);
-		if (data && data.pageSize) setPageSize(data.pageSize);
+			return newState == filter;
+		});
 	};
 	const loadRecommendedApplicants = async (
 		page,
@@ -417,7 +366,14 @@ const applicantList = (props) => {
 		focusArea = focusAreaFilter
 	) => {
 		setRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes', focusArea);
+		const data = await loadApplicants(
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			'yes',
+			focusArea
+		);
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
@@ -431,13 +387,53 @@ const applicantList = (props) => {
 		focusArea = focusAreaFilter
 	) => {
 		setNonRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no', focusArea);
+		const data = await loadApplicants(
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			'no',
+			focusArea
+		);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
 
+	// Handler for focus area filter change from child table
+	const handleFocusAreaFilterChange = (newFilter) => {
+		setFocusAreaFilter(newFilter);
+		// Do not trigger loadAllApplicants here; only update state
+	};
+
+	const loadAllApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn,
+		focusArea = focusAreaFilter
+	) => {
+		setTableLoading(true);
+		const data = await loadApplicants(
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			undefined,
+			focusArea
+		);
+		setTableLoading(false);
+		if (data && data.applicants) {
+			setApplicants(data.applicants);
+		}
+		if (data && data.totalCount) {
+			setTotalCount(data.totalCount);
+		}
+		if (data && data.pageSize) {
+			setPageSize(data.pageSize);
+		}
+	};
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
 		if (
 			props.userRoles.includes(OWM_TEAM) &&
@@ -446,13 +442,22 @@ const applicantList = (props) => {
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
 				(props.vacancyState === ROLLING_CLOSE && filter !== TRIAGE))
 		) {
-			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
-			loadNonRecommendedApplicants(1, nonRecommendedApplicantsPageSize, orderBy, orderColumn);
+			loadRecommendedApplicants(
+				1,
+				recommendedApplicantsPageSize,
+				orderBy,
+				orderColumn
+			);
+			loadNonRecommendedApplicants(
+				1,
+				nonRecommendedApplicantsPageSize,
+				orderBy,
+				orderColumn
+			);
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
 	};
-
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
 			if (
@@ -471,12 +476,10 @@ const applicantList = (props) => {
 				return applicantColumns;
 			}
 		};
-
 		const data =
 			vacancyState == ROLLING_CLOSE
 				? getFilterData(filter, applicants)
 				: applicants;
-
 		const table = (
 			<Table
 				data-testid='applicant-table'
@@ -487,7 +490,8 @@ const applicantList = (props) => {
 				pagination={tablePagination}
 				loading={tableLoading}
 				onChange={(pagination, filters, sorter) => {
-					const focusArea = (filters && filters.focus_area) ? filters.focus_area : [];
+					const focusArea =
+						filters && filters.focus_area ? filters.focus_area : [];
 					setFocusAreaFilter(focusArea);
 					loadAllApplicants(
 						pagination.current,
@@ -499,7 +503,6 @@ const applicantList = (props) => {
 				}}
 			></Table>
 		);
-
 		if (userRoles.includes(OWM_TEAM)) {
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
@@ -542,7 +545,11 @@ const applicantList = (props) => {
 								<p>
 									<b>REMINDER: </b> Once an individual has been marked selected,
 									a New Appointment package will be prompted in the{' '}
-									<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+									<a
+										target='_blank'
+										rel='noopener noreferrer'
+										href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+									>
 										PATS
 									</a>{' '}
 									system with the Position Classification, Organizational Code,
@@ -720,7 +727,11 @@ const applicantList = (props) => {
 											<b>REMINDER: </b> Once an individual has been marked
 											selected, a New Appointment package will be prompted in
 											the{' '}
-											<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+											<a
+												target='_blank'
+												rel='noopener noreferrer'
+												href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+											>
 												PATS
 											</a>{' '}
 											system with the Position Classification, Organizational
@@ -861,9 +872,61 @@ const applicantList = (props) => {
 			return table;
 		}
 	};
+	const loadApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn,
+		recommended,
+		focusArea
+	) => {
+		const offset = page;
+		const limit = pageSize;
+		const api =
+			props.vacancyState == ROLLING_CLOSE
+				? GET_ROLLING_APPLICANT_LIST
+				: GET_APPLICANT_LIST;
+		try {
+			let apiString =
+				api +
+				sysId +
+				'?offset=' +
+				offset +
+				'&limit=' +
+				limit +
+				'&orderBy=' +
+				orderBy +
+				'&orderColumn=' +
+				orderColumn;
 
-	const table = getTable(props.vacancyState, props.userRoles, props.userCommitteeRole);
-
+			if (recommended) apiString += '&recommended=' + recommended;
+			if (searchText) apiString += '&search=' + searchText.toLowerCase();
+			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
+			if (safeFocusArea.length > 0) {
+				apiString += '&focusArea=' + safeFocusArea.join(',');
+			}
+			// If safeFocusArea is empty, do not add focusArea param at all
+			const response = await axios.get(apiString);
+			return {
+				applicants: response.data.result.applicants,
+				totalCount: response.data.result.totalCount,
+				pageSize: pageSize,
+			};
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred while loading the page.  Try reloading.'
+			);
+		}
+	};
+	const loadVacancyAndApplicants = () => {
+		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
+		props.reloadVacancy();
+	};
+	const table = getTable(
+		props.vacancyState,
+		props.userRoles,
+		props.userCommitteeRole
+	);
 	return (
 		<>
 			{props.vacancyState == 'rolling_close' && (
@@ -905,5 +968,4 @@ const applicantList = (props) => {
 		</>
 	);
 };
-
 export default applicantList;
