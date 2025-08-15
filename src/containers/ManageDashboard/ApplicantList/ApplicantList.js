@@ -48,6 +48,7 @@ import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 import './ApplicantList.css';
 
 const { Panel } = Collapse;
+const defaultApplicantSort = 'ascend';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -59,18 +60,34 @@ const renderDecision = (text) =>
 	);
 
 const displayTriage = (userRole, committeeRole) => {
-	if (
+	return (
 		committeeRole === COMMITTEE_CHAIR ||
 		committeeRole === COMMITTEE_HR_SPECIALIST ||
 		userRole.includes(OWM_TEAM)
-	) {
-		return true;
-	} else {
-		return false;
-	}
+	);
 };
 
-const defaultApplicantSort = 'ascend';
+const getFilterData = (filter, apps) => {
+	return apps.filter((applicant) => {
+		let newState = '';
+		switch (applicant.state) {
+			case 'triage':
+				newState = 'triage';
+				break;
+			case 'scoring':
+				newState = 'scoring';
+				break;
+			case 'in_review':
+				newState = 'in_review';
+				break;
+			case 'review_complete':
+			case 'completed':
+				newState = 'review_complete';
+				break;
+		}
+		return newState == filter;
+	});
+};
 
 const applicantList = (props) => {
 	const { sysId } = useParams();
@@ -99,41 +116,24 @@ const applicantList = (props) => {
 		searchInput,
 	} = contextValue;
 
-	const sendReferences = async (sysId) => {
-		try {
-			const response = await axios.get(COLLECT_REFERENCES + sysId);
-			message.success(response.data.result.message);
-			loadVacancyAndApplicants();
-		} catch (e) {
-			message.error(
-				'Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.'
-			);
-		}
+	const pageSizeOptions = [10, 25];
+	const tablePagination = {
+		pageSizeOptions,
+		pageSize,
+		total: totalCount,
+		hideOnSinglePage: true,
 	};
-
-	const sendRejectionEmail = async (sysId) => {
-		try {
-			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
-			message.success(rejectionResponse.data.result.response.message);
-			loadVacancyAndApplicants();
-		} catch (e) {
-			message.error(
-				'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
-			);
-		}
+	const recommendedApplicantsTablePagination = {
+		pageSizeOptions,
+		pageSize: recommendedApplicantsPageSize,
+		total: recommendedApplicantsTotalCount,
+		hideOnSinglePage: true,
 	};
-
-	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
-		setAppSysId(sysId);
-		setReferencesSent(referencesSent);
-		setReferenceModal(true);
-	};
-
-	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
-		setAppSysId(sysId);
-		setRejectionEmailSent(rejectionEmailSent);
-		setRejectionEmailModal(true);
-		setReferredToInterview(referredToInterview);
+	const nonRecommendedApplicantsTablePagination = {
+		pageSizeOptions,
+		pageSize: nonRecommendedApplicantsPageSize,
+		total: nonRecommendedApplicantsTotalCount,
+		hideOnSinglePage: true,
 	};
 
 	const applicantColumns = [
@@ -322,59 +322,93 @@ const applicantList = (props) => {
 		setNonRecommendedApplicantsTableLoading,
 	] = useState([]);
 
-	const pageSizeOptions = [10, 25];
-
-	const tablePagination = {
-		pageSizeOptions: pageSizeOptions,
-		pageSize: pageSize,
-		total: totalCount,
-		hideOnSinglePage: true,
-	};
-
-	const recommendedApplicantsTablePagination = {
-		pageSizeOptions: pageSizeOptions,
-		pageSize: recommendedApplicantsPageSize,
-		total: recommendedApplicantsTotalCount,
-		hideOnSinglePage: true,
-	};
-
-	const nonRecommendedApplicantsTablePagination = {
-		pageSizeOptions: pageSizeOptions,
-		pageSize: nonRecommendedApplicantsPageSize,
-		total: nonRecommendedApplicantsTotalCount,
-		hideOnSinglePage: true,
-	};
-
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText, filter]);
 
-	const filterChangeHandler = async (e) => {
-		setFilter(e.target.value);
+	const filterChangeHandler = (e) => setFilter(e.target.value);
+	const handleFocusAreaFilterChange = (newFilter) => setFocusAreaFilter(newFilter);
+
+	const onCollectReferenceButtonClick = (sysId, referencesSent) => {
+		setAppSysId(sysId);
+		setReferencesSent(referencesSent);
+		setReferenceModal(true);
+	};
+	const onSendRejectionEmailButtonClick = (sysId, rejectionEmailSent, referredToInterview) => {
+		setAppSysId(sysId);
+		setRejectionEmailSent(rejectionEmailSent);
+		setRejectionEmailModal(true);
+		setReferredToInterview(referredToInterview);
 	};
 
-	const getFilterData = (filter, apps) => {
-		return apps.filter((applicant) => {
-			let newState = '';
-			switch (applicant.state) {
-				case 'triage':
-					newState = 'triage';
-					break;
-				case 'scoring':
-					newState = 'scoring';
-					break;
-				case 'in_review':
-					newState = 'in_review';
-					break;
-				case 'review_complete':
-				case 'completed':
-					newState = 'review_complete';
-					break;
+	const sendReferences = async (sysId) => {
+		try {
+			const response = await axios.get(COLLECT_REFERENCES + sysId);
+			message.success(response.data.result.message);
+			loadVacancyAndApplicants();
+		} catch (e) {
+			message.error('Sorry, there was an error sending the notifications to the references.  Try refreshing the browser.');
+		}
+	};
+	const sendRejectionEmail = async (sysId) => {
+		try {
+			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
+			message.success(rejectionResponse.data.result.response.message);
+			loadVacancyAndApplicants();
+		} catch (e) {
+			message.error('Sorry, there was an error sending the rejection email. Try refreshing the browser.');
+		}
+	};
+
+	const loadApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn,
+		recommended,
+		focusArea
+	) => {
+		const offset = page;
+		const limit = pageSize;
+		const api = props.vacancyState == ROLLING_CLOSE ? GET_ROLLING_APPLICANT_LIST : GET_APPLICANT_LIST;
+		try {
+			let apiString =
+				api +
+				sysId +
+				'?offset=' +
+				offset +
+				'&limit=' +
+				limit +
+				'&orderBy=' +
+				orderBy +
+				'&orderColumn=' +
+				orderColumn;
+
+			if (recommended) apiString += '&recommended=' + recommended;
+			if (searchText) apiString += '&search=' + searchText.toLowerCase();
+			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
+			if (safeFocusArea.length > 0) {
+				apiString += '&focusArea=' + safeFocusArea.join(',');
 			}
-			return newState == filter;
-		});
+			const response = await axios.get(apiString);
+			return {
+				applicants: response.data.result.applicants,
+				totalCount: response.data.result.totalCount,
+				pageSize: pageSize,
+			};
+		} catch (error) {
+			message.error('Sorry!  An error occurred while loading the page.  Try reloading.');
+		}
 	};
 
+	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn, focusArea = focusAreaFilter) => {
+		setTableLoading(true);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, undefined, focusArea);
+		setTableLoading(false);
+		if (data && data.applicants) setApplicants(data.applicants);
+		if (data && data.totalCount) setTotalCount(data.totalCount);
+		if (data && data.pageSize) setPageSize(data.pageSize);
+	};
 	const loadRecommendedApplicants = async (
 		page,
 		pageSize,
@@ -383,20 +417,12 @@ const applicantList = (props) => {
 		focusArea = focusAreaFilter
 	) => {
 		setRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(
-			page,
-			pageSize,
-			orderBy,
-			orderColumn,
-			'yes',
-			focusArea
-		);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'yes', focusArea);
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
-
 	const loadNonRecommendedApplicants = async (
 		page,
 		pageSize,
@@ -405,39 +431,11 @@ const applicantList = (props) => {
 		focusArea = focusAreaFilter
 	) => {
 		setNonRecommendedApplicantsTableLoading(true);
-		const data = await loadApplicants(
-			page,
-			pageSize,
-			orderBy,
-			orderColumn,
-			'no',
-			focusArea
-		);
+		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, 'no', focusArea);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
 		setNonRecommendedApplicantsPageSize(data.pageSize);
-	};
-
-	// Handler for focus area filter change from child table
-	const handleFocusAreaFilterChange = (newFilter) => {
-		setFocusAreaFilter(newFilter);
-		// Do not trigger loadAllApplicants here; only update state
-	};
-
-	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn, focusArea = focusAreaFilter) => {
-		setTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn, undefined, focusArea);
-		setTableLoading(false);
-		if (data && data.applicants) {
-			setApplicants(data.applicants);
-		}
-		if (data && data.totalCount) {
-			setTotalCount(data.totalCount);
-		}
-		if (data && data.pageSize) {
-			setPageSize(data.pageSize);
-		}
 	};
 
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
@@ -448,18 +446,8 @@ const applicantList = (props) => {
 				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS ||
 				(props.vacancyState === ROLLING_CLOSE && filter !== TRIAGE))
 		) {
-			loadRecommendedApplicants(
-				1,
-				recommendedApplicantsPageSize,
-				orderBy,
-				orderColumn
-			);
-			loadNonRecommendedApplicants(
-				1,
-				nonRecommendedApplicantsPageSize,
-				orderBy,
-				orderColumn
-			);
+			loadRecommendedApplicants(1, recommendedApplicantsPageSize, orderBy, orderColumn);
+			loadNonRecommendedApplicants(1, nonRecommendedApplicantsPageSize, orderBy, orderColumn);
 		} else {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
@@ -874,63 +862,7 @@ const applicantList = (props) => {
 		}
 	};
 
-	const loadApplicants = async (
-		page,
-		pageSize,
-		orderBy,
-		orderColumn,
-		recommended,
-		focusArea
-	) => {
-		const offset = page;
-		const limit = pageSize;
-		const api =
-			props.vacancyState == ROLLING_CLOSE
-				? GET_ROLLING_APPLICANT_LIST
-				: GET_APPLICANT_LIST;
-		try {
-			let apiString =
-				api +
-				sysId +
-				'?offset=' +
-				offset +
-				'&limit=' +
-				limit +
-				'&orderBy=' +
-				orderBy +
-				'&orderColumn=' +
-				orderColumn;
-
-			if (recommended) apiString += '&recommended=' + recommended;
-			if (searchText) apiString += '&search=' + searchText.toLowerCase();
-			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
-			if (safeFocusArea.length > 0) {
-				apiString += '&focusArea=' + safeFocusArea.join(',');
-			}
-			// If safeFocusArea is empty, do not add focusArea param at all
-			const response = await axios.get(apiString);
-			return {
-				applicants: response.data.result.applicants,
-				totalCount: response.data.result.totalCount,
-				pageSize: pageSize,
-			};
-		} catch (error) {
-			message.error(
-				'Sorry!  An error occurred while loading the page.  Try reloading.'
-			);
-		}
-	};
-
-	const loadVacancyAndApplicants = () => {
-		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
-		props.reloadVacancy();
-	};
-
-	const table = getTable(
-		props.vacancyState,
-		props.userRoles,
-		props.userCommitteeRole
-	);
+	const table = getTable(props.vacancyState, props.userRoles, props.userCommitteeRole);
 
 	return (
 		<>
@@ -948,7 +880,6 @@ const applicantList = (props) => {
 						) : (
 							''
 						)}
-
 						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
 						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
 						<Radio.Button value={REVIEW_COMPLETE}>Selected</Radio.Button>
