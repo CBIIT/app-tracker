@@ -1,16 +1,25 @@
 import IndividualScoringTable from './IndividualScoringTable';
-import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	within,
+	waitFor,
+} from '@testing-library/react';
 import { HashRouter } from 'react-router-dom';
 import {
 	mockRecommendedApplicants,
 	mockRecommendedApplicantsTablePagination,
 	mockApplicantsWithFocusAreas,
 	mockApplicantsWithFocusAreasWithRepeat,
+	mockApplicants,
 } from './IndividualScoringTableMockData';
 import { INDIVIDUAL_SCORING_IN_PROGRESS } from '../../../../constants/VacancyStates';
 import useAuth from '../../../../hooks/useAuth';
+import axios from 'axios';
 
 jest.mock('../../../../hooks/useAuth');
+jest.mock('axios');
 
 describe('individualScoringTable', () => {
 	let mockRecommendedApplicantsTableLoading;
@@ -241,7 +250,9 @@ describe('individualScoringTable', () => {
 			expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
 			expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
 
-			const applicantHeader = screen.getByRole('columnheader', { name: /applicant/i });
+			const applicantHeader = screen.getByRole('columnheader', {
+				name: /applicant/i,
+			});
 			fireEvent.click(applicantHeader);
 			expect(axios.get).toHaveBeenCalled();
 
