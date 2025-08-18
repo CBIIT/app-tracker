@@ -75,17 +75,6 @@ export const mockApplicantsWithFocusAreas = [
 export const mockApplicantsWithFocusAreasWithRepeat = [
   {
     sys_id: '1',
-    applicant_name: 'Alice',
-    applicant_email: 'alice@example.com',
-    primary_focus_area: 'Biology',
-    secondary_focus_area: 'Genetics',
-    focus_area: 'Biology, Genetics',
-    average_member_score: 90,
-    scoring_status: 'Complete',
-    interview_recommendation: { Yes: 1, No: 0, Maybe: 0 },
-  },
-  {
-    sys_id: '2',
     applicant_name: 'Bob',
     applicant_email: 'bob@example.com',
     primary_focus_area: 'Chemistry',
@@ -94,5 +83,16 @@ export const mockApplicantsWithFocusAreasWithRepeat = [
     average_member_score: 85,
     scoring_status: 'Complete',
     interview_recommendation: { Yes: 0, No: 1, Maybe: 0 },
+  },
+  {
+    sys_id: '2',
+    applicant_name: 'Alice',
+    applicant_email: 'alice@example.com',
+    primary_focus_area: 'Biology',
+    secondary_focus_area: 'Genetics',
+    focus_area: 'Biology, Genetics',
+    average_member_score: 90,
+    scoring_status: 'Complete',
+    interview_recommendation: { Yes: 1, No: 0, Maybe: 0 },
   },
 ];

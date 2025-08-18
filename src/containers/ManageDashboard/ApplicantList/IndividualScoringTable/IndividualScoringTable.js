@@ -81,23 +81,28 @@ const individualScoringTable = (props) => {
 		searchInput,
 	} = contextValue;
 
-	const { auth: { tenants }, currentTenant } = useAuth();
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
-	const focusAreaEnabled = tname.properties?.find((p) => p.name === 'enableFocusArea')?.value;
+	const focusAreaEnabled = tname.properties?.find(
+		(p) => p.name === 'enableFocusArea'
+	)?.value;
 
 	let focusAreaOptions = [];
 	let uniqueFocusAreaOptions = [];
 	if (props.applicants.length > 0) {
 		// concat primary and secondary focus area
-		props.applicants.forEach((applicant) => {		
+		props.applicants.forEach((applicant) => {
 			if (applicant.primary_focus_area && applicant.secondary_focus_area) {
-				applicant.focus_area = applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+				applicant.focus_area =
+					applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
 			} else if (applicant.primary_focus_area) {
-                applicant.focus_area = applicant.primary_focus_area;
-            }
-            else if (applicant.secondary_focus_area) {
-                applicant.focus_area = applicant.secondary_focus_area;
-            }
+				applicant.focus_area = applicant.primary_focus_area;
+			} else if (applicant.secondary_focus_area) {
+				applicant.focus_area = applicant.secondary_focus_area;
+			}
 		});
 
 		// add all primary focus area to options
@@ -107,10 +112,12 @@ const individualScoringTable = (props) => {
 		}));
 
 		// add all secondary focus area to options
-		props.applicants?.forEach((a) => focusAreaOptions.push({
-			text: a.secondary_focus_area,
-			value: a.secondary_focus_area,
-		}));
+		props.applicants?.forEach((a) =>
+			focusAreaOptions.push({
+				text: a.secondary_focus_area,
+				value: a.secondary_focus_area,
+			})
+		);
 
 		// remove null focus areas
 		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
@@ -206,7 +213,11 @@ const individualScoringTable = (props) => {
 		setShowReferenceModal(true);
 	};
 
-	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
+	const onSendRejectionEmailButtonClick = async (
+		sysId,
+		rejectionEmailSent,
+		referredToInterview
+	) => {
 		setAppicantSysId(sysId);
 		setRejectionEmailSent(rejectionEmailSent);
 		setRejectionEmailModal(true);
@@ -257,10 +268,12 @@ const individualScoringTable = (props) => {
 			},
 		];
 
-		if ((focusAreaEnabled && focusAreaEnabled === 'true') &&
+		if (
+			focusAreaEnabled &&
+			focusAreaEnabled === 'true' &&
 			((props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) ||
-			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
-		){
+				props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
+		) {
 			if (uniqueFocusAreaOptions.length > 0) {
 				columns.push({
 					title: 'Focus Area',
@@ -269,34 +282,34 @@ const individualScoringTable = (props) => {
 						return focus_area;
 					},
 					filters: uniqueFocusAreaOptions,
-					filteredValue: Array.isArray(props.focusAreaFilter) ? props.focusAreaFilter : [],
+					filteredValue: Array.isArray(props.focusAreaFilter)
+						? props.focusAreaFilter
+						: [],
 					width: 250,
 				});
 			}
 		}
 
 		// Add average score after Focus area
-		columns.push(
-			{
-				title: 'Average Score',
-				dataIndex: 'average_member_score',
-				width: 50,
-				render: (text) => {
-					if (!text || text == 'NaN') {
-						return (
-							<span style={{ color: 'rgba(0,0,0,0.25)' }}>
-								{(text = 'Pending')}
-							</span>
-						);
-					} else {
-						return parseFloat(text).toFixed(2);
-					}
-				},
-				sorter: {
-					compare: (a, b) => a.average_member_score - b.average_member_score,
-				},
+		columns.push({
+			title: 'Average Score',
+			dataIndex: 'average_member_score',
+			width: 50,
+			render: (text) => {
+				if (!text || text == 'NaN') {
+					return (
+						<span style={{ color: 'rgba(0,0,0,0.25)' }}>
+							{(text = 'Pending')}
+						</span>
+					);
+				} else {
+					return parseFloat(text).toFixed(2);
+				}
 			},
-		);
+			sorter: {
+				compare: (a, b) => a.average_member_score - b.average_member_score,
+			},
+		});
 
 		if (
 			(props.vacancyState === ROLLING_CLOSE &&
@@ -446,19 +459,24 @@ const individualScoringTable = (props) => {
 		}
 
 		if (props.refCollection && props.isVacancyManager) {
-				columns.push({
-					title: '',
-					align: 'center',
-					width: 200,
-					render: (_, record) => (
-						<Button
-							data-testid='collect-references-button'
-							onClick={() => onCollectReferenceButtonClick(record.sys_id, record.references_sent)}
-						>
-							Collect References
-						</Button>
-					),
-				});
+			columns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='collect-references-button'
+						onClick={() =>
+							onCollectReferenceButtonClick(
+								record.sys_id,
+								record.references_sent
+							)
+						}
+					>
+						Collect References
+					</Button>
+				),
+			});
 		}
 
 		if (props.isVacancyManager) {
@@ -469,7 +487,13 @@ const individualScoringTable = (props) => {
 				render: (_, record) => (
 					<Button
 						data-testid='send-regret-email-button'
-						onClick={() => onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)}
+						onClick={() =>
+							onSendRejectionEmailButtonClick(
+								record.sys_id,
+								record.rejection_email_sent,
+								record.referred_to_interview
+							)
+						}
 					>
 						Send Regret Email
 					</Button>
@@ -486,7 +510,7 @@ const individualScoringTable = (props) => {
 				),
 			});
 		}
-			
+
 		return columns;
 	};
 
@@ -494,24 +518,23 @@ const individualScoringTable = (props) => {
 		setIsOtherCommentsModalVisible(false);
 	};
 
-	
-
-	
-
 	const columns = getColumns();
 
 	return (
 		<>
 			<Table
+				data-testid='applicant-table'
 				pagination={{
 					...props.pagination,
 					pageSizeOptions: [10, 25],
-					showSizeChanger: true
+					showSizeChanger: true,
 				}}
 				dataSource={props.applicants}
 				loading={props.loading}
 				onChange={(pagination, filters, sorter) => {
-					const focusArea = Array.isArray(filters && filters.focus_area) ? filters.focus_area : [];
+					const focusArea = Array.isArray(filters && filters.focus_area)
+						? filters.focus_area
+						: [];
 					if (props.onFocusAreaFilterChange) {
 						props.onFocusAreaFilterChange(focusArea);
 					}

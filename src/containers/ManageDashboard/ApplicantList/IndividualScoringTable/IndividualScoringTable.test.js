@@ -1,5 +1,5 @@
 import IndividualScoringTable from './IndividualScoringTable';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import { HashRouter } from 'react-router-dom';
 import {
 	mockRecommendedApplicants,
@@ -7,9 +7,7 @@ import {
 	mockApplicantsWithFocusAreas,
 	mockApplicantsWithFocusAreasWithRepeat,
 } from './IndividualScoringTableMockData';
-import {
-	INDIVIDUAL_SCORING_IN_PROGRESS,
-} from '../../../../constants/VacancyStates';
+import { INDIVIDUAL_SCORING_IN_PROGRESS } from '../../../../constants/VacancyStates';
 import useAuth from '../../../../hooks/useAuth';
 
 jest.mock('../../../../hooks/useAuth');
@@ -44,27 +42,28 @@ describe('individualScoringTable', () => {
 					isManager: true,
 					roles: [],
 					hasApplications: false,
-					uid: '123'
+					uid: '123',
 				},
 				tenants: [
 					{
-						"value": "f24965fc1b9c11106daea681f54bcb04",
-						"label": "tenant 1",
-						"roles": [
-							"x_g_nci_app_tracke.vacancy_manager",
-							"x_g_nci_app_tracke.committee_member"
+						value: 'f24965fc1b9c11106daea681f54bcb04',
+						label: 'tenant 1',
+						roles: [
+							'x_g_nci_app_tracke.vacancy_manager',
+							'x_g_nci_app_tracke.committee_member',
 						],
-						"is_exec_sec": true,
-						"is_read_only_user": true,
-						"is_chair": true,
-						"is_hr": false,
-						"properties": [{
-							"name": "enableFocusArea",
-							"value": "true",
-						}]
-
-					}]
-				,
+						is_exec_sec: true,
+						is_read_only_user: true,
+						is_chair: true,
+						is_hr: false,
+						properties: [
+							{
+								name: 'enableFocusArea',
+								value: 'true',
+							},
+						],
+					},
+				],
 			},
 			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
 		});
@@ -154,7 +153,6 @@ describe('individualScoringTable', () => {
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 				/>
 			</HashRouter>
-
 		);
 
 		// Find the Focus Area column header and open the filter dropdown, click the filter button
@@ -198,7 +196,6 @@ describe('individualScoringTable', () => {
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 				/>
 			</HashRouter>
-
 		);
 
 		// Find the Focus Area column header and open the filter dropdown, click the filter button
@@ -216,5 +213,40 @@ describe('individualScoringTable', () => {
 		expect(within(filterDropdown).getByText('Chemistry')).toBeInTheDocument();
 
 		expect(within(filterDropdown).queryAllByText('Biology').length).toBe(1);
+	});
+
+	test('sorts the Applicant column in ascending and descending order', async () => {
+		mockReferenceCollection = true;
+		mockRecommendedApplicantsTableLoading = false;
+
+		render(
+			<HashRouter>
+				<IndividualScoringTable
+					applicants={mockApplicantsWithFocusAreasWithRepeat}
+					pagination={mockRecommendedApplicantsTablePagination}
+					loading={mockRecommendedApplicantsTableLoading}
+					onTableChange={mockLoadRecommendedApplicants}
+					refCollection={mockReferenceCollection}
+					isVacancyManager={true}
+					reloadVacancy={mockLoadVacancyAndApplicants}
+				/>
+			</HashRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		waitFor(() => {
+			expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
+			expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
+
+			const applicantHeader = screen.getByRole('columnheader', { name: /applicant/i });
+			fireEvent.click(applicantHeader);
+			expect(axios.get).toHaveBeenCalled();
+
+			expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
+			expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
+		});
 	});
 });

@@ -401,10 +401,8 @@ const applicantList = (props) => {
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
 
-	// Handler for focus area filter change from child table
 	const handleFocusAreaFilterChange = (newFilter) => {
 		setFocusAreaFilter(newFilter);
-		// Do not trigger loadAllApplicants here; only update state
 	};
 
 	const loadAllApplicants = async (
