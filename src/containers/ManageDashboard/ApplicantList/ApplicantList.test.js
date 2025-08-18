@@ -1,6 +1,13 @@
 import ApplicantList from './ApplicantList';
 import VacancyStatus from '../../../components/UI/VacancyStatus/VacancyStatus';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import {
+	render,
+	screen,
+	act,
+	waitFor,
+	fireEvent,
+	userEvent,
+} from '@testing-library/react';
 import { useParams, HashRouter } from 'react-router-dom';
 import SearchContext from '../Util/SearchContext';
 import axios from 'axios';
@@ -185,11 +192,57 @@ describe('ApplicantList', () => {
 		);
 
 		waitFor(() => {
-		expect(screen.getByText(/1/i)).toBeInTheDocument();
-		expect(screen.getByText(/5/i)).toBeInTheDocument();
-		fireEvent.click(screen.getByText(/2/i));
-		expect(axios.get).toHaveBeenCalled();
+			expect(screen.getByText(/1/i)).toBeInTheDocument();
+			expect(screen.getByText(/5/i)).toBeInTheDocument();
+			fireEvent.click(screen.getByText(/2/i));
+			expect(axios.get).toHaveBeenCalled();
 		});
 	});
 
+	test('search filters applicants', async () => {
+		// Arrange: mock applicants and axios
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					applicants: mockApplicants,
+					totalCount: mockApplicants.length,
+					pageSize: 25,
+				},
+			},
+		});
+		useParams.mockReturnValue({ id: 'test-sysid' });
+
+		render(
+			<SearchContext.Provider value={mockSearchContextValue}>
+				<HashRouter>
+					<ApplicantList
+						vacancyState={'triage'}
+						vacancyTenant={'NCI'}
+						referenceCollection={false}
+						userRoles={mockUser.roles}
+						userCommitteeRole={mockUser.roles}
+						reloadVacancy={mockLoadLatestVacancyInfo}
+					/>
+				</HashRouter>
+			</SearchContext.Provider>
+		);
+
+		await waitFor(() =>
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument()
+		);
+
+		waitFor(() => {
+			const searchIcons = screen.getAllByLabelText('search');
+			fireEvent.click(searchIcons[0]);
+
+			const searchInput = screen.getByPlaceholderText(/search/i);
+			userEvent.type(searchInput, 'Alice');
+			userEvent.keyboard('{enter}');
+
+			// Assert axios.get called with search param
+			expect(axios.get).toHaveBeenCalledWith(
+				expect.stringContaining('search=alice')
+			);
+		});
+	});
 });
