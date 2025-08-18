@@ -245,4 +245,56 @@ describe('ApplicantList', () => {
 			);
 		});
 	});
+
+	test('sorts applicants by name when clicking the Applicant column header', async () => {
+		// Arrange: mock applicants in reverse order, so default sort will show Alice first
+		const applicants = [
+			{ sys_id: '2', applicant_name: 'Zoe', applicant_email: 'zoe@test.com' },
+			{
+				sys_id: '1',
+				applicant_name: 'Alice',
+				applicant_email: 'alice@test.com',
+			},
+		];
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					applicants,
+					totalCount: applicants.length,
+					pageSize: 10,
+				},
+			},
+		});
+		useParams.mockReturnValue({ id: 'test-sysid' });
+
+		render(
+			<SearchContext.Provider value={mockSearchContextValue}>
+				<HashRouter>
+					<ApplicantList
+						vacancyState={'triage'}
+						vacancyTenant={'NCI'}
+						referenceCollection={false}
+						userRoles={mockUser.roles}
+						userCommitteeRole={mockUser.roles}
+						reloadVacancy={mockLoadLatestVacancyInfo}
+					/>
+				</HashRouter>
+			</SearchContext.Provider>
+		);
+
+		await waitFor(() =>
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument()
+		);
+
+		waitFor(() => {
+			const rows = screen.getAllByRole('row');
+			expect(rows[1]).toHaveTextContent(/Alice/i);
+
+			const applicantHeader = screen.getByRole('columnheader', { name: /applicant/i });
+			fireEvent.click(applicantHeader);
+
+			const rowsDesc = screen.getAllByRole('row');
+			expect(rowsDesc[1]).toHaveTextContent(/Zoe/i);
+		});
+	});
 });
