@@ -9,7 +9,6 @@ import {
 } from '@ant-design/icons';
 import { getColumnSearchProps } from '../Util/ColumnSearchProps';
 import axios from 'axios';
-
 import IndividualScoringTable from './IndividualScoringTable/IndividualScoringTable';
 import ApplicantList from '../../CommitteeDashboard/ApplicantList/ApplicantList';
 import ReferenceModal from './ReferenceModal/ReferenceModal';
@@ -44,11 +43,8 @@ import {
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
-
 import './ApplicantList.css';
-
 const { Panel } = Collapse;
-
 const renderDecision = (text) =>
 	text == 'Pending' ? (
 		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
@@ -57,7 +53,6 @@ const renderDecision = (text) =>
 	) : (
 		<span style={{ textTransform: 'capitalize' }}>{text}</span>
 	);
-
 const displayTriage = (userRole, committeeRole) => {
 	if (
 		committeeRole === COMMITTEE_CHAIR ||
@@ -69,9 +64,7 @@ const displayTriage = (userRole, committeeRole) => {
 		return false;
 	}
 };
-
 const defaultApplicantSort = 'ascend';
-
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
@@ -90,6 +83,7 @@ const applicantList = (props) => {
 	);
 	const [referencesSent, setReferencesSent] = useState();
 	const [rejectionEmailSent, setRejectionEmailSent] = useState();
+	const [focusAreaFilter, setFocusAreaFilter] = useState([]);
 	const {
 		searchText,
 		setSearchText,
@@ -97,7 +91,6 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
-
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
@@ -109,7 +102,6 @@ const applicantList = (props) => {
 			);
 		}
 	};
-
 	const sendRejectionEmail = async (sysId) => {
 		try {
 			const rejectionResponse = await axios.get(SEND_REGRET_EMAIL + sysId);
@@ -121,20 +113,21 @@ const applicantList = (props) => {
 			);
 		}
 	};
-
 	const onCollectReferenceButtonClick = async (sysId, referencesSent) => {
 		setAppSysId(sysId);
 		setReferencesSent(referencesSent);
 		setReferenceModal(true);
 	};
-
-	const onSendRejectionEmailButtonClick = async (sysId, rejectionEmailSent, referredToInterview) => {
+	const onSendRejectionEmailButtonClick = async (
+		sysId,
+		rejectionEmailSent,
+		referredToInterview
+	) => {
 		setAppSysId(sysId);
 		setRejectionEmailSent(rejectionEmailSent);
 		setRejectionEmailModal(true);
 		setReferredToInterview(referredToInterview);
 	};
-
 	const applicantColumns = [
 		{
 			title: 'Applicant',
@@ -195,7 +188,6 @@ const applicantList = (props) => {
 			render: (text) => renderDecision(text),
 		},
 	];
-
 	const committeeColumns = [
 		{
 			title: 'Raw Score',
@@ -204,7 +196,6 @@ const applicantList = (props) => {
 			width: 130,
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
-
 		{
 			title: 'Average Score',
 			dataIndex: 'average_score',
@@ -232,7 +223,6 @@ const applicantList = (props) => {
 			render: (text, record) => (record.recused == 1 ? 'n/a' : text),
 		},
 	];
-
 	if (
 		props.vacancyTenant === 'Stadtman' &&
 		!applicantColumns.some((column) => column.title === 'Complete')
@@ -250,7 +240,6 @@ const applicantList = (props) => {
 			},
 		});
 	}
-
 	if (props.userRoles.includes(OWM_TEAM)) {
 		if (props.referenceCollection) {
 			applicantColumns.push({
@@ -261,7 +250,10 @@ const applicantList = (props) => {
 					<Button
 						data-testid='collect-references-button'
 						onClick={() =>
-							onCollectReferenceButtonClick(record.sys_id, record.references_sent)
+							onCollectReferenceButtonClick(
+								record.sys_id,
+								record.references_sent
+							)
 						}
 					>
 						Collect References
@@ -269,7 +261,6 @@ const applicantList = (props) => {
 				),
 			});
 		}
-
 		applicantColumns.push({
 			title: '',
 			align: 'center',
@@ -278,14 +269,17 @@ const applicantList = (props) => {
 				<Button
 					data-testid='send-regret-email-button'
 					onClick={() =>
-						onSendRejectionEmailButtonClick(record.sys_id, record.rejection_email_sent, record.referred_to_interview)
+						onSendRejectionEmailButtonClick(
+							record.sys_id,
+							record.rejection_email_sent,
+							record.referred_to_interview
+						)
 					}
 				>
 					Send Regret Email
 				</Button>
 			),
 		});
-
 		applicantColumns.push({
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
@@ -296,7 +290,6 @@ const applicantList = (props) => {
 			),
 		});
 	}
-
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
 		useState(10);
@@ -306,7 +299,6 @@ const applicantList = (props) => {
 		recommendedApplicantsTableLoading,
 		setRecommendedApplicantsTableLoading,
 	] = useState([]);
-
 	const [nonRecommendedApplicants, setNonRecommendedApplicants] = useState([]);
 	const [
 		nonRecommendedApplicantsPageSize,
@@ -320,38 +312,31 @@ const applicantList = (props) => {
 		nonRecommendedApplicantsTableLoading,
 		setNonRecommendedApplicantsTableLoading,
 	] = useState([]);
-
 	const pageSizeOptions = [10, 25];
-
 	const tablePagination = {
 		pageSizeOptions: pageSizeOptions,
 		pageSize: pageSize,
 		total: totalCount,
 		hideOnSinglePage: true,
 	};
-
 	const recommendedApplicantsTablePagination = {
 		pageSizeOptions: pageSizeOptions,
 		pageSize: recommendedApplicantsPageSize,
 		total: recommendedApplicantsTotalCount,
 		hideOnSinglePage: true,
 	};
-
 	const nonRecommendedApplicantsTablePagination = {
 		pageSizeOptions: pageSizeOptions,
 		pageSize: nonRecommendedApplicantsPageSize,
 		total: nonRecommendedApplicantsTotalCount,
 		hideOnSinglePage: true,
 	};
-
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText, filter]);
-
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
 	};
-
 	const getFilterData = (filter, apps) => {
 		return apps.filter((applicant) => {
 			let newState = '';
@@ -373,12 +358,12 @@ const applicantList = (props) => {
 			return newState == filter;
 		});
 	};
-
 	const loadRecommendedApplicants = async (
 		page,
 		pageSize,
 		orderBy,
-		orderColumn
+		orderColumn,
+		focusArea = focusAreaFilter
 	) => {
 		setRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(
@@ -386,19 +371,20 @@ const applicantList = (props) => {
 			pageSize,
 			orderBy,
 			orderColumn,
-			'yes'
+			'yes',
+			focusArea
 		);
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
-
 	const loadNonRecommendedApplicants = async (
 		page,
 		pageSize,
 		orderBy,
-		orderColumn
+		orderColumn,
+		focusArea = focusAreaFilter
 	) => {
 		setNonRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(
@@ -406,7 +392,8 @@ const applicantList = (props) => {
 			pageSize,
 			orderBy,
 			orderColumn,
-			'no'
+			'no',
+			focusArea
 		);
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
@@ -414,9 +401,26 @@ const applicantList = (props) => {
 		setNonRecommendedApplicantsPageSize(data.pageSize);
 	};
 
-	const loadAllApplicants = async (page, pageSize, orderBy, orderColumn) => {
+	const handleFocusAreaFilterChange = (newFilter) => {
+		setFocusAreaFilter(newFilter);
+	};
+
+	const loadAllApplicants = async (
+		page,
+		pageSize,
+		orderBy,
+		orderColumn,
+		focusArea = focusAreaFilter
+	) => {
 		setTableLoading(true);
-		const data = await loadApplicants(page, pageSize, orderBy, orderColumn);
+		const data = await loadApplicants(
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			undefined,
+			focusArea
+		);
 		setTableLoading(false);
 		if (data && data.applicants) {
 			setApplicants(data.applicants);
@@ -428,7 +432,6 @@ const applicantList = (props) => {
 			setPageSize(data.pageSize);
 		}
 	};
-
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
 		if (
 			props.userRoles.includes(OWM_TEAM) &&
@@ -453,7 +456,6 @@ const applicantList = (props) => {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
 	};
-
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
 			if (
@@ -472,12 +474,10 @@ const applicantList = (props) => {
 				return applicantColumns;
 			}
 		};
-
 		const data =
 			vacancyState == ROLLING_CLOSE
 				? getFilterData(filter, applicants)
 				: applicants;
-
 		const table = (
 			<Table
 				data-testid='applicant-table'
@@ -487,17 +487,20 @@ const applicantList = (props) => {
 				rowKey='sys_id'
 				pagination={tablePagination}
 				loading={tableLoading}
-				onChange={(pagination, _, sorter) => {
+				onChange={(pagination, filters, sorter) => {
+					const focusArea =
+						filters && filters.focus_area ? filters.focus_area : [];
+					setFocusAreaFilter(focusArea);
 					loadAllApplicants(
 						pagination.current,
 						pagination.pageSize,
 						sorter.order,
-						sorter.field
+						sorter.field,
+						focusArea
 					);
 				}}
 			></Table>
 		);
-
 		if (userRoles.includes(OWM_TEAM)) {
 			switch (vacancyState) {
 				case INDIVIDUAL_SCORING_IN_PROGRESS:
@@ -513,6 +516,8 @@ const applicantList = (props) => {
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
 									vacancyState={vacancyState}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -525,6 +530,8 @@ const applicantList = (props) => {
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
 									vacancyState={vacancyState}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 						</Collapse>
@@ -536,7 +543,11 @@ const applicantList = (props) => {
 								<p>
 									<b>REMINDER: </b> Once an individual has been marked selected,
 									a New Appointment package will be prompted in the{' '}
-									<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+									<a
+										target='_blank'
+										rel='noopener noreferrer'
+										href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+									>
 										PATS
 									</a>{' '}
 									system with the Position Classification, Organizational Code,
@@ -558,6 +569,8 @@ const applicantList = (props) => {
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 										reloadVacancy={loadVacancyAndApplicants}
+										focusAreaFilter={focusAreaFilter}
+										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -573,6 +586,8 @@ const applicantList = (props) => {
 										refCollection={props.referenceCollection}
 										isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 										reloadVacancy={loadVacancyAndApplicants}
+										focusAreaFilter={focusAreaFilter}
+										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									/>
 								</Panel>
 							</Collapse>
@@ -594,6 +609,8 @@ const applicantList = (props) => {
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -609,6 +626,8 @@ const applicantList = (props) => {
 									refCollection={props.referenceCollection}
 									isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 									reloadVacancy={loadVacancyAndApplicants}
+									focusAreaFilter={focusAreaFilter}
+									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 								/>
 							</Panel>
 						</Collapse>
@@ -629,6 +648,8 @@ const applicantList = (props) => {
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
 											vacancyState={vacancyState}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -645,6 +666,8 @@ const applicantList = (props) => {
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
 											vacancyState={vacancyState}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 								</Collapse>
@@ -666,6 +689,8 @@ const applicantList = (props) => {
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -685,6 +710,8 @@ const applicantList = (props) => {
 											isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 											filter={filter}
 											reloadVacancy={loadVacancyAndApplicants}
+											focusAreaFilter={focusAreaFilter}
+											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										/>
 									</Panel>
 								</Collapse>
@@ -698,7 +725,11 @@ const applicantList = (props) => {
 											<b>REMINDER: </b> Once an individual has been marked
 											selected, a New Appointment package will be prompted in
 											the{' '}
-											<a target='_blank' rel='noopener noreferrer' href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'>
+											<a
+												target='_blank'
+												rel='noopener noreferrer'
+												href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+											>
 												PATS
 											</a>{' '}
 											system with the Position Classification, Organizational
@@ -724,6 +755,8 @@ const applicantList = (props) => {
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
 												reloadVacancy={loadVacancyAndApplicants}
+												focusAreaFilter={focusAreaFilter}
+												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -743,6 +776,8 @@ const applicantList = (props) => {
 												isVacancyManager={props.userRoles.includes(OWM_TEAM)}
 												filter={filter}
 												reloadVacancy={loadVacancyAndApplicants}
+												focusAreaFilter={focusAreaFilter}
+												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											/>
 										</Panel>
 									</Collapse>
@@ -835,13 +870,13 @@ const applicantList = (props) => {
 			return table;
 		}
 	};
-
 	const loadApplicants = async (
 		page,
 		pageSize,
 		orderBy,
 		orderColumn,
-		recommended
+		recommended,
+		focusArea
 	) => {
 		const offset = page;
 		const limit = pageSize;
@@ -864,6 +899,11 @@ const applicantList = (props) => {
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
+			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
+			if (safeFocusArea.length > 0) {
+				apiString += '&focusArea=' + safeFocusArea.join(',');
+			}
+			// If safeFocusArea is empty, do not add focusArea param at all
 			const response = await axios.get(apiString);
 			return {
 				applicants: response.data.result.applicants,
@@ -876,18 +916,15 @@ const applicantList = (props) => {
 			);
 		}
 	};
-
 	const loadVacancyAndApplicants = () => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 		props.reloadVacancy();
 	};
-
 	const table = getTable(
 		props.vacancyState,
 		props.userRoles,
 		props.userCommitteeRole
 	);
-
 	return (
 		<>
 			{props.vacancyState == 'rolling_close' && (
@@ -904,7 +941,6 @@ const applicantList = (props) => {
 						) : (
 							''
 						)}
-
 						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
 						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
 						<Radio.Button value={REVIEW_COMPLETE}>Selected</Radio.Button>
@@ -930,5 +966,4 @@ const applicantList = (props) => {
 		</>
 	);
 };
-
 export default applicantList;
