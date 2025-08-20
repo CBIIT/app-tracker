@@ -7,6 +7,7 @@ import SearchContext from '../../Util/SearchContext';
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import ReferenceModal from '../ReferenceModal/ReferenceModal';
 import RejectionEmailModal from '../RejectionEmailModal/RejectionEmailModal';
+import { focusAreaMenu } from '../../../../components/UI/EditableFocusArea/EditableFocusArea';
 import {
 	INTERVIEW,
 	SELECTED,
@@ -90,52 +91,21 @@ const individualScoringTable = (props) => {
 		(p) => p.name === 'enableFocusArea'
 	)?.value;
 
-	let focusAreaOptions = [];
-	let uniqueFocusAreaOptions = [];
-	if (props.applicants.length > 0) {
-		// concat primary and secondary focus area
-		props.applicants.forEach((applicant) => {
-			if (applicant.primary_focus_area && applicant.secondary_focus_area) {
-				applicant.focus_area =
-					applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
-			} else if (applicant.primary_focus_area) {
-				applicant.focus_area = applicant.primary_focus_area;
-			} else if (applicant.secondary_focus_area) {
-				applicant.focus_area = applicant.secondary_focus_area;
-			}
-		});
+	const focusAreaOptions = focusAreaMenu.map((fa) => ({
+		text: fa.label,
+		value: fa.value,
+	}));
 
-		// add all primary focus area to options
-		focusAreaOptions = props.applicants?.map((a) => ({
-			text: a.primary_focus_area,
-			value: a.primary_focus_area,
-		}));
-
-		// add all secondary focus area to options
-		props.applicants?.forEach((a) =>
-			focusAreaOptions.push({
-				text: a.secondary_focus_area,
-				value: a.secondary_focus_area,
-			})
-		);
-
-		// remove null focus areas
-		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
-		if (focusAreaOptions.length > 2) {
-			// remove duplicates
-			const seen = new Set();
-			uniqueFocusAreaOptions = focusAreaOptions.filter((item) => {
-				if (seen.has(item.value)) return false;
-				seen.add(item.value);
-				return true;
-			});
-		} else {
-			uniqueFocusAreaOptions = focusAreaOptions.map((fa) => ({
-				text: fa.text,
-				value: fa.text,
-			}));
+	props.applicants.forEach((applicant) => {
+		if (applicant.primary_focus_area && applicant.secondary_focus_area) {
+			applicant.focus_area =
+				applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+		} else if (applicant.primary_focus_area) {
+			applicant.focus_area = applicant.primary_focus_area;
+		} else if (applicant.secondary_focus_area) {
+			applicant.focus_area = applicant.secondary_focus_area;
 		}
-	}
+	});
 
 	const onCommentButtonClick = (comment, sysId) => {
 		setIsModalVisible(true);
@@ -274,20 +244,18 @@ const individualScoringTable = (props) => {
 			((props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) ||
 				props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
 		) {
-			if (uniqueFocusAreaOptions.length > 0) {
-				columns.push({
-					title: 'Focus Area',
-					dataIndex: 'focus_area',
-					render: (focus_area) => {
-						return focus_area;
-					},
-					filters: uniqueFocusAreaOptions,
-					filteredValue: Array.isArray(props.focusAreaFilter)
-						? props.focusAreaFilter
-						: [],
-					width: 250,
-				});
-			}
+			columns.push({
+				title: 'Focus Area',
+				dataIndex: 'focus_area',
+				render: (focus_area) => {
+					return focus_area;
+				},
+				filters: focusAreaOptions,
+				filteredValue: Array.isArray(props.focusAreaFilter)
+					? props.focusAreaFilter
+					: [],
+				width: 250,
+			});
 		}
 
 		// Add average score after Focus area
