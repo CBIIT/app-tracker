@@ -7,7 +7,6 @@ import SearchContext from '../../Util/SearchContext';
 import InnerScoresTable from './InnerScoresTable/InnerScoresTable';
 import ReferenceModal from '../ReferenceModal/ReferenceModal';
 import RejectionEmailModal from '../RejectionEmailModal/RejectionEmailModal';
-import { focusAreaMenu } from '../../../../components/UI/EditableFocusArea/EditableFocusArea';
 import {
 	INTERVIEW,
 	SELECTED,
@@ -29,6 +28,7 @@ import {
 	SCORING,
 } from '../../../../constants/ApplicationStates';
 import useAuth from '../../../../hooks/useAuth';
+import './IndividualScoringTable.css';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -91,9 +91,11 @@ const individualScoringTable = (props) => {
 		(p) => p.name === 'enableFocusArea'
 	)?.value;
 
-	const focusAreaOptions = focusAreaMenu.map((fa) => ({
-		text: fa.label,
-		value: fa.value,
+	var applicantFocusArea = props.focusArea;
+
+	const focusAreaOptions = applicantFocusArea.map((fa) => ({
+		text: fa,
+		value: fa,
 	}));
 
 	props.applicants.forEach((applicant) => {

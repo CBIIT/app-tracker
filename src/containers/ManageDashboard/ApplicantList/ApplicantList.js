@@ -40,6 +40,7 @@ import {
 	COLLECT_REFERENCES,
 	GET_ROLLING_APPLICANT_LIST,
 	SEND_REGRET_EMAIL,
+	GET_APPLICANT_FOCUS_AREA,
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
@@ -84,6 +85,7 @@ const applicantList = (props) => {
 	const [referencesSent, setReferencesSent] = useState();
 	const [rejectionEmailSent, setRejectionEmailSent] = useState();
 	const [focusAreaFilter, setFocusAreaFilter] = useState([]);
+	const [applicantFocusArea, setApplicantFocusArea] = useState([]);
 	const {
 		searchText,
 		setSearchText,
@@ -331,12 +333,24 @@ const applicantList = (props) => {
 		total: nonRecommendedApplicantsTotalCount,
 		hideOnSinglePage: true,
 	};
+
+	useEffect(() => {
+		const fetchApplicantFocusArea = async () => {
+			const response = await axios.get(GET_APPLICANT_FOCUS_AREA + sysId);
+			console.log('🚀 ~ fetchApplicantFocusArea ~ response:', response);
+			setApplicantFocusArea(response.data.result.focusAreaFilter);
+		};
+		fetchApplicantFocusArea();
+	}, []);
+
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText, filter]);
+
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
 	};
+
 	const getFilterData = (filter, apps) => {
 		return apps.filter((applicant) => {
 			let newState = '';
@@ -358,6 +372,7 @@ const applicantList = (props) => {
 			return newState == filter;
 		});
 	};
+
 	const loadRecommendedApplicants = async (
 		page,
 		pageSize,
@@ -379,6 +394,7 @@ const applicantList = (props) => {
 		setRecommendedApplicantsTotalCount(data.totalCount);
 		setRecommendedApplicantsPageSize(data.pageSize);
 	};
+
 	const loadNonRecommendedApplicants = async (
 		page,
 		pageSize,
@@ -432,6 +448,7 @@ const applicantList = (props) => {
 			setPageSize(data.pageSize);
 		}
 	};
+
 	const updateData = async (page, pageSize, orderBy, orderColumn) => {
 		if (
 			props.userRoles.includes(OWM_TEAM) &&
@@ -456,6 +473,7 @@ const applicantList = (props) => {
 			loadAllApplicants(1, pageSize, orderBy, orderColumn);
 		}
 	};
+
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
 		const getColumns = () => {
 			if (
@@ -518,6 +536,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
+									focusArea={applicantFocusArea}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -532,6 +551,7 @@ const applicantList = (props) => {
 									vacancyState={vacancyState}
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
+									focusArea={applicantFocusArea}
 								/>
 							</Panel>
 						</Collapse>
@@ -571,6 +591,7 @@ const applicantList = (props) => {
 										reloadVacancy={loadVacancyAndApplicants}
 										focusAreaFilter={focusAreaFilter}
 										onFocusAreaFilterChange={handleFocusAreaFilterChange}
+										focusArea={applicantFocusArea}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -588,6 +609,7 @@ const applicantList = (props) => {
 										reloadVacancy={loadVacancyAndApplicants}
 										focusAreaFilter={focusAreaFilter}
 										onFocusAreaFilterChange={handleFocusAreaFilterChange}
+										focusArea={applicantFocusArea}
 									/>
 								</Panel>
 							</Collapse>
@@ -611,6 +633,7 @@ const applicantList = (props) => {
 									reloadVacancy={loadVacancyAndApplicants}
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
+									focusArea={applicantFocusArea}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -628,6 +651,7 @@ const applicantList = (props) => {
 									reloadVacancy={loadVacancyAndApplicants}
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
+									focusArea={applicantFocusArea}
 								/>
 							</Panel>
 						</Collapse>
@@ -650,6 +674,7 @@ const applicantList = (props) => {
 											vacancyState={vacancyState}
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
+											focusArea={applicantFocusArea}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -668,6 +693,7 @@ const applicantList = (props) => {
 											vacancyState={vacancyState}
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
+											focusArea={applicantFocusArea}
 										/>
 									</Panel>
 								</Collapse>
@@ -691,6 +717,7 @@ const applicantList = (props) => {
 											reloadVacancy={loadVacancyAndApplicants}
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
+											focusArea={applicantFocusArea}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -712,6 +739,7 @@ const applicantList = (props) => {
 											reloadVacancy={loadVacancyAndApplicants}
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
+											focusArea={applicantFocusArea}
 										/>
 									</Panel>
 								</Collapse>
@@ -757,6 +785,7 @@ const applicantList = (props) => {
 												reloadVacancy={loadVacancyAndApplicants}
 												focusAreaFilter={focusAreaFilter}
 												onFocusAreaFilterChange={handleFocusAreaFilterChange}
+												focusArea={applicantFocusArea}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -778,6 +807,7 @@ const applicantList = (props) => {
 												reloadVacancy={loadVacancyAndApplicants}
 												focusAreaFilter={focusAreaFilter}
 												onFocusAreaFilterChange={handleFocusAreaFilterChange}
+												focusArea={applicantFocusArea}
 											/>
 										</Panel>
 									</Collapse>
@@ -799,6 +829,7 @@ const applicantList = (props) => {
 							onTableChange={loadAllApplicants}
 							loading={tableLoading}
 							vacancyState={vacancyState}
+							focusArea={applicantFocusArea}
 						/>
 					);
 				case VOTING_COMPLETE:
@@ -812,6 +843,7 @@ const applicantList = (props) => {
 							postChangeHandler={loadVacancyAndApplicants}
 							displayAllComments={vacancyState === VOTING_COMPLETE}
 							loading={tableLoading}
+							focusArea={applicantFocusArea}
 						/>
 					);
 				case ROLLING_CLOSE:
@@ -825,6 +857,7 @@ const applicantList = (props) => {
 									loading={tableLoading}
 									filter={filter}
 									vacancyState={vacancyState}
+									focusArea={applicantFocusArea}
 								/>
 							);
 						case IN_REVIEW:
@@ -840,6 +873,7 @@ const applicantList = (props) => {
 									displayAllComments={filter === 'review_complete'}
 									loading={tableLoading}
 									filter={filter}
+									focusArea={applicantFocusArea}
 								/>
 							);
 						default:
@@ -864,6 +898,7 @@ const applicantList = (props) => {
 					loading={tableLoading}
 					filter={filter}
 					vacancyState={vacancyState}
+					focusArea={applicantFocusArea}
 				/>
 			);
 		} else {
