@@ -337,7 +337,6 @@ const applicantList = (props) => {
 	useEffect(() => {
 		const fetchApplicantFocusArea = async () => {
 			const response = await axios.get(GET_APPLICANT_FOCUS_AREA + sysId);
-			console.log('🚀 ~ fetchApplicantFocusArea ~ response:', response);
 			setApplicantFocusArea(response.data.result.focusAreaFilter);
 		};
 		fetchApplicantFocusArea();
