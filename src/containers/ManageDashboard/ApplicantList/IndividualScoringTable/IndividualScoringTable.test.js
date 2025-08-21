@@ -184,40 +184,41 @@ describe('individualScoringTable', () => {
 		expect(within(filterDropdown).getAllByText(/Genomics/i)).toHaveLength(1);
 	});
 
-	// test('sorts the Applicant column in ascending and descending order', async () => {
-	// 	mockReferenceCollection = true;
-	// 	mockRecommendedApplicantsTableLoading = false;
+	test('sorts the Applicant column in ascending and descending order', async () => {
+		mockReferenceCollection = true;
+		mockRecommendedApplicantsTableLoading = false;
 
-	// 	render(
-	// 		<HashRouter>
-	// 			<IndividualScoringTable
-	// 				applicants={mockApplicantsWithFocusAreasWithRepeat}
-	// 				pagination={mockRecommendedApplicantsTablePagination}
-	// 				loading={mockRecommendedApplicantsTableLoading}
-	// 				onTableChange={mockLoadRecommendedApplicants}
-	// 				refCollection={mockReferenceCollection}
-	// 				isVacancyManager={true}
-	// 				reloadVacancy={mockLoadVacancyAndApplicants}
-	// 			/>
-	// 		</HashRouter>
-	// 	);
+		render(
+			<HashRouter>
+				<IndividualScoringTable
+					applicants={mockApplicantsWithFocusAreasWithRepeat}
+					pagination={mockRecommendedApplicantsTablePagination}
+					loading={mockRecommendedApplicantsTableLoading}
+					onTableChange={mockLoadRecommendedApplicants}
+					refCollection={mockReferenceCollection}
+					isVacancyManager={true}
+					reloadVacancy={mockLoadVacancyAndApplicants}
+					focusArea={mockApplicantFocusArea}
+				/>
+			</HashRouter>
+		);
 
-	// 	await waitFor(() => {
-	// 		expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
-	// 	});
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
 
-	// 	waitFor(() => {
-	// 		expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
-	// 		expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
+		waitFor(() => {
+			expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
+			expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
 
-	// 		const applicantHeader = screen.getByRole('columnheader', {
-	// 			name: /applicant/i,
-	// 		});
-	// 		fireEvent.click(applicantHeader);
-	// 		expect(axios.get).toHaveBeenCalled();
+			const applicantHeader = screen.getByRole('columnheader', {
+				name: /applicant/i,
+			});
+			fireEvent.click(applicantHeader);
+			expect(axios.get).toHaveBeenCalled();
 
-	// 		expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
-	// 		expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
-	// 	});
-	// });
+			expect(within(rowsDesc[1]).getByText('Bob')).toBeInTheDocument();
+			expect(within(rowsDesc[2]).getByText('Alice')).toBeInTheDocument();
+		});
+	});
 });
