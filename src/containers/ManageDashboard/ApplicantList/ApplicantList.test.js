@@ -23,6 +23,7 @@ import {
 	mockGetApplicantList,
 	mockApplicants,
 	mockSearchContextValue,
+	mockApplicantFocusArea,
 } from './ApplicantListMockData';
 
 jest.mock('react-router-dom', () => ({
@@ -63,10 +64,13 @@ describe('ApplicantList', () => {
 	});
 
 	test('should render ApplicantList component', async () => {
-		var mockOffset = 1;
-		var mockLimit = 10;
 		mockApi = GET_ROLLING_APPLICANT_LIST;
 		useParams.mockReturnValue({ id: mockRCVacancy.sysId });
+
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockResolvedValueOnce(mockGetRollingApplicantList);
+
 		render(
 			<HashRouter>
 				<ApplicantList
@@ -80,45 +84,32 @@ describe('ApplicantList', () => {
 			</HashRouter>
 		);
 
-		await axios.get.mockImplementationOnce(() =>
-			Promise.resolve(mockGetRollingApplicantList)
-		);
-		const rollingApplicantList = await axios.get(mockApi, {
-			sysId: mockRCVacancy.sysId,
-			offset: mockOffset,
-			limit: mockLimit,
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
 		});
-
-		expect(rollingApplicantList).toEqual(mockGetRollingApplicantList);
-		expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
 
 		expect(screen.getByText('Applicant')).toBeInTheDocument();
 		expect(screen.getByText('Email')).toBeInTheDocument();
-		const vmTriage = screen.getByText('Vacancy Manager Triage Decision');
-		expect(vmTriage).toBeInTheDocument();
-		const chairTriage = screen.getByText('Chair Triage Decision');
-		expect(chairTriage).toBeInTheDocument();
-		const referenceStatus = screen.getByText('Reference Status');
-		expect(referenceStatus).toBeInTheDocument();
+		expect(screen.getByText('Vacancy Manager Triage Decision')).toBeInTheDocument();
+		expect(screen.getByText('Chair Triage Decision')).toBeInTheDocument();
+		expect(screen.getByText('Reference Status')).toBeInTheDocument();
 
 		waitFor(() => {
-			const applicantName = screen.getByText(/Doe, John/i);
-			expect(applicantName).toBeInTheDocument();
-			const email = screen.getByText(/user@mail.com/i);
-			expect(email).toBeInTheDocument();
-			const collectReferences = screen.getByText(/Collect References/i);
-			expect(collectReferences).toBeInTheDocument();
-			const sendRegretEmail = screen.getByText(/Send Regret Email/i);
-			expect(sendRegretEmail).toBeInTheDocument();
+			expect(screen.getByText(/Doe, John/i)).toBeInTheDocument();
+			expect(screen.getByText(/user@mail.com/i)).toBeInTheDocument();
+			expect(screen.getByText(/Collect References/i)).toBeInTheDocument();
+			expect(screen.getByText(/Send Regret Email/i)).toBeInTheDocument();
 			expect(screen.getByText(/2 out of 3/i)).toBeInTheDocument();
 		});
 	});
 
 	test('should render PATS reminder text for set close date vacancies in the Voting Complete state', async () => {
-		var mockOffset = 1;
-		var mockLimit = 10;
 		mockApi = GET_APPLICANT_LIST;
 		useParams.mockReturnValue({ id: mockNRCVacancy.sysId });
+
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockResolvedValueOnce(mockGetApplicantList);
 
 		render(
 			<HashRouter>
@@ -133,16 +124,6 @@ describe('ApplicantList', () => {
 			</HashRouter>
 		);
 
-		await axios.get.mockImplementationOnce(() =>
-			Promise.resolve(mockGetApplicantList)
-		);
-		const applicantList = await axios.get(mockApi, {
-			sysId: mockNRCVacancy.sysId,
-			offset: mockOffset,
-			limit: mockLimit,
-		});
-		expect(applicantList).toEqual(mockGetApplicantList);
-
 		waitFor(() => {
 			const selectedTab = screen.getByText('SELECTED');
 			expect(selectedTab).toBeInTheDocument();
@@ -155,21 +136,10 @@ describe('ApplicantList', () => {
 	});
 
 	test('pagination displays correct number of pages and responds to page change', async () => {
-		// Arrange: 50 applicants, pageSize 10
-		const applicants = Array.from({ length: 50 }, (_, i) => ({
-			sys_id: `${i + 1}`,
-			applicant_name: `Applicant ${i + 1}`,
-			applicant_email: `applicant${i + 1}@test.com`,
-		}));
-		axios.get.mockResolvedValueOnce({
-			data: {
-				result: {
-					applicants,
-					totalCount: 50,
-					pageSize: 10,
-				},
-			},
-		});
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockResolvedValueOnce(mockGetApplicantList);
+
 		useParams.mockReturnValue({ id: 'test-sysid' });
 
 		render(
@@ -290,7 +260,9 @@ describe('ApplicantList', () => {
 			const rows = screen.getAllByRole('row');
 			expect(rows[1]).toHaveTextContent(/Alice/i);
 
-			const applicantHeader = screen.getByRole('columnheader', { name: /applicant/i });
+			const applicantHeader = screen.getByRole('columnheader', {
+				name: /applicant/i,
+			});
 			fireEvent.click(applicantHeader);
 
 			const rowsDesc = screen.getAllByRole('row');

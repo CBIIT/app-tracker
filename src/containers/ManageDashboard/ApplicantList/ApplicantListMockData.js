@@ -407,6 +407,17 @@ export const mockApplicants = [
 	},
 ];
 
+export const mockApplicantFocusArea = {
+	data: {
+		result: [
+			'Cancer Biology',
+			'Immunology',
+			'Bioinformatics',
+			'Genomics'
+		]
+	}
+}
+
 // Mock SearchContext value for tests
 export const mockSearchContextValue = {
 	searchText: '',

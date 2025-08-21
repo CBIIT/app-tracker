@@ -26,7 +26,7 @@ export const mockRecommendedApplicants = [
 		state: 'scoring',
 		sys_id: '12345',
 		total: 0,
-    total_received_references: '2 out of 5',
+		total_received_references: '2 out of 5',
 		triage_comments: '',
 		triage_status: 'yes',
 		yes: 0,
@@ -48,53 +48,53 @@ export const mockUserRoles = [
 ];
 
 export const mockApplicantsWithFocusAreas = [
-  {
-    sys_id: '1',
-    applicant_name: 'Alice',
-    applicant_email: 'alice@example.com',
-    primary_focus_area: 'Biology',
-    secondary_focus_area: 'Genetics',
-    focus_area: 'Biology, Genetics',
-    average_member_score: 90,
-    scoring_status: 'Complete',
-    interview_recommendation: { Yes: 1, No: 0, Maybe: 0 },
-  },
-  {
-    sys_id: '2',
-    applicant_name: 'Bob',
-    applicant_email: 'bob@example.com',
-    primary_focus_area: 'Chemistry',
-    secondary_focus_area: 'Physics',
-    focus_area: 'Chemistry, Physics',
-    average_member_score: 85,
-    scoring_status: 'Complete',
-    interview_recommendation: { Yes: 0, No: 1, Maybe: 0 },
-  },
+	{
+		sys_id: '1',
+		applicant_name: 'Alice',
+		applicant_email: 'alice@example.com',
+		primary_focus_area: 'Biology',
+		secondary_focus_area: 'Genetics',
+		focus_area: 'Biology, Genetics',
+		average_member_score: 90,
+		scoring_status: 'Complete',
+		interview_recommendation: { Yes: 1, No: 0, Maybe: 0 },
+	},
+	{
+		sys_id: '2',
+		applicant_name: 'Bob',
+		applicant_email: 'bob@example.com',
+		primary_focus_area: 'Chemistry',
+		secondary_focus_area: 'Physics',
+		focus_area: 'Chemistry, Physics',
+		average_member_score: 85,
+		scoring_status: 'Complete',
+		interview_recommendation: { Yes: 0, No: 1, Maybe: 0 },
+	},
 ];
 
 export const mockApplicantsWithFocusAreasWithRepeat = [
-  {
-    sys_id: '1',
-    applicant_name: 'Bob',
-    applicant_email: 'bob@example.com',
-    primary_focus_area: 'Chemistry',
-    secondary_focus_area: 'Biology',
-    focus_area: 'Chemistry, Physics',
-    average_member_score: 85,
-    scoring_status: 'Complete',
-    interview_recommendation: { Yes: 0, No: 1, Maybe: 0 },
-  },
-  {
-    sys_id: '2',
-    applicant_name: 'Alice',
-    applicant_email: 'alice@example.com',
-    primary_focus_area: 'Biology',
-    secondary_focus_area: 'Genetics',
-    focus_area: 'Biology, Genetics',
-    average_member_score: 90,
-    scoring_status: 'Complete',
-    interview_recommendation: { Yes: 1, No: 0, Maybe: 0 },
-  },
+	{
+		sys_id: '1',
+		applicant_name: 'Bob',
+		applicant_email: 'bob@example.com',
+		primary_focus_area: 'Chemistry',
+		secondary_focus_area: 'Biology',
+		focus_area: 'Chemistry, Physics',
+		average_member_score: 85,
+		scoring_status: 'Complete',
+		interview_recommendation: { Yes: 0, No: 1, Maybe: 0 },
+	},
+	{
+		sys_id: '2',
+		applicant_name: 'Alice',
+		applicant_email: 'alice@example.com',
+		primary_focus_area: 'Biology',
+		secondary_focus_area: 'Genetics',
+		focus_area: 'Biology, Genetics',
+		average_member_score: 90,
+		scoring_status: 'Complete',
+		interview_recommendation: { Yes: 1, No: 0, Maybe: 0 },
+	},
 ];
 
 export const mockApplicants = [
@@ -263,4 +263,11 @@ export const mockApplicants = [
 		interview_recommendation: { Yes: 0, No: 0, Maybe: 1 },
 		total_received_references: '2 out of 3',
 	},
+];
+
+export const mockApplicantFocusArea = [
+	'Cancer Biology',
+	'Immunology',
+	'Bioinformatics',
+	'Genomics',
 ];
