@@ -173,6 +173,7 @@ const applicantList = (props) => {
 	return (
 		<div className='applicant-table'>
 			<Table
+				data-testid='applicant-table'
 				pagination={props.pagination}
 				className='applicantTable'
 				dataSource={applicants}

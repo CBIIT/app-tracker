@@ -3,7 +3,6 @@ import VacancyStatus from '../../../components/UI/VacancyStatus/VacancyStatus';
 import {
 	render,
 	screen,
-	act,
 	waitFor,
 	fireEvent,
 	userEvent,
