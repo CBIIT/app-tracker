@@ -1,189 +1,97 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import UserPicker from './UserPicker';
+import useAuth from '../../../hooks/useAuth';
 import axios from 'axios';
 
+// Mock dependencies
+jest.mock('../../../hooks/useAuth');
 jest.mock('axios');
+jest.mock('@ant-design/icons', () => ({
+    LoadingOutlined: () => <span data-testid="loading-icon" />,
+}));
 
-describe('UserPicker Component', () => {
-    const mockOnChange = jest.fn();
+const mockSetCommitteeMemberOptions = jest.fn();
 
-    const mockUser = {
-        name: { value: 'John Doe' },
-        email: { value: 'john.doe@example.com' },
-        organization: { value: 'Example Org' },
-        sys_id: { value: '1' }
-    };
-    const mockUser2 = {
-        name: { value: 'John Doe2' },
-        email: { value: 'john.doe2@example.com' },
-        organization: { value: 'Example Org Two' },
-        sys_id: { value: '2' }
-    };
-    const mockUser3 = {
-        name: { value: 'Jane Doe' },
-        email: { value: 'jane.doe@example.com' },
-        organization: { value: 'Example Org Three' },
-        sys_id: { value: '3' }
-    };
-    beforeEach(() => {
-        axios.get.mockResolvedValue({
+const defaultCommitteeMemberOptions = [
+    {
+        uid: '1',
+        name: { value: 'Alice' },
+        email: 'alice@example.com',
+        organization: 'Org1',
+        label: 'Alice',
+        value: '1',
+    },
+    {
+        uid: '2',
+        name: { value: 'Bob' },
+        email: 'bob@example.com',
+        organization: 'Org2',
+        label: 'Bob',
+        value: '2',
+    },
+];
+
+function setupAuthMock(options = defaultCommitteeMemberOptions) {
+    useAuth.mockReturnValue({
+        currentTenant: 'tenant1',
+        committeeMemberOptions: options,
+        setCommitteeMemberOptions: mockSetCommitteeMemberOptions,
+    });
+}
+
+describe('UserPicker (referenceField) crash test', () => {
+    it('renders without crashing with empty committeeMemberOptions', async () => {
+        setupAuthMock([]);
+        axios.get.mockResolvedValueOnce({
             data: {
-                result: [mockUser, mockUser2, mockUser3]
-            }
+                result: [
+                    { uid: '1', name: { value: 'Alice' }, email: 'alice@example.com', organization: 'Org1' },
+                ],
+            },
+        });
+
+        render(<UserPicker value={{}} onChange={jest.fn()} />);
+        expect(await screen.getByTestId('loading-icon')).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(mockSetCommitteeMemberOptions).toHaveBeenCalled();
         });
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    it('renders without crashing with prefilled committeeMemberOptions 1', async () => {
+        setupAuthMock(defaultCommitteeMemberOptions);
+
+        render(<UserPicker value={{}} onChange={jest.fn()} />);
+        await fireEvent.mouseDown(screen.getByRole('combobox'));
+        expect(await screen.queryByTestId('loading-icon')).not.toBeInTheDocument();
+        //expect(screen.getByPlaceholderText('Search to select a user')).toBeInTheDocument();
+        expect(screen.getByText('Alice')).toBeInTheDocument();
+        expect(screen.getByText('Bob')).toBeInTheDocument();
     });
 
-    test('renders UserPicker component', () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
-    });
+    it('handles axios error gracefully', async () => {
+        setupAuthMock([]);
+        axios.get.mockRejectedValueOnce(new Error('Network error'));
 
-    test('loads options on input change', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-
-        await screen.findAllByText('John Doe');
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
-        expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
-        expect(screen.getByText('Example Org')).toBeInTheDocument();
-    });
-
-    test('calls onChange when an option is selected', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-
-        const option = await screen.findByText('John Doe');
-        fireEvent.click(option);
-
-        expect(mockOnChange).toHaveBeenCalledWith(mockUser);
-    });
-
-    test('formats option label correctly', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-        await screen.findByText('John Doe');
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
-        expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
-        expect(screen.getByText('Example Org')).toBeInTheDocument();
-    });
-    test('shows appropriate users appear when input is changed', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-        await screen.findAllByText('John Doe');
-        expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument();
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
-        expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
-        expect(screen.getByText('Example Org')).toBeInTheDocument();
-        expect(screen.getByText('John Doe2')).toBeInTheDocument();
-
-        fireEvent.change(input, { target: { value: 'Jane' } });
-        await screen.findAllByText('Jane Doe');
-        expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-        expect(screen.getByText('jane.doe@example.com')).toBeInTheDocument();
-        expect(screen.getByText('Example Org Three')).toBeInTheDocument();
-        expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
-        expect(screen.queryByText('John Doe2')).not.toBeInTheDocument();
-    });
-
-    test('displays no options when search query does not match', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'Nonexistent' } });
-
-        await screen.findByText('No options');
-        expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
-        expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument();
-    });
-    // Testing Error Handling on line 57
-    test('logs a warning when there is an error fetching options', async () => {
-        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
-        axios.get.mockRejectedValue(new Error('Network Error'));
-
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
+        render(<UserPicker value={{}} onChange={jest.fn()} />);
+        expect(screen.getByTestId('loading-icon')).toBeInTheDocument();
 
         await waitFor(() => {
-            expect(consoleWarnSpy).toHaveBeenCalledWith(new Error('Network Error'));
-        });
-
-        consoleWarnSpy.mockRestore();
-    });
-
-    // Testing line 52 conditional
-    test('sets options and hasMore when data is not empty', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalled();
-        });
-
-        const options = await screen.findAllByText(/John Doe|Jane Doe/);
-        expect(options.length).toBeGreaterThan(0);
-        expect(options[0]).toBeInTheDocument();
-    });
-
-    // Testing buildURL function
-    test('builds URL correctly with search query', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('nameLIKEJohn^ORemailLIKEJohn'));
+            // Should stop loading even on error
+            expect(screen.queryByTestId('loading-icon')).not.toBeInTheDocument();
         });
     });
 
+    it('renders with no options', async () => {
+        setupAuthMock([]);
+        axios.get.mockResolvedValueOnce({ data: { result: [] } });
 
-    test('builds URL with correct response fields', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('&sysparm_fields=sys_id,name,email,organization'));
-        });
-    });
-
-    test('builds URL with correct limit and offset', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
+        render(<UserPicker value={{}} onChange={jest.fn()} />);
+        expect(screen.getByTestId('loading-icon')).toBeInTheDocument();
 
         await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('&sysparm_limit=20&sysparm_offset=0'));
-        });
-    });
-
-    test('builds URL with display value set to all', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: 'John' } });
-
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('&sysparm_display_value=all'));
-        });
-    });
-
-    test('builds URL correctly without search query', async () => {
-        render(<UserPicker value={mockUser} onChange={mockOnChange} />);
-        const input = screen.getByRole('textbox');
-        fireEvent.change(input, { target: { value: ' ' } });
-
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('^nameISNOTEMPTY'));
+            expect(mockSetCommitteeMemberOptions).toHaveBeenCalledWith([]);
         });
     });
 });

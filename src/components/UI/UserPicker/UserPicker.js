@@ -1,36 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { AsyncPaginate } from 'react-select-async-paginate';
-import { components } from 'react-select';
+import { message, Select, Space } from 'antd';
 import useAuth from '../../../hooks/useAuth';
 import { USER_LIST } from '../../../constants/ApiEndpoints.js';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import './UserPicker.css';
+const { Option } = Select;
 
 const referenceField = ({ value = {}, onChange }) => {
-	const { currentTenant } = useAuth();
+	const { currentTenant, committeeMemberOptions, setCommitteeMemberOptions } = useAuth();
 	const [user, setUser] = useState(value);
+	const [isLoading, setIsLoading] = useState(true);
 
-	const filterOption = (option, search) => {
-		let query = new RegExp(search, 'gi');
-		// const fieldVal = option.data['name'].display_value;
-		// const secondaryFieldVal = option.data['email'].display_value;
-		const fieldVal = option.data['name'].value;
-		const secondaryFieldVal = option.data['email'].value;
+	useEffect(() => {
+		setIsLoading(true);
+		(async () => {
+			if (committeeMemberOptions && committeeMemberOptions.length <= 0) {
+				let url = buildUrl();
+				try {
+					const userResponse = await axios.get(url);
+					userResponse.data.result?.forEach((u) => {
+						u.label = u.name.value;
+						u.value = u.uid;
+					});
+					setCommitteeMemberOptions(userResponse.data.result)
+					setIsLoading(false);
+				} catch (err) {
+					console.warn('UserPicker: Axios Error while loading users.', err);
+					message.destroy();
+					message.error('Sorry!  An error occurred.  Unable to load users.  Try reloading the page and trying again.');
+					setIsLoading(false);
+				}
+			} else {
+				setIsLoading(false);
+			}
+		})();
+	}, []);
 
-		if (fieldVal.match(query) || secondaryFieldVal.match(query)) return true;
+	const buildUrl = () => {
+		const url = [USER_LIST];
+		const responseFields = ['sys_id', 'name', 'email', 'organization'];
+
+
+		url.push(`^nameISNOTEMPTY`);
+		url.push(`^ORDERBYname`);
+		url.push('&sysparm_fields=' + responseFields.join(','));
+		url.push('&sysparm_tenant=' + currentTenant);
+
+		return url.join('');
 	};
-
-	const formatOptionLabel = (option) => (
-		<DropdownItem
-			label={option['name'].value}
-			email={option['email'].value}
-			organization={option['organization'].value}
-			// label={option['name'].display_value}
-			// email={option['email'].display_value}
-			// organization={option['organization'].display_value}
-		/>
-	);
 
 	const triggerChange = (changedValue) => {
 		onChange?.({
@@ -39,84 +58,44 @@ const referenceField = ({ value = {}, onChange }) => {
 		});
 	};
 
-	const onDropdownChange = (user) => {
-		setUser(user);
-
-		triggerChange(user);
+	const handleChange = (index) => {
+		const selectedUser = committeeMemberOptions[index] ? committeeMemberOptions[index] : {};
+		setUser(selectedUser);
+		triggerChange(selectedUser);
 	};
 
-	const loadOptions = async (searchQuery, prevOptions) => {
-		let url = buildUrl(searchQuery, prevOptions.length);
-		let options = [];
-		let hasMore = false;
-		try {
-			let res = await axios.get(url);
-			let data = res.data.result;
-			if (data.length !== 0) {
-				options = data;
-				hasMore = true;
-			}
-		} catch (err) {
-			console.warn(err);
-		}
-
-		return { options, hasMore };
-	};
-
-	const buildUrl = (searchQuery, offset) => {
-		const url = [USER_LIST];
-		const responseFields = ['sys_id', 'name', 'email', 'organization'];
-
-		if (searchQuery) {
-			url.push(`nameLIKE${searchQuery}^ORemailLIKE${searchQuery} `);
-		}
-
-		url.push(`^nameISNOTEMPTY`);
-		url.push(`^ORDERBYname`);
-		url.push('&sysparm_fields=' + responseFields.join(','));
-		url.push('&sysparm_limit=' + 20);
-		url.push('&sysparm_offset=' + offset);
-		url.push('&sysparm_display_value=all');
-		url.push('&sysparm_tenant=' + currentTenant);
-
-		return url.join('');
-	};
-
-	return (
-		<AsyncPaginate
-			className='reference-field'
-			debounceTimeout={300}
-			value={user}
-			loadOptions={loadOptions}
-			formatOptionLabel={formatOptionLabel}
-			// getOptionLabel={(option) => option['name'].display_value}
-			// getOptionValue={(option) => option.sys_id.display_value}
-			getOptionLabel={(option) => option['name'].value}
-			getOptionValue={(option) => option.sys_id.value}
-			onChange={onDropdownChange}
-			filterOption={filterOption}
-			components={{ SingleValue }}
-		/>
+	return isLoading ? (
+		<Space block='true' style={{ display: 'flex', justifyContent: 'center' }}>
+			<LoadingOutlined data-testid="loading-icon" style={{ fontSize: '2rem' }} />
+		</Space>
+	) : (
+			<Select
+				showSearch
+				placeholder="Search to select a user"
+				filterSort={(optionA, optionB) =>
+					(optionA?.label ?? '')
+						.toLowerCase()
+						.localeCompare((optionB?.label ?? '').toLowerCase())
+				}
+				filterOption={(input, option) =>
+					option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+				}
+				style={{ width: '100%' }}
+				value={user}
+				onChange={(value) => {
+					handleChange(value);
+				}}
+			>
+				{committeeMemberOptions && committeeMemberOptions.map((choice, index) => {
+					return (
+						<Option key={index} value={index}>
+							{choice.name.value}
+						</Option>
+					);
+				})}
+			</Select>
 	);
 };
 
-// formatting selected value to only display main field
-const SingleValue = ({ children, ...props }) => {
-	return (
-		<components.SingleValue {...props}>
-			{children.props.label}
-		</components.SingleValue>
-	);
-};
-
-const DropdownItem = (props) => {
-	return (
-		<div className='UserPickerDropdown'>
-			<span>{props.label}</span>
-			<span className='DropdownEmail'>{props.email}</span>
-			<span className='secondaryLabel'>{props.organization}</span>
-		</div>
-	);
-};
 
 export default referenceField;
