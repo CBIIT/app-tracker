@@ -1,7 +1,7 @@
 import './EditableFocusArea.css';
 import { Form, Select } from 'antd';
 
-export const focusAreaMenu = [
+const focusAreaMenu = [
 	{ label: 'Biochemistry/Proteomics/Metabolomics', value: 'Biochemistry/Proteomics/Metabolomics' },
 	{ label: 'Biomedical Engineering/Biophysics/Physics', value: 'Biomedical Engineering/Biophysics/Physics' },
 	{ label: 'Cancer Biology', value: 'Cancer Biology' },
