@@ -102,6 +102,8 @@ export const EDIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/edit';
 
 export const EXTEND_VACANCY = '/api/x_g_nci_app_tracke/vacancy/extend';
 
+export const GET_APPLICANT_FOCUS_AREA = '/api/x_g_nci_app_tracke/vacancy/get_applicant_focus_area/';
+
 export const GET_ROLLING_APPLICANT_LIST =
 	'/api/x_g_nci_app_tracke/vacancy/get_applicants_list_rolling_close/';
 

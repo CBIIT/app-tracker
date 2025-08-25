@@ -4,8 +4,8 @@ import { useHistory } from 'react-router-dom';
 import {
 	CheckCircleTwoTone,
 	ExclamationCircleOutlined,
-} from '@ant-design/icons'; 
-import { getColumnSearchProps } from '../../ManageDashboard/Util/ColumnSearchProps'
+} from '@ant-design/icons';
+import { getColumnSearchProps } from '../../ManageDashboard/Util/ColumnSearchProps';
 import SearchContext from '../../ManageDashboard/Util/SearchContext';
 import { MANAGE_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
@@ -34,10 +34,10 @@ const applicantList = (props) => {
 		setSearchText,
 		searchedColumn,
 		setSearchedColumn,
-		searchInput
+		searchInput,
 	} = contextValue;
 	const applicants = props.applicants;
-	
+
 	applicants.map((applicant, index) => {
 		applicant.key = index;
 	});
@@ -64,7 +64,7 @@ const applicantList = (props) => {
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
 			key: 'name',
-			sorter: (a, b) =>{
+			sorter: (a, b) => {
 				if (a.applicant_name < b.applicant_name) {
 					return -1;
 				}
@@ -122,73 +122,58 @@ const applicantList = (props) => {
 		},
 	];
 
-	const { auth: { tenants }, currentTenant } = useAuth();
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
-	const focusAreaEnabled = tname.properties?.find((p) => p.name === 'enableFocusArea')?.value;
+	const focusAreaEnabled = tname.properties?.find(
+		(p) => p.name === 'enableFocusArea'
+	)?.value;
 
-	let focusAreaOptions = [];
-	let uniqueFocusAreaOptions = [];
-	if (applicants.length > 0) {
-		// concat primary and secondary focus area
-		applicants.forEach((applicant) => {
-			if ( applicant.primary_focus_area && applicant.secondary_focus_area) {
-				applicant.focus_area = applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
-			}
-		});
+	var applicantFocusArea = props.focusArea;
 
-		// add all primary focus area to options
-		focusAreaOptions = applicants?.map((a) => ({
-			text: a.primary_focus_area,
-			value: a.primary_focus_area,
-		}));
+	const focusAreaOptions = applicantFocusArea.map((fa) => ({
+		text: fa,
+		value: fa,
+	}));
 
-		// add all secondary focus area to options
-		applicants?.forEach((a) => focusAreaOptions.push({
-			text: a.secondary_focus_area,
-			value: a.secondary_focus_area,
-		}));
-
-		// remove null focus areas
-		focusAreaOptions = focusAreaOptions.filter((fa) => fa.text !== null);
-		if (focusAreaOptions.length > 2) {
-			// remove duplicates
-			const seen = new Set();
-			uniqueFocusAreaOptions = focusAreaOptions.filter((item) => {
-				if (seen.has(item.value)) return false;
-				seen.add(item.value);
-				return true;
-			});
-		} else {
-			uniqueFocusAreaOptions = focusAreaOptions.map((fa) => ({
-				text: fa.text,
-				value: fa.text,
-			}));
+	// concat primary and secondary focus area
+	applicants.forEach((applicant) => {
+		if (applicant.primary_focus_area && applicant.secondary_focus_area) {
+			applicant.focus_area =
+				applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+		} else if (applicant.primary_focus_area) {
+			applicant.focus_area = applicant.primary_focus_area;
+		} else if (applicant.secondary_focus_area) {
+			applicant.focus_area = applicant.secondary_focus_area;
 		}
-	}
+	});
 
-	if ((focusAreaEnabled && focusAreaEnabled === 'true') &&
+	if (
+		focusAreaEnabled &&
+		focusAreaEnabled === 'true' &&
 		((props.vacancyState === ROLLING_CLOSE && props.filter === SCORING) ||
 			props.vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS)
 	) {
-		if (uniqueFocusAreaOptions.length > 0) {
-			// Insert focus area column at index 2
-			applicantColumns.splice(3, 0, {
-				title: 'Focus Area',
-				dataIndex: 'focus_area',
-				key: 'focus_area',
-				render: (focus_area) => {
-					return focus_area;
-				},
-				filters: uniqueFocusAreaOptions,
-				onFilter: (value, record) => record.focus_area.includes(value),
-				width: 250,
-			});
-		}
+		// Insert focus area column at index 2
+		applicantColumns.splice(3, 0, {
+			title: 'Focus Area',
+			dataIndex: 'focus_area',
+			key: 'focus_area',
+			render: (focus_area) => {
+				return focus_area;
+			},
+			filters: focusAreaOptions,
+			onFilter: (value, record) => record.focus_area.includes(value),
+			width: 250,
+		});
 	}
 
 	return (
 		<div className='applicant-table'>
 			<Table
+				data-testid='applicant-table'
 				pagination={props.pagination}
 				className='applicantTable'
 				dataSource={applicants}

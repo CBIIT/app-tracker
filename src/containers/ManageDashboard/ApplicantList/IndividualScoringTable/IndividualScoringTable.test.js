@@ -13,6 +13,7 @@ import {
 	mockApplicantsWithFocusAreas,
 	mockApplicantsWithFocusAreasWithRepeat,
 	mockApplicants,
+	mockApplicantFocusArea,
 } from './IndividualScoringTableMockData';
 import { INDIVIDUAL_SCORING_IN_PROGRESS } from '../../../../constants/VacancyStates';
 import useAuth from '../../../../hooks/useAuth';
@@ -84,18 +85,19 @@ describe('individualScoringTable', () => {
 
 	test('renders individualScoringTable component ', () => {
 		mockReferenceCollection = true;
-		mockRecommendedApplicantsTableLoading = true;
+		mockRecommendedApplicantsTableLoading = false;
 
 		render(
 			<HashRouter>
 				<IndividualScoringTable
 					applicants={mockRecommendedApplicants}
 					pagination={mockRecommendedApplicantsTablePagination}
-					loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
+					loading={mockRecommendedApplicantsTableLoading}
 					onTableChange={mockLoadRecommendedApplicants}
 					refCollection={mockReferenceCollection}
 					isVacancyManager={true}
 					reloadVacancy={mockLoadVacancyAndApplicants}
+					focusArea={mockApplicantFocusArea}
 				/>
 			</HashRouter>
 		);
@@ -123,6 +125,7 @@ describe('individualScoringTable', () => {
 					isVacancyManager={true}
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
+					focusArea={mockApplicantFocusArea}
 				/>
 			</HashRouter>
 		);
@@ -160,6 +163,7 @@ describe('individualScoringTable', () => {
 					isVacancyManager={true}
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
+					focusArea={mockApplicantFocusArea}
 				/>
 			</HashRouter>
 		);
@@ -174,54 +178,10 @@ describe('individualScoringTable', () => {
 		expect(filterDropdown).toBeInTheDocument();
 
 		// Check that all unique focus area options are displayed
-		expect(within(filterDropdown).getByText('Biology')).toBeInTheDocument();
-		expect(within(filterDropdown).getByText('Genetics')).toBeInTheDocument();
-		expect(within(filterDropdown).getByText('Chemistry')).toBeInTheDocument();
-		expect(within(filterDropdown).getByText('Physics')).toBeInTheDocument();
-	});
-
-	test('displays all Focus Area filter options remove duplicates', async () => {
-		useAuth.mockReturnValue({
-			auth: {
-				tenants: [
-					{
-						value: 'tenant1',
-						properties: [{ name: 'enableFocusArea', value: 'true' }],
-					},
-				],
-			},
-			currentTenant: 'tenant1',
-		});
-		render(
-			<HashRouter>
-				<IndividualScoringTable
-					applicants={mockApplicantsWithFocusAreasWithRepeat}
-					pagination={mockRecommendedApplicantsTablePagination}
-					loading={mockRecommendedApplicantsTableLoading} // Goes from true to false
-					onTableChange={mockLoadRecommendedApplicants}
-					refCollection={mockReferenceCollection}
-					isVacancyManager={true}
-					reloadVacancy={mockLoadVacancyAndApplicants}
-					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
-				/>
-			</HashRouter>
-		);
-
-		// Find the Focus Area column header and open the filter dropdown, click the filter button
-		const focusAreaHeader = screen.getByText('Focus Area');
-		const th = focusAreaHeader.closest('th');
-		const filterButton = within(th).getByLabelText('filter');
-		fireEvent.click(filterButton);
-
-		const filterDropdown = document.querySelector('.ant-table-filter-dropdown');
-		expect(filterDropdown).toBeInTheDocument();
-
-		// Check that all unique focus area options are displayed
-		expect(within(filterDropdown).getByText('Biology')).toBeInTheDocument();
-		expect(within(filterDropdown).getByText('Genetics')).toBeInTheDocument();
-		expect(within(filterDropdown).getByText('Chemistry')).toBeInTheDocument();
-
-		expect(within(filterDropdown).queryAllByText('Biology').length).toBe(1);
+		expect(within(filterDropdown).getAllByText(/Cancer Biology/i)).toHaveLength(1);
+		expect(within(filterDropdown).getAllByText(/Immunology/i)).toHaveLength(1);
+		expect(within(filterDropdown).getAllByText(/Bioinformatics/i)).toHaveLength(1);
+		expect(within(filterDropdown).getAllByText(/Genomics/i)).toHaveLength(1);
 	});
 
 	test('sorts the Applicant column in ascending and descending order', async () => {
@@ -238,6 +198,7 @@ describe('individualScoringTable', () => {
 					refCollection={mockReferenceCollection}
 					isVacancyManager={true}
 					reloadVacancy={mockLoadVacancyAndApplicants}
+					focusArea={mockApplicantFocusArea}
 				/>
 			</HashRouter>
 		);
