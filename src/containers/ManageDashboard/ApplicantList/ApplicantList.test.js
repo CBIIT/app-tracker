@@ -168,6 +168,39 @@ describe('ApplicantList', () => {
 		});
 	});
 
+	test('shows the 10, 25, 50 page size options', async () => {
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockResolvedValueOnce(mockGetApplicantList);
+		useParams.mockReturnValue({ id: 'test-sysid' });
+
+		render(
+			<SearchContext.Provider value={mockSearchContextValue}>
+				<HashRouter>
+					<ApplicantList
+						vacancyState={'triage'}
+						vacancyTenant={'NCI'}
+						referenceCollection={false}
+						userRoles={mockUser.roles}
+						userCommitteeRole={mockUser.roles}
+						reloadVacancy={mockLoadLatestVacancyInfo}
+					/>
+				</HashRouter>
+			</SearchContext.Provider>
+		);
+
+		waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		waitFor(() => {
+			expect(screen.getByText('10 / page')).toBeInTheDocument();
+			fireEvent.click(screen.getByText('10 / page'));
+			expect(screen.getByText('25 / page')).toBeInTheDocument();
+			expect(screen.getByTestId('50 / page')).toBeInTheDocument();
+		});
+	});
+
 	test('search filters applicants', async () => {
 		// Arrange: mock applicants and axios
 		axios.get.mockResolvedValueOnce({
