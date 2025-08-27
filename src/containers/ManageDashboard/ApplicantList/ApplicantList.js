@@ -314,24 +314,27 @@ const applicantList = (props) => {
 		nonRecommendedApplicantsTableLoading,
 		setNonRecommendedApplicantsTableLoading,
 	] = useState([]);
-	const pageSizeOptions = [10, 25];
+	const pageSizeOptions = [10, 25, 50];
 	const tablePagination = {
 		pageSizeOptions: pageSizeOptions,
 		pageSize: pageSize,
 		total: totalCount,
 		hideOnSinglePage: true,
+		showSizeChanger: true,
 	};
 	const recommendedApplicantsTablePagination = {
 		pageSizeOptions: pageSizeOptions,
 		pageSize: recommendedApplicantsPageSize,
 		total: recommendedApplicantsTotalCount,
 		hideOnSinglePage: true,
+		showSizeChanger: true,
 	};
 	const nonRecommendedApplicantsTablePagination = {
 		pageSizeOptions: pageSizeOptions,
 		pageSize: nonRecommendedApplicantsPageSize,
 		total: nonRecommendedApplicantsTotalCount,
 		hideOnSinglePage: true,
+		showSizeChanger: true,
 	};
 
 	useEffect(() => {
@@ -505,6 +508,7 @@ const applicantList = (props) => {
 				pagination={tablePagination}
 				loading={tableLoading}
 				onChange={(pagination, filters, sorter) => {
+					setPageSize(pagination.pageSize);
 					const focusArea =
 						filters && filters.focus_area ? filters.focus_area : [];
 					setFocusAreaFilter(focusArea);

@@ -494,11 +494,7 @@ const individualScoringTable = (props) => {
 		<>
 			<Table
 				data-testid='applicant-table'
-				pagination={{
-					...props.pagination,
-					pageSizeOptions: [10, 25],
-					showSizeChanger: true,
-				}}
+				pagination={{...props.pagination}}
 				dataSource={props.applicants}
 				loading={props.loading}
 				onChange={(pagination, filters, sorter) => {
