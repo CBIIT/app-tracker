@@ -57,22 +57,6 @@ const columnChangeHandler = async (column, value, sysId, postChangeHandler) => {
 	}
 };
 
-const top25Selection = async (column, value, sysId, postChangeHandler) => {
-	try {
-		const key = column;
-		const data = { appSysId: sysId };
-		data[key] = value ? true : false;
-
-		await axios.put(columnApiMap[column], data);
-		postChangeHandler();
-		message.success('Applicant successfully selected to the Top 25%.');
-	} catch (error) {
-		message.error(
-			'Sorry, an error occurred while attempting to select applicant to the Top 25%.  Please try reloading the page and selecting again.'
-		);
-	}
-};
-
 const expandedRowRender = (applicationSysId) => (
 	<InnerScoresTable applicationSysId={applicationSysId} />
 );
@@ -216,7 +200,7 @@ const individualScoringTable = (props) => {
 		setRejectionEmailModal(true);
 		setReferredToInterview(referredToInterview);
 	};
-
+	
 	const getColumns = () => {
 		const columns = [
 			{
@@ -269,9 +253,9 @@ const individualScoringTable = (props) => {
 				render: (e, record) => (
 					<>
 						<Checkbox
-							checked={record.top_25_percent}
+							checked={record.top_25 === '1' ? true : false}
 							onChange={(e) => {
-								top25Selection(
+								columnChangeHandler(
 									'top25Percent',
 									e.target.checked,
 									record.sys_id,
@@ -304,7 +288,7 @@ const individualScoringTable = (props) => {
 			});
 		}
 
-		if (top25Enabled !== 'true') {
+		// if (top25Enabled !== 'true') {
 			// Add average score after Focus area
 			columns.push({
 				title: 'Average Score',
@@ -472,7 +456,7 @@ const individualScoringTable = (props) => {
 					}
 				);
 			}
-		}
+		// }
 
 		if (props.refCollection && props.isVacancyManager) {
 			columns.push({
