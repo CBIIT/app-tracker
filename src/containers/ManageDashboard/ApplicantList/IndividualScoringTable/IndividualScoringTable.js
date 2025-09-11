@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Table, Select, Modal, Input, Button, message } from 'antd';
+import { Table, Select, Modal, Input, Button, message, Checkbox } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../../Util/ColumnSearchProps';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import {
 	SUBMIT_COMMITTEE_COMMENTS,
 	COLLECT_REFERENCES,
 	SEND_REGRET_EMAIL,
+	TOP25PERCENT,
 } from '../../../../constants/ApiEndpoints';
 import {
 	COMMITTEE_REVIEW_IN_PROGRESS,
@@ -37,6 +38,7 @@ const columnApiMap = {
 	referredToInterview: INTERVIEW,
 	referredToSelectingOfficial: REFERRED_TO_SELECTING_OFFICIAL,
 	selected: SELECTED,
+	top25Percent: TOP25PERCENT,
 };
 
 const columnChangeHandler = async (column, value, sysId, postChangeHandler) => {
@@ -51,6 +53,22 @@ const columnChangeHandler = async (column, value, sysId, postChangeHandler) => {
 	} catch (error) {
 		message.error(
 			'Sorry, an error occurred while attempting to save.  Please try reloading the page and selecting again.'
+		);
+	}
+};
+
+const top25Selection = async (column, value, sysId, postChangeHandler) => {
+	try {
+		const key = column;
+		const data = { appSysId: sysId };
+		data[key] = value ? true : false;
+
+		await axios.put(columnApiMap[column], data);
+		postChangeHandler();
+		message.success('Applicant successfully selected to the Top 25%.');
+	} catch (error) {
+		message.error(
+			'Sorry, an error occurred while attempting to select applicant to the Top 25%.  Please try reloading the page and selecting again.'
 		);
 	}
 };
@@ -89,6 +107,9 @@ const individualScoringTable = (props) => {
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
 	const focusAreaEnabled = tname.properties?.find(
 		(p) => p.name === 'enableFocusArea'
+	)?.value;
+	const top25Enabled = tname.properties?.find(
+		(p) => p.name === 'enableTop25Percent'
 	)?.value;
 
 	var applicantFocusArea = props.focusArea;
@@ -240,6 +261,29 @@ const individualScoringTable = (props) => {
 			},
 		];
 
+		if (props.isVacancyManager && top25Enabled === 'true') {
+			columns.unshift({
+				title: 'Top 25%',
+				dataIndex: 'top_25_percent',
+				align: 'center',
+				render: (e, record) => (
+					<>
+						<Checkbox
+							checked={record.top_25_percent}
+							onChange={(e) => {
+								top25Selection(
+									'top25Percent',
+									e.target.checked,
+									record.sys_id,
+									props.postChangeHandler
+								);
+							}}
+						></Checkbox>
+					</>
+				),
+			});
+		}
+
 		if (
 			focusAreaEnabled &&
 			focusAreaEnabled === 'true' &&
@@ -260,69 +304,39 @@ const individualScoringTable = (props) => {
 			});
 		}
 
-		// Add average score after Focus area
-		columns.push({
-			title: 'Average Score',
-			dataIndex: 'average_member_score',
-			width: 50,
-			render: (text) => {
-				if (!text || text == 'NaN') {
-					return (
-						<span style={{ color: 'rgba(0,0,0,0.25)' }}>
-							{(text = 'Pending')}
-						</span>
-					);
-				} else {
-					return parseFloat(text).toFixed(2);
-				}
-			},
-			sorter: {
-				compare: (a, b) => a.average_member_score - b.average_member_score,
-			},
-		});
-
-		if (
-			(props.vacancyState === ROLLING_CLOSE &&
-				(props.filter === IN_REVIEW ||
-					props.filter === COMPLETED ||
-					props.filter === REVIEW_COMPLETE)) ||
-			props.vacancyState === VOTING_COMPLETE ||
-			props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS
-		) {
+		if (top25Enabled !== 'true') {
+			// Add average score after Focus area
 			columns.push({
-				title: 'Referred to Interview',
-				dataIndex: 'referred_to_interview',
-				render: (value, record) => (
-					<>
-						<Select
-							style={{ width: 100 }}
-							placeholder='--'
-							value={value}
-							allowClear
-							onChange={(value) =>
-								columnChangeHandler(
-									'referredToInterview',
-									value,
-									record.sys_id,
-									props.postChangeHandler
-								)
-							}
-						>
-							<Option value='yes'>Yes</Option>
-							<Option value='no'>No</Option>
-						</Select>
-					</>
-				),
+				title: 'Average Score',
+				dataIndex: 'average_member_score',
+				width: 50,
+				render: (text) => {
+					if (!text || text == 'NaN') {
+						return (
+							<span style={{ color: 'rgba(0,0,0,0.25)' }}>
+								{(text = 'Pending')}
+							</span>
+						);
+					} else {
+						return parseFloat(text).toFixed(2);
+					}
+				},
+				sorter: {
+					compare: (a, b) => a.average_member_score - b.average_member_score,
+				},
 			});
 
 			if (
-				props.vacancyState === VOTING_COMPLETE ||
 				(props.vacancyState === ROLLING_CLOSE &&
-					props.filter === REVIEW_COMPLETE)
+					(props.filter === IN_REVIEW ||
+						props.filter === COMPLETED ||
+						props.filter === REVIEW_COMPLETE)) ||
+				props.vacancyState === VOTING_COMPLETE ||
+				props.vacancyState === COMMITTEE_REVIEW_IN_PROGRESS
 			) {
 				columns.push({
-					title: 'Referred to Selecting Official',
-					dataIndex: 'referred_to_selecting_official',
+					title: 'Referred to Interview',
+					dataIndex: 'referred_to_interview',
 					render: (value, record) => (
 						<>
 							<Select
@@ -332,7 +346,7 @@ const individualScoringTable = (props) => {
 								allowClear
 								onChange={(value) =>
 									columnChangeHandler(
-										'referredToSelectingOfficial',
+										'referredToInterview',
 										value,
 										record.sys_id,
 										props.postChangeHandler
@@ -346,86 +360,118 @@ const individualScoringTable = (props) => {
 					),
 				});
 
-				columns.push({
-					title: 'Selected',
-					dataIndex: 'selected',
-					render: (value, record) => (
-						<>
-							<Select
-								style={{ width: 100 }}
-								placeholder='--'
-								value={value}
-								allowClear
-								onChange={(value) =>
-									columnChangeHandler(
-										'selected',
-										value,
-										record.sys_id,
-										props.postChangeHandler
+				if (
+					props.vacancyState === VOTING_COMPLETE ||
+					(props.vacancyState === ROLLING_CLOSE &&
+						props.filter === REVIEW_COMPLETE)
+				) {
+					columns.push({
+						title: 'Referred to Selecting Official',
+						dataIndex: 'referred_to_selecting_official',
+						render: (value, record) => (
+							<>
+								<Select
+									style={{ width: 100 }}
+									placeholder='--'
+									value={value}
+									allowClear
+									onChange={(value) =>
+										columnChangeHandler(
+											'referredToSelectingOfficial',
+											value,
+											record.sys_id,
+											props.postChangeHandler
+										)
+									}
+								>
+									<Option value='yes'>Yes</Option>
+									<Option value='no'>No</Option>
+								</Select>
+							</>
+						),
+					});
+
+					columns.push({
+						title: 'Selected',
+						dataIndex: 'selected',
+						render: (value, record) => (
+							<>
+								<Select
+									style={{ width: 100 }}
+									placeholder='--'
+									value={value}
+									allowClear
+									onChange={(value) =>
+										columnChangeHandler(
+											'selected',
+											value,
+											record.sys_id,
+											props.postChangeHandler
+										)
+									}
+								>
+									<Option value='yes'>Yes</Option>
+									<Option value='no'>No</Option>
+								</Select>
+							</>
+						),
+					});
+				}
+
+				if (props.displayAllComments) {
+					columns.push({
+						title: 'Other Comments',
+						align: 'center',
+						render: (_, record) => (
+							<Button
+								type='text'
+								shape='circle'
+								onClick={() =>
+									onOtherCommentsButtonClick(
+										record.triage_comments,
+										record.chair_triage_comment,
+										record.scores
 									)
 								}
 							>
-								<Option value='yes'>Yes</Option>
-								<Option value='no'>No</Option>
-							</Select>
-						</>
-					),
-				});
-			}
+								<CommentOutlined />
+							</Button>
+						),
+					});
+				}
 
-			if (props.displayAllComments) {
 				columns.push({
-					title: 'Other Comments',
+					title: 'Committee Comments',
+					dataIndex: 'committee_comments',
+					key: 'committee_comments',
 					align: 'center',
-					render: (_, record) => (
+					render: (comment, record) => (
 						<Button
 							type='text'
 							shape='circle'
-							onClick={() =>
-								onOtherCommentsButtonClick(
-									record.triage_comments,
-									record.chair_triage_comment,
-									record.scores
-								)
-							}
+							onClick={() => onCommentButtonClick(comment, record.sys_id)}
 						>
 							<CommentOutlined />
 						</Button>
 					),
 				});
+			} else {
+				columns.push(
+					{ title: 'Scoring Status', dataIndex: 'scoring_status', width: 125 },
+					{
+						title: 'Interview Recommendation',
+						dataIndex: 'interview_recommendation',
+						width: 100,
+						render: (value) =>
+							value.Yes +
+							' Yes • ' +
+							value.No +
+							' No • ' +
+							value.Maybe +
+							' Maybe',
+					}
+				);
 			}
-
-			columns.push({
-				title: 'Committee Comments',
-				dataIndex: 'committee_comments',
-				key: 'committee_comments',
-				align: 'center',
-				render: (comment, record) => (
-					<Button
-						type='text'
-						shape='circle'
-						onClick={() => onCommentButtonClick(comment, record.sys_id)}
-					>
-						<CommentOutlined />
-					</Button>
-				),
-			});
-		} else {
-			columns.push(
-				{ title: 'Scoring Status', dataIndex: 'scoring_status', width: 125 },
-				{
-					title: 'Interview Recommendation',
-					dataIndex: 'interview_recommendation',
-					width: 100,
-					render: (value) =>
-						value.Yes +
-						' Yes • ' +
-						value.No +
-						' No • ' +
-						value.Maybe +
-						' Maybe',
-				}
-			);
 		}
 
 		if (props.refCollection && props.isVacancyManager) {
@@ -450,25 +496,27 @@ const individualScoringTable = (props) => {
 		}
 
 		if (props.isVacancyManager) {
-			columns.push({
-				title: '',
-				align: 'center',
-				width: 200,
-				render: (_, record) => (
-					<Button
-						data-testid='send-regret-email-button'
-						onClick={() =>
-							onSendRejectionEmailButtonClick(
-								record.sys_id,
-								record.rejection_email_sent,
-								record.referred_to_interview
-							)
-						}
-					>
-						Send Regret Email
-					</Button>
-				),
-			});
+			if (top25Enabled !== 'true') {
+				columns.push({
+					title: '',
+					align: 'center',
+					width: 200,
+					render: (_, record) => (
+						<Button
+							data-testid='send-regret-email-button'
+							onClick={() =>
+								onSendRejectionEmailButtonClick(
+									record.sys_id,
+									record.rejection_email_sent,
+									record.referred_to_interview
+								)
+							}
+						>
+							Send Regret Email
+						</Button>
+					),
+				});
+			}
 
 			columns.push({
 				title: 'Reference Status',
@@ -494,7 +542,7 @@ const individualScoringTable = (props) => {
 		<>
 			<Table
 				data-testid='applicant-table'
-				pagination={{...props.pagination}}
+				pagination={{ ...props.pagination }}
 				dataSource={props.applicants}
 				loading={props.loading}
 				onChange={(pagination, filters, sorter) => {
