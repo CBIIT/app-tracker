@@ -200,7 +200,7 @@ const individualScoringTable = (props) => {
 		setRejectionEmailModal(true);
 		setReferredToInterview(referredToInterview);
 	};
-	
+
 	const getColumns = () => {
 		const columns = [
 			{
@@ -288,7 +288,7 @@ const individualScoringTable = (props) => {
 			});
 		}
 
-		// if (top25Enabled !== 'true') {
+		if (top25Enabled !== 'true') {
 			// Add average score after Focus area
 			columns.push({
 				title: 'Average Score',
@@ -456,7 +456,7 @@ const individualScoringTable = (props) => {
 					}
 				);
 			}
-		// }
+		}
 
 		if (props.refCollection && props.isVacancyManager) {
 			columns.push({
