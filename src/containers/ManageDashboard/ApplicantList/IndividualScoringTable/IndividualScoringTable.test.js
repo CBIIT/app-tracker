@@ -113,6 +113,7 @@ describe('individualScoringTable', () => {
 		expect(screen.getByText('Email')).toBeInTheDocument();
 		expect(screen.getByText('Focus Area')).toBeInTheDocument();
 		expect(screen.getByTestId('collect-references-button')).toBeInTheDocument();
+		expect(screen.getByText('Reference Status')).toBeInTheDocument();
 	});
 
 	test('renders individualScoringTable component for Non-Stadtman tenant', () => {
