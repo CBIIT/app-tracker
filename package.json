@@ -16,7 +16,7 @@
 		"@ant-design/icons": "^4.5.0",
 		"@testing-library/react-hooks": "^8.0.1",
 		"antd": "^4.12.3",
-		"axios": "^1.10.0",
+		"axios": "^1.11.0",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
 		"react-highlight-words": "^0.20.0",
