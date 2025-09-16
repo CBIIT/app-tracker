@@ -540,6 +540,7 @@ const applicantList = (props) => {
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
+									postChangeHandler={loadVacancyAndApplicants}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -555,6 +556,7 @@ const applicantList = (props) => {
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
+									postChangeHandler={loadVacancyAndApplicants}
 								/>
 							</Panel>
 						</Collapse>
