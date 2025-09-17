@@ -514,12 +514,6 @@ const application = () => {
 			vacancyData?.user?.committee_role_of_current_vacancy;
 		const userConsolidatedRoles = [...userRoles, userVacancyCommitteeRole];
 
-		console.log('**********');
-		console.log(userRoles);
-		console.log(userVacancyCommitteeRole);
-		console.log(userConsolidatedRoles);
-		console.log('**********');
-
 		return (
 			<>
 				<div className='ApplicationContainer'>
