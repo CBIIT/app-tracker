@@ -55,6 +55,7 @@ import { displayReferenceContactQuestion } from '../../components/Util/Applicati
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 import Loading from '../../components/Loading/Loading';
 import { APP_TRIAGE } from '../../constants/ApplicationStates.js';
+import useAuth from '../../hooks/useAuth.js';
 
 const { confirm } = Modal;
 
@@ -176,6 +177,8 @@ const application = () => {
 	const history = useHistory();
 	const { sysId } = useParams();
 
+	const { auth: { tenants }, currentTenant } = useAuth();
+
 	useEffect(() => {
 		loadApplication();
 	}, []);
@@ -264,8 +267,9 @@ const application = () => {
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + vacancySysId);
 			setVacancyData(vacancy.data.result);
 
-			const roles = vacancy.data.result.user.roles;
-			setUserRoles(roles);
+			var foundTenant = tenants ? tenants.find((element) => (element.value === currentTenant)) : null;
+			setUserRoles(foundTenant.roles);
+
 
 			if (vacancy.data.result.rating_plan)
 				setRatingPlanDownloadLink(
@@ -495,17 +499,26 @@ const application = () => {
 		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
 
+	
+
+
 	if (isLoading) {
 		return <Loading />;
 	} else {
 		const allowHrSpecialistTriage =
-			vacancyData?.basic_info?.allow_hr_specialist_triage.value === '0'
+			vacancyData?.basic_info?.allow_hr_specialist_triage?.value === '0'
 				? false
 				: true;
 
 		const userVacancyCommitteeRole =
 			vacancyData?.user?.committee_role_of_current_vacancy;
 		const userConsolidatedRoles = [...userRoles, userVacancyCommitteeRole];
+
+		console.log('**********');
+		console.log(userRoles);
+		console.log(userVacancyCommitteeRole);
+		console.log(userConsolidatedRoles);
+		console.log('**********');
 
 		return (
 			<>
@@ -605,6 +618,7 @@ const application = () => {
 							) || isChair(userVacancyCommitteeRole) ? (
 								<>
 									<TriageWidget
+										data-testid="triage-widget-vm"
 										title='Vacancy Manager Team Feedback'
 										style={{
 											backgroundColor: 'white',
@@ -631,6 +645,7 @@ const application = () => {
 										isHRSpecialist={isHRSpecialist(userVacancyCommitteeRole)}
 									/>
 									<TriageWidget
+										data-testid="triage-widget-chair"
 										title='Committee Chair Feedback and Notes'
 										style={{ backgroundColor: 'white', marginBottom: '0px' }}
 										triageOptions={chairTriageOptions}
