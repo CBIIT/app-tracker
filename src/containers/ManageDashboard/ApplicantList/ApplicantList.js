@@ -45,6 +45,9 @@ import {
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 import './ApplicantList.css';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 const { Panel } = Collapse;
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -965,6 +968,21 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
+
+	console.log('***** Table Rendered *****', applicants);
+
+	const exportToExcel = (data, filename = 'export.xlsx') => {
+		// Convert data to worksheet
+		const worksheet = XLSX.utils.json_to_sheet(data);
+		// Create a new workbook and append the worksheet
+		const workbook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+		// Generate buffer
+		const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+		// Create a Blob and trigger download
+		const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+		saveAs(blob, filename);
+	}
 	return (
 		<>
 			{props.vacancyState == 'rolling_close' && (
@@ -987,6 +1005,9 @@ const applicantList = (props) => {
 					</Radio.Group>
 				</div>
 			)}
+			<div>
+				<Button onClick={() => exportToExcel(applicants, 'Applicants.xlsx')}>Export to Excel</Button>
+			</div>
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}
