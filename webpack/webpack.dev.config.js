@@ -76,10 +76,7 @@ const cfg = {
 		new webpack.DefinePlugin({
 			'process.env.REACT_APP_USER': JSON.stringify(
 				servicenowConfig.REACT_APP_USER
-			),
-			'process.env.REACT_APP_PASSWORD': JSON.stringify(
-				servicenowConfig.REACT_APP_PASSWORD
-			),
+			)
 		}),
 	],
 };
