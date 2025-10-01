@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-
 import { Tabs, Button, Tooltip, message } from 'antd';
 import {
 	DoubleRightOutlined,
@@ -7,11 +6,8 @@ import {
 	UnlockOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
-
 import { useParams, useHistory } from 'react-router-dom';
-
 import SearchContext from './Util/SearchContext';
-
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
@@ -50,7 +46,11 @@ import {
 } from '../../constants/VacancyStates';
 import Loading from '../../components/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
-import { validateRoleForCurrentTenant, isChair, isExecSec } from '../../components/Util/RoleValidator/RoleValidator';
+import {
+	validateRoleForCurrentTenant,
+	isChair,
+	isExecSec,
+} from '../../components/Util/RoleValidator/RoleValidator';
 
 import './ManageDashboard.css';
 
@@ -170,8 +170,14 @@ const manageDashboard = () => {
 
 	const history = useHistory();
 	const {
-		auth: { user, tenants }, setStep, currentTenant,
+		auth: { user, tenants },
+		setStep,
+		currentTenant,
 	} = useAuth();
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
+	const emailButtonEnabled = tname.properties?.find(
+		(p) => p.name === 'enableEmailButton'
+	)?.value;
 
 	useEffect(() => {
 		loadLatestVacancyInfo();
@@ -266,6 +272,14 @@ const manageDashboard = () => {
 		else return false;
 	};
 
+	const displayEmailButton = (vacancy) => {
+		if (user.roles.includes(OWM_TEAM) && emailButtonEnabled === 'true') {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
 	return isLoading ? (
 		<Loading />
 	) : (
@@ -279,7 +293,9 @@ const manageDashboard = () => {
 						<Button
 							type='link'
 							onClick={() => {
-								if (validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)) {
+								if (
+									validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)
+								) {
 									if (isExecSec(currentTenant, tenants)) {
 										history.push(EXE_SEC_DASHBOARD);
 									} else {
@@ -302,6 +318,23 @@ const manageDashboard = () => {
 						<VacancyStatus state={state} />
 						{displayNextButton(vacancy.state) ? (
 							<div className='AdvanceButtonDiv'>
+								{vacancy.state == INDIVIDUAL_SCORING_IN_PROGRESS ? (
+									<>
+										{displayEmailButton(vacancy) ? (
+											<Tooltip
+												placement='top'
+											>
+												<Button
+													type='primary'
+													ghost
+													className='AdvanceButton'
+												>
+													Send Complimentary and Regret Emails
+												</Button>
+											</Tooltip>
+										) : null}
+									</>
+								) : null}
 								<Tooltip
 									placement='top'
 									title={
@@ -370,8 +403,10 @@ const manageDashboard = () => {
 										<Button
 											type='primary'
 											ghost
-											onClick={() => { setStep(-2);
-												history.push(EDIT_VACANCY + sysId)}}
+											onClick={() => {
+												setStep(-2);
+												history.push(EDIT_VACANCY + sysId);
+											}}
 										>
 											Edit
 										</Button>

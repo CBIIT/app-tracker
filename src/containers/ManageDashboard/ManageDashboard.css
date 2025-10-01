@@ -7,6 +7,12 @@
 	display: flex !important;
 	justify-content: flex-end;
 }
+.ant-btn-background-ghost.ant-btn-primary {
+	color: #015ea2;
+    border-color: #015ea2;
+    text-shadow: none;
+    margin-left: 10px;
+}
 
 .manage-tabs .ant-tabs-nav-wrap {
 	background-color: rgb(237 240 243);
