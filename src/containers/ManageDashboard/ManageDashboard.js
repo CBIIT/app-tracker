@@ -272,7 +272,7 @@ const manageDashboard = () => {
 		else return false;
 	};
 
-	const displayEmailButton = (vacancy) => {
+	const displayEmailButton = () => {
 		if (user.roles.includes(OWM_TEAM) && emailButtonEnabled === 'true') {
 			return true;
 		} else {
@@ -320,7 +320,7 @@ const manageDashboard = () => {
 							<div className='AdvanceButtonDiv'>
 								{vacancy.state == INDIVIDUAL_SCORING_IN_PROGRESS ? (
 									<>
-										{displayEmailButton(vacancy) ? (
+										{displayEmailButton() ? (
 											<Tooltip
 												placement='top'
 											>
