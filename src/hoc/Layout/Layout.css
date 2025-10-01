@@ -27,3 +27,7 @@
 	flex-direction: column;
 	justify-content: center;
 }
+
+.ant-alert-message {
+  color: rgb(255, 255, 255) !important; /* Use !important if necessary to override Antd's styles */
+}
