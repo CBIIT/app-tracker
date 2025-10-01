@@ -175,7 +175,7 @@ const manageDashboard = () => {
 		currentTenant,
 	} = useAuth();
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
-	const emailButtonEnabled = tname.properties?.find(
+	const emailButtonEnabled = (tname?.properties || []).find(
 		(p) => p.name === 'enableEmailButton'
 	)?.value;
 
