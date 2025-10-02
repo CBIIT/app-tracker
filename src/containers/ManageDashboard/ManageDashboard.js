@@ -13,6 +13,7 @@ import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';
 import StatusModal from './StatusModal/StatusModal.js';
+import EmailModal from './EmailModal/EmailModal.js';
 import FileUploadAndDisplay from '../../components/UI/FileUploadAndDisplay/FileUploadAndDisplay';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend.js';
 import {
@@ -155,6 +156,7 @@ const manageDashboard = () => {
 	const [userCommitteeRole, setUserCommitteeRole] = useState();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [statusModalOpen, setStatusModalOpen] = useState(false);
+	const [emailModal, setEmailModal] = useState(false);
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
@@ -185,6 +187,10 @@ const manageDashboard = () => {
 
 	const handleButtonClick = () => {
 		setModalVisible(true);
+	};
+
+	const handleEmailButtonClick = () => {
+		setEmailModal(true);
 	};
 
 	const handleStatusButtonClick = () => {
@@ -239,6 +245,10 @@ const manageDashboard = () => {
 	const closeModal = async () => {
 		setModalVisible(false);
 		loadLatestVacancyInfo();
+	};
+
+	const closeEmailModal = async () => {
+		setEmailModal(false);
 	};
 
 	const handleNextStepModalConfirm = async (sysId) => {
@@ -328,6 +338,7 @@ const manageDashboard = () => {
 													type='primary'
 													ghost
 													className='AdvanceButton'
+													onClick={handleEmailButtonClick}
 												>
 													Send Complimentary and Regret Emails
 												</Button>
@@ -477,6 +488,11 @@ const manageDashboard = () => {
 					openModal={statusModalOpen}
 					setModal={setStatusModalOpen}
 					loadVacancy={loadLatestVacancyInfo}
+				/>
+				<EmailModal
+					visible={emailModal}
+					sysId={sysId}
+					handleCloseModal={closeEmailModal}
 				/>
 			</SearchContext.Provider>
 		</>
