@@ -1,13 +1,15 @@
 import { Modal, message, notification } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { TOP25EMAIL } from "../../../constants/ApiEndpoints";
+import axios from "axios";
 
 const EmailModal = (props) => {
-    console.log('sysId: ', props.sysId);
     const handleOk = async () => {
-        // Will Call Top 25 Email api here
-        console.log('sending emails...');
         try {
-
+            const top25EmailResponse = await axios.get(TOP25EMAIL + props.sysId);
+            const emailResponse = top25EmailResponse.data.result.message;
+            message.success(emailResponse);
+            await props.handleCloseModal();
         } catch (error) {
             await props.handleCloseModal();
             notification.error({
