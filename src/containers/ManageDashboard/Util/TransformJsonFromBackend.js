@@ -4,6 +4,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 		state: sourceJson.basic_info.state.value,
 		status: sourceJson.basic_info.status.value,
 		basicInfo: {
+			bulkEmail: sourceJson.basic_info.bulk_email_sent.value == '1' ? true : false,
 			openDate: sourceJson.basic_info.open_date.label,
 			useCloseDate:
 				sourceJson.basic_info.use_close_date.value == '1' ? true : false,

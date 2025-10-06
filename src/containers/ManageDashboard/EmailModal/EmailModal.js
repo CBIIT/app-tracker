@@ -9,6 +9,7 @@ const EmailModal = (props) => {
             const top25EmailResponse = await axios.get(TOP25EMAIL + props.sysId);
             const emailResponse = top25EmailResponse.data.result.message;
             message.success(emailResponse);
+            props.setEmailButtonDisabled(true);
             await props.handleCloseModal();
         } catch (error) {
             await props.handleCloseModal();

@@ -157,6 +157,7 @@ const manageDashboard = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [statusModalOpen, setStatusModalOpen] = useState(false);
 	const [emailModal, setEmailModal] = useState(false);
+	const [emailButtonDisabled, setEmailButtonDisabled] = useState(false);
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
@@ -210,6 +211,7 @@ const manageDashboard = () => {
 
 	const loadLatestVacancyInfo = async () => {
 		const vacancyResponse = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
+		console.log("🚀 ~ loadLatestVacancyInfo ~ vacancyResponse:", vacancyResponse)
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);
@@ -334,14 +336,24 @@ const manageDashboard = () => {
 											<Tooltip
 												placement='top'
 											>
-												<Button
-													type='primary'
-													ghost
-													className='AdvanceButton'
-													onClick={handleEmailButtonClick}
-												>
-													Send Complimentary and Regret Emails
-												</Button>
+												{(vacancy.basicInfo.bulkEmail !== true && emailButtonDisabled !== true) ? (
+													<Button
+														type='primary'
+														ghost
+														className='AdvanceButton'
+														onClick={handleEmailButtonClick}
+													>
+														Send Complimentary and Regret Emails
+													</Button>
+												) : (
+													<Button
+														type='primary'
+														ghost
+														className='AdvanceButton'
+													>
+														Send Complimentary and Regret Emails
+													</Button>
+												)}
 											</Tooltip>
 										) : null}
 									</>
@@ -493,6 +505,7 @@ const manageDashboard = () => {
 					visible={emailModal}
 					sysId={sysId}
 					handleCloseModal={closeEmailModal}
+					setEmailButtonDisabled={setEmailButtonDisabled}
 				/>
 			</SearchContext.Provider>
 		</>
