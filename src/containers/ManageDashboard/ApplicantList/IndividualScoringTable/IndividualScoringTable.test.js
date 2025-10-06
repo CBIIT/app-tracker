@@ -18,7 +18,6 @@ import {
 import { INDIVIDUAL_SCORING_IN_PROGRESS } from '../../../../constants/VacancyStates';
 import useAuth from '../../../../hooks/useAuth';
 import axios from 'axios';
-import { check } from 'optimist';
 
 jest.mock('../../../../hooks/useAuth');
 jest.mock('axios');
