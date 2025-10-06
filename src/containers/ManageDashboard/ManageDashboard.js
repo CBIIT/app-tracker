@@ -211,7 +211,6 @@ const manageDashboard = () => {
 
 	const loadLatestVacancyInfo = async () => {
 		const vacancyResponse = await axios.get(GET_VACANCY_MANAGER_VIEW + sysId);
-		console.log("🚀 ~ loadLatestVacancyInfo ~ vacancyResponse:", vacancyResponse)
 		setUserCommitteeRole(
 			vacancyResponse.data.result.user.committee_role_of_current_vacancy
 		);
@@ -338,6 +337,7 @@ const manageDashboard = () => {
 											>
 												{(vacancy.basicInfo.bulkEmail !== true && emailButtonDisabled !== true) ? (
 													<Button
+														data-testid='bulkEmailButton'
 														type='primary'
 														ghost
 														className='AdvanceButton'
