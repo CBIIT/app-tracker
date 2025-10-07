@@ -1,8 +1,6 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EmailModal from './EmailModal';
 import axios from 'axios';
-import { message, notification } from 'antd';
 
 jest.mock('axios');
 jest.mock('antd', () => ({

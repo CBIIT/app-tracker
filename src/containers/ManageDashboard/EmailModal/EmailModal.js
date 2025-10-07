@@ -1,17 +1,19 @@
 import { Modal, message, notification } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { TOP25EMAIL } from "../../../constants/ApiEndpoints";
+import { SEND_TOP25_EMAILS } from "../../../constants/ApiEndpoints";
 import axios from "axios";
 
 const EmailModal = (props) => {
     const handleOk = async () => {
         try {
-            const top25EmailResponse = await axios.get(TOP25EMAIL + props.sysId);
+            const endpoint = SEND_TOP25_EMAILS.replace('{vacancy_id}', props.sysId);
+            const top25EmailResponse = await axios.post(endpoint);
             const emailResponse = top25EmailResponse.data.result.message;
             message.success(emailResponse);
             props.setEmailButtonDisabled(true);
             await props.handleCloseModal();
         } catch (error) {
+            console.log(error);
             await props.handleCloseModal();
             notification.error({
                 message: 'Sorry! There was an error attempting to send the emails.',

@@ -173,8 +173,8 @@ describe('ApiEndpoints', () => {
         expect(ApiEndpoints.TOP25PERCENT).toBe('/api/x_g_nci_app_tracke/application/top25');
     });
 
-    it('should have correct value for TOP25EMAIL', () => {
-        expect(ApiEndpoints.TOP25EMAIL).toBe('/api/x_g_nci_app_tracke/application/send_top25_emails/');
+    it('should have correct value for SEND_TOP25_EMAIL', () => {
+        expect(ApiEndpoints.SEND_TOP25_EMAILS).toBe('/api/x_g_nci_app_tracke/application/send_top25_emails/');
     });
 
     it('should have the correct value for REFERRED_TO_SELECTING_OFFICIAL', () => {
