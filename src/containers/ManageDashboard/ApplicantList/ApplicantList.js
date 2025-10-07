@@ -69,7 +69,7 @@ const defaultApplicantSort = 'ascend';
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
-	const [pageSize, setPageSize] = useState(10);
+	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
@@ -294,7 +294,7 @@ const applicantList = (props) => {
 	}
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
-		useState(10);
+		useState(50);
 	const [recommendedApplicantsTotalCount, setRecommendedApplicantsTotalCount] =
 		useState(0);
 	const [
@@ -305,7 +305,7 @@ const applicantList = (props) => {
 	const [
 		nonRecommendedApplicantsPageSize,
 		setNonRecommendedApplicantsPageSize,
-	] = useState(10);
+	] = useState(50);
 	const [
 		nonRecommendedApplicantsTotalCount,
 		setNonRecommendedApplicantsTotalCount,
