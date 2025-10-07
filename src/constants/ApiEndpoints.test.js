@@ -174,7 +174,7 @@ describe('ApiEndpoints', () => {
     });
 
     it('should have correct value for SEND_TOP25_EMAIL', () => {
-        expect(ApiEndpoints.SEND_TOP25_EMAILS).toBe('/api/x_g_nci_app_tracke/application/send_top25_emails/');
+        expect(ApiEndpoints.SEND_TOP25_EMAILS).toBe('/api/x_g_nci_app_tracke/vacancy/{vacancy_id}/emails/decisions/top25bottom75');
     });
 
     it('should have the correct value for REFERRED_TO_SELECTING_OFFICIAL', () => {
