@@ -36,7 +36,7 @@ export const INTERVIEW = '/api/x_g_nci_app_tracke/application/interview';
 
 export const TOP25PERCENT = '/api/x_g_nci_app_tracke/application/top25';
 
-export const SEND_TOP25_EMAILS = '/api/x_g_nci_app_tracke/vacancy/{vacancy_id}/emails/decisions/top25bottom75';
+export const SEND_TOP25_EMAILS = '/api/x_g_nci_app_tracke/vacancy/{vacancy_id}/emails/decisions';
 
 export const REMOVE_USER_APPLICATION_DRAFT =
 	'/api/x_g_nci_app_tracke/application/remove/';
