@@ -41,7 +41,7 @@ describe('EmailModal handleOk', () => {
     });
 
     it('calls success flow when axios resolves', async () => {
-        axios.get.mockResolvedValue({
+        axios.post.mockResolvedValue({
             data: { result: { message: 'Complimentary and regret emails have been sent.' } }
         });
 
@@ -50,7 +50,7 @@ describe('EmailModal handleOk', () => {
         fireEvent.click(screen.getByText('Okay'));
 
         await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(sysId));
+            expect(axios.post).toHaveBeenCalledWith(expect.stringContaining(sysId));
             expect(setEmailButtonDisabled).toHaveBeenCalledWith(true);
             expect(handleCloseModal).toHaveBeenCalled();
             expect(screen.getByText('Complimentary and regret emails have been sent.')).toBeInTheDocument();
@@ -58,14 +58,14 @@ describe('EmailModal handleOk', () => {
     });
 
     it('calls error flow when axios rejects', async () => {
-        axios.get.mockRejectedValue(new Error('Sorry! An error occurred while attempting to send the complimentary and regret emails. Please try again.'));
+        axios.post.mockRejectedValue(new Error('Sorry! An error occurred while attempting to send the complimentary and regret emails. Please try again.'));
 
         setup();
 
         fireEvent.click(screen.getByText('Okay'));
 
         await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(expect.stringContaining(sysId));
+            expect(axios.post).toHaveBeenCalledWith(expect.stringContaining(sysId));
             expect(handleCloseModal).toHaveBeenCalled();
             const message = screen.getByText(/Sorry! There was an error attempting to send the emails./);
             expect(message).toBeInTheDocument();
