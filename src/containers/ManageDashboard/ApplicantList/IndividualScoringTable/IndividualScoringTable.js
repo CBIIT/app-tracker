@@ -89,10 +89,10 @@ const individualScoringTable = (props) => {
 		currentTenant,
 	} = useAuth();
 	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
-	const focusAreaEnabled = tname.properties?.find(
+	const focusAreaEnabled = (tname?.properties || []).find(
 		(p) => p.name === 'enableFocusArea'
 	)?.value;
-	const top25Enabled = tname.properties?.find(
+	const top25Enabled = (tname?.properties || []).find(
 		(p) => p.name === 'enableTop25Percent'
 	)?.value;
 

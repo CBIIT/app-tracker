@@ -8,6 +8,7 @@ describe('transformJsonFromBackend', () => {
                 state: { value: 'active' },
                 status: { value: 'open' },
                 open_date: { label: '2023-01-01' },
+                bulk_email_sent: { value: '1' },
                 use_close_date: { value: '1' },
                 reference_collection: { value: '1' },
                 reference_collection_date: { label: '2023-02-01' },
@@ -53,6 +54,7 @@ describe('transformJsonFromBackend', () => {
             state: 'active',
             status: 'open',
             basicInfo: {
+                bulkEmail: true,
                 openDate: '2023-01-01',
                 useCloseDate: true,
                 referenceCollection: true,
@@ -111,6 +113,7 @@ describe('transformJsonFromBackend', () => {
                 reference_collection: { value: '0' },
                 reference_collection_date: { label: '2023-02-01' },
                 close_date: { label: '2023-03-01' },
+                bulk_email_sent: { value: '0' },
                 scoring_due_by_date: { label: '2023-04-01' },
                 vacancy_title: { value: 'Developer' },
                 tenant: { label: 'Tenant A' },
@@ -139,6 +142,7 @@ describe('transformJsonFromBackend', () => {
             state: 'active',
             status: 'open',
             basicInfo: {
+                bulkEmail: false,
                 openDate: '2023-01-01',
                 useCloseDate: false,
                 referenceCollection: false,
