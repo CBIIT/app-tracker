@@ -180,7 +180,7 @@ const applicantApplicationView = (props) => {
 								</InfoCardRow>
 								<InfoCardRow>
 									<LabelValuePair
-										label=' Reference Received'
+										label='Reference Received'
 										value={reference.referenceReceived}
 									/>
 								</InfoCardRow>
