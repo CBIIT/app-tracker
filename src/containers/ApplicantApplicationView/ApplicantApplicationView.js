@@ -114,7 +114,7 @@ const applicantApplicationView = (props) => {
 					</InfoCardRow>
 				</InfoCard>
 				<Address address={application.address} />
-				{application.focusArea ? (
+				{(application.focusArea.length !== 0) ? (
 					<InfoCard
 						title='Focus Areas'
 						style={{
@@ -180,7 +180,7 @@ const applicantApplicationView = (props) => {
 								</InfoCardRow>
 								<InfoCardRow>
 									<LabelValuePair
-										label=' Reference Received'
+										label='Reference Received'
 										value={reference.referenceReceived}
 									/>
 								</InfoCardRow>
