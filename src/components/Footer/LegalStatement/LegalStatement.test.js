@@ -4,12 +4,12 @@ import LegalStatement from './LegalStatement';
 describe('LegalStatement', () => {
     test('should display the correct OMB number', () => {
         render(<LegalStatement />);
-        expect(screen.getByText(/OMB No. 0925-0761/i)).toBeInTheDocument();
+        expect(screen.getByText(/OMB No. 0925-0761-2501/i)).toBeInTheDocument();
     });
 
     test('should display the correct expiration date', () => {
         render(<LegalStatement />);
-        expect(screen.getByText(/Expiration Date: 07\/31\/2025/i)).toBeInTheDocument();
+        expect(screen.getByText(/Expiration Date: 09\/30\/2028/i)).toBeInTheDocument();
     });
 
     // test('should contain a link to the OPM GOVT-5 document', () => {
@@ -26,6 +26,6 @@ describe('LegalStatement', () => {
 
     test('should display the correct NIH address', () => {
         render(<LegalStatement />);
-        expect(screen.getByText(/NIH, Project Clearance Branch, 6705 Rockledge Drive, MSC 7974, Bethesda, MD 20892-7974, ATTN: PRA \(0925-0761\)/i)).toBeInTheDocument();
+        expect(screen.getByText(/NIH, Project Clearance Branch, 6705 Rockledge Drive, MSC 7974, Bethesda, MD 20892-7974, ATTN: PRA \(0925-0761-2501\)/i)).toBeInTheDocument();
     });
 });

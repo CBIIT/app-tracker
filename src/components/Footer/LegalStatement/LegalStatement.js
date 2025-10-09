@@ -1,14 +1,14 @@
 import React from 'react';
 import './LegalStatement.css';
 
-const ombNumber = '0925-0761';
+const ombNumber = '0925-0761-2501';
 
 const legalStatement = () => (
 	<div className='LegalStatement'>
 		<div className='LegalStatementContent Content'>
 			<p style={{ textAlign: 'right' }}>
 				OMB No. {ombNumber} <br />
-				Expiration Date: 07/31/2025
+				Expiration Date: 09/30/2028
 			</p>
 			<p>
 				Collection of this information is authorized by The Public Health
