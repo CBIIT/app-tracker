@@ -18,13 +18,13 @@ describe('Footer component', () => {
 
     test('should display the correct OMB number', () => {
         render(<LegalStatement />);
-        const legalStatementElement = screen.getByText(/OMB No. 0925-0761/i);
+        const legalStatementElement = screen.getByText(/OMB No. 0925-0761-2501/i);
         expect(legalStatementElement).toBeInTheDocument();
     });
 
     test('should display the correct expiration date', () => {
         render(<LegalStatement />);
-        const legalStatementElement = screen.getByText(/Expiration Date: 07\/31\/2025/i);
+        const legalStatementElement = screen.getByText(/Expiration Date: 09\/30\/2028/i);
         expect(legalStatementElement).toBeInTheDocument();
     });
 });
