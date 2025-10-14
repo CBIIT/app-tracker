@@ -41,6 +41,7 @@ describe('ApplicantList', () => {
 	let mockLoadAllApplicants;
 	let mockLoadRecommendedApplicants;
 	let mockApi;
+	let mockApplicantFocusAreaOptions;
 
 	beforeEach(() => {
 		Object.defineProperty(window, 'matchMedia', {
@@ -149,6 +150,38 @@ describe('ApplicantList', () => {
 			expect(screen.getByText(/Send Regret Email/i)).toBeInTheDocument();
 			expect(screen.getByText(/1 out of 3/i)).toBeInTheDocument();
 		});
+	});
+
+	test('should render ApplicantList component for Stadtman tenants', async () => {
+		mockApi = GET_APPLICANT_LIST;
+		useParams.mockReturnValue({ id: mockNRCVacancy.sysId });
+		useAuth.mockReturnValue(mockStadtmanAuth);
+
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockResolvedValueOnce(mockApplicants);
+
+		mockApplicantFocusAreaOptions = mockApplicantFocusArea;
+
+		render(
+			<HashRouter>
+				<ApplicantList
+					vacancyState={'triage'}
+					vacancyTenant={'Stadtman'}
+					referenceCollection={true}
+					userRoles={mockStadtmanAuth.auth.user.roles}
+					userCommitteeRole={mockStadtmanAuth.auth.user.roles}
+					reloadVacancy={mockLoadLatestVacancyInfo}
+				/>
+			</HashRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		expect(screen.getByText('Complete')).toBeInTheDocument();
+
 	});
 
 	test('should render PATS reminder text for set close date vacancies in the Voting Complete state', async () => {
