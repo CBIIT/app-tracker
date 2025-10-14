@@ -44,6 +44,7 @@ import {
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
+import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
 const { Panel } = Collapse;
 const renderDecision = (text) =>
@@ -93,6 +94,16 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
+
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
+	const top25Enabled = (tname?.properties || []).find(
+		(p) => p.name === 'enableTop25Percent'
+	)?.value;
+
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
@@ -263,25 +274,27 @@ const applicantList = (props) => {
 				),
 			});
 		}
-		applicantColumns.push({
-			title: '',
-			align: 'center',
-			width: 200,
-			render: (_, record) => (
-				<Button
-					data-testid='send-regret-email-button'
-					onClick={() =>
-						onSendRejectionEmailButtonClick(
-							record.sys_id,
-							record.rejection_email_sent,
-							record.referred_to_interview
-						)
-					}
-				>
-					Send Regret Email
-				</Button>
-			),
-		});
+		if (top25Enabled !== 'true') {
+			applicantColumns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='send-regret-email-button'
+						onClick={() =>
+							onSendRejectionEmailButtonClick(
+								record.sys_id,
+								record.rejection_email_sent,
+								record.referred_to_interview
+							)
+						}
+					>
+						Send Regret Email
+					</Button>
+				),
+			});
+		}
 		applicantColumns.push({
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
