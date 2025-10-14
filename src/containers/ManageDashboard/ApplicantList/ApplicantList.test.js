@@ -10,6 +10,7 @@ import {
 import { useParams, HashRouter } from 'react-router-dom';
 import SearchContext from '../Util/SearchContext';
 import axios from 'axios';
+import useAuth from '../../../hooks/useAuth';
 import {
 	GET_APPLICANT_LIST,
 	GET_ROLLING_APPLICANT_LIST,
@@ -23,6 +24,8 @@ import {
 	mockApplicants,
 	mockSearchContextValue,
 	mockApplicantFocusArea,
+	mockStadtmanAuth,
+	mockNonStadtmanAuth,
 } from './ApplicantListMockData';
 
 jest.mock('react-router-dom', () => ({
@@ -30,6 +33,7 @@ jest.mock('react-router-dom', () => ({
 	useParams: jest.fn(),
 }));
 jest.mock('axios');
+jest.mock('../../../hooks/useAuth');
 
 describe('ApplicantList', () => {
 	let mockLoadLatestVacancyInfo;
@@ -62,13 +66,12 @@ describe('ApplicantList', () => {
 		jest.clearAllMocks();
 	});
 
-	test('should render ApplicantList component', async () => {
+	test('should render ApplicantList component for Rolling Close Vacancy', async () => {
 		mockApi = GET_ROLLING_APPLICANT_LIST;
 		useParams.mockReturnValue({ id: mockRCVacancy.sysId });
+		useAuth.mockReturnValue(mockNonStadtmanAuth);
 
-		axios.get
-			.mockResolvedValueOnce(mockApplicantFocusArea)
-			.mockResolvedValueOnce(mockGetRollingApplicantList);
+		axios.get.mockResolvedValueOnce(mockGetRollingApplicantList);
 
 		render(
 			<HashRouter>
@@ -87,8 +90,15 @@ describe('ApplicantList', () => {
 			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
 		});
 
+		expect(screen.getByText(/Filter Applications:/i)).toBeInTheDocument();
+		expect(screen.getByText('Triage')).toBeInTheDocument();
+		expect(screen.getByText('Individual Scoring')).toBeInTheDocument();
+		expect(screen.getByText('Committee Review')).toBeInTheDocument();
+		expect(screen.getByText('Selected')).toBeInTheDocument();
+
 		expect(screen.getByText('Applicant')).toBeInTheDocument();
 		expect(screen.getByText('Email')).toBeInTheDocument();
+		expect(screen.getByText('Submitted')).toBeInTheDocument();
 		expect(screen.getByText('Vacancy Manager Triage Decision')).toBeInTheDocument();
 		expect(screen.getByText('Chair Triage Decision')).toBeInTheDocument();
 		expect(screen.getByText('Reference Status')).toBeInTheDocument();
@@ -99,6 +109,45 @@ describe('ApplicantList', () => {
 			expect(screen.getByText(/Collect References/i)).toBeInTheDocument();
 			expect(screen.getByText(/Send Regret Email/i)).toBeInTheDocument();
 			expect(screen.getByText(/2 out of 3/i)).toBeInTheDocument();
+		});
+	});
+
+	test('should render ApplicantList component for Non-Rolling Close Vacancy', async () => {
+		mockApi = GET_APPLICANT_LIST;
+		useParams.mockReturnValue({ id: mockNRCVacancy.sysId });
+		useAuth.mockReturnValue(mockNonStadtmanAuth);
+
+		axios.get.mockResolvedValueOnce(mockGetApplicantList);
+
+		render(
+			<HashRouter>
+				<ApplicantList
+					vacancyState={mockNRCVacancy.state}
+					vacancyTenant={mockNRCVacancy.basicInfo.tenant}
+					referenceCollection={true}
+					userRoles={mockUser.roles}
+					userCommitteeRole={mockUser.roles}
+					reloadVacancy={mockLoadLatestVacancyInfo}
+				/>
+			</HashRouter>
+		)
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		expect(screen.getByText('Email')).toBeInTheDocument();
+		expect(screen.getByText('Submitted')).toBeInTheDocument();
+		expect(screen.getByText('Vacancy Manager Triage Decision')).toBeInTheDocument();
+		expect(screen.getByText('Chair Triage Decision')).toBeInTheDocument();
+		expect(screen.getByText('Reference Status')).toBeInTheDocument();
+		
+		waitFor(() => {
+			expect(screen.getByText(/Doe, John/i)).toBeInTheDocument();
+			expect(screen.getByText(/user@mail.com/i)).toBeInTheDocument();
+			expect(screen.getByText(/Collect References/i)).toBeInTheDocument();
+			expect(screen.getByText(/Send Regret Email/i)).toBeInTheDocument();
+			expect(screen.getByText(/1 out of 3/i)).toBeInTheDocument();
 		});
 	});
 
@@ -156,10 +205,6 @@ describe('ApplicantList', () => {
 			</SearchContext.Provider>
 		);
 
-		await waitFor(() =>
-			expect(screen.getByTestId('applicant-table')).toBeInTheDocument()
-		);
-
 		waitFor(() => {
 			expect(screen.getByText(/1/i)).toBeInTheDocument();
 			expect(screen.getByText(/5/i)).toBeInTheDocument();
@@ -188,10 +233,6 @@ describe('ApplicantList', () => {
 				</HashRouter>
 			</SearchContext.Provider>
 		);
-
-		waitFor(() => {
-			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
-		});
 
 		waitFor(() => {
 			expect(screen.getByText('10 / page')).toBeInTheDocument();
@@ -227,10 +268,6 @@ describe('ApplicantList', () => {
 					/>
 				</HashRouter>
 			</SearchContext.Provider>
-		);
-
-		await waitFor(() =>
-			expect(screen.getByTestId('applicant-table')).toBeInTheDocument()
 		);
 
 		waitFor(() => {
@@ -282,10 +319,6 @@ describe('ApplicantList', () => {
 					/>
 				</HashRouter>
 			</SearchContext.Provider>
-		);
-
-		await waitFor(() =>
-			expect(screen.getByTestId('applicant-table')).toBeInTheDocument()
 		);
 
 		waitFor(() => {

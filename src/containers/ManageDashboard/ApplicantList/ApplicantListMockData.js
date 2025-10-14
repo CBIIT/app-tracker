@@ -117,7 +117,7 @@ export const mockNRCVacancy = {
 		fileName: null,
 		sysId: null,
 	},
-	state: 'voting_complete',
+	state: 'triage',
 	status: 'closed',
 	sysId: '12345',
 	vacancyCommittee: [
@@ -233,9 +233,9 @@ export const mockGetApplicantList = {
 				triage_comments: '',
 				triage_status: 'maybe',
 				yes: 0,
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 // Mock applicants for pagination, search, and filter tests
@@ -409,14 +409,9 @@ export const mockApplicants = [
 
 export const mockApplicantFocusArea = {
 	data: {
-		result: [
-			'Cancer Biology',
-			'Immunology',
-			'Bioinformatics',
-			'Genomics'
-		]
-	}
-}
+		result: ['Cancer Biology', 'Immunology', 'Bioinformatics', 'Genomics'],
+	},
+};
 
 // Mock SearchContext value for tests
 export const mockSearchContextValue = {
@@ -426,4 +421,68 @@ export const mockSearchContextValue = {
 	setSearchedColumn: jest.fn(),
 	searchInput: { current: null },
 	tenants: ['NCI'],
+};
+
+export const mockStadtmanAuth = {
+	auth: {
+		isUserLoggedIn: true,
+		user: {
+			isManager: true,
+			roles: [],
+			hasApplications: false,
+			uid: '123',
+		},
+		tenants: [
+			{
+				value: 'f24965fc1b9c11106daea681f54bcb04',
+				label: 'tenant 1',
+				roles: [
+					'x_g_nci_app_tracke.vacancy_manager',
+					'x_g_nci_app_tracke.committee_member',
+				],
+				is_exec_sec: true,
+				is_read_only_user: true,
+				is_chair: true,
+				is_hr: false,
+				properties: [
+					{
+						name: 'enableFocusArea',
+						value: 'true',
+					},
+					{
+						name: 'enableTop25Percent',
+						value: 'true',
+					},
+				],
+			},
+		],
+	},
+	currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+};
+
+export const mockNonStadtmanAuth = {
+	auth: {
+		isUserLoggedIn: true,
+		user: {
+			isManager: true,
+			roles: [],
+			hasApplications: false,
+			uid: '123',
+		},
+		tenants: [
+			{
+				value: 'f24965fc1b9c11106daea681f54bcb04',
+				label: 'tenant 1',
+				roles: [
+					'x_g_nci_app_tracke.vacancy_manager',
+				],
+				is_exec_sec: true,
+				is_read_only_user: false,
+				is_chair: false,
+				is_hr: false,
+				properties: [],
+			},
+		],
+	},
+	currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
 };
