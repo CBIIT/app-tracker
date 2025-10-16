@@ -3,7 +3,8 @@ import useAuth from '../../../../hooks/useAuth';
 import axios from 'axios';
 import { GET_VACANCY_OPTIONS } from '../../../../constants/ApiEndpoints';
 import { mockIntialValues, mockVacancyOptionsResponse } from './BasicInfoMockData';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent} from '@testing-library/react';
+import { Form } from 'antd';
 
 jest.mock('../../../../hooks/useAuth');
 jest.mock('axios');
@@ -72,6 +73,41 @@ describe('BasicInfo', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
+
+    const FormWrapper = () => {
+		const [inputForm] = Form.useForm();
+        const mockIntialValuesWithLocation = {
+            ...mockIntialValues,
+            location: 'Bethesda, MD'
+        };
+        useAuth.mockReturnValue({
+			auth: {
+                isUserLoggedIn: true,
+                iTrustGlideSsoId: 'itrust123',
+                oktaGlideSsoId: 'okta123',
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants:[{value: 'tenant1', label: 'Tenant 1', properties: []}]
+            },
+            currentTenant: 'tenant1',
+		});
+
+		return (
+			<BasicInfo
+                initialValues={mockIntialValuesWithLocation}
+                formInstance={inputForm}
+                readOnly={false}
+                isNew={false}
+                pocDefined={false}
+                isDefined={false}
+            />
+		);
+	};
 
 	it('should render BasicInfo component for new Vacancy', async () => {
 		mockReadOnly = false;
@@ -204,6 +240,49 @@ describe('BasicInfo', () => {
             />
         )
         expect(screen.queryByRole('checkbox', { name: /Enable Focus Area/i })).toBeNull();
+	});
+
+    test('should render BasicInfo component with a location placeholder value', async () => {
+		useAuth.mockReturnValue({
+			auth: {
+                isUserLoggedIn: true,
+                iTrustGlideSsoId: 'itrust123',
+                oktaGlideSsoId: 'okta123',
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants:[{value: 'tenant1', label: 'Tenant 1', properties: []}]
+            },
+            currentTenant: 'tenant1',
+		});
+
+        render(
+            <BasicInfo
+                initialValues={mockIntialValues}
+                formInstance={result}
+                readOnly={false}
+                isNew={true}
+                pocDefined={false}
+                isDefined={false}
+            />
+        )
+        const locationSelect = screen.getByTestId('location-select');
+        await expect(locationSelect).toBeInTheDocument();
+        expect(screen.getByText('Select a location')).toBeInTheDocument();
+	});
+
+    test('should render BasicInfo component with a specific location value', async () => {
+        render(
+            <FormWrapper/>
+        )
+        const locationSelect = screen.getByTestId('location-select');
+        await expect(locationSelect).toBeInTheDocument();
+        expect(screen.getByText('Bethesda, MD')).toBeInTheDocument();
+
 	});
 
 });

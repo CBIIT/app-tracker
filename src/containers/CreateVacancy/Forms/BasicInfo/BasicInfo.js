@@ -78,6 +78,8 @@ const basicInformation = (props) => {
 	);
 	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' ' }]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [showOtherLocationInput, setShowOtherLocationInput] = useState(false);
+	const [otherLocationValue, setOtherLocationValue] = useState('');
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -87,10 +89,8 @@ const basicInformation = (props) => {
 	const isDefined = props.pocDefined;
 	const isUserPoc = Form.useWatch('isUserPoc', formInstance);
 	const useCloseDate = Form.useWatch('useCloseDate', formInstance);
-	const referenceCollection = Form.useWatch(
-		'referenceCollection',
-		formInstance
-	);
+	const location = Form.useWatch('location', formInstance);
+	const referenceCollection = Form.useWatch('referenceCollection', formInstance);
 
 	const { auth, currentTenant } = useAuth();
 	const { user, tenants } = auth;
@@ -182,6 +182,18 @@ const basicInformation = (props) => {
 		{ label: 'N/A', value: 'N/A' },
 	];
 
+	const locationMenu = [
+		{ label: 'Baltimore, MD', value: 'Baltimore, MD' },
+		{ label: 'Bethesda, MD', value: 'Bethesda, MD' },
+		{ label: 'Durham, NC', value: 'Durham, NC' },
+		{ label: 'Frederick, MD', value: 'Frederick, MD' },
+		{ label: 'Hamilton, MT', value: 'Hamilton, MT' },
+		{ label: 'Poolesville, MD', value: 'Poolesville, MD' },
+		{ label: 'Phoenix, AZ', value: 'Phoenix, AZ' },
+		{ label: 'Rockville, MD', value: 'Rockville, MD' },
+		{ label: 'Other', value: 'Other' },
+	];
+
 	const hrSpecialistTooltip =
 		'Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage.';
 
@@ -266,6 +278,21 @@ const basicInformation = (props) => {
 		formInstance.setFields([{ name: 'description', errors: '' }]);
 	};
 
+	const handleSelectLocationChange = (value) => {
+		if (value === 'Other') {
+			setShowOtherLocationInput(true);
+		} else {
+			setShowOtherLocationInput(false);
+			setOtherLocationValue(''); // Clear "Other" value if another option is selected
+			formInstance.setFieldsValue({ location: value }); // Update form with selected value
+		}
+	};
+
+	const handleOtherInputLocationChange = (e) => {
+		setOtherLocationValue(e.target.value);
+		formInstance.setFieldsValue({ location: e.target.value }); // Update form with "Other" input value
+	};
+
 	return (
 		<Form
 			layout='vertical'
@@ -321,19 +348,21 @@ const basicInformation = (props) => {
 				</div>
 			</div>
 
-			<Form.Item
-				label='Vacancy Description'
-				className='VacancyDescription'
-				name='description'
-				rules={[{ validator: validateDescription }]}
-			>
-				<ReactQuill
-					className='QuillEditor'
-					readOnly={readOnly}
-					modules={Editor.modules}
-					formats={Editor.formats}
-				/>
-			</Form.Item>
+			<div>
+				<Form.Item
+					label='Vacancy Description'
+					className='VacancyDescription'
+					name='description'
+					rules={[{ validator: validateDescription }]}
+				>
+					<ReactQuill
+						className='QuillEditor'
+						readOnly={readOnly}
+						modules={Editor.modules}
+						formats={Editor.formats}
+					/>
+				</Form.Item>
+			</div>
 
 			<div>
 				<Form.Item label='Vacancy Point of Contact Information'>
@@ -462,15 +491,53 @@ const basicInformation = (props) => {
 				</div>
 			)}
 
+			<div>
+				<Form.Item
+					label='Location'
+					name='location'
+					valuePropName='location'
+				>
+					<Select
+						data-testid="location-select"
+						placeholder='Select a location'
+						value={location}
+						name='location'
+						allowClear={true}
+						disabled={readOnly}
+						showSearch={true}
+						optionLabelProp='label'
+						onChange={handleSelectLocationChange}
+						filterOption={(input, option) =>
+							(option?.label ?? '')
+								.toLowerCase()
+								.includes(input.toLowerCase())
+						}
+					>
+						{locationMenu.map((option, index) => (
+							<Option key={index} value={option.value} label={option.label}>
+								<div>
+									<span>{option.label}</span>
+								</div>
+							</Option>
+						))}
+					</Select>
+				</Form.Item>
+				{showOtherLocationInput && (
+					<Form.Item name="otherInputField" label="Specify Other Location">
+						<Input value={otherLocationValue} onChange={handleOtherInputLocationChange} />
+					</Form.Item>
+				)}
+			</div>
+
 			{focusAreaEnabled && focusAreaEnabled === 'true' ? (
 				<Form.Item
 					label='Focus Area Selection'
 					name='requireFocusArea'
 					valuePropName='checked'
 				>
-				<div>
-					<Checkbox checked={true} disabled>{<div style={{ color: "#333333", fontFamily: "Noto Sans", fontSize: "16px" }}>Enable Focus Area</div>}</Checkbox>
-				</div>
+					<div>
+						<Checkbox checked={true} disabled>{<div style={{ color: "#333333", fontFamily: "Noto Sans", fontSize: "16px" }}>Enable Focus Area</div>}</Checkbox>
+					</div>
 				</Form.Item>
 
 			) : null}

@@ -3,6 +3,7 @@ export const initialValues = {
 		numberOfRecommendations: 3,
 		numberOfCategories: 4,
 		description: '',
+		location: '',
 		allowHrSpecialistTriage: false,
 		referenceCollection: false,
 		applicationDocuments: [
