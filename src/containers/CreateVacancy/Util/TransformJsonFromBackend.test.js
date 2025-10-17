@@ -19,6 +19,7 @@ describe('transformJsonFromBackend', () => {
                 require_focus_area: { value: '1' },
                 vacancy_description: { value: 'Job description' },
                 vacancy_poc: { value: 'John Doe' },
+                location: { value: 'Bethesda, MD' },
                 package_initiator: { value: 'HR' },
                 title_42_position_classification: { value: 'A' },
                 organization_code: { value: '12345' },
@@ -80,6 +81,7 @@ describe('transformJsonFromBackend', () => {
                 requireFocusArea: true,
                 description: 'Job description',
                 vacancyPoc: 'John Doe',
+                location: 'Bethesda, MD',
                 appointmentPackageIndicator: 'HR',
                 positionClassification: 'A',
                 sacCode: '12345',
@@ -151,6 +153,7 @@ describe('transformJsonFromBackend', () => {
                 require_focus_area: { value: '0' },
                 vacancy_description: { value: 'Job description' },
                 vacancy_poc: { value: 'undefined' },
+                location: { value: '' },
                 package_initiator: { value: 'HR' },
                 title_42_position_classification: { value: 'A' },
                 organization_code: { value: '12345' },
@@ -188,6 +191,7 @@ describe('transformJsonFromBackend', () => {
                 requireFocusArea: false,
                 description: 'Job description',
                 vacancyPoc: undefined,
+                location: '',
                 appointmentPackageIndicator: 'HR',
                 positionClassification: 'A',
                 sacCode: '12345',
@@ -217,4 +221,5 @@ describe('transformJsonFromBackend', () => {
         const result = transformJsonFromBackend(sourceJson);
         expect(result).toEqual(expectedJson);
     });
+
 });

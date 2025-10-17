@@ -1,4 +1,5 @@
 export const transformJsonFromBackend = (sourceJson) => {
+	console.log('sourceJson', sourceJson);
 	const targetJson = {
 		sysId: sourceJson.basic_info.sys_id.value,
 		state: sourceJson.basic_info.state.value,
@@ -25,6 +26,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 					: false,
 			description: sourceJson.basic_info.vacancy_description.value,
 			vacancyPoc: sourceJson.basic_info.vacancy_poc.value,
+			location: sourceJson.basic_info.location.value,
 			appointmentPackageIndicator: sourceJson.basic_info.package_initiator.value,
 			positionClassification: sourceJson.basic_info.title_42_position_classification.value,
 			sacCode: sourceJson.basic_info.organization_code.value,

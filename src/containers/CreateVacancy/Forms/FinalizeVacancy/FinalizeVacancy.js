@@ -159,6 +159,18 @@ const finalizeVacancy = (props) => {
 						</div>
 					</div>
 				)}
+				{basicInfo && basicInfo.location && (
+					<div className='LocationCard'>
+						<h2>
+							{basicInfo && basicInfo.location ? null : '! '}Location
+						</h2>
+						<p>
+							{basicInfo && basicInfo.location
+								? basicInfo.location
+								: null}
+						</p>
+					</div>
+				)}
 				{tname && tname.label && tname.label.trim().toLowerCase() === 'stadtman' ? (
 					<div style={{ display: 'flex', flexFlow: 'row wrap', gap: '40px' }}>
 						<div>

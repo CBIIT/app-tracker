@@ -29,6 +29,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 				sourceJson.basic_info.vacancy_poc.value == 'undefined'
 					? undefined
 					: sourceJson.basic_info.vacancy_poc.value,
+			location: (sourceJson.basic_info.location && sourceJson.basic_info.location.value) ? sourceJson.basic_info.location.value : '',
 			appointmentPackageIndicator:
 				sourceJson.basic_info.package_initiator.value,
 			positionClassification:
