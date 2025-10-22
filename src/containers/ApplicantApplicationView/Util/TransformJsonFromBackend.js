@@ -35,6 +35,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			country: sourceJson.basic_info.country,
 		},
 		references: sourceJson.references.map((reference) => {
+			var received = reference.reference_received;
 			return {
 				refSysId: reference.ref_sys_id,
 				firstName: reference.first_name,
@@ -44,7 +45,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 				contactAllowed: reference.contact_allowed,
 				organization: reference.organization,
 				phone: reference.phone,
-				referenceReceived: reference.reference_received,
+				referenceReceived: received.charAt(0).toUpperCase() + received.slice(1),
 				relationship: reference.relationship,
 				positionTitle: reference.title,
 			};
