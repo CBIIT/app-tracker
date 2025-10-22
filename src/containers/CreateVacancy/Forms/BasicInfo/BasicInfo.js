@@ -191,7 +191,7 @@ const basicInformation = (props) => {
 		{ label: 'Poolesville, MD', value: 'Poolesville, MD' },
 		{ label: 'Phoenix, AZ', value: 'Phoenix, AZ' },
 		{ label: 'Rockville, MD', value: 'Rockville, MD' },
-		{ label: 'Other', value: 'Other' },
+		{ label: 'Other - brings up open-text entry box (ensure location is approved by HR Specialist)', value: 'Other' },
 	];
 
 	const hrSpecialistTooltip =
