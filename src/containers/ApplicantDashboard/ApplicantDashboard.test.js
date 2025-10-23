@@ -57,10 +57,13 @@ describe('ApplicantDashboard', () => {
         expect(screen.getAllByText(/submitted/i).length).toBeGreaterThan(0);
         expect(screen.getByText(/Vacancy Closes/i)).toBeInTheDocument();
         // expect(screen.getByText('12/23/2024')).toBeInTheDocument();
+        expect(screen.getByText(/Open Until Filled/i)).toBeInTheDocument();
         expect(screen.getByText(/Application Submitted/i)).toBeInTheDocument();
         expect(screen.getByText(/Actions/i)).toBeInTheDocument();
-        expect(screen.getByText(/Withdraw/i)).toBeInTheDocument();
+        expect(screen.getByText(/Edit/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/Withdraw/i).length).toBeGreaterThan(0);
         expect(screen.getByText(/Reference Status/i)).toBeInTheDocument();
         expect(screen.getByText(/1 out of 4/i)).toBeInTheDocument();
+        expect(screen.getByText(/2 out of 3/i)).toBeInTheDocument();
     });
 });

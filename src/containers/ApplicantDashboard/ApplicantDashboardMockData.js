@@ -32,4 +32,15 @@ export const mockUserApps = [
         vacancy_status: 'closed',
         vacancy_submitted: '2024-11-30 11:13:12',
     },
+    {
+        app_id: '001',
+        reference_status: '2 out of 3',
+        state: 'triage',
+        vacancy: 'Rolling Close Vacancy',
+        vacancy_closes: '',
+        vacancy_id: '222',
+        vacancy_state: 'rolling_close',
+        vacancy_status: 'open',
+        vacancy_submitted: '2024-11-30 11:13:12',
+    },
 ];
