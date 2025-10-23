@@ -279,6 +279,7 @@ const applicantDashboard = () => {
 				<div className='ApplicantDashboard'>
 					<ConfigProvider renderEmpty={customizeRenderEmpty}>
 						<Table
+						data-testid='applicant-table'
 							className='ApplicantTable'
 							rowKey={(record) => {
 								if (record.app_id != undefined) {
