@@ -24,7 +24,6 @@ import {
 	FileTextOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
-
 import Error from '../../components/UI/Error/Error';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import { useFetch } from '../../hooks/useFetch';
@@ -259,6 +258,12 @@ const applicantDashboard = () => {
 				}
 			},
 		},
+		{
+			title: 'Reference Status',
+			dataIndex: 'reference_status',
+			align: 'center',
+			render: (record) => record,
+		},
 	];
 
 	return isLoading ? (
@@ -274,6 +279,7 @@ const applicantDashboard = () => {
 				<div className='ApplicantDashboard'>
 					<ConfigProvider renderEmpty={customizeRenderEmpty}>
 						<Table
+						data-testid='applicant-table'
 							className='ApplicantTable'
 							rowKey={(record) => {
 								if (record.app_id != undefined) {
