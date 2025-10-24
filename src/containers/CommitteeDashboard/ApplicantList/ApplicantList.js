@@ -185,12 +185,14 @@ const applicantList = (props) => {
 						history.push(MANAGE_APPLICATION + record.sys_id);
 					},
 				})}
-				onChange={(pagination, _, sorter) => {
+				onChange={(pagination, filters, _, sorter) => {
+					const focusArea = filters && filters.focus_area ? filters.focus_area : [];
 					props.onTableChange(
 						pagination.current,
 						pagination.pageSize,
 						sorter.order,
-						sorter.field
+						sorter.field,
+						focusArea
 					);
 				}}
 				loading={props.loading}
