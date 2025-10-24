@@ -104,7 +104,11 @@ const applicantDashboard = () => {
 			dataIndex: 'vacancy',
 			key: 'title',
 			sorter: {
-				compare: (a, b) => a.vacancy.localeCompare(b.vacancy),
+				compare: (a, b) => {
+					const va = String(a?.vacancy ?? '').toLowerCase();
+					const vb = String(b?.vacancy ?? '').toLowerCase();
+					return va.localeCompare(vb);
+				},
 			},
 			defaultSortOrder: 'ascend',
 			render: (title, record) => {
@@ -279,7 +283,7 @@ const applicantDashboard = () => {
 				<div className='ApplicantDashboard'>
 					<ConfigProvider renderEmpty={customizeRenderEmpty}>
 						<Table
-						data-testid='applicant-table'
+							data-testid='applicant-table'
 							className='ApplicantTable'
 							rowKey={(record) => {
 								if (record.app_id != undefined) {
