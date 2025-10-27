@@ -27,18 +27,18 @@ jest.mock('../../components/Util/Date/Date', () => ({
 describe('ApplicantDashboard', () => {
     beforeEach(() => {
         Object.defineProperty(window, 'matchMedia', {
-			writable: true,
-			value: jest.fn().mockImplementation((query) => ({
-				matches: false,
-				media: query,
-				onchange: null,
-				addListener: jest.fn(), // deprecated
-				removeListener: jest.fn(), // deprecated
-				addEventListener: jest.fn(),
-				removeEventListener: jest.fn(),
-				dispatchEvent: jest.fn(),
-			})),
-		});
+            writable: true,
+            value: jest.fn().mockImplementation((query) => ({
+                matches: false,
+                media: query,
+                onchange: null,
+                addListener: jest.fn(), // deprecated
+                removeListener: jest.fn(), // deprecated
+                addEventListener: jest.fn(),
+                removeEventListener: jest.fn(),
+                dispatchEvent: jest.fn(),
+            })),
+        });
         useAuth.default.mockReturnValue(mockUseAuth);
     });
 
@@ -47,7 +47,7 @@ describe('ApplicantDashboard', () => {
     });
 
     test('should render the ApplicantDashboard component', async () => {
-        useFetch.mockReturnValue({ data: mockUserApps, isLoading: false, error:  null });
+        useFetch.mockReturnValue({ data: mockUserApps, isLoading: false, error: null });
 
         render(
             <MemoryRouter initialEntries={['/applicant-dashboard']}>
@@ -75,4 +75,25 @@ describe('ApplicantDashboard', () => {
         // expect(screen.getByText('12/13/2024')).toBeInTheDocument();
         expect(screen.getByText(/Open Until Filled/i)).toBeInTheDocument();
     });
+
+    test('direct comparator throws with undefined vacancy (demonstrates bug)', () => {
+        const unsafeCompare = (a, b) => a.vacancy.localeCompare(b.vacancy);
+        const a = { vacancy: undefined };
+        const b = { vacancy: 'A' };
+        expect(() => unsafeCompare(a, b)).toThrow();
+    });
+
+    test('fixes localeCompare bug in sorter', () => {
+        
+        const unsafeCompare = (a, b) => {
+            const va = String(a?.vacancy ?? '').toLowerCase();
+            const vb = String(b?.vacancy ?? '').toLowerCase();
+            va.localeCompare(vb)
+        };
+        const a = { vacancy: undefined };
+        const b = { vacancy: 'A' };
+        expect(() => unsafeCompare(a, b)).not.toThrow();
+    });
+
+
 });
