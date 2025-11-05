@@ -44,8 +44,10 @@ import {
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
-import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
+import ExportToExcel from '../Util/ExportToExcel';
+import moment from 'moment';
+
 const { Panel } = Collapse;
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -70,7 +72,8 @@ const defaultApplicantSort = 'ascend';
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
-	const [pageSize, setPageSize] = useState(50);
+	const [excelApplicants, setExcelApplicants] = useState([]);
+	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
@@ -94,16 +97,6 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
-
-	const {
-		auth: { tenants },
-		currentTenant,
-	} = useAuth();
-	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
-	const top25Enabled = (tname?.properties || []).find(
-		(p) => p.name === 'enableTop25Percent'
-	)?.value;
-
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
@@ -274,27 +267,25 @@ const applicantList = (props) => {
 				),
 			});
 		}
-		if (top25Enabled !== 'true') {
-			applicantColumns.push({
-				title: '',
-				align: 'center',
-				width: 200,
-				render: (_, record) => (
-					<Button
-						data-testid='send-regret-email-button'
-						onClick={() =>
-							onSendRejectionEmailButtonClick(
-								record.sys_id,
-								record.rejection_email_sent,
-								record.referred_to_interview
-							)
-						}
-					>
-						Send Regret Email
-					</Button>
-				),
-			});
-		}
+		applicantColumns.push({
+			title: '',
+			align: 'center',
+			width: 200,
+			render: (_, record) => (
+				<Button
+					data-testid='send-regret-email-button'
+					onClick={() =>
+						onSendRejectionEmailButtonClick(
+							record.sys_id,
+							record.rejection_email_sent,
+							record.referred_to_interview
+						)
+					}
+				>
+					Send Regret Email
+				</Button>
+			),
+		});
 		applicantColumns.push({
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
@@ -307,7 +298,7 @@ const applicantList = (props) => {
 	}
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
-		useState(50);
+		useState(10);
 	const [recommendedApplicantsTotalCount, setRecommendedApplicantsTotalCount] =
 		useState(0);
 	const [
@@ -318,7 +309,7 @@ const applicantList = (props) => {
 	const [
 		nonRecommendedApplicantsPageSize,
 		setNonRecommendedApplicantsPageSize,
-	] = useState(50);
+	] = useState(10);
 	const [
 		nonRecommendedApplicantsTotalCount,
 		setNonRecommendedApplicantsTotalCount,
@@ -361,6 +352,62 @@ const applicantList = (props) => {
 	useEffect(() => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText, filter]);
+
+	useEffect(() => {
+		const columnList = [];
+		const columnMapList = [];
+		let newApplicantColumns = []
+
+		if (
+			props.userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+			props.userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
+			props.userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY
+		) {
+			const applicantColumnCopy = [...applicantColumns];
+			const columns = applicantColumnCopy.splice(0, 2);
+			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
+				newApplicantColumns = columns;
+			} else {
+				const newColumns = columns.concat(committeeColumns);
+				newApplicantColumns = newColumns;
+			}
+		} else {
+			newApplicantColumns = applicantColumns;
+		}
+
+		newApplicantColumns.forEach((element) => {
+			columnList.push(element.dataIndex);
+			columnMapList.push({ dataIndex: element.dataIndex, title: element.title });
+		});
+
+		let excelData = [];
+		let data = [];
+
+		if (recommendedApplicants && recommendedApplicants.length > 0) {
+			data.push(...recommendedApplicants);
+		}
+		if (nonRecommendedApplicants && nonRecommendedApplicants.length > 0) {
+			data.push(...nonRecommendedApplicants);
+		}
+		if (applicants && applicants.length > 0) {
+			data = props.vacancyState == ROLLING_CLOSE
+				? getFilterData(filter, applicants)
+				: applicants;
+		}
+
+		data.forEach((applicant) => {
+			let newApplicant = {};
+			columnList.forEach((col) => {
+				if (applicant.hasOwnProperty(col)) {
+					columnMapList.some((column) => { column.dataIndex === col ? newApplicant[column.title] = applicant[col] ? applicant[col] : '' : null });
+				}
+			})
+			excelData.push(newApplicant);
+		});
+
+		excelData ? setExcelApplicants(excelData) : null;
+
+	}, [applicants, recommendedApplicants, nonRecommendedApplicants]);
 
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
@@ -490,6 +537,7 @@ const applicantList = (props) => {
 	};
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
+
 		const getColumns = () => {
 			if (
 				userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
@@ -507,10 +555,12 @@ const applicantList = (props) => {
 				return applicantColumns;
 			}
 		};
+
 		const data =
 			vacancyState == ROLLING_CLOSE
 				? getFilterData(filter, applicants)
 				: applicants;
+
 		const table = (
 			<Table
 				data-testid='applicant-table'
@@ -923,6 +973,7 @@ const applicantList = (props) => {
 			return table;
 		}
 	};
+
 	const loadApplicants = async (
 		page,
 		pageSize,
@@ -978,6 +1029,7 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
+
 	return (
 		<>
 			{props.vacancyState == 'rolling_close' && (
@@ -1000,6 +1052,15 @@ const applicantList = (props) => {
 					</Radio.Group>
 				</div>
 			)}
+			<div className='ExportToExcelButtonDiv' style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+				<Button
+					disabled={excelApplicants.length === 0}
+					ghost
+					type='primary'
+					onClick={() => ExportToExcel(excelApplicants, `${props.vacancyTitle}-ApplicantList-${moment((new Date()).toString()).format('MM-DD-YYYY')}.xlsx`)}>
+					Export to Excel
+				</Button>
+			</div>
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}

@@ -58,3 +58,10 @@
 .ant-checkbox-checked .ant-checkbox-inner:after {
 	border-color: var(--color-primary);
 }
+
+.ExportToExcelButtonDiv .ant-btn.ant-btn-default {
+	color: #015ea2;
+    border-color: #015ea2;
+    text-shadow: none;
+    margin-left: 10px;
+}
