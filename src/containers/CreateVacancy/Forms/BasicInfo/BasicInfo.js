@@ -552,7 +552,7 @@ const basicInformation = (props) => {
 					placement='topLeft'
 				>
 					<Form.Item name='referenceCollection' valuePropName='checked'>
-						<Checkbox disabled={readOnly}>Enable Reference Collection</Checkbox>
+						<Checkbox>Enable Reference Collection</Checkbox>
 					</Form.Item>
 				</Tooltip>
 				{referenceCollection && (
