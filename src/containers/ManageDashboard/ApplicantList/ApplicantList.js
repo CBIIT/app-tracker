@@ -44,6 +44,7 @@ import {
 } from '../../../constants/ApiEndpoints';
 import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
+import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
 import ExportToExcel from '../Util/ExportToExcel';
 import moment from 'moment';
@@ -97,6 +98,16 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
+
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
+	const tname = tenants ? tenants.find((t) => t.value === currentTenant) : {};
+	const top25Enabled = (tname?.properties || []).find(
+		(p) => p.name === 'enableTop25Percent'
+	)?.value;
+
 	const sendReferences = async (sysId) => {
 		try {
 			const response = await axios.get(COLLECT_REFERENCES + sysId);
@@ -298,7 +309,7 @@ const applicantList = (props) => {
 	}
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
 	const [recommendedApplicantsPageSize, setRecommendedApplicantsPageSize] =
-		useState(10);
+		useState(50);
 	const [recommendedApplicantsTotalCount, setRecommendedApplicantsTotalCount] =
 		useState(0);
 	const [
@@ -309,7 +320,7 @@ const applicantList = (props) => {
 	const [
 		nonRecommendedApplicantsPageSize,
 		setNonRecommendedApplicantsPageSize,
-	] = useState(10);
+	] = useState(50);
 	const [
 		nonRecommendedApplicantsTotalCount,
 		setNonRecommendedApplicantsTotalCount,
@@ -537,7 +548,6 @@ const applicantList = (props) => {
 	};
 
 	const getTable = (vacancyState, userRoles, userCommitteeRole) => {
-
 		const getColumns = () => {
 			if (
 				userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
@@ -555,12 +565,10 @@ const applicantList = (props) => {
 				return applicantColumns;
 			}
 		};
-
 		const data =
 			vacancyState == ROLLING_CLOSE
 				? getFilterData(filter, applicants)
 				: applicants;
-
 		const table = (
 			<Table
 				data-testid='applicant-table'
