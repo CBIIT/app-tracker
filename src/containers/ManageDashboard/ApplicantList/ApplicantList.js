@@ -278,25 +278,27 @@ const applicantList = (props) => {
 				),
 			});
 		}
-		applicantColumns.push({
-			title: '',
-			align: 'center',
-			width: 200,
-			render: (_, record) => (
-				<Button
-					data-testid='send-regret-email-button'
-					onClick={() =>
-						onSendRejectionEmailButtonClick(
-							record.sys_id,
-							record.rejection_email_sent,
-							record.referred_to_interview
-						)
-					}
-				>
-					Send Regret Email
-				</Button>
-			),
-		});
+		if (top25Enabled !== 'true') {
+			applicantColumns.push({
+				title: '',
+				align: 'center',
+				width: 200,
+				render: (_, record) => (
+					<Button
+						data-testid='send-regret-email-button'
+						onClick={() =>
+							onSendRejectionEmailButtonClick(
+								record.sys_id,
+								record.rejection_email_sent,
+								record.referred_to_interview
+							)
+						}
+					>
+						Send Regret Email
+					</Button>
+				),
+			});
+		}
 		applicantColumns.push({
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
@@ -981,7 +983,6 @@ const applicantList = (props) => {
 			return table;
 		}
 	};
-
 	const loadApplicants = async (
 		page,
 		pageSize,
@@ -1037,7 +1038,6 @@ const applicantList = (props) => {
 		props.userRoles,
 		props.userCommitteeRole
 	);
-
 	return (
 		<>
 			{props.vacancyState == 'rolling_close' && (
