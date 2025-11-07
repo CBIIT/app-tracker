@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo, useRef, useEffect } from 'react';
 import { Table, Select, Modal, Input, Button, message, Checkbox } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
 import { getColumnSearchProps } from '../../Util/ColumnSearchProps';
@@ -248,7 +248,7 @@ const individualScoringTable = (props) => {
 		if (props.isVacancyManager && top25Enabled === 'true') {
 			columns.unshift({
 				title: 'Top 25%',
-				dataIndex: 'top_25_percent',
+				dataIndex: 'top_25',
 				align: 'center',
 				render: (e, record) => (
 					<>
@@ -512,7 +512,6 @@ const individualScoringTable = (props) => {
 				),
 			});
 		}
-
 		return columns;
 	};
 
@@ -520,7 +519,31 @@ const individualScoringTable = (props) => {
 		setIsOtherCommentsModalVisible(false);
 	};
 
-	const columns = getColumns();
+	const columns = useMemo(() => getColumns(), [
+		props.applicants,
+		props.vacancyState,
+		props.filter,
+		props.displayAllComments,
+		props.refCollection,
+		props.isVacancyManager,
+	]);
+
+	const prevColsRef = useRef();
+	useEffect(() => {
+		try {
+			const prev = prevColsRef.current;
+			const next = JSON.stringify(columns);
+			if (prev !== next) {
+				prevColsRef.current = next;
+				if (typeof props.updateExcelColumns === 'function') {
+					props.updateExcelColumns(columns);
+				}
+			}
+		} catch (error) {
+			console.error('Error comparing columns:', error);
+			props.updateExcelColumns(columns);
+		}
+	}, [columns, props]);
 
 	return (
 		<>

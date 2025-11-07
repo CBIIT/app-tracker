@@ -74,6 +74,7 @@ const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
 	const [excelApplicants, setExcelApplicants] = useState([]);
+	const [excelApplicantColumns, setExcelApplicantColumns] = useState([]);
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
@@ -376,7 +377,7 @@ const applicantList = (props) => {
 			props.userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
 			props.userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY
 		) {
-			const applicantColumnCopy = [...applicantColumns];
+			const applicantColumnCopy = [...excelApplicantColumns];
 			const columns = applicantColumnCopy.splice(0, 2);
 			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
 				newApplicantColumns = columns;
@@ -385,7 +386,7 @@ const applicantList = (props) => {
 				newApplicantColumns = newColumns;
 			}
 		} else {
-			newApplicantColumns = applicantColumns;
+			newApplicantColumns = excelApplicantColumns;
 		}
 
 		newApplicantColumns.forEach((element) => {
@@ -614,6 +615,7 @@ const applicantList = (props) => {
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
 									postChangeHandler={loadVacancyAndApplicants}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -630,6 +632,7 @@ const applicantList = (props) => {
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
 									postChangeHandler={loadVacancyAndApplicants}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 						</Collapse>
@@ -670,6 +673,7 @@ const applicantList = (props) => {
 										focusAreaFilter={focusAreaFilter}
 										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										focusArea={applicantFocusArea}
+										updateExcelColumns={setExcelApplicantColumns}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -688,6 +692,7 @@ const applicantList = (props) => {
 										focusAreaFilter={focusAreaFilter}
 										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										focusArea={applicantFocusArea}
+										updateExcelColumns={setExcelApplicantColumns}
 									/>
 								</Panel>
 							</Collapse>
@@ -712,6 +717,7 @@ const applicantList = (props) => {
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -730,6 +736,7 @@ const applicantList = (props) => {
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 						</Collapse>
@@ -753,6 +760,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -772,6 +780,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 								</Collapse>
@@ -796,6 +805,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -818,6 +828,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 								</Collapse>
@@ -864,6 +875,7 @@ const applicantList = (props) => {
 												focusAreaFilter={focusAreaFilter}
 												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 												focusArea={applicantFocusArea}
+												updateExcelColumns={setExcelApplicantColumns}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -886,6 +898,7 @@ const applicantList = (props) => {
 												focusAreaFilter={focusAreaFilter}
 												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 												focusArea={applicantFocusArea}
+												updateExcelColumns={setExcelApplicantColumns}
 											/>
 										</Panel>
 									</Collapse>
@@ -908,6 +921,7 @@ const applicantList = (props) => {
 							loading={tableLoading}
 							vacancyState={vacancyState}
 							focusArea={applicantFocusArea}
+							updateExcelColumns={setExcelApplicantColumns}
 						/>
 					);
 				case VOTING_COMPLETE:
@@ -922,6 +936,7 @@ const applicantList = (props) => {
 							displayAllComments={vacancyState === VOTING_COMPLETE}
 							loading={tableLoading}
 							focusArea={applicantFocusArea}
+							updateExcelColumns={setExcelApplicantColumns}
 						/>
 					);
 				case ROLLING_CLOSE:
@@ -936,6 +951,7 @@ const applicantList = (props) => {
 									filter={filter}
 									vacancyState={vacancyState}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							);
 						case IN_REVIEW:
@@ -952,6 +968,7 @@ const applicantList = (props) => {
 									loading={tableLoading}
 									filter={filter}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							);
 						default:
