@@ -73,9 +73,7 @@ const basicInformation = (props) => {
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([
 		{ label: ' ', value: ' ' },
 	]);
-	const [currentPositionMenu, setCurrentPositionMenu] = useState(
-		positionClassificationMenu
-	);
+	const [positions, setPositions] = useState([]);
 	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' ' }]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showOtherLocationInput, setShowOtherLocationInput] = useState(false);
@@ -104,58 +102,6 @@ const basicInformation = (props) => {
 		vacancyPoc: user.uid,
 	};
 
-	const positionClassificationMenu = [
-		{ label: 'Research Fellow', value: 'Research Fellow' },
-		{ label: 'Senior Research Fellow', value: 'Senior Research Fellow' },
-		{ label: 'Staff Scientist 1', value: 'Staff Scientist 1' },
-		{ label: 'Investigator 1', value: 'Investigator 1' },
-		{ label: 'Clinical Fellow', value: 'Clinical Fellow' },
-		{ label: 'Senior Clinical Fellow', value: 'Senior Clinical Fellow' },
-		{
-			label: 'Assistant Clinical Investigator 1',
-			value: 'Assistant Clinical Investigator 1',
-		},
-		{ label: 'Staff Clinician 1', value: 'Staff Clinician 1' },
-		{
-			label: 'Science Policy Leader - Tier 2',
-			value: 'Science Policy Leader - Tier 2',
-		},
-		{
-			label: 'Science Program Leader - Tier 2',
-			value: 'Science Program Leader - Tier 2',
-		},
-		{ label: 'Senior Investigator', value: 'Senior Investigator' },
-		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
-		{ label: 'Investigator 2', value: 'Investigator 2' },
-		{ label: 'Investigator (HS)', value: 'Investigator (HS)' },
-		{ label: 'Senior Clinician', value: 'Senior Clinician' },
-		{ label: 'Senior Clinician (HS)', value: 'Senior Clinician (HS)' },
-		{ label: 'Senior Scientist', value: 'Senior Scientist' },
-		{
-			label: 'Assistant Clinical Investigator 2',
-			value: 'Assistant Clinical Investigator 2',
-		},
-		{
-			label: 'Assistant Clinical Investigator (HS)',
-			value: 'Assistant Clinical Investigator (HS)',
-		},
-		{ label: 'Staff Clinician 2', value: 'Staff Clinician 2' },
-		{ label: 'Staff Clinician (HS)', value: 'Staff Clinician (HS)' },
-		{ label: 'Staff Scientist 2', value: 'Staff Scientist 2' },
-		{
-			label: 'Staff Scientist 2 (Clinical)',
-			value: 'Staff Scientist 2 (Clinical)',
-		},
-		{
-			label: 'Staff Scientist 2 (Facility Head)',
-			value: 'Staff Scientist 2 (Facility Head)',
-		},
-		{ label: 'Scientific Executive', value: 'Scientific Executive' },
-		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
-		{ label: 'SBRBPAS', value: 'SBRBPAS' },
-		{ label: 'N/A', value: 'N/A' },
-	];
-
 	const locationMenu = [
 		{ label: 'Baltimore, MD', value: 'Baltimore, MD' },
 		{ label: 'Bethesda, MD', value: 'Bethesda, MD' },
@@ -176,12 +122,11 @@ const basicInformation = (props) => {
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
 
-			setCurrentPositionMenu(positionClassificationMenu);
-
 			const codes = [];
 			var packageInitiators = [];
 			var sliderMarks = [];
 			var categoryMarks = [];
+			var positionClassification = [];
 
 			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
 				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
@@ -208,6 +153,11 @@ const basicInformation = (props) => {
 					categoryMarks.push({ label: category.toString(), value: category });
 				});
 				setCategories(categoryMarks);
+
+				vacancyOptionsResponse.data.result.title_42_position_classification.forEach((position) => {
+					positionClassification.push({ label: position, value: position });
+				});
+				setPositions(positionClassification);
 
 			}
 			setIsLoading(false);
@@ -632,7 +582,7 @@ const basicInformation = (props) => {
 							}
 							name='positionClassification'
 							required={true}
-							menu={currentPositionMenu}
+							menu={positions}
 							disabled={readOnly}
 						/>
 					</div>
