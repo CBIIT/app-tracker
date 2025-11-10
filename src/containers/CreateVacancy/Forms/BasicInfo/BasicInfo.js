@@ -80,6 +80,7 @@ const basicInformation = (props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showOtherLocationInput, setShowOtherLocationInput] = useState(false);
 	const [otherLocationValue, setOtherLocationValue] = useState('');
+	const [recommendations, setRecommendations] = useState([]);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -100,25 +101,6 @@ const basicInformation = (props) => {
 	const newValues = {
 		...props.initialValues,
 		vacancyPoc: user.uid,
-	};
-
-	const sliderMarks = {
-		0: '0',
-		1: '1',
-		2: '2',
-		3: '3',
-		4: '4',
-		5: '5',
-		6: '6',
-		7: '7',
-		8: '8',
-		9: '9',
-		10: '10',
-		11: '11',
-		12: '12',
-		13: '13',
-		14: '14',
-		15: '15',
 	};
 
 	const categoryMarks = {
@@ -204,8 +186,10 @@ const basicInformation = (props) => {
 
 			setCurrentPositionMenu(positionClassificationMenu);
 
-			var packageInitiators = [];
 			const codes = [];
+			var packageInitiators = [];
+			var sliderMarks = [];
+
 			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
 				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
 					codes.push({ label: code, value: code });
@@ -221,6 +205,12 @@ const basicInformation = (props) => {
 					packageInitiators.push(packageInitiatorOption);
 				});
 				setAppInitiatorMenu(packageInitiators);
+
+				vacancyOptionsResponse.data.result.number_of_recommendations.forEach((recommendation) => {
+					sliderMarks.push({ label: recommendation.toString(), value: recommendation });
+				});
+				setRecommendations(sliderMarks);
+
 			}
 			setIsLoading(false);
 		})();
@@ -583,9 +573,9 @@ const basicInformation = (props) => {
 						<Slider
 							className='Slider'
 							min={0}
-							max={15}
+							max={recommendations.length - 1}
 							dots
-							marks={sliderMarks}
+							marks={recommendations}
 							disabled={readOnly}
 						/>
 					</Form.Item>
