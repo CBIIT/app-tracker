@@ -81,6 +81,7 @@ const basicInformation = (props) => {
 	const [showOtherLocationInput, setShowOtherLocationInput] = useState(false);
 	const [otherLocationValue, setOtherLocationValue] = useState('');
 	const [recommendations, setRecommendations] = useState([]);
+	const [categories, setCategories] = useState([]);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -101,15 +102,6 @@ const basicInformation = (props) => {
 	const newValues = {
 		...props.initialValues,
 		vacancyPoc: user.uid,
-	};
-
-	const categoryMarks = {
-		1: '1',
-		2: '2',
-		3: '3',
-		4: '4',
-		5: '5',
-		6: '6',
 	};
 
 	const positionClassificationMenu = [
@@ -189,6 +181,7 @@ const basicInformation = (props) => {
 			const codes = [];
 			var packageInitiators = [];
 			var sliderMarks = [];
+			var categoryMarks = [];
 
 			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
 				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
@@ -210,6 +203,11 @@ const basicInformation = (props) => {
 					sliderMarks.push({ label: recommendation.toString(), value: recommendation });
 				});
 				setRecommendations(sliderMarks);
+
+				vacancyOptionsResponse.data.result.number_of_categories.forEach((category) => {
+					categoryMarks.push({ label: category.toString(), value: category });
+				});
+				setCategories(categoryMarks);
 
 			}
 			setIsLoading(false);
@@ -589,10 +587,10 @@ const basicInformation = (props) => {
 				<Form.Item name='numberOfCategories'>
 					<Slider
 						className='CategorySlider'
-						min={1}
-						max={6}
+						min={0}
+						max={categories.length - 1}
 						dots
-						marks={categoryMarks}
+						marks={categories}
 						disabled={readOnly}
 					/>
 				</Form.Item>
