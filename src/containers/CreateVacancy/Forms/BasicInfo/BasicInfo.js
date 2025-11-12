@@ -80,6 +80,7 @@ const basicInformation = (props) => {
 	const [otherLocationValue, setOtherLocationValue] = useState('');
 	const [recommendations, setRecommendations] = useState([]);
 	const [categories, setCategories] = useState([]);
+	const [locationMenu, setLocationMenu] = useState([]);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -102,18 +103,6 @@ const basicInformation = (props) => {
 		vacancyPoc: user.uid,
 	};
 
-	const locationMenu = [
-		{ label: 'Baltimore, MD', value: 'Baltimore, MD' },
-		{ label: 'Bethesda, MD', value: 'Bethesda, MD' },
-		{ label: 'Durham, NC', value: 'Durham, NC' },
-		{ label: 'Frederick, MD', value: 'Frederick, MD' },
-		{ label: 'Hamilton, MT', value: 'Hamilton, MT' },
-		{ label: 'Poolesville, MD', value: 'Poolesville, MD' },
-		{ label: 'Phoenix, AZ', value: 'Phoenix, AZ' },
-		{ label: 'Rockville, MD', value: 'Rockville, MD' },
-		{ label: 'Other - brings up open-text entry box (ensure location is approved by HR Specialist)', value: 'Other' },
-	];
-
 	const hrSpecialistTooltip =
 		'Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage.';
 
@@ -127,6 +116,7 @@ const basicInformation = (props) => {
 			var sliderMarks = [];
 			var categoryMarks = [];
 			var positionClassification = [];
+			var locations = [];
 
 			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
 				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
@@ -158,6 +148,11 @@ const basicInformation = (props) => {
 					positionClassification.push({ label: position, value: position });
 				});
 				setPositions(positionClassification);
+
+				vacancyOptionsResponse.data.result.locations.forEach((location) => {
+					locations.push({ label: location.label, value: location.value });
+				});
+				setLocationMenu(locations);
 
 			}
 			setIsLoading(false);
