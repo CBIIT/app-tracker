@@ -537,7 +537,7 @@ const basicInformation = (props) => {
 				<Form.Item name='numberOfCategories'>
 					<Slider
 						className='CategorySlider'
-						min={0}
+						min={1}
 						max={categories.length - 1}
 						dots
 						marks={categories}
