@@ -134,7 +134,7 @@ const applicantList = (props) => {
 			render: (text) => renderDecision(text),
 		},
 	]);
-	const [pageSize, setPageSize] = useState(10);
+	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
 	const [appSysId, setAppSysId] = useState();
