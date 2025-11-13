@@ -74,7 +74,66 @@ const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
 	const [excelApplicants, setExcelApplicants] = useState([]);
-	const [excelApplicantColumns, setExcelApplicantColumns] = useState([]);
+	const [excelApplicantColumns, setExcelApplicantColumns] = useState([
+		{
+			title: 'Applicant',
+			dataIndex: 'applicant_name',
+			key: 'name',
+			width: 250,
+			...getColumnSearchProps(
+				'applicant_name',
+				'name',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
+			defaultSortOrder: defaultApplicantSort,
+			sorter: (a, b) => {
+				if (a.applicant_name < b.applicant_name) {
+					return -1;
+				}
+				if (a.applicant_name > b.applicant_name) {
+					return 1;
+				}
+				return 0;
+			},
+		},
+		{
+			title: 'Email',
+			dataIndex: 'applicant_email',
+			key: 'email',
+			maxWidth: 250,
+			...getColumnSearchProps(
+				'applicant_email',
+				'email',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
+		},
+		{
+			title: 'Submitted',
+			dataIndex: 'submitted',
+			key: 'submitted',
+			render: (date) => transformDateTimeToDisplay(date),
+		},
+		{
+			title: 'Vacancy Manager Triage Decision',
+			dataIndex: 'triage_status',
+			key: 'TriageStatus',
+			render: (text) => renderDecision(text),
+		},
+		{
+			title: 'Chair Triage Decision',
+			dataIndex: 'chair_triage_status',
+			key: 'ChairStatus',
+			render: (text) => renderDecision(text),
+		},
+	]);
 	const [pageSize, setPageSize] = useState(10);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
