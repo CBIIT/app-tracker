@@ -46,6 +46,9 @@ import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
+import ExportToExcel from '../Util/ExportToExcel';
+import moment from 'moment';
+
 const { Panel } = Collapse;
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -70,6 +73,67 @@ const defaultApplicantSort = 'ascend';
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
+	const [excelApplicants, setExcelApplicants] = useState([]);
+	const [excelApplicantColumns, setExcelApplicantColumns] = useState([
+		{
+			title: 'Applicant',
+			dataIndex: 'applicant_name',
+			key: 'name',
+			width: 250,
+			...getColumnSearchProps(
+				'applicant_name',
+				'name',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
+			defaultSortOrder: defaultApplicantSort,
+			sorter: (a, b) => {
+				if (a.applicant_name < b.applicant_name) {
+					return -1;
+				}
+				if (a.applicant_name > b.applicant_name) {
+					return 1;
+				}
+				return 0;
+			},
+		},
+		{
+			title: 'Email',
+			dataIndex: 'applicant_email',
+			key: 'email',
+			maxWidth: 250,
+			...getColumnSearchProps(
+				'applicant_email',
+				'email',
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
+		},
+		{
+			title: 'Submitted',
+			dataIndex: 'submitted',
+			key: 'submitted',
+			render: (date) => transformDateTimeToDisplay(date),
+		},
+		{
+			title: 'Vacancy Manager Triage Decision',
+			dataIndex: 'triage_status',
+			key: 'TriageStatus',
+			render: (text) => renderDecision(text),
+		},
+		{
+			title: 'Chair Triage Decision',
+			dataIndex: 'chair_triage_status',
+			key: 'ChairStatus',
+			render: (text) => renderDecision(text),
+		},
+	]);
 	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
@@ -362,6 +426,62 @@ const applicantList = (props) => {
 		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
 	}, [props.vacancyState, searchText, filter]);
 
+	useEffect(() => {
+		const columnList = [];
+		const columnMapList = [];
+		let newApplicantColumns = []
+
+		if (
+			props.userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
+			props.userCommitteeRole === COMMITTEE_MEMBER_NON_VOTING ||
+			props.userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY
+		) {
+			const applicantColumnCopy = [...excelApplicantColumns];
+			const columns = applicantColumnCopy.splice(0, 2);
+			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
+				newApplicantColumns = columns;
+			} else {
+				const newColumns = columns.concat(committeeColumns);
+				newApplicantColumns = newColumns;
+			}
+		} else {
+			newApplicantColumns = excelApplicantColumns;
+		}
+
+		newApplicantColumns.forEach((element) => {
+			columnList.push(element.dataIndex);
+			columnMapList.push({ dataIndex: element.dataIndex, title: element.title });
+		});
+
+		let excelData = [];
+		let data = [];
+
+		if (recommendedApplicants && recommendedApplicants.length > 0) {
+			data.push(...recommendedApplicants);
+		}
+		if (nonRecommendedApplicants && nonRecommendedApplicants.length > 0) {
+			data.push(...nonRecommendedApplicants);
+		}
+		if (applicants && applicants.length > 0) {
+			data = props.vacancyState == ROLLING_CLOSE
+				? getFilterData(filter, applicants)
+				: applicants;
+		}
+
+		data.forEach((applicant) => {
+			let newApplicant = {};
+			columnList.forEach((col) => {
+				if (applicant.hasOwnProperty(col)) {
+					columnMapList.some((column) => { column.dataIndex === col ? newApplicant[column.title] = applicant[col] ? applicant[col] : '' : null });
+				}
+			})
+			excelData.push(newApplicant);
+		});
+
+		excelData ? setExcelApplicants(excelData) : null;
+
+	}, [applicants, recommendedApplicants, nonRecommendedApplicants]);
+
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
 	};
@@ -554,6 +674,7 @@ const applicantList = (props) => {
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
 									postChangeHandler={loadVacancyAndApplicants}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -570,6 +691,7 @@ const applicantList = (props) => {
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
 									postChangeHandler={loadVacancyAndApplicants}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 						</Collapse>
@@ -610,6 +732,7 @@ const applicantList = (props) => {
 										focusAreaFilter={focusAreaFilter}
 										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										focusArea={applicantFocusArea}
+										updateExcelColumns={setExcelApplicantColumns}
 									/>
 								</Panel>
 								<Panel header='Non-Recommended Applicants'>
@@ -628,6 +751,7 @@ const applicantList = (props) => {
 										focusAreaFilter={focusAreaFilter}
 										onFocusAreaFilterChange={handleFocusAreaFilterChange}
 										focusArea={applicantFocusArea}
+										updateExcelColumns={setExcelApplicantColumns}
 									/>
 								</Panel>
 							</Collapse>
@@ -652,6 +776,7 @@ const applicantList = (props) => {
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 							<Panel header='Non-Recommended Applicants'>
@@ -670,6 +795,7 @@ const applicantList = (props) => {
 									focusAreaFilter={focusAreaFilter}
 									onFocusAreaFilterChange={handleFocusAreaFilterChange}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							</Panel>
 						</Collapse>
@@ -693,6 +819,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -712,6 +839,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 								</Collapse>
@@ -736,6 +864,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 									<Panel header='Non-Recommended Applicants'>
@@ -758,6 +887,7 @@ const applicantList = (props) => {
 											focusAreaFilter={focusAreaFilter}
 											onFocusAreaFilterChange={handleFocusAreaFilterChange}
 											focusArea={applicantFocusArea}
+											updateExcelColumns={setExcelApplicantColumns}
 										/>
 									</Panel>
 								</Collapse>
@@ -804,6 +934,7 @@ const applicantList = (props) => {
 												focusAreaFilter={focusAreaFilter}
 												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 												focusArea={applicantFocusArea}
+												updateExcelColumns={setExcelApplicantColumns}
 											/>
 										</Panel>
 										<Panel header='Non-Recommended Applicants'>
@@ -826,6 +957,7 @@ const applicantList = (props) => {
 												focusAreaFilter={focusAreaFilter}
 												onFocusAreaFilterChange={handleFocusAreaFilterChange}
 												focusArea={applicantFocusArea}
+												updateExcelColumns={setExcelApplicantColumns}
 											/>
 										</Panel>
 									</Collapse>
@@ -848,6 +980,7 @@ const applicantList = (props) => {
 							loading={tableLoading}
 							vacancyState={vacancyState}
 							focusArea={applicantFocusArea}
+							updateExcelColumns={setExcelApplicantColumns}
 						/>
 					);
 				case VOTING_COMPLETE:
@@ -862,6 +995,7 @@ const applicantList = (props) => {
 							displayAllComments={vacancyState === VOTING_COMPLETE}
 							loading={tableLoading}
 							focusArea={applicantFocusArea}
+							updateExcelColumns={setExcelApplicantColumns}
 						/>
 					);
 				case ROLLING_CLOSE:
@@ -876,6 +1010,7 @@ const applicantList = (props) => {
 									filter={filter}
 									vacancyState={vacancyState}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							);
 						case IN_REVIEW:
@@ -892,6 +1027,7 @@ const applicantList = (props) => {
 									loading={tableLoading}
 									filter={filter}
 									focusArea={applicantFocusArea}
+									updateExcelColumns={setExcelApplicantColumns}
 								/>
 							);
 						default:
@@ -1000,6 +1136,15 @@ const applicantList = (props) => {
 					</Radio.Group>
 				</div>
 			)}
+			<div className='ExportToExcelButtonDiv' style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+				<Button
+					disabled={excelApplicants.length === 0}
+					ghost
+					type='primary'
+					onClick={() => ExportToExcel(excelApplicants, `${props.vacancyTitle}-ApplicantList-${moment((new Date()).toString()).format('MM-DD-YYYY')}.xlsx`)}>
+					Export to Excel
+				</Button>
+			</div>
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal
 				appSysId={appSysId}

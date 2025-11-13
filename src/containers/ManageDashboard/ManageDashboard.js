@@ -475,6 +475,7 @@ const manageDashboard = () => {
 						</Tabs.TabPane>
 						<Tabs.TabPane tab='Applicants' key='applicants'>
 							<ApplicantList
+								vacancyTitle={vacancy.basicInfo.title}
 								vacancyState={vacancy.state}
 								vacancyTenant={vacancy.basicInfo.tenant}
 								referenceCollection={vacancy.basicInfo.referenceCollection}

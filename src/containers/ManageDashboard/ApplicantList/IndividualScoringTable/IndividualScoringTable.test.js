@@ -104,6 +104,7 @@ describe('individualScoringTable', () => {
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 					focusArea={mockApplicantFocusArea}
+					updateExcelColumns={jest.fn()}
 				/>
 			</HashRouter>
 		);
@@ -160,6 +161,7 @@ describe('individualScoringTable', () => {
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 					focusArea={mockApplicantFocusArea}
+					updateExcelColumns={jest.fn()}
 				/>
 			</HashRouter>
 		);
@@ -198,6 +200,7 @@ describe('individualScoringTable', () => {
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 					focusArea={mockApplicantFocusArea}
+					updateExcelColumns={jest.fn()}
 				/>
 			</HashRouter>
 		);
@@ -234,6 +237,7 @@ describe('individualScoringTable', () => {
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 					focusArea={mockApplicantFocusArea}
+					updateExcelColumns={jest.fn()}
 				/>
 			</HashRouter>
 		);
@@ -275,6 +279,7 @@ describe('individualScoringTable', () => {
 					reloadVacancy={mockLoadVacancyAndApplicants}
 					vacancyState={INDIVIDUAL_SCORING_IN_PROGRESS}
 					focusArea={mockApplicantFocusArea}
+					updateExcelColumns={jest.fn()}
 				/>
 			</HashRouter>
 		);
