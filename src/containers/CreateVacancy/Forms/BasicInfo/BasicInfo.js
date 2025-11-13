@@ -73,13 +73,14 @@ const basicInformation = (props) => {
 	const [appInitiatorMenu, setAppInitiatorMenu] = useState([
 		{ label: ' ', value: ' ' },
 	]);
-	const [currentPositionMenu, setCurrentPositionMenu] = useState(
-		positionClassificationMenu
-	);
+	const [positions, setPositions] = useState([]);
 	const [sacCodes, setSacCodes] = useState([{ label: ' ', value: ' ' }]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showOtherLocationInput, setShowOtherLocationInput] = useState(false);
 	const [otherLocationValue, setOtherLocationValue] = useState('');
+	const [recommendations, setRecommendations] = useState([]);
+	const [categories, setCategories] = useState([]);
+	const [locationMenu, setLocationMenu] = useState([]);
 
 	const formInstance = props.formInstance;
 	const initialValues = props.initialValues;
@@ -102,98 +103,6 @@ const basicInformation = (props) => {
 		vacancyPoc: user.uid,
 	};
 
-	const sliderMarks = {
-		0: '0',
-		1: '1',
-		2: '2',
-		3: '3',
-		4: '4',
-		5: '5',
-		6: '6',
-		7: '7',
-		8: '8',
-		9: '9',
-		10: '10',
-		11: '11',
-		12: '12',
-		13: '13',
-		14: '14',
-		15: '15',
-	};
-
-	const categoryMarks = {
-		1: '1',
-		2: '2',
-		3: '3',
-		4: '4',
-		5: '5',
-		6: '6',
-	};
-
-	const positionClassificationMenu = [
-		{ label: 'Research Fellow', value: 'Research Fellow' },
-		{ label: 'Senior Research Fellow', value: 'Senior Research Fellow' },
-		{ label: 'Staff Scientist 1', value: 'Staff Scientist 1' },
-		{ label: 'Investigator 1', value: 'Investigator 1' },
-		{ label: 'Clinical Fellow', value: 'Clinical Fellow' },
-		{ label: 'Senior Clinical Fellow', value: 'Senior Clinical Fellow' },
-		{
-			label: 'Assistant Clinical Investigator 1',
-			value: 'Assistant Clinical Investigator 1',
-		},
-		{ label: 'Staff Clinician 1', value: 'Staff Clinician 1' },
-		{
-			label: 'Science Policy Leader - Tier 2',
-			value: 'Science Policy Leader - Tier 2',
-		},
-		{
-			label: 'Science Program Leader - Tier 2',
-			value: 'Science Program Leader - Tier 2',
-		},
-		{ label: 'Senior Investigator', value: 'Senior Investigator' },
-		{ label: 'Senior Investigator (HS)', value: 'Senior Investigator (HS)' },
-		{ label: 'Investigator 2', value: 'Investigator 2' },
-		{ label: 'Investigator (HS)', value: 'Investigator (HS)' },
-		{ label: 'Senior Clinician', value: 'Senior Clinician' },
-		{ label: 'Senior Clinician (HS)', value: 'Senior Clinician (HS)' },
-		{ label: 'Senior Scientist', value: 'Senior Scientist' },
-		{
-			label: 'Assistant Clinical Investigator 2',
-			value: 'Assistant Clinical Investigator 2',
-		},
-		{
-			label: 'Assistant Clinical Investigator (HS)',
-			value: 'Assistant Clinical Investigator (HS)',
-		},
-		{ label: 'Staff Clinician 2', value: 'Staff Clinician 2' },
-		{ label: 'Staff Clinician (HS)', value: 'Staff Clinician (HS)' },
-		{ label: 'Staff Scientist 2', value: 'Staff Scientist 2' },
-		{
-			label: 'Staff Scientist 2 (Clinical)',
-			value: 'Staff Scientist 2 (Clinical)',
-		},
-		{
-			label: 'Staff Scientist 2 (Facility Head)',
-			value: 'Staff Scientist 2 (Facility Head)',
-		},
-		{ label: 'Scientific Executive', value: 'Scientific Executive' },
-		{ label: 'Senior Scientific Officer', value: 'Senior Scientific Officer' },
-		{ label: 'SBRBPAS', value: 'SBRBPAS' },
-		{ label: 'N/A', value: 'N/A' },
-	];
-
-	const locationMenu = [
-		{ label: 'Baltimore, MD', value: 'Baltimore, MD' },
-		{ label: 'Bethesda, MD', value: 'Bethesda, MD' },
-		{ label: 'Durham, NC', value: 'Durham, NC' },
-		{ label: 'Frederick, MD', value: 'Frederick, MD' },
-		{ label: 'Hamilton, MT', value: 'Hamilton, MT' },
-		{ label: 'Poolesville, MD', value: 'Poolesville, MD' },
-		{ label: 'Phoenix, AZ', value: 'Phoenix, AZ' },
-		{ label: 'Rockville, MD', value: 'Rockville, MD' },
-		{ label: 'Other - brings up open-text entry box (ensure location is approved by HR Specialist)', value: 'Other' },
-	];
-
 	const hrSpecialistTooltip =
 		'Checking this box allows HR Specialist(s) assigned to this vacancy to perform vacancy manager triage.';
 
@@ -202,10 +111,13 @@ const basicInformation = (props) => {
 		(async () => {
 			const vacancyOptionsResponse = await axios.get(GET_VACANCY_OPTIONS);
 
-			setCurrentPositionMenu(positionClassificationMenu);
-
-			var packageInitiators = [];
 			const codes = [];
+			var packageInitiators = [];
+			var sliderMarks = [];
+			var categoryMarks = [];
+			var positionClassification = [];
+			var locations = [];
+
 			if (vacancyOptionsResponse && vacancyOptionsResponse.data && vacancyOptionsResponse.data.result) {
 				vacancyOptionsResponse.data.result.sac_codes.forEach((code) => {
 					codes.push({ label: code, value: code });
@@ -221,6 +133,27 @@ const basicInformation = (props) => {
 					packageInitiators.push(packageInitiatorOption);
 				});
 				setAppInitiatorMenu(packageInitiators);
+
+				vacancyOptionsResponse.data.result.number_of_recommendations.forEach((recommendation) => {
+					sliderMarks.push({ label: recommendation.toString(), value: recommendation });
+				});
+				setRecommendations(sliderMarks);
+
+				vacancyOptionsResponse.data.result.number_of_categories.forEach((category) => {
+					categoryMarks.push({ label: category.toString(), value: category });
+				});
+				setCategories(categoryMarks);
+
+				vacancyOptionsResponse.data.result.title_42_position_classification.forEach((position) => {
+					positionClassification.push({ label: position, value: position });
+				});
+				setPositions(positionClassification);
+
+				vacancyOptionsResponse.data.result.locations.forEach((location) => {
+					locations.push({ label: location.label, value: location.value });
+				});
+				setLocationMenu(locations);
+
 			}
 			setIsLoading(false);
 		})();
@@ -583,9 +516,9 @@ const basicInformation = (props) => {
 						<Slider
 							className='Slider'
 							min={0}
-							max={15}
+							max={recommendations.length - 1}
 							dots
-							marks={sliderMarks}
+							marks={recommendations}
 							disabled={readOnly}
 						/>
 					</Form.Item>
@@ -600,9 +533,9 @@ const basicInformation = (props) => {
 					<Slider
 						className='CategorySlider'
 						min={1}
-						max={6}
+						max={categories.length - 1}
 						dots
-						marks={categoryMarks}
+						marks={categories}
 						disabled={readOnly}
 					/>
 				</Form.Item>
@@ -644,7 +577,7 @@ const basicInformation = (props) => {
 							}
 							name='positionClassification'
 							required={true}
-							menu={currentPositionMenu}
+							menu={positions}
 							disabled={readOnly}
 						/>
 					</div>
