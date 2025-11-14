@@ -477,7 +477,6 @@ const applicantList = (props) => {
 			let newApplicant = {};
 			columnList.forEach((col) => {
 				if (applicant.hasOwnProperty(col)) {
-					console.log('col', col, applicant[col]);
 					let val = applicant[col];
 					if (col === 'top_25') {
 						val = applicant[col] === '1' ? 'Yes' : 'No';
