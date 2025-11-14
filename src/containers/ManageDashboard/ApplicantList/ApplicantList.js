@@ -133,6 +133,11 @@ const applicantList = (props) => {
 			key: 'ChairStatus',
 			render: (text) => renderDecision(text),
 		},
+		{
+			title: 'Reference Status',
+			dataIndex: 'total_received_references',
+			key: 'totalReceivedReferences',
+		}
 	]);
 	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
@@ -472,7 +477,13 @@ const applicantList = (props) => {
 			let newApplicant = {};
 			columnList.forEach((col) => {
 				if (applicant.hasOwnProperty(col)) {
-					columnMapList.some((column) => { column.dataIndex === col ? newApplicant[column.title] = applicant[col] ? applicant[col] : '' : null });
+					let val = applicant[col];
+					if (col === 'top_25') {
+						val = applicant[col] === '1' ? 'Yes' : 'No';
+					}
+					columnMapList.some((column) => { 
+						column.dataIndex === col ? newApplicant[column.title] = val ? val : '' : null 
+					});
 				}
 			})
 			excelData.push(newApplicant);
