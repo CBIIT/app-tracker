@@ -443,7 +443,7 @@ const applicantList = (props) => {
 		) {
 			const applicantColumnCopy = [...excelApplicantColumns];
 			const columns = applicantColumnCopy.splice(0, 2);
-			if (userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
+			if (props.userCommitteeRole === COMMITTEE_MEMBER_READ_ONLY) {
 				newApplicantColumns = columns;
 			} else {
 				const newColumns = columns.concat(committeeColumns);
