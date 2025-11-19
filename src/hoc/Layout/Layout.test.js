@@ -209,4 +209,41 @@ describe('Layout', () => {
         const nihHiringExperience = getByText('The NIH Hiring Experience');
         expect(nihHiringExperience).toBeInTheDocument();
     });
+
+    test('renders banner Alert when auth contains bannerMessage and description', () => {
+        useAuth.mockReturnValue({
+            auth: {
+                bannerMessage: 'System maintenance planned',
+                bannerDescription: 'The site will be down <strong>tonight</strong> from 11pm-1am.',
+            },
+        });
+
+        render(
+            <MemoryRouter>
+                <Layout>ChildContent</Layout>
+            </MemoryRouter>
+        );
+
+        // banner message is shown
+        expect(screen.getByText('System maintenance planned')).toBeInTheDocument();
+        expect(screen.getByText(/tonight/i)).toBeInTheDocument();
+    });
+
+    test('does not render banner Alert when auth has no bannerMessage', () => {
+        useAuth.mockReturnValue({
+            auth: {
+                // no bannerMessage or bannerDescription provided
+            }
+        });
+
+        render(
+            <MemoryRouter>
+                <Layout>ChildContent</Layout>
+            </MemoryRouter>
+        );
+
+        // Antd Alert renders with role="alert" — ensure it's not present
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
 });

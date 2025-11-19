@@ -11,6 +11,8 @@ export const checkAuth = async (setIsLoading, setAuth) => {
         iTrustUrl: data.itrust_url,
         oktaGlideSsoId: data.okta_idp,
         sessionTimeout: data.session_timeout,
+        bannerMessage: data.banner_message,
+        bannerDescription: data.banner_description,
         user: {
             firstName: data.user.first_name,
             lastInitial: data.user.last_initial,
