@@ -228,7 +228,10 @@ const ApplicantDocuments = (props) => {
 							<div style={{ margin: '10px' }}>
 								{'Select at least one area, no more than 2'}
 							</div>
-								<EditableFocusArea mode='multiple' />
+								<EditableFocusArea 
+									mode='multiple' 
+									focusArea={props.focusArea} 
+								/>
 						</>
 					) : null}
 				</div>
