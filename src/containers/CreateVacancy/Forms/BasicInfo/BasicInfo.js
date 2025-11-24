@@ -535,7 +535,7 @@ const basicInformation = (props) => {
 					<Slider
 						className='CategorySlider'
 						min={1}
-						max={Math.max(...Object.keys(categories).map(Number))}
+						max={Object.keys(categories).length}
 						dots
 						marks={categories}
 						disabled={readOnly}
