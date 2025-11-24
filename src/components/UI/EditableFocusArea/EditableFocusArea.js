@@ -19,7 +19,7 @@ const editableFocusArea = (props) => (
 	>
 		<Select
 			mode={props.mode}
-			options={props.focusArea}
+			options={props.focusAreaChoices}
 		/>
 	</Form.Item>
 );

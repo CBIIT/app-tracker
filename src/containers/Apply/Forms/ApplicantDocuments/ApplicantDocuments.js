@@ -230,7 +230,7 @@ const ApplicantDocuments = (props) => {
 							</div>
 								<EditableFocusArea 
 									mode='multiple' 
-									focusArea={props.focusArea} 
+									focusAreaChoices={props.focusAreaChoices}
 								/>
 						</>
 					) : null}

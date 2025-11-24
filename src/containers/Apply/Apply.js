@@ -73,7 +73,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [vacancyTenantType, setVacancyTenantType] = useState();
 	const [vacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
-	const [focusAreaChoices, setFocusAreaChoices] = useState([]);
+	const [focusArea, setFocusArea] = useState([]);
 
 	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
@@ -121,7 +121,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		response.data.result.focus_area.forEach((focusArea) => {
 			focusAreaOptions.push({ label: focusArea, value: focusArea });
 		});
-		setFocusAreaChoices(focusAreaOptions);
+		setFocusArea(focusAreaOptions);
 		
 		const profileResponse = await axios
 			.get(GET_PROFILE + user.uid)
@@ -243,7 +243,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		response.data.result.focus_area.forEach((focusArea) => {
 			focusAreaOptions.push({ label: focusArea, value: focusArea });
 		});
-		setFocusAreaChoices(focusAreaOptions);
+		setFocusArea(focusAreaOptions);
 		
 
 		const profileResponse = await axios
@@ -388,7 +388,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			content: (
 				<ApplicantDocuments
 					vacancyId={initialValues ? initialValues.sysId : vacancyId}
-					focusArea={focusAreaChoices}
+					focusAreaChoices={focusArea}
 				/>
 			),
 			description: 'CV, cover letter, and statement of research interests',
