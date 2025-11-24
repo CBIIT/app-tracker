@@ -140,7 +140,9 @@ const basicInformation = (props) => {
 				setRecommendations(sliderMarks);
 
 				vacancyOptionsResponse.data.result.number_of_categories.forEach((category) => {
-					categoryMarks.push({ label: category.toString(), value: category });
+					if(category >= 1) {
+						categoryMarks[category] = category.toString();
+					}
 				});
 				setCategories(categoryMarks);
 
@@ -533,7 +535,7 @@ const basicInformation = (props) => {
 					<Slider
 						className='CategorySlider'
 						min={1}
-						max={categories.length - 1}
+						max={Math.max(...Object.keys(categories).map(Number))}
 						dots
 						marks={categories}
 						disabled={readOnly}
