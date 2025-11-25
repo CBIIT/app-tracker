@@ -1,14 +1,18 @@
 import React from 'react';
 import './LegalStatement.css';
+import useAuth from '../../../hooks/useAuth';
 
-const ombNumber = '0925-0761-2501';
+const legalStatement = () => {
+	const { auth: { ombNo, ombExpiration } } = useAuth();
+	const ombNumber = ombNo;
+	const expirationDate = ombExpiration;
 
-const legalStatement = () => (
-	<div className='LegalStatement'>
-		<div className='LegalStatementContent Content'>
-			<p style={{ textAlign: 'right' }}>
+	return (
+		<div className='LegalStatement'>
+			<div className='LegalStatementContent Content'>
+				<p style={{ textAlign: 'right' }}>
 				OMB No. {ombNumber} <br />
-				Expiration Date: 09/30/2028
+				{expirationDate}
 			</p>
 			<p>
 				Collection of this information is authorized by The Public Health
@@ -43,6 +47,7 @@ const legalStatement = () => (
 			</p>
 		</div>
 	</div>
-);
+	);
+};
 
 export default legalStatement;

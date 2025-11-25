@@ -1,15 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import LegalStatement from './LegalStatement';
+import useAuth from '../../../hooks/useAuth';
+
+jest.mock('../../../hooks/useAuth');
 
 describe('LegalStatement', () => {
+    beforeEach(() => {
+        useAuth.mockReturnValue({
+            auth: {
+                ombNo: '5029-1067-1205',
+                ombExpiration: 'Expiration Date: 12/31/3000',
+            }
+        })
+    });
+
     test('should display the correct OMB number', () => {
         render(<LegalStatement />);
-        expect(screen.getByText(/OMB No. 0925-0761-2501/i)).toBeInTheDocument();
+        expect(screen.getByText(/OMB No. 5029-1067-1205/i)).toBeInTheDocument();
     });
 
     test('should display the correct expiration date', () => {
         render(<LegalStatement />);
-        expect(screen.getByText(/Expiration Date: 09\/30\/2028/i)).toBeInTheDocument();
+        expect(screen.getByText(/Expiration Date: 12\/31\/3000/i)).toBeInTheDocument();
     });
 
     // test('should contain a link to the OPM GOVT-5 document', () => {
@@ -26,6 +38,6 @@ describe('LegalStatement', () => {
 
     test('should display the correct NIH address', () => {
         render(<LegalStatement />);
-        expect(screen.getByText(/NIH, Project Clearance Branch, 6705 Rockledge Drive, MSC 7974, Bethesda, MD 20892-7974, ATTN: PRA \(0925-0761-2501\)/i)).toBeInTheDocument();
+        expect(screen.getByText(/NIH, Project Clearance Branch, 6705 Rockledge Drive, MSC 7974, Bethesda, MD 20892-7974, ATTN: PRA \(5029-1067-1205\)/i)).toBeInTheDocument();
     });
 });

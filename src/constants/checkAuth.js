@@ -13,6 +13,8 @@ export const checkAuth = async (setIsLoading, setAuth) => {
         sessionTimeout: data.session_timeout,
         bannerMessage: data.banner_message,
         bannerDescription: data.banner_description,
+        ombNo: data.omb_no,
+        ombExpiration: data.omb_exp,
         user: {
             firstName: data.user.first_name,
             lastInitial: data.user.last_initial,
