@@ -41,7 +41,9 @@ const viewVacancyDetails = () => {
 			setVacancyDetails(response.data.result);
 			setIsLoading(false);
 		})();
-	}, []);;
+	}, []);
+
+	console.log('Vacancy Details: ********', vacancyDetails);
 
 	return isLoading ? (
 		<> </>
@@ -54,7 +56,9 @@ const viewVacancyDetails = () => {
 				useCloseDate={vacancyDetails.basic_info.use_close_date.value == '0' ? false : true}
 				vacancyState={vacancyDetails.basic_info.state.value}
 				vacancyStatus={vacancyDetails.basic_info.status.value}
+				vacancyPOCType={vacancyDetails.basic_info.vacancy_poc_type}
 				vacancyPOC={vacancyDetails.basic_info.vacancy_poc}
+				vacancyPOCEmail={vacancyDetails.basic_info.vacancy_poc_email}
 				sysId={sysId}
 			/>
 			<div className='Content'>

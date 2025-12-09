@@ -24,7 +24,9 @@ export const transformJsonFromBackend = (sourceJson) => {
 					? true
 					: false,
 			description: sourceJson.basic_info.vacancy_description.value,
+			vacancyPocType: JSON.parse(sourceJson.basic_info.vacancy_poc_type?.value || '[]'),
 			vacancyPoc: sourceJson.basic_info.vacancy_poc.value,
+			vacancyPocEmail: sourceJson.basic_info.vacancy_poc_email?.value,
 			location: sourceJson.basic_info.location.value,
 			appointmentPackageIndicator: sourceJson.basic_info.package_initiator.value,
 			positionClassification: sourceJson.basic_info.title_42_position_classification.value,

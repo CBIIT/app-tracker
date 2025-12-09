@@ -25,10 +25,16 @@ export const transformJsonFromBackend = (sourceJson) => {
 			requireFocusArea:
 				sourceJson.basic_info.require_focus_area.value == '1' ? true : false,
 			description: sourceJson.basic_info.vacancy_description.value,
+			vacancyPocType: sourceJson.basic_info.vacancy_poc_type?.value == 'undefined'
+					? undefined
+					: JSON.parse(sourceJson.basic_info.vacancy_poc_type?.value || '[]'),
 			vacancyPoc:
 				sourceJson.basic_info.vacancy_poc.value == 'undefined'
 					? undefined
 					: sourceJson.basic_info.vacancy_poc.value,
+			vacancyPocEmail: sourceJson.basic_info.vacancy_poc_email?.value == 'undefined'
+					? undefined
+					: sourceJson.basic_info.vacancy_poc_email?.value,
 			location: (sourceJson.basic_info.location && sourceJson.basic_info.location.value) ? sourceJson.basic_info.location.value : '',
 			appointmentPackageIndicator:
 				sourceJson.basic_info.package_initiator.value,

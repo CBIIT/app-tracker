@@ -92,6 +92,7 @@ const basicInformation = (props) => {
 	const useCloseDate = Form.useWatch('useCloseDate', formInstance);
 	const location = Form.useWatch('location', formInstance);
 	const referenceCollection = Form.useWatch('referenceCollection', formInstance);
+	const vacancyPocType = Form.useWatch('vacancyPocType', formInstance);
 
 	const { auth, currentTenant } = useAuth();
 	const { user, tenants } = auth;
@@ -228,6 +229,14 @@ const basicInformation = (props) => {
 		formInstance.setFieldsValue({ location: e.target.value }); // Update form with "Other" input value
 	};
 
+	const onPocTypeChange = (checkedValues) => {
+		if (checkedValues.length == 1 && checkedValues[0] == 'Email Distribution List') {
+			formInstance.setFieldsValue({vacancyPoc: user.uid}) // vacancyPoc defaults to current user when email is used as POC
+		}
+	}
+
+	const pocOptions = ['User', 'Email Distribution List', 'Both'];
+
 	return (
 		<Form
 			layout='vertical'
@@ -300,79 +309,197 @@ const basicInformation = (props) => {
 			</div>
 
 			<div>
-				<Form.Item label='Vacancy Point of Contact Information'>
-					{(!isDefined && !isNew) || (isDefined && isNew) || !isDefined ? (
-						<Form.Item
-							name='isUserPoc'
-							label='Are you the point of contact for this vacancy?'
-						>
-							<Select
-								disabled={readOnly}
-								options={[
-									{ value: 'yes', label: 'Yes' },
-									{ value: 'no', label: 'No' },
-								]}
-							/>
-						</Form.Item>
-					) : (
-						''
-					)}
-					{isLoading && isDefined ? (
-						<Space
-							block='true'
-							style={{ display: 'flex', justifyContent: 'center' }}
-						>
-							<LoadingOutlined style={{ fontSize: '2rem' }} />
-						</Space>
-					) : (!isNew && isDefined) || isUserPoc ? (
-						<Form.Item
-							name='vacancyPoc'
-							label={
-								isUserPoc === 'no'
-									? 'Who will be the point of contact for this vacancy?'
-									: ''
-							}
-						>
-							<Select
-								name='vacancyPoc'
-								rules={[
-									{
-										required: true,
-										message: 'Please select a point of contact.',
-									},
-								]}
-								allowClear={true}
-								disabled={readOnly || isUserPoc === 'yes'}
-								showSearch={true}
-								optionLabelProp='label'
-								filterOption={(input, option) =>
-									(option?.label ?? '')
-										.toLowerCase()
-										.includes(input.toLowerCase())
-								}
-								filterSort={(optionA, optionB) =>
-									(optionA?.label ?? '')
-										.toLowerCase()
-										.localeCompare((optionB?.label ?? '').toLowerCase())
-								}
-							>
-								{appInitiatorMenu.map((option, index) => (
-									<Option key={index} value={option.value} label={option.label}>
-										<div>
-											<span>{option.label}</span>
-											<br />
-											<span>{option.email}</span>
-										</div>
-									</Option>
-								))}
-							</Select>
-						</Form.Item>
-					) : (
-						''
-					)}
+				<Form.Item label="Vacancy Point of Contact Information">
+					<p className='SmallText'>
+						Please select the type of point of contact information to be used for this vacancy.
+					</p>
+					<Form.Item name='vacancyPocType' >
+						<Checkbox.Group
+							options={pocOptions}
+							onChange={onPocTypeChange}
+						/>
+					</Form.Item>
 				</Form.Item>
-			</div>
+				{vacancyPocType && (vacancyPocType.length == 1 && vacancyPocType[0] == 'User') &&
+					<div>
+						<Form.Item name='User Point of Contact Information'>
+							{(!isDefined && !isNew) || (isDefined && isNew) || !isDefined ? (
+								<Form.Item
+									name='isUserPoc'
+									label='Are you the point of contact for this vacancy?'
+								>
+									<Select
+										disabled={readOnly}
+										options={[
+											{ value: 'yes', label: 'Yes' },
+											{ value: 'no', label: 'No' },
+										]}
+									/>
+								</Form.Item>
+							) : (
+								''
+							)}
+							{isLoading && isDefined ? (
+								<Space
+									block='true'
+									style={{ display: 'flex', justifyContent: 'center' }}
+								>
+									<LoadingOutlined style={{ fontSize: '2rem' }} />
+								</Space>
+							) : (!isNew && isDefined) || isUserPoc ? (
+								<Form.Item
+									name='vacancyPoc'
+									label={
+										isUserPoc === 'no'
+											? 'Who will be the point of contact for this vacancy?'
+											: ''
+									}
+								>
+									<Select
+										name='vacancyPoc'
+										rules={[
+											{
+												required: true,
+												message: 'Please select a point of contact.',
+											},
+										]}
+										allowClear={true}
+										disabled={readOnly || isUserPoc === 'yes'}
+										showSearch={true}
+										optionLabelProp='label'
+										filterOption={(input, option) =>
+											(option?.label ?? '')
+												.toLowerCase()
+												.includes(input.toLowerCase())
+										}
+										filterSort={(optionA, optionB) =>
+											(optionA?.label ?? '')
+												.toLowerCase()
+												.localeCompare((optionB?.label ?? '').toLowerCase())
+										}
+									>
+										{appInitiatorMenu.map((option, index) => (
+											<Option key={index} value={option.value} label={option.label}>
+												<div>
+													<span>{option.label}</span>
+													<br />
+													<span>{option.email}</span>
+												</div>
+											</Option>
+										))}
+									</Select>
+								</Form.Item>
+							) : (
+								''
+							)}
+						</Form.Item>
 
+					</div>
+				}
+				{vacancyPocType && (vacancyPocType.length == 1 && vacancyPocType[0] == 'Email Distribution List') &&
+					<div>
+						<Form.Item 
+							name='Email Distribution List for Point of Contact'>
+							<Form.Item
+								label='Email Distribution List for Point of Contact'
+								name='vacancyPocEmail'
+							>
+								<Input
+									placeholder='Please enter email distribution list'
+									disabled={readOnly}
+								/>
+							</Form.Item>
+						</Form.Item>
+					</div>
+				}
+				{vacancyPocType && (vacancyPocType.length >= 2 || (vacancyPocType.length == 1 && vacancyPocType[0] == 'Both')) &&
+					<div>
+						<Form.Item name='User Point of Contact Information'>
+							{(!isDefined && !isNew) || (isDefined && isNew) || !isDefined ? (
+								<Form.Item
+									name='isUserPoc'
+									label='Are you the point of contact for this vacancy?'
+								>
+									<Select
+										disabled={readOnly}
+										options={[
+											{ value: 'yes', label: 'Yes' },
+											{ value: 'no', label: 'No' },
+										]}
+									/>
+								</Form.Item>
+							) : (
+								''
+							)}
+							{isLoading && isDefined ? (
+								<Space
+									block='true'
+									style={{ display: 'flex', justifyContent: 'center' }}
+								>
+									<LoadingOutlined style={{ fontSize: '2rem' }} />
+								</Space>
+							) : (!isNew && isDefined) || isUserPoc ? (
+								<Form.Item
+									name='vacancyPoc'
+									label={
+										isUserPoc === 'no'
+											? 'Who will be the point of contact for this vacancy?'
+											: ''
+									}
+								>
+									<Select
+										name='vacancyPoc'
+										rules={[
+											{
+												required: true,
+												message: 'Please select a point of contact.',
+											},
+										]}
+										allowClear={true}
+										disabled={readOnly || isUserPoc === 'yes'}
+										showSearch={true}
+										optionLabelProp='label'
+										filterOption={(input, option) =>
+											(option?.label ?? '')
+												.toLowerCase()
+												.includes(input.toLowerCase())
+										}
+										filterSort={(optionA, optionB) =>
+											(optionA?.label ?? '')
+												.toLowerCase()
+												.localeCompare((optionB?.label ?? '').toLowerCase())
+										}
+									>
+										{appInitiatorMenu.map((option, index) => (
+											<Option key={index} value={option.value} label={option.label}>
+												<div>
+													<span>{option.label}</span>
+													<br />
+													<span>{option.email}</span>
+												</div>
+											</Option>
+										))}
+									</Select>
+								</Form.Item>
+							) : (
+								''
+							)}
+						</Form.Item>
+
+						<Form.Item name='Email Distribution List for Point of Contact'>
+							<Form.Item
+								label='Email Distribution List for Point of Contact'
+								name='vacancyPocEmail'
+							>
+								<Input
+									placeholder='Please enter email distribution list'
+									disabled={readOnly}
+								/>
+							</Form.Item>
+						</Form.Item>
+					</div>
+				}
+			</div>
 			<div className='DatePickerContainer'>
 				<div className='DatePicker'>
 					<Form.Item
