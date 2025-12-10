@@ -21,7 +21,8 @@ const ProfileModal = (props) => {
 
 	const handleLogin = () => {
 		console.log("Current location:", location);
-		window.open(oktaLoginAndRedirectUrl, "_blank")
+		const vacancyPage = location.pathname.slice(1);
+		window.open(oktaLoginAndRedirectUrl + vacancyPage, "_blank")
 	};
 
 	const handleContinue = () => {
