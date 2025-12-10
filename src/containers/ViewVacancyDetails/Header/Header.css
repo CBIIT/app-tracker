@@ -45,6 +45,14 @@
 	max-width: 450px;
 }
 
+.POCContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	flex-wrap: wrap;
+	max-width: 500px;
+}
+
 .ButtonContainer {
 	display: flex;
 	flex-grow: 1;

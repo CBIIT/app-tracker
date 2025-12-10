@@ -127,9 +127,10 @@ const header = (props) => {
 						</>
 						
 					)}
-
+				</div>
+				<div className='POCContainer'>
 					{props.vacancyPOC.label && showUserPOC? (
-						<div className='DateItem'>
+						<div className='POCItem'>
 							<label>Point of Contact:</label>
 							<span>{props.vacancyPOC.label} </span>
 							<Tooltip
@@ -161,14 +162,14 @@ const header = (props) => {
 					)}
 
 					{props.vacancyPOCEmail?.label && showEmailPOC? (
-						<div className='DateItem'>
+						<div className='POCItem'>
 							<label>Email to:</label>
 							<span>{props.vacancyPOCEmail.label} </span>
 							<Tooltip
 								title={
 									<span>
 										If you have any questions regarding the vacancy
-										announcement, please email at <br />
+										announcement, please email the inbox at <br />
 										<a
 											className='POCEmail'
 											href={`mailto: ${props.vacancyPOCEmail.value}?subject = Issues with ${props.title} vacancy`}
