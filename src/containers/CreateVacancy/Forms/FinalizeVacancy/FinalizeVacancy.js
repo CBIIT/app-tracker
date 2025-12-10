@@ -60,7 +60,21 @@ const finalizeVacancy = (props) => {
 		return display;
 	}
 
-	const vacancyPocDisplay = getVacancyPocDisplay();
+	let vacancyPocDisplay = {};
+
+	if (basicInfo && basicInfo.vacancyPocType?.includes('Both')) {
+		for (let i = 0; i < allPackageInitiators.length; i++) {
+			let poc = allPackageInitiators[i];
+			if (poc.sys_id === basicInfo.vacancyPoc) {
+				(vacancyPocDisplay.name = `Name: ${poc.name}, Email:  ${poc.email}`);
+			}
+		}
+		vacancyPocDisplay.email = `Email: ${basicInfo.vacancyPocEmail}`;
+	} else if (basicInfo && basicInfo.vacancyPocType?.includes('Email Distribution List')) {
+		(vacancyPocDisplay.email = basicInfo.vacancyPocEmail);
+	} else {
+		vacancyPocDisplay = getVacancyPocDisplay();
+	}
 
 	return (
 		<>
