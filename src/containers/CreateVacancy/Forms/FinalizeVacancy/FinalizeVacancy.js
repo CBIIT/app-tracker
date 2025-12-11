@@ -53,14 +53,28 @@ const finalizeVacancy = (props) => {
 		const display = {};
 		for (let i = 0; i < allPackageInitiators.length; i++) {
 			let poc = allPackageInitiators[i];
-			if (poc.sys_id === basicInfo.vacancyPoc) {
+			if ( basicInfo && poc.sys_id === basicInfo.vacancyPoc) {
 				(display.name = poc.name), (display.email = poc.email);
 			}
 		}
 		return display;
 	}
 
-	const vacancyPocDisplay = getVacancyPocDisplay();
+	let vacancyPocDisplay = {};
+
+	if (basicInfo && basicInfo.vacancyPoc && basicInfo.vacancyPocType?.includes('Both')) {
+		for (let i = 0; i < allPackageInitiators.length; i++) {
+			let poc = allPackageInitiators[i];
+			if (poc.sys_id === basicInfo.vacancyPoc) {
+				(vacancyPocDisplay.name = `Name: ${poc.name}, Email:  ${poc.email}`);
+			}
+		}
+		vacancyPocDisplay.email = `Email: ${basicInfo.vacancyPocEmail}`;
+	} else if (basicInfo && basicInfo.vacancyPocType?.includes('Email Distribution List')) {
+		(vacancyPocDisplay.email = basicInfo.vacancyPocEmail);
+	} else {
+		vacancyPocDisplay = getVacancyPocDisplay();
+	}
 
 	return (
 		<>
@@ -109,7 +123,7 @@ const finalizeVacancy = (props) => {
 								<LoadingOutlined style={{ fontSize: '2rem' }} />
 							</Space>
 						) : (
-							<p>
+							<p data-testid="vacancy-poc-display">
 								{vacancyPocDisplay.name}
 								<br />
 								{vacancyPocDisplay.email}

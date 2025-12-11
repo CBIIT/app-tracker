@@ -89,6 +89,14 @@ const header = (props) => {
 		);
 	};
 
+	var showUserPOC, showEmailPOC = false;
+	if (props.vacancyPOCType?.value) {
+		let pocTypeValue = JSON.parse(props.vacancyPOCType.value);
+		showUserPOC = pocTypeValue && (pocTypeValue?.includes('Both') || pocTypeValue?.includes('User'));
+		showEmailPOC = pocTypeValue && (pocTypeValue?.includes('Both') || pocTypeValue?.includes('Email Distribution List'));
+	}
+	
+
 	return (
 		<div className='HeaderContainer'>
 			<div className='TitleAndDateContainer'>
@@ -119,9 +127,10 @@ const header = (props) => {
 						</>
 						
 					)}
-
-					{props.vacancyPOC.label ? (
-						<div className='DateItem'>
+				</div>
+				<div className='POCContainer'>
+					{props.vacancyPOC.label && showUserPOC? (
+						<div className='POCItem'>
 							<label>Point of Contact:</label>
 							<span>{props.vacancyPOC.label} </span>
 							<Tooltip
@@ -135,6 +144,37 @@ const header = (props) => {
 											href={`mailto: ${props.vacancyPOC.email}?subject = Issues with ${props.title} vacancy`}
 										>
 											{props.vacancyPOC.email}
+										</a>
+										.
+										<br />
+										If you are having technical issues, click the support button
+										found at the bottom of this page.
+									</span>
+								}
+								color='rgba(80, 80, 80, 0.9)'
+								placement='bottom'
+							>
+								<DownOutlined />
+							</Tooltip>
+						</div>
+					) : (
+						''
+					)}
+
+					{props.vacancyPOCEmail?.label && showEmailPOC? (
+						<div className='POCItem'>
+							<label>Email to:</label>
+							<span>{props.vacancyPOCEmail.label} </span>
+							<Tooltip
+								title={
+									<span>
+										If you have any questions regarding the vacancy
+										announcement, please email the inbox at <br />
+										<a
+											className='POCEmail'
+											href={`mailto: ${props.vacancyPOCEmail.value}?subject = Issues with ${props.title} vacancy`}
+										>
+											{props.vacancyPOCEmail.value}
 										</a>
 										.
 										<br />
