@@ -53,7 +53,7 @@ const finalizeVacancy = (props) => {
 		const display = {};
 		for (let i = 0; i < allPackageInitiators.length; i++) {
 			let poc = allPackageInitiators[i];
-			if (poc.sys_id === basicInfo.vacancyPoc) {
+			if ( basicInfo && poc.sys_id === basicInfo.vacancyPoc) {
 				(display.name = poc.name), (display.email = poc.email);
 			}
 		}
@@ -62,7 +62,7 @@ const finalizeVacancy = (props) => {
 
 	let vacancyPocDisplay = {};
 
-	if (basicInfo && basicInfo.vacancyPocType?.includes('Both')) {
+	if (basicInfo && basicInfo.vacancyPoc && basicInfo.vacancyPocType?.includes('Both')) {
 		for (let i = 0; i < allPackageInitiators.length; i++) {
 			let poc = allPackageInitiators[i];
 			if (poc.sys_id === basicInfo.vacancyPoc) {
@@ -123,7 +123,7 @@ const finalizeVacancy = (props) => {
 								<LoadingOutlined style={{ fontSize: '2rem' }} />
 							</Space>
 						) : (
-							<p>
+							<p data-testid="vacancy-poc-display">
 								{vacancyPocDisplay.name}
 								<br />
 								{vacancyPocDisplay.email}
