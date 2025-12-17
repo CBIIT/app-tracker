@@ -1,6 +1,6 @@
 import useAuth from '../../hooks/useAuth';
 import { Modal, Typography, Button } from 'antd';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
 	PROFILE,
 	REGISTER_OKTA
@@ -13,16 +13,13 @@ const ProfileModal = (props) => {
 		auth: { isUserLoggedIn, user, oktaLoginAndRedirectUrl },
 	} = useAuth();
 	const history = useHistory();
-	const location = useLocation();
 
 	const handleRegistration = () => {
 		history.push(REGISTER_OKTA, "_blank")
 	};
 
 	const handleLogin = () => {
-		console.log("Current location:", location);
-		const vacancyPage = location.pathname.slice(1);
-		window.open(oktaLoginAndRedirectUrl + vacancyPage, "_blank")
+		window.open(oktaLoginAndRedirectUrl, "_blank")
 	};
 
 	const handleContinue = () => {
