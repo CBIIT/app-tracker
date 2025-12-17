@@ -3,18 +3,16 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ProfileModal from './ProfileModal';
 import useAuth from '../../hooks/useAuth';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 jest.mock('../../hooks/useAuth');
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn(),
-    useLocation: jest.fn(),
 }));
 
 describe('ProfileModal', () => {
     let mockUseAuth;
     let mockHistoryPush;
-    let mockLocation;
     let mockHandleClose;
 
     beforeEach(() => {
@@ -25,9 +23,7 @@ describe('ProfileModal', () => {
             window.location = {
             href: '',
             assign: jest.fn(),
-        }
-        mockLocation = jest.fn();
-        useLocation.mockReturnValue({ pathname: '/some-vacancy' });
+        };
     });
 
     it('should render the complete profile modal when user is logged in', () => {
