@@ -311,6 +311,9 @@ const createVacancy = (props) => {
 		if (isCurrentStepFinalize()) {
 			validateAllFormsAndDisplayModal();
 		} else {
+			try {
+				await validateFormData(currentStep);
+
 			const data = saveFormData(currentStep);
 			if (
 				(await save(data)) === true &&
@@ -318,6 +321,10 @@ const createVacancy = (props) => {
 				!isEditingFinalizedVacancy()
 			) {
 				setCurrentStep(currentStep + 1);
+			}
+			} catch (error) {
+				message.error('Please fix validation errors before proceeding.');
+				return;
 			}
 		}
 	};
