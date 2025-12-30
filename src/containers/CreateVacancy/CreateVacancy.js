@@ -314,16 +314,17 @@ const createVacancy = (props) => {
 			try {
 				await validateFormData(currentStep);
 
-			const data = saveFormData(currentStep);
-			if (
-				(await save(data)) === true &&
-				currentStep < steps.length - 1 &&
-				!isEditingFinalizedVacancy()
-			) {
-				setCurrentStep(currentStep + 1);
-			}
+				const data = saveFormData(currentStep);
+				if (
+					(await save(data)) === true &&
+					currentStep < steps.length - 1 &&
+					!isEditingFinalizedVacancy()
+				) {
+					setCurrentStep(currentStep + 1);
+					window.scrollTo(0,0);
+				}
 			} catch (error) {
-				message.error('Please fix validation errors before proceeding.');
+				message.error('Please ensure required fields are filled before proceeding.');
 				return;
 			}
 		}
