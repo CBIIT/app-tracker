@@ -521,6 +521,7 @@ const basicInformation = (props) => {
 						<Form.Item
 							label='Close Date'
 							name='closeDate'
+							data-testid='closeDate'
 							rules={[
 								{
 									required: useCloseDate,
