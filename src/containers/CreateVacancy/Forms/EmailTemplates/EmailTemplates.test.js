@@ -138,4 +138,82 @@ describe('EmailTemplates', () => {
 			expect(applicantReferenceReceivedApplicantText).toBeInTheDocument();
 		});
 	});
+
+	test('Should remove reference collection templates when referenceCollection becomes false', () => {
+		const { rerender } = render(<FormWrapperWithReferenceCollection />);
+		
+		const mockEmailTemplatesWithReferences = [
+			...mockEmailTemplates,
+			{
+				type: 'Applicant Reference Request',
+				active: true,
+				text: 'Reference request text',
+			},
+			{
+				type: 'Applicant Reference Received',
+				active: true,
+				text: 'Reference received text',
+			},
+			{
+				type: 'Applicant Reference Received - Applicant',
+				active: true,
+				text: 'Reference received applicant text',
+			},
+		];
+
+		const FormWrapperToggle = ({ referenceCollection }) => {
+			const [form] = Form.useForm();
+
+			return (
+				<EmailTemplates
+					initialValues={mockEmailTemplatesWithReferences}
+					formInstance={form}
+					basicInfo={{ referenceCollection }}
+				/>
+			);
+		};
+
+		rerender(<FormWrapperToggle referenceCollection={false} />);
+
+		waitFor(() => {
+			expect(screen.queryByText('Applicant Reference Request')).not.toBeInTheDocument();
+		});
+	});
+
+	test('Should validate that at least one email template is active with content', async () => {
+		const mockEmptyTemplates = mockEmailTemplates.map(template => ({
+			...template,
+			active: false,
+			text: '',
+		}));
+
+		let formInstance;
+
+		const TestWrapper = () => {
+			const [form] = Form.useForm();
+			formInstance = form;
+
+			return (
+				<EmailTemplates
+					initialValues={mockEmptyTemplates}
+					formInstance={form}
+					basicInfo={mockBasicInfo.referenceCollection}
+				/>
+			);
+		};
+
+		render(<TestWrapper />);
+
+		await waitFor(async () => {
+			try {
+				await formInstance.validateFields(['emailTemplatesValidator']);
+				// Should not reach here
+				expect(true).toBe(false);
+			} catch (error) {
+				expect(error.errorFields[0].errors[0]).toBe(
+					'At least one email template must be active and have content.'
+				);
+			}
+		});
+	});
 });
