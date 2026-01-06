@@ -26,6 +26,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 			isUsCitizen: sourceJson.basic_info.us_citizen,
 		},
 		focusArea: cleanseFocusArea(sourceJson.focus_area),
+		tenant: sourceJson.tenant,
 		address: {
 			address: sourceJson.basic_info.address,
 			address2: sourceJson.basic_info.address_2,
@@ -45,6 +46,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 				organization: reference.organization,
 				phone: reference.phone,
 				referenceReceived: reference.reference_received,
+				referenceRequested: reference.reference_requested,
 				relationship: reference.relationship,
 				positionTitle: reference.title,
 			};

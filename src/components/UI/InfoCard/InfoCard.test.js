@@ -83,6 +83,11 @@ describe('InfoCard Component', () => {
         expect(screen.getByText('Test Content')).toBeInTheDocument();
     });
 
+    test('renders additionalText when provided', () => {
+        render(<InfoCard {...defaultProps} additionalText="Extra Info">Test Content</InfoCard>);
+        expect(screen.getByText('Extra Info')).toBeInTheDocument();
+    });
+
 
 
 
