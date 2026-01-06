@@ -155,18 +155,6 @@ describe('ApplicantDashboard', () => {
         expect(screen.queryByText(/Test Vacancy 1/i)).toBeNull();
     });
 
-    // test('safe comparator returns number and does not throw', () => {
-    //     const safeCompare = (a, b) => {
-    //         const va = String(a?.vacancy ?? '').toLowerCase();
-    //         const vb = String(b?.vacancy ?? '').toLowerCase();
-    //         return va.localeCompare(vb);
-    //     };
-
-    //     expect(() => safeCompare({ vacancy: undefined }, { vacancy: 'A' })).not.toThrow();
-    //     const res = safeCompare({ vacancy: undefined }, { vacancy: 'A' });
-    //     expect(typeof res).toBe('number');
-    // });
-
     test('handleRemoveModalCancel closes remove modal when Cancel clicked', async () => {
         const draftApp = {
             draft_id: 'd001',
