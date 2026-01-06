@@ -192,6 +192,7 @@ const applicantDashboard = () => {
 					}
 					buttons.push(
 						<Button
+							data-testid='withdraw-draft'
 							key='withdraw'
 							type='text'
 							onClick={async () => {
@@ -249,6 +250,7 @@ const applicantDashboard = () => {
 								</>
 							)}
 							<Button
+								data-testid='remove-draft'
 								type='text'
 								onClick={async () => {
 									setRemoveDraftModalVisible(true);
