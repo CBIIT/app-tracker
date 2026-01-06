@@ -39,7 +39,27 @@ describe('ApplicantDashboard', () => {
                 dispatchEvent: jest.fn(),
             })),
         });
-        useAuth.default.mockReturnValue(mockUseAuth);
+        useAuth.default.mockReturnValue({ setAuth: jest.fn(), ...mockUseAuth });
+        axios.get.mockResolvedValue({ data: { result: {
+            logged_in: true,
+            itrust_idp: '',
+            itrust_url: '',
+            session_timeout: 1800000,
+            banner_message: '',
+            banner_description: '',
+            omb_no: '',
+            omb_exp: '',
+            user: {
+                first_name: 'John',
+                last_initial: 'D',
+                user_id: '12345',
+                has_applications: true,
+                tenant: '',
+                roles: ['snc_internal'],
+            },
+            okta_login_and_redirect_url: '',
+            tenants: [],
+        }}});
     });
 
     afterEach(() => {

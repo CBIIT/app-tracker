@@ -141,6 +141,10 @@ describe('ApiEndpoints', () => {
         expect(ApiEndpoints.COLLECT_REFERENCES).toBe('/api/x_g_nci_app_tracke/application/collect_references/');
     });
 
+    it('should have the correct value for REQUEST_REFERENCE', () => {
+        expect(ApiEndpoints.REQUEST_REFERENCE).toBe('/api/x_g_nci_app_tracke/application/request_reference/');
+    });
+
     it('should have the correct value for SCORES', () => {
         expect(ApiEndpoints.SCORES).toBe('/api/x_g_nci_app_tracke/application/scores/');
     });
