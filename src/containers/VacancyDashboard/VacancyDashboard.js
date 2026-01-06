@@ -280,6 +280,7 @@ const vacancyDashboard = () => {
 						onClick={async () => {
 							setRemoveModalVisible(true);
 							setCurrentVacancy(vacancy);
+							window.scrollTo(0,0);
 						}}
 					>
 						<DeleteOutlined /> Remove

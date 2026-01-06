@@ -256,6 +256,7 @@ const basicInformation = (props) => {
 						<Input placeholder='Please enter' disabled={readOnly} />
 					</Form.Item>
 				</div>
+
 				<div
 					style={{
 						display: 'flex',
@@ -505,10 +506,7 @@ const basicInformation = (props) => {
 					<Form.Item
 						label='Open Date'
 						name='openDate'
-						rules={[
-							{ required: true, message: 'Please select an open date' },
-							{ validator: validateDates },
-						]}
+						rules={[{ validator: validateDates }]}
 					>
 						<DatePicker
 							disabledDate={disabledDate}
@@ -523,6 +521,7 @@ const basicInformation = (props) => {
 						<Form.Item
 							label='Close Date'
 							name='closeDate'
+							data-testid='closeDate'
 							rules={[
 								{
 									required: useCloseDate,

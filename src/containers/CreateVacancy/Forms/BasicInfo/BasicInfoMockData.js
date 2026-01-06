@@ -43,6 +43,14 @@ export const mockVacancyOptionsResponse = {
         result: {
             ic: 'NCI',
             isOWM: true,
+            locations: [
+                {
+                    display_value: 'Bethesda, MD',
+                    value: 'bethesda_md'
+                }
+            ],
+            number_of_categories: [1, 2, 3, 4, 5],
+            number_of_recommendations: [1, 2, 3, 4, 5],
             package_initiators: [
                 {
                     email: 'john.doe@mail.com',
@@ -55,6 +63,10 @@ export const mockVacancyOptionsResponse = {
                     0: 'HHH00H',
                 }
             ],
+            title_42_position_classification: [
+                'Research Fellow',
+                'Staff Scientist'
+            ]
         }
     }
 }
