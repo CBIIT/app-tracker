@@ -9,17 +9,14 @@ import InfoCardRow from '../../components/UI/InfoCard/InfoCardRow/InfoCardRow';
 import LabelValuePair from '../../components/UI/LabelValuePair/LabelValuePair';
 import Loading from '../../components/Loading/Loading';
 import Address from '../Application/Address/Address';
-import { APPLICANT_GET_APPLICATION } from '../../constants/ApiEndpoints';
+import { APPLICANT_GET_APPLICATION, REQUEST_REFERENCE } from '../../constants/ApiEndpoints';
 import { transformJsonFromBackend } from './Util/TransformJsonFromBackend';
-import {
-	REQUEST_REFERENCE
-} from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import ReferenceModal from './ReferenceModal/ReferenceModal';
 
 import './ApplicantApplicationView.css';
 
-const applicantApplicationView = (props) => {
+const applicantApplicationView = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [application, setApplication] = useState({ basicInfo: {} });
 	const [referenceModal, setReferenceModal] = useState(false);
