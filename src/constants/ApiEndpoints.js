@@ -11,6 +11,9 @@ export const CHECK_USER_ALREADY_APPLIED =
 export const COLLECT_REFERENCES =
 	'/api/x_g_nci_app_tracke/application/collect_references/';
 
+export const REQUEST_REFERENCE = 
+	'/api/x_g_nci_app_tracke/application/request_reference/';
+
 export const CREATE_APP_DOCS =
 	'/api/x_g_nci_app_tracke/application/createApplicationDocument';
 

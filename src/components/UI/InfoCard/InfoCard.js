@@ -11,6 +11,13 @@ const infoCard = (props) => {
 		setHideContent(newHideContent);
 	};
 
+	let infoCardContentStyle = {};
+	if (hideContent) {
+		infoCardContentStyle.display = 'none';
+	} else if (props.referenceInfoCardContentStyle) {
+		infoCardContentStyle = { ...props.style, ...props.referenceInfoCardContentStyle };
+	}
+
 	return (
 		<div
 			className={`InfoCardContainer ${props.className || ''}`}
@@ -35,12 +42,14 @@ const infoCard = (props) => {
 						<span className='InfoCardSwitchLabel'>{props.switchTitle}</span>
 					</div>
 				) : null}
+				{props.additionalText ? (
+				<h3>{props.additionalText}</h3>) : null}
 			</div>
 
 			<hr />
 			<div
 				className='InfoCardContent'
-				style={hideContent ? { display: 'none' } : null}
+				style={infoCardContentStyle}
 			>
 				{props.children}
 			</div>

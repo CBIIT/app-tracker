@@ -9,17 +9,17 @@ const address = (props) => {
 	return (
 		<InfoCard title='Address' style={props.style}>
 			<InfoCardRow>
-				<LabelValuePair label='Address Line 1' value={address} />
-				<LabelValuePair label='Address Line 2' value={address2 ? address2 : ''} />
+				<LabelValuePair labelStyle={props.labelStyle} label='Address Line 1' value={address} />
+				<LabelValuePair labelStyle={props.labelStyle} label='Address Line 2' value={address2 ? address2 : ''} />
 			</InfoCardRow>
 			<InfoCardRow>
-				<LabelValuePair label='City' value={city} />
-				<LabelValuePair label='State' value={stateProvince} />
-				<LabelValuePair label='Postal Code' value={postalCode} />
+				<LabelValuePair labelStyle={props.labelStyle} containerStyle={props.containerStyle} label='City' value={city} />
+				<LabelValuePair labelStyle={props.labelStyle} containerStyle={props.containerStyle}label='State' value={stateProvince} />
+				<LabelValuePair labelStyle={props.labelStyle} containerStyle={props.containerStyle} label='Postal Code' value={postalCode} />
 			</InfoCardRow>
 			{country ? (
 				<InfoCardRow>
-					<LabelValuePair label='Country' value={country} />
+					<LabelValuePair labelStyle={props.labelStyle} label='Country' value={country} />
 				</InfoCardRow>
 			) : null}
 		</InfoCard>
