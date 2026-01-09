@@ -15,6 +15,7 @@ import {
 	Divider,
 	Modal,
 	message,
+	Tooltip,
 } from 'antd';
 import {
 	EditOutlined,
@@ -61,7 +62,9 @@ const applicantDashboard = () => {
 	};
 
 	const { setAuth } = useAuth();
-	const { isLoading, data, error, setData, setLoading } = useFetch(GET_USER_APPLICATIONS);
+	const { isLoading, data, error, setData, setLoading } = useFetch(
+		GET_USER_APPLICATIONS
+	);
 
 	const removeDraft = async () => {
 		try {
@@ -136,7 +139,11 @@ const applicantDashboard = () => {
 				if (state == 'withdrawn') {
 					return <span style={{ textTransform: 'capitalize' }}>withdrawn</span>;
 				} else {
-					return <span style={{ textTransform: 'capitalize' }}>{state === 'draft' ? state : 'Submitted'}</span>;
+					return (
+						<span style={{ textTransform: 'capitalize' }}>
+							{state === 'draft' ? state : 'Submitted'}
+						</span>
+					);
 				}
 			},
 		},
@@ -144,17 +151,39 @@ const applicantDashboard = () => {
 			title: 'Vacancy Closes',
 			dataIndex: 'vacancy_closes',
 			key: 'closes',
-			render: (date) => date ? transformDateToDisplay(date) : "Open Until Filled",
+			render: (date) => {
+				const today = new Date();
+				const closeDate = new Date(date);
+				const diffInDays = closeDate - today;
+				const daysRemaining = diffInDays / (1000 * 60 * 60 * 24);
+
+				let icon = null;
+				if (daysRemaining <= 5 && daysRemaining > 0) {
+					icon = (
+						<Tooltip title='The vacancy for this application will close soon. Please ensure that all of your reference letters have been submitted before the close date.'>
+							<ExclamationCircleFilled style={{ color: '#faad14' }} />
+						</Tooltip>
+					);
+				}
+
+				return (
+					<Space>
+						{icon}
+						<span>
+							{date ? transformDateToDisplay(date) : 'Open Until Filled'}
+						</span>
+					</Space>
+				);
+			},
 			sorter: {
 				compare: (a, b) => {
 					const dateA = a.vacancy_closes;
 					const dateB = b.vacancy_closes;
 					return dateCompare(dateA, dateB);
-				}
+				},
 			},
 			defaultSortOrder: 'ascend',
 		},
-
 		{
 			title: 'Application Submitted',
 			dataIndex: 'vacancy_submitted',
@@ -217,7 +246,10 @@ const applicantDashboard = () => {
 							View Vacancy
 						</Button>
 					);
-				} else if (application.vacancy_state == 'rolling_close' && application.state != 'triage') {
+				} else if (
+					application.vacancy_state == 'rolling_close' &&
+					application.state != 'triage'
+				) {
 					return (
 						<Button
 							key='withdraw'
@@ -230,7 +262,7 @@ const applicantDashboard = () => {
 							<MinusCircleOutlined />
 							Withdraw
 						</Button>
-					)
+					);
 				} else {
 					return (
 						<Space size='middle'>
