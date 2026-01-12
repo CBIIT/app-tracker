@@ -152,18 +152,21 @@ const applicantDashboard = () => {
 			dataIndex: 'vacancy_closes',
 			key: 'closes',
 			render: (date) => {
-				const today = new Date();
-				const closeDate = new Date(date);
-				const diffInDays = closeDate - today;
-				const daysRemaining = diffInDays / (1000 * 60 * 60 * 24);
-
 				let icon = null;
-				if (daysRemaining <= 5 && daysRemaining > 0) {
-					icon = (
-						<Tooltip title='The vacancy for this application will close soon. Please ensure that all of your reference letters have been submitted before the close date.'>
-							<ExclamationCircleFilled style={{ color: '#faad14' }} />
-						</Tooltip>
-					);
+				
+				if (date) {
+					const today = new Date();
+					const closeDate = new Date(date);
+					const diffInDays = closeDate - today;
+					const daysRemaining = diffInDays / (1000 * 60 * 60 * 24);
+
+					if (daysRemaining <= 5 && daysRemaining > 0) {
+						icon = (
+							<Tooltip title='The vacancy for this application will close soon. Please ensure that all of your reference letters have been submitted before the close date.'>
+								<ExclamationCircleFilled style={{ color: '#faad14' }} />
+							</Tooltip>
+						);
+					}
 				}
 
 				return (
