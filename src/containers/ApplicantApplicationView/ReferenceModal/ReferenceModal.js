@@ -1,6 +1,7 @@
 import { Button, Modal, Typography } from 'antd';
 const { Paragraph } = Typography;
 import { WarningOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 const referenceModal = (props) => {
 	
@@ -13,12 +14,19 @@ const referenceModal = (props) => {
 
 	const requestReference = props.requestReference;
 	const callback = props.reloadApplicationInfo;
+
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	
 
-	const handleReferenceSubmit = () => {
-		requestReference(referenceSysId);
-		callback()
-		setReferenceModal(false);
+	const handleReferenceSubmit = async () => {
+		setIsSubmitting(true);
+		try {
+			await requestReference(referenceSysId);
+			await callback();
+			setReferenceModal(false);
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	const handleReferenceCancel = () => {
@@ -37,10 +45,10 @@ const referenceModal = (props) => {
 			onCancel={handleReferenceCancel}
 			closable={false}
 			footer={[
-				<Button key='modal-button' data-testid='send-email-button' onClick={handleReferenceSubmit}>
+				<Button key='modal-button' data-testid='send-email-button' onClick={handleReferenceSubmit} disabled={isSubmitting} loading={isSubmitting}>
 					Send Email
 				</Button>,
-				<Button key='modal-continue' onClick={handleReferenceCancel}>
+				<Button key='modal-continue' onClick={handleReferenceCancel} disabled={isSubmitting}>
 					Cancel
 				</Button>,
 			]}
@@ -66,11 +74,12 @@ const referenceModal = (props) => {
 			footer={[
 				<Button key='modal-button' 
 					data-testid='send-email-again-button'
-					disabled={(referencesRequested >= maxTries) ? true : false}
+					disabled={isSubmitting || (referencesRequested >= maxTries)}
+					loading={isSubmitting}
 					onClick={handleReferenceSubmit}>
 					Send Email Again
 				</Button>,
-				<Button key='modal-continue' onClick={handleReferenceCancel}>
+				<Button key='modal-continue' onClick={handleReferenceCancel} disabled={isSubmitting}>
 					Cancel
 				</Button>,
 			]}
