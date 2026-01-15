@@ -26,7 +26,7 @@ const applicantApplicationView = () => {
 	const applicationRef = useRef();
 
 	const { auth: { tenants } } = useAuth();
-	const tname = tenants ? tenants.find((t) => t.value === application.tenant) : {};
+	const tname = tenants ? tenants.find((t) => t.value === 'b61e03c81bb01910e541631ee54bcb57') : {};
 	const maxApplicantReferenceRequests = (tname?.properties || []).find(
 		(p) => p.name === 'maxApplicantReferenceRequests'
 	)?.value;

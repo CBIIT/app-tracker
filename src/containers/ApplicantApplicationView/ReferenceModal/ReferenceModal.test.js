@@ -1,5 +1,5 @@
 import ReferenceModal from './ReferenceModal';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 describe('ReferenceModal', () => {
     let mockSetReferenceModal;
@@ -61,7 +61,7 @@ describe('ReferenceModal', () => {
         expect(screen.getByText(/Cancel/i)).toBeInTheDocument();
     });
 
-    test('calls handleReferenceSubmit when Send Email button is clicked', () => {
+    test('calls handleReferenceSubmit when Send Email button is clicked', async () => {
         render(
             <ReferenceModal
                 referenceModal={true}
@@ -76,9 +76,11 @@ describe('ReferenceModal', () => {
 
         fireEvent.click(screen.getByTestId('send-email-button'));
 
-        expect(mockRequestReference).toHaveBeenCalledWith(mockRefSysId);
-        expect(mockCallback).toHaveBeenCalled();
-        expect(mockSetReferenceModal).toHaveBeenCalledWith(false);
+        await waitFor( () => {
+            expect(mockRequestReference).toHaveBeenCalledWith(mockRefSysId);
+            expect(mockCallback).toHaveBeenCalled();
+            expect(mockSetReferenceModal).toHaveBeenCalledWith(false);
+        })
     });
 
     test('calls handleReferenceCancel when Cancel button is clicked', () => {
