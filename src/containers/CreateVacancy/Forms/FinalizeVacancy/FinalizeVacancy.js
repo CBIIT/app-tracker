@@ -347,8 +347,8 @@ const finalizeVacancy = (props) => {
 						error={errors?.includes('Email Templates')}
 					/>
 					<div className='SectionContent' style={props.sectionContentStyle}>
-						<div className='TwoColumnCheckList'>
-							<ul className='TwoColumnChecklist'>
+						<div className='EmailColumnCheckList'>
+							<ul className='EmailColumnChecklist'>
 								{emailTemplates && emailTemplates.map((template, index) => (
 									<li
 										key={index}
