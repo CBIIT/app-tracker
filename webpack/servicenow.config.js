@@ -17,9 +17,9 @@ const servicenowConfig = {
 	 */
 	REACT_APP_USER: '',
   	/**
-   * 
-   * User password, for DEVELOPMENT mode only
-   */
+   	* 
+   	* User password, for DEVELOPMENT mode only
+   	*/
   	REACT_APP_PASSWORD: '',
 	/**
 	 *
