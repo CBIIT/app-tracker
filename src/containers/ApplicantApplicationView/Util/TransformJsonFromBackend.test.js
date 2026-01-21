@@ -21,6 +21,7 @@ describe('transformJsonFromBackend', () => {
                 country: 'USA',
             },
             focus_area: 'Area1,Area2',
+            reference_email: true,
             references: [
                 {
                     ref_sys_id: 'ref1',
@@ -84,6 +85,7 @@ describe('transformJsonFromBackend', () => {
                     positionTitle: 'Manager',
                 },
             ],
+            referenceEmail: true,
             applicantDocuments: [
                 {
                     documentName: 'Resume',
