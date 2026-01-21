@@ -27,6 +27,7 @@ export const transformJsonFromBackend = (sourceJson) => {
 		},
 		focusArea: cleanseFocusArea(sourceJson.focus_area),
 		tenant: sourceJson.tenant,
+		referenceEmail: sourceJson.reference_email,
 		address: {
 			address: sourceJson.basic_info.address,
 			address2: sourceJson.basic_info.address_2,

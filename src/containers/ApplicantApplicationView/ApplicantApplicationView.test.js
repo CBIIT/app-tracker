@@ -88,7 +88,7 @@ describe('ApplicantApplicationView component', () => {
 
 		// mock tenant with maxApplicantReferenceRequests property
  		useAuth.default.mockReturnValue({ auth: { tenants: [
- 			{ value: 'b61e03c81bb01910e541631ee54bcb57', properties: [ { name: 'maxApplicantReferenceRequests', value: 3 } ] }
+ 			{ value: 'stadtman', properties: [ { name: 'maxApplicantReferenceRequests', value: 3 } ] }
  		] }, setAuth: jest.fn() });
 
  		axios.get.mockResolvedValueOnce(mockStadtmanResponse);

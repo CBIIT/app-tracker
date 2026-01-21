@@ -24,14 +24,14 @@ const emailTemplates = (props) => {
 			type: 'Applicant Reference Received - Applicant',
 			active: true,
 			text: "<p>Dear Dr. #APPLICANT_LAST_NAME#,</p><p>This email is to notify you that we have received a letter from Dr. #REF_LAST_NAME# in support of your application for #POSITION# at the #IC#, National Institutes of Health.</p><p>Regards,<br />#EXECUTIVE_SECRETARY#<br />#EXECUTIVE_SECRETARY_EMAIL#</p>"
-		}
+		},
 	];
 
 	useEffect(() => {
-		if (basicInfo.referenceCollection === true && initialValues.emailTemplates.length === 4) {
+		if (basicInfo.referenceCollection === true && initialValues.emailTemplates.length === 5) {
 			initialValues = initialValues.emailTemplates.concat(referenceEmailTemplates);
 			formInstance.setFieldValue('emailTemplates', initialValues);
-		} else if (basicInfo.referenceCollection === false && initialValues.emailTemplates.length > 4) {
+		} else if (basicInfo.referenceCollection === false && initialValues.emailTemplates.length > 5) {
 			initialValues = initialValues.emailTemplates.filter(template => !referenceEmailTemplates.find(email => email.type === template.type))
 			formInstance.setFieldValue('emailTemplates', initialValues);
 		}

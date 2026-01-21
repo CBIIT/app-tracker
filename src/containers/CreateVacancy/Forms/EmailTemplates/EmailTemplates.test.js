@@ -86,6 +86,15 @@ describe('EmailTemplates', () => {
 			expect(applicationSubmittedHeader).toBeInTheDocument();
 			expect(applicationSubmittedText).toBeInTheDocument();
 
+			const referenceRequestFromApplicantHeader = screen.getByText(
+				'Applicant Reference Request - Applicant'
+			);
+			const referenceRequestFromApplicantText = screen.getByText(
+				"<p>Dear Dr. #REF_LAST_NAME#,</p><br><p>Dr. #APP_FIRST_NAME# #APP_LAST_NAME# has applied for #VACANCY_TITLE# at the National Institutes of Health and has provided your name as one of their references. We would be grateful if you could submit a letter in support of the candidate’s application.</p><br><p>In your letter, please address the candidate's strengths and weaknesses, the potential for success in this position, and any other information you feel the search committee would find helpful in considering this application. All comments in your letter will be held confidential.</p><br><p><strong>The deadline for letter submission is #VACANCY_CLOSE_DATE#.</strong> Please use this email system to upload your letter of recommendation. This will assure that your letter immediately becomes part of the applicant's package, as well as provide an acknowledgment to the applicant that your letter has been received. Once your letter has been uploaded, the candidate will be able to see that it has become part of their application package.</p><br><p>On behalf of the Intramural Research Program at the National Institutes of Health, thank you for your time and support.</p><br><p>Regards,</p><p>Dr. #APP_FIRST_NAME# #APP_LAST_NAME#</p>"
+			);
+			expect(referenceRequestFromApplicantHeader).toBeInTheDocument();
+			expect(referenceRequestFromApplicantText).toBeInTheDocument();
+
 			const candidatesWhoDidNotInterviewHeader = screen.getByText(
 				'Candidates Who Did Not Interview'
 			);
@@ -156,6 +165,11 @@ describe('EmailTemplates', () => {
 			},
 			{
 				type: 'Applicant Reference Received - Applicant',
+				active: true,
+				text: 'Reference received applicant text',
+			},
+			{
+				type: 'Applicant Reference Request - Applicant',
 				active: true,
 				text: 'Reference received applicant text',
 			},

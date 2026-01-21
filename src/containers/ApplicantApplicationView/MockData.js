@@ -128,6 +128,7 @@ export const mockStadtmanApplication = {
 			positionTitle: 'Manager',
 		},
 	],
+	referenceEmail: true,
 	applicantDocuments: [
 		{
 			documentName: 'Resume',

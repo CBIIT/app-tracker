@@ -66,19 +66,19 @@
 	min-height: 70px;
 }
 
-.TwoColumnCheckList {
+.EmailColumnCheckList {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	align-items: center;
-	height: 100px;
+	align-items: flex-start;
+	min-height: 100px;
 }
 
-.TwoColumnCheckList ul {
-	columns: 2;
+.EmailColumnCheckList ul {
 	-webkit-columns: 2;
 	-moz-columns: 2;
+	columns: 2;
 }
 
 .TwoColumnCheckList li {
