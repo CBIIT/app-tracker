@@ -21,6 +21,7 @@ describe('transformJsonFromBackend', () => {
                 country: 'USA',
             },
             focus_area: 'Area1,Area2',
+            tenant: 'tenant',
             reference_email: true,
             references: [
                 {
@@ -85,6 +86,7 @@ describe('transformJsonFromBackend', () => {
                     positionTitle: 'Manager',
                 },
             ],
+            tenant: 'tenant',
             referenceEmail: true,
             applicantDocuments: [
                 {
