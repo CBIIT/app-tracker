@@ -251,17 +251,17 @@ const applicantApplicationView = () => {
 									<LabelValuePair
 										labelStyle={labelStyle}
 										label='Phone Number'
-										value={reference.phone}
+										value={reference.phone || ' - '}
 									/>
 									<LabelValuePair
 										labelStyle={labelStyle}
 										label='Relationship'
-										value={reference.relationship}
+										value={reference.relationship || ' - '}
 									/>
 									<LabelValuePair
 										labelStyle={labelStyle}
 										label='Position Title'
-										value={reference.positionTitle}
+										value={reference.positionTitle || ' - '}
 									/>
 								</InfoCardRow>
 								<InfoCardRow style={infoCardStyle}>
