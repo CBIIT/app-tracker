@@ -351,8 +351,17 @@ const createVacancy = (props) => {
 	const currentStepObject = steps[currentStep] || {};
 
 	const stepClickHandler = async (current) => {
-		const data = saveFormData(currentStep);
-		if ((await save(data)) === true) setCurrentStep(current);
+		try {
+			await validateFormData(currentStep);
+			const data = saveFormData(currentStep);
+
+			if ((await save(data)) === true) {
+				setCurrentStep(current);
+			}
+		} catch {
+			message.error('Please ensure required fields are filled before proceeding.');
+			return;
+		}
 	};
 
 	const wizardFormChangeHandler = (name, forms) => {
