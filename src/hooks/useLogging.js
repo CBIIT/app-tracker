@@ -2,18 +2,12 @@ import useAuth from './useAuth';
 import { useLocation } from 'react-router-dom';
 import { logInfo, logWarn, logError, logDebug } from '../utils/logging/logging';
 
-/**
- * Generates a unique trace ID for session tracking
- * @returns {string} Unique trace ID
- */
+
 const generateTraceId = () => {
 	return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 };
 
-/**
- * Gets or creates a trace ID for the current session
- * @returns {string} Trace ID
- */
+
 const getSessionTraceId = () => {
 	let traceId = sessionStorage.getItem('sessionTraceId');
 	if (!traceId) {
