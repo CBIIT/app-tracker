@@ -1,17 +1,6 @@
 
 
-const LogLevel = {
-    INFO: 'INFO',
-    WARN: 'WARN',
-    ERROR: 'ERROR',
-    DEBUG: 'DEBUG',
-};
-
-const sensitiveFields = [
-    'password',
-    // 'username',
-];
-
+import { LogLevel, SENSITIVE_FIELDS } from './logLevelConstants';
 
 const sanitizeData = (data) => {
     if (!data) return data;
@@ -21,7 +10,7 @@ const sanitizeData = (data) => {
             for (const key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     const lowerKey = key.toLowerCase();
-                    if (sensitiveFields.some(field => lowerKey.includes(field))) {
+                    if (SENSITIVE_FIELDS.some(field => lowerKey.includes(field))) {
                         obj[key] = '[XXXXXX]';
                     } else if (typeof obj[key] === 'object' && obj[key] !== null) {
                         cleanObjectTree(obj[key]);
@@ -39,14 +28,20 @@ const sanitizeData = (data) => {
 const formatLog = (level, message, data, userInfo, isLoggedIn, application, route, traceId) => {
     const timestamp = new Date().toISOString();
     const nodeEnv = process.env.NODE_ENV || 'unknown';
-    const userStr = userInfo ? ` [User: ${userInfo}]` : '';
-    const loggedInStr = ` [UserLoggedIn: ${isLoggedIn ? 'true' : 'false'}]`;
-    const appStr = application ? ` [Application: ${application}]` : '';
-    const traceStr = traceId ? ` [TraceId: ${traceId}]` : '';
+
+    const timeStr = `[Time: ${timestamp}] | `;
+    const levelStr = `[Level: ${level}] | `;
+    const envStr = `[Env: ${nodeEnv}] | `;
+    const userStr = userInfo ? `[User: ${userInfo}] | ` : '';
+    const loggedInStr = `[UserLoggedIn: ${isLoggedIn ? 'true' : 'false'}] | `;
+    const appStr = application ? `[Application: ${application}] | ` : '';
+    const traceStr = traceId ? `[TraceId: ${traceId}] | ` : '';
+    const messageStr = ` MESSAGE: ${message} | `;
     const sanitizedData = sanitizeData(data);
-    const dataStr = sanitizedData ? ` | DATA: ${JSON.stringify(sanitizedData)}` : '';
-    const routeStr = route ? ` [Route: ${route}]` : '';
-    return `[Time: ${timestamp}] [Level: ${level}] [Env: ${nodeEnv}]${userStr}${loggedInStr}${appStr}${traceStr} MESSAGE: ${message}${dataStr}${routeStr}`;
+    const dataStr = sanitizedData ? `DATA: ${JSON.stringify(sanitizedData)} | ` : '';
+    const routeStr = route ? ` [Route: ${route}] | ` : '';
+
+    return `${timeStr}${levelStr}${envStr}${userStr}${loggedInStr}${appStr}${traceStr}${messageStr}${dataStr}${routeStr}`;
 };
 
 export const logInfo = (message, data, application, auth, route, traceId) => {
