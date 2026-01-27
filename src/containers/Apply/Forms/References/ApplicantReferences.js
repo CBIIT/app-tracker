@@ -4,6 +4,7 @@ import { Form, Input, Collapse, Select, Pagination } from 'antd';
 import FormContext from '../../Context';
 
 import './ApplicantReferences.css';
+import { logInfo } from '../../../../utils/logging/logging';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -29,6 +30,8 @@ const applicantReferences = () => {
 		const { setCurrentFormInstance } = contextValue;
 		setCurrentFormInstance(formInstance);
 	}, []);
+
+	logInfo('Applicant References form rendered', { statusCode: '200' }, 'ApplicantReferences');
 
 	return (
 		<Form

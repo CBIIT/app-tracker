@@ -4,12 +4,15 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import { extractAndTransformMandatoryStatements } from '../../components/Util/Vacancy/Vacancy';
+import { useLogging } from '../../hooks/useLogging';
 
 import Header from './Header/Header';
 import Divider from './Divider/Divider';
 import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
+
+const APPLICATION_NAME = 'ViewVacancyDetails';
 
 const numberToWordMap = {
 	0: 'Zero',
@@ -34,16 +37,29 @@ const viewVacancyDetails = () => {
 	const [vacancyDetails, setVacancyDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const { sysId } = useParams();
+	const { logInfo, logError } = useLogging();
 
 	useEffect(() => {
 		(async () => {
-			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-			setVacancyDetails(response.data.result);
-			setIsLoading(false);
+			const url = VACANCY_DETAILS_FOR_APPLICANTS + sysId;
+			// const url = VACANCY_DETAILS_FOR_APPLICANTS + '/aa/' + sysId ; // bad url to test error logging
+			try {			
+				const response = await axios.get(url);
+				setVacancyDetails(response.data.result);
+				logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, APPLICATION_NAME);
+				setIsLoading(false);
+			} catch (error) {
+				logError('Error fetching vacancy details', {url: url, error: error}, APPLICATION_NAME);
+				setIsLoading(true);
+			}
 		})();
 	}, []);
 
-	console.log('Vacancy Details: ********', vacancyDetails);
+	useEffect(() => {
+		if (!isLoading) {
+			logInfo('View Vacancy Details page rendered', { statusCode: '200' }, APPLICATION_NAME);
+		}
+	}, [isLoading]);
 
 	return isLoading ? (
 		<> </>

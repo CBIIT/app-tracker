@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import {
 	Steps,
 	Button,
@@ -13,6 +13,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import useTimeout from '../../hooks/useTimeout';
+import { useLogging } from '../../hooks/useLogging';
 
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
@@ -32,6 +33,7 @@ import { convertDataFromBackend } from '../Profile/Util/ConvertDataFromBackend';
 
 import './Apply.css';
 import { checkAuth } from '../../constants/checkAuth.js';
+import login from '../../components/Header/Login/Login.js';
 
 const { Step } = Steps;
 
@@ -84,6 +86,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
 
 	const { modalTimeout } = useTimeout();
+	const { logInfo, logError } = useLogging();
+
+	const location = useLocation();
+	logInfo('Apply page rendered', { statusCode: '200' }, 'Apply');
 
 	useEffect(() => {
 		(async () => {
@@ -113,120 +119,148 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	}, checkTimeDuration);
 
 	const loadExistingApplication = async () => {
-		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
-		);
+		try {
+			const url = VACANCY_DETAILS_FOR_APPLICANTS + vacancyId;
+			// const url = VACANCY_DETAILS_FOR_APPLICANTS + '/AA/'+ vacancyId;
+			const response = await axios.get(url);
+			logInfo('Existing application details fetched successfully', { url: url, statusCode: response.status }, 'Apply');
 
-		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
-			focusAreaOptions.push({ label: focusArea, value: focusArea });
-		});
-		setFocusArea(focusAreaOptions);
-		
-		const profileResponse = await axios
-			.get(GET_PROFILE + user.uid)
-			.catch(function () {
-				notification.error({
-					message: 'Sorry! There was an error retrieving your profile.',
-					description: (
-						<>
-							<p>
-								Please verify if the vacancy has closed. If not, please log out
-								and re-login to resubmit your application. If the issue
-								continues, contact the Help Desk by emailing{' '}
-								<a href='mailto:NCIAppSupport@mail.nih.gov'>
-									NCIAppSupport@mail.nih.gov
-								</a>
-							</p>
-						</>
-					),
-					duration: 30,
-					style: {
-						height: '225px',
-						display: 'flex',
-						alignItems: 'center',
-					},
+			var focusAreaOptions = [];
+			response.data.result.focus_area.forEach((focusArea) => {
+				focusAreaOptions.push({ label: focusArea, value: focusArea });
+			});
+			setFocusArea(focusAreaOptions);
+
+			const profileResponse = await axios
+				.get(GET_PROFILE + user.uid)
+				.catch(function () {
+					logError('Error fetching user profile', {url: GET_PROFILE + user.uid, error: e}, 'Apply');
+					notification.error({
+						message: 'Sorry! There was an error retrieving your profile.',
+						description: (
+							<>
+								<p>
+									Please verify if the vacancy has closed. If not, please log out
+									and re-login to resubmit your application. If the issue
+									continues, contact the Help Desk by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '225px',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
+					history.goBack();
 				});
-				history.goBack();
+			logInfo('User profile fetched successfully for existing Application', { url: GET_PROFILE + user.uid ,statusCode: '200' }, 'Apply');
+
+			const profileData = convertDataFromBackend(
+				profileResponse.data.result.response
+			);
+			const { basicInfo } = profileData;
+			const address = basicInfo?.address;
+
+			setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
+			setVacancyTenantType(response.data.result.basic_info.tenant.label);
+			if (!editSubmitted) setDraftId(appSysId);
+
+			let applicantDocuments = {};
+
+			response.data.result.vacancy_documents.forEach((document) => {
+				applicantDocuments[document.title.value] = document.file
+					? document
+					: { ...document, file: { fileList: [] } };
 			});
 
-		const profileData = convertDataFromBackend(
-			profileResponse.data.result.response
-		);
-		const { basicInfo } = profileData;
-		const address = basicInfo?.address;
-
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		if (!editSubmitted) setDraftId(appSysId);
-
-		let applicantDocuments = {};
-
-		response.data.result.vacancy_documents.forEach((document) => {
-			applicantDocuments[document.title.value] = document.file
-				? document
-				: { ...document, file: { fileList: [] } };
-		});
-
-		if (
-			editSubmitted &&
-			initialValues.applicantDocuments &&
-			initialValues.applicantDocuments.length > 0
-		) {
-			initialValues.applicantDocuments.forEach((applicantDocument) => {
-				if (
-					applicantDocument &&
-					applicantDocument.title &&
-					applicantDocument.title.label
-				) {
-					applicantDocuments[applicantDocument.title.label] = {
-						...applicantDocuments[applicantDocument.title.label],
-						...applicantDocument,
-					};
-					var initialFiles = initialValues.applicantDocuments.filter(
-						(iv) => iv.title.label === applicantDocument.title.label
-					);
-					if (initialFiles != null && initialFiles.length > 0) {
-						applicantDocuments[applicantDocument.title.label].file =
-							initialFiles[0].file;
-						if (initialFiles[0].file.fileList.length > 0) {
-							if (initialFiles[0] && initialFiles[0].uploadedDocument) {
-								applicantDocuments[
-									applicantDocument.title.label
-								].uploadedDocument = {
-									fileName: initialFiles[0]?.uploadedDocument?.fileName,
-									attachSysId: initialFiles[0]?.uploadedDocument?.attachSysId,
-									downloadLink: initialFiles[0]?.uploadedDocument?.downloadLink,
-									markedToDelete:
-										initialFiles[0]?.uploadedDocument?.markedToDelete,
-								};
-							} else {
-								// its missing because this is getting rehydrated ... clear it out
-								applicantDocuments[
-									applicantDocument.title.label
-								].uploadedDocument = {};
-								applicantDocuments[applicantDocument.title.label].file = {
-									fileList: [],
-								};
+			if (
+				editSubmitted &&
+				initialValues.applicantDocuments &&
+				initialValues.applicantDocuments.length > 0
+			) {
+				initialValues.applicantDocuments.forEach((applicantDocument) => {
+					if (
+						applicantDocument &&
+						applicantDocument.title &&
+						applicantDocument.title.label
+					) {
+						applicantDocuments[applicantDocument.title.label] = {
+							...applicantDocuments[applicantDocument.title.label],
+							...applicantDocument,
+						};
+						var initialFiles = initialValues.applicantDocuments.filter(
+							(iv) => iv.title.label === applicantDocument.title.label
+						);
+						if (initialFiles != null && initialFiles.length > 0) {
+							applicantDocuments[applicantDocument.title.label].file =
+								initialFiles[0].file;
+							if (initialFiles[0].file.fileList.length > 0) {
+								if (initialFiles[0] && initialFiles[0].uploadedDocument) {
+									applicantDocuments[
+										applicantDocument.title.label
+									].uploadedDocument = {
+										fileName: initialFiles[0]?.uploadedDocument?.fileName,
+										attachSysId: initialFiles[0]?.uploadedDocument?.attachSysId,
+										downloadLink: initialFiles[0]?.uploadedDocument?.downloadLink,
+										markedToDelete:
+											initialFiles[0]?.uploadedDocument?.markedToDelete,
+									};
+								} else {
+									// its missing because this is getting rehydrated ... clear it out
+									applicantDocuments[
+										applicantDocument.title.label
+									].uploadedDocument = {};
+									applicantDocuments[applicantDocument.title.label].file = {
+										fileList: [],
+									};
+								}
 							}
 						}
+					} else {
+						applicantDocuments[applicantDocument.documentName] = {
+							...applicantDocuments[applicantDocument.documentName],
+							...applicantDocument,
+						};
 					}
-				} else {
-					applicantDocuments[applicantDocument.documentName] = {
-						...applicantDocuments[applicantDocument.documentName],
-						...applicantDocument,
-					};
-				}
-			});
-		}
+				});
+			}
 
-		const formData = {
-			...initialValues,
-			applicantDocuments: Object.values(applicantDocuments),
-			basicInfo: basicInfo,
-			address: address,
-		};
-		setFormData(formData);
+			const formData = {
+				...initialValues,
+				applicantDocuments: Object.values(applicantDocuments),
+				basicInfo: basicInfo,
+				address: address,
+			};
+			setFormData(formData);
+		} catch (error) {
+			logError('Error loading existing application', {error: error}, 'Apply');
+			notification.error({
+				message: 'Sorry! There was an error loading your application.',
+				description: (
+					<>
+						<p>
+							Please try again. If the issue persists, contact the Help Desk
+							by emailing{' '}
+							<a href='mailto:NCIAppSupport@mail.nih.gov'>
+								NCIAppSupport@mail.nih.gov
+							</a>
+						</p>
+					</>
+				),
+				duration: 30,
+				style: {
+					height: '225px',
+					display: 'flex',
+					alignItems: 'center',
+				},
+			});
+			history.goBack();
+		}
 	};
 
 	const {
@@ -234,10 +268,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		setAuth,
 	} = useAuth();
 
+	
 	const instantiateNewApplication = async () => {
-		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
-		);
+		let response;
+		// const url = VACANCY_DETAILS_FOR_APPLICANTS + '/aa/' + vacancySysId;
+		const url = VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId;
+		logInfo('Instantiate new application', { url: url ,statusCode: '200' }, 'Apply');
+		try {
+			response = await axios.get(url);
+			logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, 'Apply');
+		} catch (e) {
+			// Add err logging here 
+			logError('Error instantiating new application', {url: url, error: e}, 'Apply');
+		}
+		
 
 		var focusAreaOptions = [];
 		response.data.result.focus_area.forEach((focusArea) => {
@@ -245,11 +289,16 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		});
 		setFocusArea(focusAreaOptions);
 		
-
-		const profileResponse = await axios
-			.get(GET_PROFILE + user.uid)
-			.catch(function () {
-				notification.error({
+		var profileResponse;
+		const profileUrl = GET_PROFILE + user.uid;
+		try {		
+			profileResponse = await axios
+			.get(profileUrl)
+			logInfo('User profile fetched successfully for new Application', { url: profileUrl ,statusCode: '200' }, 'Apply');
+		} catch (e) {
+			// Add err logging here 
+			logError('Error fetching user profile', {url: profileUrl, error: e}, 'Apply');
+			notification.error({
 					message: 'Sorry! There was an error retrieving your profile.',
 					description: (
 						<>
@@ -271,7 +320,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					},
 				});
 				history.goBack();
-			});
+		}
 
 		// commented for Jest testing. Do not remove.
 		// const profileData = convertDataFromBackend(profileResponse.data.result.response)
@@ -350,10 +399,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		try{ 
 			const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+			logInfo('New application draft saved', {  url: SAVE_APP_DRAFT ,sysId: saveDraftResponse.data.result.draft_id }, 'Apply');
 			if (saveDraftResponse) {
 			setDraftId(saveDraftResponse.data.result.draft_id);
 			}
 		} catch (e) {
+			// Add err logging here 
+			logError('Error saving draft', {url: SAVE_APP_DRAFT, error: e}, 'Apply');
 			notification.error({
 				message: 'Save Failed',
 				description: (
@@ -452,11 +504,14 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
 				if (currentStep == 1 && !editSubmitted) {
+					logInfo(`Saving application draft with next button click step ${currentStep}`, { url: SAVE_APP_DRAFT }, 'Apply');
 					save();
 				}
 				setCurrentStep(currentStep + 1);
 				window.scrollTo(0, 0);
 			} catch (error) {
+				// validation failed, can we write the failed fields here?
+				logError('Error validating form fields', {currentStep: currentStep, error: error}, 'Apply');
 				message.error('Please fill out all required fields.');
 			}
 		} else {
@@ -468,9 +523,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
+			logInfo(`Navigating to previous stepfrom step ${currentStep}`, { step: currentStep }, 'Apply');
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
+			logError('Error saving form on previous button', {currentStep: currentStep, error: error}, 'Apply');
 			message.error('Oops, there was an error while saving the form.');
 		}
 	};
@@ -536,6 +593,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				}
 
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+				logInfo('Application draft saved successfully', { draftId: saveDraftResponse.data.result.draft_id }, 'Apply');
 
 				message.info({
 					successKey,

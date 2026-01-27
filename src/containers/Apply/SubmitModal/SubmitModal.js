@@ -8,6 +8,7 @@ import useAuth from '../../../hooks/useAuth';
 import { checkAuth } from '../../../constants/checkAuth';
 import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
 import submitEdittedApp from './SubmitAppWorkflow/SubmitEdittedApp';
+import { logInfo } from '../../../utils/logging/logging';
 
 const submitModal = ({
 	data,
@@ -42,6 +43,7 @@ const submitModal = ({
 				checkAuth,
 				setAuth
 			)
+			logInfo('Submitting edited application', { sysId: submittedAppSysId }, 'SubmitModal');
 		} else {
 			submitNewApp(
 				setConfirmLoading,
@@ -55,6 +57,7 @@ const submitModal = ({
 				checkAuth,
 				setAuth
 			);
+			logInfo('Submitting new application', { draftId: draftId }, 'SubmitModal');
 		}
 	};
 
