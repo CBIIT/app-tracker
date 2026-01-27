@@ -174,7 +174,7 @@ const applicantApplicationView = () => {
 						style={{ padding: '2px' }}
 						containerStyle={{ marginRight: '0px' }}
 						labelStyle={labelStyle}
-						address={application.address} 
+						address={application.address}
 					/>
 				</div>
 				{(application.focusArea.length !== 0) ? (
@@ -205,6 +205,8 @@ const applicantApplicationView = () => {
 					title='References'
 					additionalText={`Reference Status: ${application.references.filter(ref => ref.referenceReceived === 'Yes').length} of ${application.references.length}`} >
 					{application.references.map((reference, index) => {
+						const referencePositionTitle = reference.positionTitle && reference.positionTitle.length > 50 ?
+							`${reference.positionTitle.substring(0, 46)}...` : reference.positionTitle || ' - ';
 						return (
 							<div key={index} >
 								<div style={{ display: 'flex', alignItems: 'center' }}>
@@ -213,7 +215,7 @@ const applicantApplicationView = () => {
 											<h4>Reference {index + 1}</h4>
 										</InfoCardRow>
 									</div>
-									{(maxApplicantReferenceRequests && application.referenceEmail === true) && 
+									{(maxApplicantReferenceRequests && application.referenceEmail === true) &&
 										<div>
 											<Button
 												type='primary'
@@ -235,14 +237,14 @@ const applicantApplicationView = () => {
 								</div>
 								<InfoCardRow style={infoCardStyle}>
 									<LabelValuePair
-										labelStyle={labelStyle} 
+										labelStyle={labelStyle}
 										label='Name'
 										value={`${reference.firstName} ${reference.middleName ? reference.middleName : ''} ${reference.lastName}`}
 									/>
 								</InfoCardRow>
 								<InfoCardRow style={infoCardStyle}>
 									<LabelValuePair
-										labelStyle={labelStyle} 
+										labelStyle={labelStyle}
 										label='Email Address'
 										value={reference.email}
 									/>
@@ -253,15 +255,19 @@ const applicantApplicationView = () => {
 										label='Phone Number'
 										value={reference.phone || ' - '}
 									/>
+								</InfoCardRow>
+								<InfoCardRow style={infoCardStyle}>
 									<LabelValuePair
 										labelStyle={labelStyle}
 										label='Relationship'
 										value={reference.relationship || ' - '}
 									/>
+								</InfoCardRow>
+								<InfoCardRow style={infoCardStyle}>
 									<LabelValuePair
 										labelStyle={labelStyle}
 										label='Position Title'
-										value={reference.positionTitle || ' - '}
+										value={referencePositionTitle || ' - '}
 									/>
 								</InfoCardRow>
 								<InfoCardRow style={infoCardStyle}>
