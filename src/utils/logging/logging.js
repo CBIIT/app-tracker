@@ -1,6 +1,6 @@
 
 
-import { LogLevel, SENSITIVE_FIELDS } from './logLevelConstants';
+import { LogLevel, SENSITIVE_FIELDS } from './logConstants';
 
 const sanitizeData = (data) => {
     if (!data) return data;

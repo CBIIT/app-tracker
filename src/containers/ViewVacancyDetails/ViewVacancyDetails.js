@@ -5,14 +5,13 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import { extractAndTransformMandatoryStatements } from '../../components/Util/Vacancy/Vacancy';
 import { useLogging } from '../../hooks/useLogging';
+import { ApplicationName } from '../../utils/logging/logConstants';
 
 import Header from './Header/Header';
 import Divider from './Divider/Divider';
 import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
-
-const APPLICATION_NAME = 'ViewVacancyDetails';
 
 const numberToWordMap = {
 	0: 'Zero',
@@ -46,10 +45,10 @@ const viewVacancyDetails = () => {
 			try {			
 				const response = await axios.get(url);
 				setVacancyDetails(response.data.result);
-				logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, APPLICATION_NAME);
+				logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, ApplicationName.VIEW_VACANCY_DETAILS);
 				setIsLoading(false);
 			} catch (error) {
-				logError('Error fetching vacancy details', {url: url, error: error}, APPLICATION_NAME);
+				logError('Error fetching vacancy details', {url: url, error: error}, ApplicationName.VIEW_VACANCY_DETAILS);
 				setIsLoading(true);
 			}
 		})();
@@ -57,7 +56,7 @@ const viewVacancyDetails = () => {
 
 	useEffect(() => {
 		if (!isLoading) {
-			logInfo('View Vacancy Details page rendered', { statusCode: '200' }, APPLICATION_NAME);
+			logInfo('View Vacancy Details page rendered', { statusCode: '200' }, ApplicationName.VIEW_VACANCY_DETAILS);
 		}
 	}, [isLoading]);
 

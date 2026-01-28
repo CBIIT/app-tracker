@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import './App.less';
 import Layout from './hoc/Layout/Layout';
 import { useLogging } from './hooks/useLogging';
+import { ApplicationName } from './utils/logging/logConstants';
 
 import Home from './containers/Home/Home';
 import {
@@ -60,10 +61,10 @@ const app = () => {
 	let routes = [];
 	const { isUserLoggedIn, user, tenants } = auth;
 
-	logInfo('App Rendered', { statusCode: '200' }, 'SSJ HomePage');
+	logInfo('App Rendered', { statusCode: '200' }, ApplicationName.SSJ_HOME_PAGE);
 
 	if (user && isUserLoggedIn) {
-		logInfo('Session start', {}, 'SSJ HomePage');
+		logInfo('Session start', {}, ApplicationName.SSJ_HOME_PAGE);
 	}
 
 	if (isUserLoggedIn) {
