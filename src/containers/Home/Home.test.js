@@ -2,8 +2,13 @@ import Home from './Home';
 import axios from 'axios';
 import * as useAuth from '../../hooks/useAuth';
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen, waitFor } from '@testing-library/react';
-import { mockAuth, mockVacancyList, noVacancyList, } from './MockData';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { 
+    mockAuth, 
+    mockVacancyList, 
+    noVacancyList, 
+    mockVacancyListForSorting
+} from './MockData';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
@@ -77,6 +82,33 @@ describe('Home', () => {
 
         waitFor(() => {
             expect(screen.getByText(/There are currently no open vacancies./i)).toBeInTheDocument();
+        });
+    });
+
+    test('should sort titles by length when clicking Vacancy Title', async () => {
+        axios.get.mockImplementationOnce(() => 
+            Promise.resolve(mockVacancyListForSorting)
+        );
+
+        render(
+            <MemoryRouter initialEntry={['/']}>
+                <Home />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Short Title')).toBeInTheDocument();
+        });
+
+        const vacancyTitleHeader = screen.getByText('Vacancy Title');
+
+        waitFor(() => {
+            fireEvent.click(vacancyTitleHeader);
+
+            const rows = screen.getAllByRole('row');
+            expect(rows[1]).toHaveTextContent('Short Title');
+            expect(rows[2]).toHaveTextContext('Medium Length Title');
+            expect(rows[3]).toHaveTextContext('Very Long Vacancy Title Here');
         });
     });
 });
