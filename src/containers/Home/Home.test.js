@@ -111,4 +111,37 @@ describe('Home', () => {
             expect(rows[3]).toHaveTextContext('Very Long Vacancy Title Here');
         });
     });
+
+    test('should sort Vacancies by Institue length when clicking Institute column', async () => {
+        axios.get.mockImplementationOnce(() => 
+            Promise.resolve(mockVacancyListForSorting)
+        );
+
+        render(
+            <MemoryRouter initialEntry={['/']}>
+                <Home />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('NCI')).toBeInTheDocument();
+        });
+
+        const instituteHeader = screen.getByText('Institute');
+
+        waitFor(() => {
+            fireEvent.click(instituteHeader);
+
+            const cells = screen.getAllByRole('cell');
+            const instituteCells = Array.from(cells).filter(cell =>
+                cell.textContent === 'NCI' ||
+                cell.textContent === 'NIAID' ||
+                cell.textContent === 'Stadtman'
+            );
+
+            expect(instituteCells[0]).toHaveTextContent('NCI');
+            expect(instituteCells[1]).toHaveTextContent('NIAID');
+            expect(instituteCells[2]).toHaveTextContent('Stadtman');
+        });
+    });
 });
