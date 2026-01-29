@@ -14,7 +14,7 @@ import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import useTimeout from '../../hooks/useTimeout';
 import { useLogging } from '../../hooks/useLogging';
-import { ApplicationName } from '../../utils/logging/logConstants';
+import { ComponentName } from '../../utils/logging/logConstants';
 
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
@@ -90,7 +90,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const { logInfo, logError } = useLogging();
 
 	const location = useLocation();
-	logInfo('Apply page rendered', { statusCode: '200' }, ApplicationName.APPLY);
+	logInfo('Apply page rendered', { statusCode: '200' }, ComponentName.APPLY);
 
 	useEffect(() => {
 		(async () => {
@@ -124,7 +124,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			const url = VACANCY_DETAILS_FOR_APPLICANTS + vacancyId;
 			// const url = VACANCY_DETAILS_FOR_APPLICANTS + '/AA/'+ vacancyId;
 			const response = await axios.get(url);
-			logInfo('Existing application details fetched successfully', { url: url, statusCode: response.status }, ApplicationName.APPLY);
+			logInfo('Existing application details fetched successfully', { url: url, statusCode: response.status }, ComponentName.APPLY);
 
 			var focusAreaOptions = [];
 			response.data.result.focus_area.forEach((focusArea) => {
@@ -159,7 +159,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					});
 					history.goBack();
 				});
-			logInfo('User profile fetched successfully for existing Application', { url: GET_PROFILE + user.uid ,statusCode: '200' }, ApplicationName.APPLY);
+			logInfo('User profile fetched successfully for existing Application', { url: GET_PROFILE + user.uid ,statusCode: '200' }, ComponentName.APPLY);
 
 			const profileData = convertDataFromBackend(
 				profileResponse.data.result.response
@@ -274,13 +274,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		let response;
 		// const url = VACANCY_DETAILS_FOR_APPLICANTS + '/aa/' + vacancySysId;
 		const url = VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId;
-		logInfo('Instantiate new application', { url: url ,statusCode: '200' }, ApplicationName.APPLY);
+		logInfo('Instantiate new application', { url: url ,statusCode: '200' }, ComponentName.APPLY);
 		try {
 			response = await axios.get(url);
-			logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, ApplicationName.ApplicationName.APPLY);
+			logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, ComponentName.ApplicationName.APPLY);
 		} catch (e) {
 			// Add err logging here 
-			logError('Error instantiating new application', {url: url, error: e}, ApplicationName.APPLY);
+			logError('Error instantiating new application', {url: url, error: e}, ComponentName.APPLY);
 		}
 		
 
@@ -295,10 +295,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {		
 			profileResponse = await axios
 			.get(profileUrl)
-			logInfo('User profile fetched successfully for new Application', { url: profileUrl ,statusCode: '200' }, ApplicationName.APPLY);
+			logInfo('User profile fetched successfully for new Application', { url: profileUrl ,statusCode: '200' }, ComponentName.APPLY);
 		} catch (e) {
 			// Add err logging here 
-			logError('Error fetching user profile', {url: profileUrl, error: e}, ApplicationName.APPLY);
+			logError('Error fetching user profile', {url: profileUrl, error: e}, ComponentName.APPLY);
 			notification.error({
 					message: 'Sorry! There was an error retrieving your profile.',
 					description: (
@@ -400,13 +400,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 		try{ 
 			const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-			logInfo('New application draft saved', {  url: SAVE_APP_DRAFT ,sysId: saveDraftResponse.data.result.draft_id }, ApplicationName.APPLY);
+			logInfo('New application draft saved', {  url: SAVE_APP_DRAFT ,sysId: saveDraftResponse.data.result.draft_id }, ComponentName.APPLY);
 			if (saveDraftResponse) {
 			setDraftId(saveDraftResponse.data.result.draft_id);
 			}
 		} catch (e) {
 			// Add err logging here 
-			logError('Error saving draft', {url: SAVE_APP_DRAFT, error: e}, ApplicationName.APPLY);
+			logError('Error saving draft', {url: SAVE_APP_DRAFT, error: e}, ComponentName.APPLY);
 			notification.error({
 				message: 'Save Failed',
 				description: (
@@ -505,7 +505,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				const validationResult = await currentFormInstance.validateFields();
 				await saveCurrentForm(validationResult);
 				if (currentStep == 1 && !editSubmitted) {
-					logInfo(`Saving application draft with next button click step ${currentStep}`, { url: SAVE_APP_DRAFT }, ApplicationName.APPLY);
+					logInfo(`Saving application draft with next button click step ${currentStep}`, { url: SAVE_APP_DRAFT }, ComponentName.APPLY);
 					save();
 				}
 				setCurrentStep(currentStep + 1);
@@ -524,11 +524,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
-			logInfo(`Navigating to previous stepfrom step ${currentStep}`, { step: currentStep }, ApplicationName.APPLY);
+			logInfo(`Navigating to previous stepfrom step ${currentStep}`, { step: currentStep }, ComponentName.APPLY);
 			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
-			logError('Error saving form on previous button', {currentStep: currentStep, error: error}, ApplicationName.APPLY);
+			logError('Error saving form on previous button', {currentStep: currentStep, error: error}, ComponentName.APPLY);
 			message.error('Oops, there was an error while saving the form.');
 		}
 	};
@@ -594,7 +594,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				}
 
 				const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-				logInfo('Application draft saved successfully', { draftId: saveDraftResponse.data.result.draft_id }, ApplicationName.APPLY);
+				logInfo('Application draft saved successfully', { draftId: saveDraftResponse.data.result.draft_id }, ComponentName.APPLY);
 
 				message.info({
 					successKey,

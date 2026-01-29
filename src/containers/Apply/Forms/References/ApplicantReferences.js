@@ -5,6 +5,7 @@ import FormContext from '../../Context';
 
 import './ApplicantReferences.css';
 import { logInfo } from '../../../../utils/logging/logging';
+import { ComponentName } from '../../../../utils/logging/logConstants';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -31,7 +32,7 @@ const applicantReferences = () => {
 		setCurrentFormInstance(formInstance);
 	}, []);
 
-	logInfo('Applicant References form rendered', { statusCode: '200' }, 'ApplicantReferences');
+	logInfo('Applicant References form rendered', { statusCode: '200' }, ComponentName.APPLICATION_REFERENCES);
 
 	return (
 		<Form

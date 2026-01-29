@@ -8,6 +8,7 @@ import LabelValuePair from '../../../../components/UI/LabelValuePair/LabelValueP
 
 import './Review.css';
 import { logInfo } from '../../../../utils/logging/logging';
+import { ComponentName } from '../../../../utils/logging/logConstants';
 
 const review = (props) => {
 	const contextValue = useContext(FormContext);
@@ -32,7 +33,7 @@ const review = (props) => {
 		...reference,
 	}));
 
-	logInfo('Review form rendered', { statusCode: '200' }, 'Review');
+	logInfo('Review form rendered', { statusCode: '200' }, ComponentName.REVIEW);
 
 	return (
 		<div>

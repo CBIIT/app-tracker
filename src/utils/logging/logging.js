@@ -25,7 +25,7 @@ const sanitizeData = (data) => {
     return data;
 };
 
-const formatLog = (level, message, data, userInfo, isLoggedIn, application, route, traceId) => {
+const formatLog = (level, message, data, userInfo, isLoggedIn, component, route, traceId) => {
     const timestamp = new Date().toISOString();
     const nodeEnv = process.env.NODE_ENV || 'unknown';
 
@@ -34,7 +34,7 @@ const formatLog = (level, message, data, userInfo, isLoggedIn, application, rout
     const envStr = `[Env: ${nodeEnv}] | `;
     const userStr = userInfo ? `[User: ${userInfo}] | ` : '';
     const loggedInStr = `[UserLoggedIn: ${isLoggedIn ? 'true' : 'false'}] | `;
-    const appStr = application ? `[Application: ${application}] | ` : '';
+    const appStr = component ? `[Component: ${component}] | ` : '';
     const traceStr = traceId ? `[TraceId: ${traceId}] | ` : '';
     const messageStr = ` MESSAGE: ${message} | `;
     const sanitizedData = sanitizeData(data);
@@ -44,26 +44,26 @@ const formatLog = (level, message, data, userInfo, isLoggedIn, application, rout
     return `${timeStr}${levelStr}${envStr}${userStr}${loggedInStr}${appStr}${traceStr}${messageStr}${dataStr}${routeStr}`;
 };
 
-export const logInfo = (message, data, application, auth, route, traceId) => {
+export const logInfo = (message, data, component, auth, route, traceId) => {
     const userInfo = auth?.auth?.user?.email
         || auth?.auth?.user?.uid
         || auth?.auth?.user?.userId;
     const isLoggedIn = auth?.auth?.isUserLoggedIn;
-    const formattedMessage = formatLog(LogLevel.INFO, message, data, userInfo, isLoggedIn, application, route, traceId);
+    const formattedMessage = formatLog(LogLevel.INFO, message, data, userInfo, isLoggedIn, component, route, traceId);
     console.log(formattedMessage);
 };
 
-export const logWarn = (message, data, application, auth, route, traceId) => {
+export const logWarn = (message, data, component, auth, route, traceId) => {
     const userInfo = auth?.auth?.user?.email
         || auth?.auth?.user?.uid
         || auth?.auth?.user?.userId;
     const isLoggedIn = auth?.auth?.isUserLoggedIn;
-    const formattedMessage = formatLog(LogLevel.WARN, message, data, userInfo, isLoggedIn, application, route, traceId);
+    const formattedMessage = formatLog(LogLevel.WARN, message, data, userInfo, isLoggedIn, component, route, traceId);
     console.warn(formattedMessage);
 };
 
 
-export const logError = (message, error, application, auth, route, traceId) => {
+export const logError = (message, error, component, auth, route, traceId) => {
     const userInfo = auth?.auth?.user?.email
         || auth?.auth?.user?.uid
         || auth?.auth?.user?.userId;
@@ -73,13 +73,13 @@ export const logError = (message, error, application, auth, route, traceId) => {
 };
 
 
-export const logDebug = (message, data, application, auth, route, traceId) => {
+export const logDebug = (message, data, component, auth, route, traceId) => {
     if (process.env.NODE_ENV === 'development') {
         const userInfo = auth?.auth?.user?.email
         || auth?.auth?.user?.uid
         || auth?.auth?.user?.userId;
         const isLoggedIn = auth?.auth?.isUserLoggedIn;
-        const formattedMessage = formatLog(LogLevel.DEBUG, message, data, userInfo, isLoggedIn, application, route, traceId);
+        const formattedMessage = formatLog(LogLevel.DEBUG, message, data, userInfo, isLoggedIn, component, route, traceId);
         console.debug(formattedMessage);
     }
 };

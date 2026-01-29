@@ -5,7 +5,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import { extractAndTransformMandatoryStatements } from '../../components/Util/Vacancy/Vacancy';
 import { useLogging } from '../../hooks/useLogging';
-import { ApplicationName } from '../../utils/logging/logConstants';
+import { ComponentName } from '../../utils/logging/logConstants';
 
 import Header from './Header/Header';
 import Divider from './Divider/Divider';
@@ -45,10 +45,10 @@ const viewVacancyDetails = () => {
 			try {			
 				const response = await axios.get(url);
 				setVacancyDetails(response.data.result);
-				logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, ApplicationName.VIEW_VACANCY_DETAILS);
+				logInfo('Vacancy details fetched successfully', { url: url, statusCode: response.status }, ComponentName.VIEW_VACANCY_DETAILS);
 				setIsLoading(false);
 			} catch (error) {
-				logError('Error fetching vacancy details', {url: url, error: error}, ApplicationName.VIEW_VACANCY_DETAILS);
+				logError('Error fetching vacancy details', {url: url, error: error}, ComponentName.VIEW_VACANCY_DETAILS);
 				setIsLoading(true);
 			}
 		})();
@@ -56,7 +56,7 @@ const viewVacancyDetails = () => {
 
 	useEffect(() => {
 		if (!isLoading) {
-			logInfo('View Vacancy Details page rendered', { statusCode: '200' }, ApplicationName.VIEW_VACANCY_DETAILS);
+			logInfo('View Vacancy Details page rendered', { statusCode: '200' }, ComponentName.VIEW_VACANCY_DETAILS);
 		}
 	}, [isLoading]);
 
