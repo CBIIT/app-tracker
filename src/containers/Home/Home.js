@@ -95,6 +95,7 @@ const home = () => {
 				<Table
 					columns={columns}
 					dataSource={data}
+					data-testid='vacancy-list'
 					scroll={{ x: 'true' }}
 					pagination={{ hideOnSinglePage: true }}
 					locale={{

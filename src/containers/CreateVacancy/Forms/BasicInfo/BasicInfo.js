@@ -314,7 +314,10 @@ const basicInformation = (props) => {
 					<p className='SmallText'>
 						Please select the type of point of contact information to be used for this vacancy.
 					</p>
-					<Form.Item name='vacancyPocType' >
+					<Form.Item 
+						name='vacancyPocType' 
+						rules={[{ required: true, message: 'Please select a Point of Contact option'}]}
+					>
 						<Checkbox.Group
 							options={pocOptions}
 							onChange={onPocTypeChange}
@@ -328,6 +331,7 @@ const basicInformation = (props) => {
 								<Form.Item
 									name='isUserPoc'
 									label='Are you the point of contact for this vacancy?'
+									rules={[{ required: true, message: 'Please confirm if you are the Point of Contact'}]}
 								>
 									<Select
 										disabled={readOnly}
@@ -355,15 +359,10 @@ const basicInformation = (props) => {
 											? 'Who will be the point of contact for this vacancy?'
 											: ''
 									}
+									rules={[{ required: true, message: 'Please select a point of contact.' }]}
 								>
 									<Select
 										name='vacancyPoc'
-										rules={[
-											{
-												required: true,
-												message: 'Please select a point of contact.',
-											},
-										]}
 										allowClear={true}
 										disabled={readOnly || isUserPoc === 'yes'}
 										showSearch={true}
@@ -404,6 +403,7 @@ const basicInformation = (props) => {
 							<Form.Item
 								label='Email Distribution List for Point of Contact'
 								name='vacancyPocEmail'
+								rules={[{ required: true, message: 'Please enter an email address'}]}
 							>
 								<Input
 									placeholder='Please enter email distribution list'
@@ -420,6 +420,7 @@ const basicInformation = (props) => {
 								<Form.Item
 									name='isUserPoc'
 									label='Are you the point of contact for this vacancy?'
+									rules={[{ required: true, message: 'Please select a point of contact.' }]}
 								>
 									<Select
 										disabled={readOnly}
@@ -447,15 +448,10 @@ const basicInformation = (props) => {
 											? 'Who will be the point of contact for this vacancy?'
 											: ''
 									}
+									rules={[{ required: true, message: 'Please select a point of contact.' }]}
 								>
 									<Select
 										name='vacancyPoc'
-										rules={[
-											{
-												required: true,
-												message: 'Please select a point of contact.',
-											},
-										]}
 										allowClear={true}
 										disabled={readOnly || isUserPoc === 'yes'}
 										showSearch={true}
@@ -491,6 +487,7 @@ const basicInformation = (props) => {
 							<Form.Item
 								label='Email Distribution List for Point of Contact'
 								name='vacancyPocEmail'
+								rules={[{ required: true, message: 'Please enter an email address'}]}
 							>
 								<Input
 									placeholder='Please enter email distribution list'
