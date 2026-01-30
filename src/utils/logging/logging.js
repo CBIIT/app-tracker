@@ -68,7 +68,7 @@ export const logError = (message, error, component, auth, route, traceId) => {
         || auth?.auth?.user?.uid
         || auth?.auth?.user?.userId;
     const isLoggedIn = auth?.auth?.isUserLoggedIn;
-    const formattedMessage = formatLog(LogLevel.ERROR, message, error, userInfo, isLoggedIn, application, route, traceId);
+    const formattedMessage = formatLog(LogLevel.ERROR, message, error, userInfo, isLoggedIn, component, route, traceId);
     console.error(formattedMessage);
 };
 

@@ -239,7 +239,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			};
 			setFormData(formData);
 		} catch (error) {
-			logError('Error loading existing application', {error: error}, 'Apply');
+			logError('Error loading existing application', {error: error}, ComponentName.APPLY);
 			notification.error({
 				message: 'Sorry! There was an error loading your application.',
 				description: (
