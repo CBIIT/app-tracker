@@ -24,6 +24,7 @@ const referenceField = ({ value = {}, onChange }) => {
 						u.label = u.name.value;
 						u.value = u.uid;
 					});
+					userResponse.data.result.sort((a, b) => a.name.value.localeCompare(b.name.value));
 					setCommitteeMemberOptions(userResponse.data.result)
 					setIsLoading(false);
 				} catch (err) {
@@ -70,6 +71,7 @@ const referenceField = ({ value = {}, onChange }) => {
 		</Space>
 	) : (
 			<Select
+				data-testid="user-picker-select"
 				showSearch
 				placeholder="Search to select a user"
 				filterSort={(optionA, optionB) =>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, userEvent } from '@testing-library/react';
 import UserPicker from './UserPicker';
 import useAuth from '../../../hooks/useAuth';
 import axios from 'axios';
@@ -94,4 +94,46 @@ describe('UserPicker (referenceField) crash test', () => {
             expect(mockSetCommitteeMemberOptions).toHaveBeenCalledWith([]);
         });
     });
+
+    it('renders options sorted by name', async () => {
+        setupAuthMock([]);
+        axios.get.mockResolvedValueOnce({
+            data: {
+                result: [
+                    { uid: '2', name: { value: 'Bob' }, email: 'bob@example.com', organization: 'Org2' },
+                    { uid: '1', name: { value: 'Alice' }, email: 'alice@example.com', organization: 'Org1' },
+                ],
+            },
+        });
+
+        render(<UserPicker value={{}} onChange={jest.fn()} />);
+        expect(screen.getByTestId('loading-icon')).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(mockSetCommitteeMemberOptions).toHaveBeenCalledWith([
+                { uid: '1', name: { value: 'Alice' }, email: 'alice@example.com', organization: 'Org1', label: 'Alice', value: '1' },
+                { uid: '2', name: { value: 'Bob' }, email: 'bob@example.com', organization: 'Org2', label: 'Bob', value: '2' },
+            ]);
+        });
+    });
+
+    it('calls onChange when user is selected', async () => {
+        const mockOnChange = jest.fn();
+        setupAuthMock(defaultCommitteeMemberOptions);
+
+        render(<UserPicker value={{}} onChange={mockOnChange} />);
+        await fireEvent.mouseDown(screen.getByRole('combobox'));
+        const option = await screen.getByText('Alice');
+        fireEvent.click(option);
+
+        expect(mockOnChange).toHaveBeenCalledWith({
+            uid: '1',
+            name: { value: 'Alice' },
+            email: 'alice@example.com',
+            organization: 'Org1',
+            label: 'Alice',
+            value: '1',
+        });
+    });
+
 });
