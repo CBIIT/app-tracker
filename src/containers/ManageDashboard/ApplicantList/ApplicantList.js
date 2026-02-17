@@ -69,7 +69,7 @@ const displayTriage = (userRole, committeeRole) => {
 		return false;
 	}
 };
-const defaultApplicantSort = 'ascend';
+
 const applicantList = (props) => {
 	const { sysId } = useParams();
 	const [applicants, setApplicants] = useState([]);
@@ -89,16 +89,6 @@ const applicantList = (props) => {
 				setSearchedColumn,
 				searchInput
 			),
-			defaultSortOrder: defaultApplicantSort,
-			sorter: (a, b) => {
-				if (a.applicant_name < b.applicant_name) {
-					return -1;
-				}
-				if (a.applicant_name > b.applicant_name) {
-					return 1;
-				}
-				return 0;
-			},
 		},
 		{
 			title: 'Email',
@@ -137,7 +127,7 @@ const applicantList = (props) => {
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
 			key: 'totalReceivedReferences',
-		}
+		},
 	]);
 	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
@@ -225,16 +215,6 @@ const applicantList = (props) => {
 				setSearchedColumn,
 				searchInput
 			),
-			defaultSortOrder: defaultApplicantSort,
-			sorter: (a, b) => {
-				if (a.applicant_name < b.applicant_name) {
-					return -1;
-				}
-				if (a.applicant_name > b.applicant_name) {
-					return 1;
-				}
-				return 0;
-			},
 		},
 		{
 			title: 'Email',
@@ -428,13 +408,13 @@ const applicantList = (props) => {
 	}, []);
 
 	useEffect(() => {
-		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
+		updateData(1, pageSize);
 	}, [props.vacancyState, searchText, filter]);
 
 	useEffect(() => {
 		const columnList = [];
 		const columnMapList = [];
-		let newApplicantColumns = []
+		let newApplicantColumns = [];
 
 		if (
 			props.userCommitteeRole === COMMITTEE_MEMBER_VOTING ||
@@ -455,7 +435,10 @@ const applicantList = (props) => {
 
 		newApplicantColumns.forEach((element) => {
 			columnList.push(element.dataIndex);
-			columnMapList.push({ dataIndex: element.dataIndex, title: element.title });
+			columnMapList.push({
+				dataIndex: element.dataIndex,
+				title: element.title,
+			});
 		});
 
 		let excelData = [];
@@ -468,9 +451,10 @@ const applicantList = (props) => {
 			data.push(...nonRecommendedApplicants);
 		}
 		if (applicants && applicants.length > 0) {
-			data = props.vacancyState == ROLLING_CLOSE
-				? getFilterData(filter, applicants)
-				: applicants;
+			data =
+				props.vacancyState == ROLLING_CLOSE
+					? getFilterData(filter, applicants)
+					: applicants;
 		}
 
 		data.forEach((applicant) => {
@@ -481,16 +465,17 @@ const applicantList = (props) => {
 					if (col === 'top_25') {
 						val = applicant[col] === '1' ? 'Yes' : 'No';
 					}
-					columnMapList.some((column) => { 
-						column.dataIndex === col ? newApplicant[column.title] = val ? val : '' : null 
+					columnMapList.some((column) => {
+						column.dataIndex === col
+							? (newApplicant[column.title] = val ? val : '')
+							: null;
 					});
 				}
-			})
+			});
 			excelData.push(newApplicant);
 		});
 
 		excelData ? setExcelApplicants(excelData) : null;
-
 	}, [applicants, recommendedApplicants, nonRecommendedApplicants]);
 
 	const filterChangeHandler = async (e) => {
@@ -1085,17 +1070,10 @@ const applicantList = (props) => {
 				? GET_ROLLING_APPLICANT_LIST
 				: GET_APPLICANT_LIST;
 		try {
-			let apiString =
-				api +
-				sysId +
-				'?offset=' +
-				offset +
-				'&limit=' +
-				limit +
-				'&orderBy=' +
-				orderBy +
-				'&orderColumn=' +
-				orderColumn;
+			let apiString = api + sysId + '?offset=' + offset + '&limit=' + limit;
+			if (orderBy && orderColumn) {
+				apiString += '&orderBy=' + orderBy + '&orderColumn=' + orderColumn;
+			}
 
 			if (recommended) apiString += '&recommended=' + recommended;
 			if (searchText) apiString += '&search=' + searchText.toLowerCase();
@@ -1147,12 +1125,25 @@ const applicantList = (props) => {
 					</Radio.Group>
 				</div>
 			)}
-			<div className='ExportToExcelButtonDiv' style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+			<div
+				className='ExportToExcelButtonDiv'
+				style={{
+					display: 'flex',
+					justifyContent: 'flex-end',
+					marginBottom: '4px',
+				}}
+			>
 				<Button
 					disabled={excelApplicants.length === 0}
 					ghost
 					type='primary'
-					onClick={() => ExportToExcel(excelApplicants, `${props.vacancyTitle}-ApplicantList-${moment((new Date()).toString()).format('MM-DD-YYYY')}.xlsx`)}>
+					onClick={() =>
+						ExportToExcel(
+							excelApplicants,
+							`${props.vacancyTitle}-ApplicantList-${moment(new Date().toString()).format('MM-DD-YYYY')}.xlsx`
+						)
+					}
+				>
 					Export to Excel
 				</Button>
 			</div>

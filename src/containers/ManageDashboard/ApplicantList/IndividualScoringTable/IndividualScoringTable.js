@@ -207,16 +207,6 @@ const individualScoringTable = (props) => {
 				title: 'Applicant',
 				dataIndex: 'applicant_name',
 				key: 'name',
-				sorter: (a, b) => {
-					if (a.applicant_name < b.applicant_name) {
-						return -1;
-					}
-					if (a.applicant_name > b.applicant_name) {
-						return 1;
-					}
-					return 0;
-				},
-				defaultSortOrder: 'ascend',
 				width: 250,
 				...getColumnSearchProps(
 					'applicant_name',
