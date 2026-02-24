@@ -1095,7 +1095,7 @@ const applicantList = (props) => {
 		}
 	};
 	const loadVacancyAndApplicants = () => {
-		updateData(1, pageSize, defaultApplicantSort, 'applicant_name');
+		updateData(1, pageSize);
 		props.reloadVacancy();
 	};
 	const table = getTable(
