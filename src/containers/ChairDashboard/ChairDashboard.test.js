@@ -66,28 +66,6 @@ describe('ChairDashboard component tests', () => {
         axios.get.mockResolvedValue({ data: { result: mockVacancies } });
     });
 
-    // beforeEach(() => {
-    //     useAuth.mockReturnValue({
-    //         auth: {
-    //             tenants: [{
-    //                 "value": "f24965fc1b9c11106daea681f54bcb04",
-    //                 "label": "tenant 1",
-    //                 "roles": [
-    //                     "x_g_nci_app_tracke.vacancy_manager",
-    //                     "x_g_nci_app_tracke.committee_member"
-    //                 ],
-    //                 "is_exec_sec": true,
-    //                 "is_read_only_user": true,
-    //                 "is_chair": true,
-    //                 "is_hr": false,
-    //             }]
-    //         },
-    //         currentTenant: 'tenant1',
-    //     });
-    //     validateRoleForCurrentTenant.mockReturnValue(true);
-    //     axios.get.mockResolvedValue({ data: { result: mockVacancies } });
-    // });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
