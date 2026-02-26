@@ -9,6 +9,8 @@ import {
 	SUBMIT_APPLICATION,
 } from '../../../../constants/ApiEndpoints';
 import { transformJsonToBackend } from '../../Util/TransformJsonToBackend';
+import { logError, logInfo } from '../../../../utils/logging/logging';
+import {ComponentName } from '../../../../utils/logging/logConstants';
 
 const submitNewApp = async (
 	setConfirmLoading,
@@ -41,8 +43,10 @@ const submitNewApp = async (
 		try {
 			await axios.post(SAVE_APP_DRAFT, dataToSend);
 			setPercent(20);
+			logInfo('Application draft saved successfully', { draftId: draftId, percent: 20 }, ComponentName.SUBMIT_NEW_APP);
 		} catch (e) {
 			setSubmitted(false);
+			logError('Error saving application draft', { draftId: draftId, error: e }, ComponentName.SUBMIT_NEW_APP);
 			notification.error({
 					message: 'Sorry! There was an error when attempting to submit your application.',
 					description: (
@@ -73,8 +77,10 @@ const submitNewApp = async (
 			const saveDraftDocs = await axios.post(CREATE_APP_DOCS, data);
 			documents = saveDraftDocs.data.result.response.vacancy_documents;
 			setPercent(40);
+			logInfo('Application documents created successfully', { draftId: draftId, percent: 40 }, 'SubmitNewApp');
 		} catch (e) {
 			setSubmitted(false);
+			logError('Error creating application documents', { draftId: draftId, error: e }, 'SubmitNewApp');
 			notification.error({
 					message: 'Sorry! There was an error when attempting to submit your application.',
 					description: (
@@ -123,13 +129,16 @@ const submitNewApp = async (
 						},
 					};
 					requests.push(axios.post(SERVICE_NOW_FILE_ATTACHMENT, file, options));
+					logInfo('Attaching document', { draftId: draftId, fileName: document.file_name }, ComponentName.SUBMIT_NEW_APP);
 				}
 			});
 
 			await Promise.all(requests);
 			setPercent(60);
+			logInfo('All documents attached successfully', { draftId: draftId, percent: 60 }, ComponentName.SUBMIT_NEW_APP);
 		} catch (e) {
 			setSubmitted(false);
+			logError('Error attaching documents', { draftId: draftId, error: e }, ComponentName.SUBMIT_NEW_APP);
 			notification.error({
 					message: 'Sorry! There was an error when attempting to submit your application.',
 					description: (
@@ -160,8 +169,10 @@ const submitNewApp = async (
 			const verifyAttachments = await axios.get(ATTACHMENT_CHECK + draftId);
 			mandatoryDocuments = verifyAttachments.data.result.messages;
 			setPercent(80);
+			logInfo('Attachments verified successfully', { draftId: draftId, percent: 80 }, ComponentName.SUBMIT_NEW_APP);
 		} catch (e) {
 			setSubmitted(false);
+			logError('Error verifying attachments', { draftId: draftId, error: e }, ComponentName.SUBMIT_NEW_APP);
 			notification.error({
 					message: 'Sorry! There was an error when attempting to submit your application.',
 					description: (
@@ -210,6 +221,7 @@ const submitNewApp = async (
 			mandatoryDocuments.map((doc) => {
 				if (doc.attachSysId) {
 					axios.delete(SERVICE_NOW_ATTACHMENT + doc.attachSysId);
+					logInfo('Deleting attachment due to missing mandatory document', { draftId: draftId, attachSysId: doc.attachSysId }, ComponentName.SUBMIT_NEW_APP);
 				}
 			});
 			setSubmitted(false);
@@ -239,15 +251,18 @@ const submitNewApp = async (
 		}
 	};
 
+	const submitApp = {};
 	const submitApplication = async () => {
 		try {
-			const submitApp = await axios.post(SUBMIT_APPLICATION, infoToSend);
+			submitApp = await axios.post(SUBMIT_APPLICATION, infoToSend);
 
 			if (submitApp.data.result.status == 200) {
 				setPercent(100);
 				setAppSysId(submitApp.data.result.application_sys_id);
+				logInfo('Application submitted successfully', { draftId: draftId, application_sys_id: submitApp.data.result.application_sys_id, status: submitApp.data.result.status, percent: 100 }, ComponentName.SUBMIT_NEW_APP);
 			}
 		} catch (e) {
+			logError('Error submitting application', { draftId: draftId, error: e }, ComponentName.SUBMIT_NEW_APP);
 			if (e == 'Error: Request failed with status code 400') {
 				message.error('Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.');
 			} else {
@@ -273,6 +288,7 @@ const submitNewApp = async (
 			}
 			setSubmitted(false);
 		} finally {
+			logInfo('Submit application process completed', { draftId: draftId, application_sys_id: submitApp.data.result.application_sys_id || 'null' , status: submitApp.data.result.status || 'null'}, ComponentName.SUBMIT_NEW_APP);
 			setConfirmLoading(false);
 			checkAuth(setConfirmLoading, setAuth);
 		}

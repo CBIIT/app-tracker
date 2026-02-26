@@ -7,6 +7,8 @@ import SectionHeader from '../../../../components/UI/ReviewSectionHeader/ReviewS
 import LabelValuePair from '../../../../components/UI/LabelValuePair/LabelValuePair';
 
 import './Review.css';
+import { logInfo } from '../../../../utils/logging/logging';
+import { ComponentName } from '../../../../utils/logging/logConstants';
 
 const review = (props) => {
 	const contextValue = useContext(FormContext);
@@ -30,6 +32,8 @@ const review = (props) => {
 		key: index,
 		...reference,
 	}));
+
+	logInfo('Review form rendered', { statusCode: '200' }, ComponentName.REVIEW);
 
 	return (
 		<div>

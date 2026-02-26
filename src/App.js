@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 
 import './App.less';
 import Layout from './hoc/Layout/Layout';
+import { useLogging } from './hooks/useLogging';
+import { ComponentName } from './utils/logging/logConstants';
 
 import Home from './containers/Home/Home';
 import {
@@ -44,12 +46,12 @@ import TimeoutModal from './components/TimeoutModal/TimeoutModal';
 import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
-import { transformDateTimeToDisplay } from './components/Util/Date/Date';
 import { atleastOneChair } from './components/Util/RoleValidator/RoleValidator'
 
 const app = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const { auth, setAuth } = useAuth();	// this populates auth
+	const { logInfo } = useLogging();
 	
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
@@ -59,8 +61,10 @@ const app = () => {
 	let routes = [];
 	const { isUserLoggedIn, user, tenants } = auth;
 
+	logInfo('App Rendered', { statusCode: '200' }, ComponentName.SSJ_HOME_PAGE);
+
 	if (user && isUserLoggedIn) {
-		console.log(`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`);
+		logInfo('Session start', {}, ComponentName.SSJ_HOME_PAGE);
 	}
 
 	if (isUserLoggedIn) {

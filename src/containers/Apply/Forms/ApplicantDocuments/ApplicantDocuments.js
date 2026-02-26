@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Form, Upload, Button, message } from 'antd';
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import EditableFocusArea from '../../../../components/UI/EditableFocusArea/EditableFocusArea';
+import { useLogging } from '../../../../hooks/useLogging';
 import './ApplicantDocuments.css';
 import axios from 'axios';
 import { GET_VACANCY_MANAGER_VIEW } from '../../../../constants/ApiEndpoints';
@@ -14,6 +15,7 @@ const ApplicantDocuments = (props) => {
 	const [applicantDocuments, setApplicantDocuments] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [requireFocusArea, setRequireFocusArea] = useState('0');
+	const { logInfo, logError } = useLogging();
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -25,15 +27,17 @@ const ApplicantDocuments = (props) => {
 
 	const loadApplication = async () => {
 		try {
-			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);
+			const url = GET_VACANCY_MANAGER_VIEW + props.vacancyId;
+			const vacancy = await axios.get(url);
+			logInfo('Vacancy manager view fetched successfully', { statusCode: vacancy.status }, 'ApplicantDocuments');
+			
 			const reqFocusAreaValue = vacancy.data.result.basic_info?.require_focus_area?.value
 			if (reqFocusAreaValue !== "" || reqFocusAreaValue !== undefined) {
 				setRequireFocusArea(reqFocusAreaValue);
 			}
 
 		} catch (error) {
-			message.error('Sorry, an error occurred while loading.');
-			throw error;
+			logError('Error loading vacancy manager view', {url : GET_VACANCY_MANAGER_VIEW + props.vacancyId, error: error}, 'ApplicantDocuments');
 		}
 	};
 
@@ -102,6 +106,11 @@ const ApplicantDocuments = (props) => {
 	};
 
 	const storeFile = (changedInfo, index, appDocs) => {
+		logInfo('File uploaded', { 
+			fileName: changedInfo.file?.name, 
+			fileSize: changedInfo.file?.size,
+			documentIndex: index 
+		}, 'ApplicantDocuments');
 		appDocs[index]?.file?.fileList.push(changedInfo.file);
 		// set the default file to the new file in the form data
 		var target = event.target || event.srcElement;
@@ -127,6 +136,8 @@ const ApplicantDocuments = (props) => {
 		tempList.push(visualizedFile);
 		return tempList;
 	};
+
+	logInfo('Applicant Documents form rendered', { statusCode: '200' }, 'ApplicantDocuments');
 
 	return !isLoading && applicantDocuments && applicantDocuments.length !== 0 ? (
 		<div>
