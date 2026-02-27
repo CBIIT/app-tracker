@@ -159,6 +159,11 @@ describe('FinalizeVacancy component tests', () => {
             expect(screen.getByText(/team-distribution@example\.com/i)).toBeInTheDocument();
         }, { timeout: 3000 });
 
+        const pocHeading = screen.getByRole('heading', {
+            name: /Vacancy Point of Contact Information/i,
+        });
+        expect(pocHeading.textContent).toBe('Vacancy Point of Contact Information');
+
     });
 
     test('renders FinalizeVacancy with vacancyPoc type as User', async () => {
@@ -188,5 +193,37 @@ describe('FinalizeVacancy component tests', () => {
             expect(getByTestId('vacancy-poc-display')).toBeInTheDocument();
         }, { timeout: 3000 });
 
+    });
+
+    test('shows exclamation in POC heading when Email Distribution List is missing email value', async () => {
+        const missingEmailDistListData = {
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: undefined,
+                vacancyPocEmail: undefined,
+                vacancyPocType: ['Email Distribution List'],
+                isUserPoc: 'no',
+            },
+            mandatoryStatements: initialValues.mandatoryStatements || {},
+            vacancyCommittee: initialValues.vacancyCommittee || {},
+            emailTemplates: initialValues.emailTemplates || {},
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={missingEmailDistListData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            const pocHeading = screen.getByText(/Vacancy Point of Contact Information/i, {
+                selector: 'h2',
+            });
+            expect(pocHeading.textContent).toBe('! Vacancy Point of Contact Information');
+        }, { timeout: 3000 });
+        
     });
 });
