@@ -61,6 +61,16 @@ const finalizeVacancy = (props) => {
 	}
 
 	let vacancyPocDisplay = {};
+	const vacancyPocTypes = basicInfo?.vacancyPocType || [];
+	const requiresUserPoc =
+		vacancyPocTypes.includes('User') || vacancyPocTypes.includes('Both');
+	const requiresEmailPoc =
+		vacancyPocTypes.includes('Email Distribution List') ||
+		vacancyPocTypes.includes('Both');
+	const hasUserPoc = !!basicInfo?.vacancyPoc;
+	const hasEmailPoc = !!basicInfo?.vacancyPocEmail;
+	const hasValidVacancyPocInfo =
+		(!requiresUserPoc || hasUserPoc) && (!requiresEmailPoc || hasEmailPoc);
 
 	if (basicInfo && basicInfo.vacancyPoc && basicInfo.vacancyPocType?.includes('Both')) {
 		for (let i = 0; i < allPackageInitiators.length; i++) {
@@ -109,8 +119,8 @@ const finalizeVacancy = (props) => {
 					theme={'bubble'}
 				/>
 				<div>
-					<h2 style={basicInfo && basicInfo.vacancyPoc ? null : { color: 'red' }}>
-						{basicInfo && basicInfo.vacancyPoc ? null : '! '}Vacancy Point of Contact
+					<h2 style={hasValidVacancyPocInfo ? null : { color: 'red' }}>
+						{hasValidVacancyPocInfo ? null : '! '}Vacancy Point of Contact
 						Information
 					</h2>
 
