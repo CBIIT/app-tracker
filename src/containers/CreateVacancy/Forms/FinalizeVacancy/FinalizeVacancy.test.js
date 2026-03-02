@@ -4,7 +4,7 @@ import React, { useState as usestateMock } from 'react';
 import { initialValues } from '../../Forms/FormsInitialValues';
 import useAuth from '../../../../hooks/useAuth';
 import axios from 'axios';
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 jest.mock('../../../../hooks/useAuth');
 jest.mock('axios');
@@ -225,5 +225,187 @@ describe('FinalizeVacancy component tests', () => {
             expect(pocHeading.textContent).toBe('! Vacancy Point of Contact Information');
         }, { timeout: 3000 });
         
+    });
+
+    test('calls edit handlers for all visible section headers', async () => {
+        const clickData = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+            },
+            vacancyCommittee: [],
+            emailTemplates: initialValues.emailTemplates,
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={clickData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.getAllByRole('button', { name: /Edit Section/i }).length).toBe(4);
+        });
+
+        const editButtons = screen.getAllByRole('button', { name: /Edit Section/i });
+        editButtons.forEach((button) => fireEvent.click(button));
+
+        expect(mockEditButtonClick).toHaveBeenNthCalledWith(1, 0);
+        expect(mockEditButtonClick).toHaveBeenNthCalledWith(2, 1);
+        expect(mockEditButtonClick).toHaveBeenNthCalledWith(3, 2);
+        expect(mockEditButtonClick).toHaveBeenNthCalledWith(4, 3);
+    });
+
+    test('renders date fallback branches for close date and scoring due by date', async () => {
+        const dateBranchData = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+                openDate: '2024-07-01T00:00:00.000Z',
+                useCloseDate: true,
+                closeDate: undefined,
+            },
+        };
+        
+        const scoringMissingData = {
+            ...dateBranchData,
+            basicInfo: {
+                ...dateBranchData.basicInfo,
+                closeDate: '2024-07-10T00:00:00.000Z',
+                scoringDueByDate: '',
+            },
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={dateBranchData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('7/1/2024')).toBeInTheDocument();
+            expect(screen.getByText('! Close Date')).toBeInTheDocument();
+        });
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={scoringMissingData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText(/Scoring Due By Date/i)).toBeInTheDocument();
+        });
+    });
+
+    test('renders location and stadtman focus area branch', async () => {
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                tenants: [{ value: 'tenant-1', label: 'Stadtman' }],
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                }
+            },
+            currentTenant: 'tenant-1',
+        });
+
+        const stadtmanData = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+                location: 'Bethesda, MD',
+                requireFocusArea: true,
+            },
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={stadtmanData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Bethesda, MD')).toBeInTheDocument();
+            expect(screen.getByText('Focus Area')).toBeInTheDocument();
+            expect(screen.getByText('Visible')).toBeInTheDocument();
+        });
+    });
+
+    test('renders reference collection date fallback when date is missing', async () => {
+        const refData = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+                referenceCollection: true,
+                referenceCollectionDate: '',
+            },
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={refData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Reference Collection Date')).toBeInTheDocument();
+        });
+    });
+
+    test('hides read-only and optional sections when flags are enabled', async () => {
+        const hiddenData = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+            },
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={hiddenData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+                readOnlyMember={true}
+                hideCommitteeSection={true}
+                hideEmails={true}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.queryByText('Number of Scoring Categories')).not.toBeInTheDocument();
+            expect(screen.queryByText('Mandatory Statements')).not.toBeInTheDocument();
+            expect(screen.queryByText('Vacancy Committee')).not.toBeInTheDocument();
+            expect(screen.queryByText('Email Templates')).not.toBeInTheDocument();
+        });
     });
 });
