@@ -408,4 +408,82 @@ describe('FinalizeVacancy component tests', () => {
             expect(screen.queryByText('Email Templates')).not.toBeInTheDocument();
         });
     });
+
+    test('renders Not Visible when stadtman tenant has requireFocusArea set to false', async () => {
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                tenants: [{ value: 'tenant-1', label: 'Stadtman' }],
+                user: {
+                    isManager: true,
+                    isExecSec: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+            },
+            currentTenant: 'tenant-1',
+        });
+
+        const stadtmanDataFocusHidden = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+                location: '',
+                requireFocusArea: false,
+            },
+        };
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={stadtmanDataFocusHidden}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Focus Area')).toBeInTheDocument();
+            expect(screen.getByText('Not Visible')).toBeInTheDocument();
+        });
+    });
+
+    test('covers location fallback branches by using a stateful location getter', async () => {
+        const getterBranchData = {
+            ...initialValues,
+            basicInfo: {
+                ...initialValues.basicInfo,
+                appointmentPackageIndicator: 'user-uid',
+                vacancyPoc: 'user-uid',
+                vacancyPocType: ['User'],
+            },
+        };
+
+        let locationReadCount = 0;
+        Object.defineProperty(getterBranchData.basicInfo, 'location', {
+            configurable: true,
+            enumerable: true,
+            get: () => {
+                locationReadCount += 1;
+                return locationReadCount % 3 === 1 ? 'Bethesda, MD' : '';
+            },
+        });
+
+        rtRender(
+            <FinalizeVacancy
+                allForms={getterBranchData}
+                onEditButtonClick={mockEditButtonClick}
+                errorSections={[]}
+            />
+        );
+
+        await waitFor(() => {
+            const locationHeading = screen.getByRole('heading', { name: /Location/i });
+            expect(locationHeading.textContent).toBe('! Location');
+            expect(screen.queryByText('Bethesda, MD')).not.toBeInTheDocument();
+        });
+    });
 });
