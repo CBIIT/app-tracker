@@ -1,14 +1,14 @@
-import RegisterOkta from "./RegisterOkta";
+import RegisterOkta from './RegisterOkta';
 import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
-import { REGISTER_OKTA } from "../../constants/Routes";
-import { CREATE_OKTA_USER } from "../../constants/ApiEndpoints";
-import { MemoryRouter, useHistory } from "react-router-dom";
-import { render, fireEvent, screen, waitFor } from '@testing-library/react'
+import { REGISTER_OKTA } from '../../constants/Routes';
+import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
+import { MemoryRouter, useHistory } from 'react-router-dom';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
-    __esModule: true,
+	__esModule: true,
 	default: jest.fn(),
 }));
 jest.mock('react-router-dom', () => {
@@ -23,20 +23,20 @@ describe('RegisterOkta Component', () => {
 	const mockGoBack = jest.fn();
 	const originalLocation = window.location;
 
-	const successMessage = 
+	const successMessage =
 		'User account created, please check your email for a message from Okta to activate your account';
-	const errorMessage = 
-		'An error occurred while trying to create your account.  Please try again later.  If the problem persists please contact NCIAppSupport@mail.nih.gov';
+	const errorMessage =
+		/an error occurred while trying to create your account\.\s+please try again later\.\s+if the problem persists please contact nciappsupport@mail\.nih\.gov/i;
 
-    beforeAll(() => {
-        Object.defineProperty(window, 'matchMedia', {
+	beforeAll(() => {
+		Object.defineProperty(window, 'matchMedia', {
 			writable: true,
 			value: jest.fn().mockImplementation((query) => ({
 				matches: false,
 				media: query,
 				onchange: null,
-				addListener: jest.fn(), // deprecated
-				removeListener: jest.fn(), // deprecated
+				addListener: jest.fn(),
+				removeListener: jest.fn(),
 				addEventListener: jest.fn(),
 				removeEventListener: jest.fn(),
 				dispatchEvent: jest.fn(),
@@ -45,11 +45,11 @@ describe('RegisterOkta Component', () => {
 
 		delete window.location;
 		window.location = { href: 'http://localhost/' };
-    });
+	});
 
-    afterAll(() => {
-        window.location = originalLocation;
-    });
+	afterAll(() => {
+		window.location = originalLocation;
+	});
 
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -57,7 +57,7 @@ describe('RegisterOkta Component', () => {
 		useAuth.mockReturnValue({
 			auth: {
 				iTrustGlideSsoId: 'id12345',
-                oktaLoginAndRedirectUrl: 'https://redirecturl/'
+				oktaLoginAndRedirectUrl: 'https://redirecturl/',
 			},
 		});
 
@@ -66,20 +66,20 @@ describe('RegisterOkta Component', () => {
 		});
 	});
 
-	renderComponent = () => {
+	const renderComponent = () => {
 		return render(
-        	<MemoryRouter initialEntries={[REGISTER_OKTA]} >
-                <RegisterOkta />
-            </MemoryRouter>
+			<MemoryRouter initialEntries={[REGISTER_OKTA]}>
+				<RegisterOkta />
+			</MemoryRouter>
 		);
 	};
 
 	const fillRequiredFields = ({
 		firstname = 'Jane',
-		lastname= 'Doe',
+		lastname = 'Doe',
 		email = 'jane@example.com',
-        confirmEmail = 'jane@example.com',
-        phone = '301-555-1212',
+		confirmEmail = 'jane@example.com',
+		phone = '301-555-1212',
 	} = {}) => {
 		const nameInputs = screen.getAllByPlaceholderText('Please enter');
 		fireEvent.change(nameInputs[0], { target: { value: firstname } });
@@ -125,15 +125,13 @@ describe('RegisterOkta Component', () => {
 		renderComponent();
 
 		const emailInput = screen.getAllByPlaceholderText('example@email.com')[0];
-        fireEvent.change(emailInput, { target: { value: 'user@nih.gov' } });
+		fireEvent.change(emailInput, { target: { value: 'user@nih.gov' } });
 
-        const createButton = screen.getByRole('button', { name: /create account/i });
-        expect(createButton).toBeDisabled();
+		const createButton = screen.getByRole('button', { name: /create account/i });
+		expect(createButton).toBeDisabled();
 
-        expect(
-            screen.getByText(/you have entered an nih email/i)
-        ).toBeInTheDocument();
-    });
+		expect(screen.getByText(/you have entered an nih email/i)).toBeInTheDocument();
+	});
 
 	test('Should disable create account and show NIH notice for mail.nih.gov', () => {
 		renderComponent();
@@ -162,7 +160,7 @@ describe('RegisterOkta Component', () => {
 
 		fillRequiredFields({
 			email: 'jane@example.com',
-            confirmEmail: 'different@example.com',
+			confirmEmail: 'different@example.com',
 		});
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
@@ -173,92 +171,121 @@ describe('RegisterOkta Component', () => {
 
 	test('Should remove mismatch for emails after it has been corrected', async () => {
 		axios.post.mockResolvedValue({
-            data: { result: successMessage },
-        });
+			data: { result: successMessage },
+		});
 
-        renderComponent();
+		renderComponent();
 
-        fillRequiredFields({
-            email: 'jane@example.com',
-            confirmEmail: 'different@example.com',
-        });
+		fillRequiredFields({
+			email: 'jane@example.com',
+			confirmEmail: 'different@example.com',
+		});
 
-        fireEvent.click(screen.getByRole('button', { name: /create account/i }));
-        expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
 
-        const confirmInput = screen.getAllByPlaceholderText('example@email.com')[1];
-        fireEvent.change(confirmInput, { target: { value: 'jane@example.com' } });
+		const confirmInput = screen.getAllByPlaceholderText('example@email.com')[1];
+		fireEvent.change(confirmInput, { target: { value: 'jane@example.com' } });
 
-        fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-        await waitFor(() => {
-            expect(screen.queryByText('Emails do not match.')).not.toBeInTheDocument();
-            expect(axios.post).toHaveBeenCalledWith(CREATE_OKTA_USER, {
-                firstname: 'Jane',
-                lastname: 'Doe',
-                email: 'jane@example.com',
-                confirmEmail: 'jane@example.com',
-                phone: '301-555-1212',
-            });
+		await waitFor(() => {
+			expect(screen.queryByText('Emails do not match.')).not.toBeInTheDocument();
+			expect(axios.post).toHaveBeenCalledWith(CREATE_OKTA_USER, {
+				firstname: 'Jane',
+				lastname: 'Doe',
+				email: 'jane@example.com',
+				confirmEmail: 'jane@example.com',
+				phone: '301-555-1212',
+			});
 			expect(screen.getByText(successMessage)).toBeInTheDocument();
-        });
+		});
 	});
 
 	test('Should show phone validation error for invalid phone number', async () => {
 		renderComponent();
 
-		fillRequiredFields({ phone: '3'});
+		fillRequiredFields({ phone: '3' });
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-		expect(
-			await screen.findByText('Please enter a valid phone number.')
-		).toBeInTheDocument();
+		expect(await screen.findByText('Please enter a valid phone number.')).toBeInTheDocument();
 		expect(axios.post).not.toHaveBeenCalled();
 	});
 
 	test('Should submit valid form and show success result', async () => {
 		axios.post.mockResolvedValue({
-            data: { result: successMessage },
-        });
+			data: { result: successMessage },
+		});
 
-        const { container } = renderComponent();
+		const { container } = renderComponent();
 
 		fillRequiredFields();
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
 		await waitFor(() => {
-			expect(axios.post).toHaveBeenCalledWith(
-				CREATE_OKTA_USER, {
-                firstname: 'Jane',
-                lastname: 'Doe',
-                email: 'jane@example.com',
-                confirmEmail: 'jane@example.com',
-                phone: '301-555-1212',
-            });
+			expect(axios.post).toHaveBeenCalledWith(CREATE_OKTA_USER, {
+				firstname: 'Jane',
+				lastname: 'Doe',
+				email: 'jane@example.com',
+				confirmEmail: 'jane@example.com',
+				phone: '301-555-1212',
+			});
 			expect(screen.getByText(/user account created/i)).toBeInTheDocument();
-            expect(container.querySelector('.ant-result-success')).toBeInTheDocument();
+			expect(container.querySelector('.ant-result-success')).toBeInTheDocument();
 		});
 	});
 
 	test('shows already exists warning when api result includes existing user text', async () => {
-        axios.post.mockResolvedValue({
-            data: {
-                result:
-                    'Error creating user: login: An object with this field already exists in the current organization',
-            },
-        });
+		axios.post.mockResolvedValue({
+			data: {
+				result:
+					'Error creating user: login: An object with this field already exists in the current organization',
+			},
+		});
 
-        const { container } = renderComponent();
+		const { container } = renderComponent();
 
-        fillRequiredFields();
-        fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+		fillRequiredFields();
+		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-        await waitFor(() => {
-            expect(
-                screen.getByText(/this account already exists\. please try logging in\./i)
-            ).toBeInTheDocument();
-            expect(container.querySelector('.ant-result-warning')).toBeInTheDocument();
-        });
-    });
-})
+		await waitFor(() => {
+			expect(
+				screen.getByText(/this account already exists\. please try logging in\./i)
+			).toBeInTheDocument();
+			expect(container.querySelector('.ant-result-warning')).toBeInTheDocument();
+		});
+	});
+
+	test('shows warning when api result includes errorCode', async () => {
+		axios.post.mockResolvedValue({
+			data: {
+				result: 'errorCode: E0000001',
+			},
+		});
+
+		const { container } = renderComponent();
+
+		fillRequiredFields();
+		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+
+		await waitFor(() => {
+			expect(screen.getByText(errorMessage)).toBeInTheDocument();
+			expect(container.querySelector('.ant-result-warning')).toBeInTheDocument();
+		});
+	});
+
+	test('shows warning when api request throws an error', async () => {
+		axios.post.mockRejectedValue(new Error('Network Error'));
+
+		const { container } = renderComponent();
+
+		fillRequiredFields();
+		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+
+		await waitFor(() => {
+			expect(screen.getByText(errorMessage)).toBeInTheDocument();
+			expect(container.querySelector('.ant-result-warning')).toBeInTheDocument();
+		});
+	});
+});

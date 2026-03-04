@@ -13,7 +13,6 @@ const registerOkta = () => {
 	const [message, setMessage] = useState();
 	const [error, setError] = useState(false);
 	const [isEmailNih, setIsEmailNih] = useState(false);
-	// oktaGlideSsoId,
 	const {
 		auth: { iTrustGlideSsoId, oktaLoginAndRedirectUrl },
 	} = useAuth();
@@ -63,24 +62,10 @@ const registerOkta = () => {
 		}
 
 		setIsLoading(false);
-
-		// Error scenario
-		//   "data": {
-		//     "result": "Error creating user: {\"errorCode\":\"E0000001\",\"errorSummary\":\"Api validation failed: login\",\"errorLink\":\"E0000001\",\"errorId\":\"oae4hfGdCgIRMeduMeGyL4RmQ\",\"errorCauses\":[{\"errorSummary\":\"login: An object with this field already exists in the current organization\"}]}"
-		//   },
-
-		// Success scenario
-		// "data": {
-		// 	"result": "User account created, please check your email for a message from Okta to activate your account"
-		//   },
 	};
 
 	const handleLoginButtonClick = () => {
 		location.href = oktaLoginAndRedirectUrl;
-			// '/nav_to.do?uri=' +
-			// encodeURIComponent('/nci-scss.do') +
-			// '&glide_sso_id=' +
-			// oktaGlideSsoId;
 	};
 
 	const handleCancelButtonClick = () => {
