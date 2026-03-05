@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import useTimeout from './useTimeout';
 import TimeoutContext from '../context/TimeoutContext';
 import React from 'react';

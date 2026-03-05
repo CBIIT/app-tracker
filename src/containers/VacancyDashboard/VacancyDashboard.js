@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
 	Table,
 	Button,
@@ -48,7 +48,7 @@ import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidato
 
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
-	const history = useHistory();
+	const navigate = useNavigate();
 	const [currentVacancy, setCurrentVacancy] = useState([]);
 	const [extendModalVisible, setExtendModalVisible] = useState(false);
 	const [removeModalVisible, setRemoveModalVisible] = useState(false);
@@ -79,7 +79,7 @@ const vacancyDashboard = () => {
 	);
 
 	const tabChangeHandler = async (selectedTab) => {
-		history.push(VACANCY_DASHBOARD + '/' + selectedTab);
+		navigate(VACANCY_DASHBOARD + '/' + selectedTab);
 	};
 
 	const cancelToken = axios.CancelToken.source();
@@ -219,8 +219,8 @@ const vacancyDashboard = () => {
 	};
 
 	const handleEditButtonClick = (record) => {
-		if (record.state === 'draft') history.push(EDIT_DRAFT + record.sys_id);
-		else history.push(EDIT_VACANCY + record.sys_id);
+		if (record.state === 'draft') navigate(EDIT_DRAFT + record.sys_id);
+		else navigate(EDIT_VACANCY + record.sys_id);
 	};
 
 	// Preflight Columns
@@ -475,7 +475,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
+							navigate(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
 						}}
 					>
 						<UserOutlined /> View Applicants
@@ -484,7 +484,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id);
+							navigate(MANAGE_VACANCY + vacancy.sys_id);
 						}}
 					>
 						<FileTextOutlined /> View Vacancy
@@ -539,7 +539,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
+							navigate(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
 						}}
 					>
 						<UserOutlined /> View Applicants
@@ -548,7 +548,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id);
+							navigate(MANAGE_VACANCY + vacancy.sys_id);
 						}}
 					>
 						<FileTextOutlined /> View Vacancy

@@ -9,6 +9,6 @@ module.exports = {
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js'
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!@ant-design|@babel/runtime|antd|react|react-dom|react-router-dom|axios)',
+    '/node_modules/(?!@ant-design|@babel/runtime|antd|react|react-dom|react-router|react-router-dom|axios)',
   ],
 }

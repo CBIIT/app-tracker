@@ -38,17 +38,15 @@ jest.mock('axios');
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
-}));
-jest.mock('../Profile/Util/ConvertDataFromBackend');
-jest.mock('react-router-dom', () => ({
-	...jest.requireActual('react-router-dom'),
-	Link: jest.fn(),
+	useNavigate: jest.fn().mockReturnValue(jest.fn()),
+	Link: jest.fn().mockImplementation(({ children }) => children),
 	useLocation: jest.fn().mockImplementation(() => {
 		return {
 			pathname: '/apply',
 		}
 	})
 }));
+jest.mock('../Profile/Util/ConvertDataFromBackend');
 
 describe('Apply component', () => {
 	let mockVacancyId;

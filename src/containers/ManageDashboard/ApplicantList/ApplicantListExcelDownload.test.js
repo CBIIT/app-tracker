@@ -77,7 +77,6 @@ describe('ApplicantList Excel export', () => {
 
     // render component
     rtRender(
-      <HashRouter>
         <ApplicantList
           vacancyTitle={'Test Vacancy'}
           vacancyState={'triage'}
@@ -87,7 +86,6 @@ describe('ApplicantList Excel export', () => {
           userCommitteeRole={''}
           reloadVacancy={jest.fn()}
         />
-      </HashRouter>
     );
     // wait for data load
     await screen.findByText(/Doe, John/i);

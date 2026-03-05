@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import useAuth from '../../hooks/useAuth';
 
@@ -16,7 +16,13 @@ describe('ProtectedRoute', () => {
 
         const { getByText } = render(
             <MemoryRouter initialEntries={['/protected']}>
-                <ProtectedRoute component={TestComponent} useOktaAuth={false} />
+                <Routes>
+                    <Route path="/protected" element={
+                        <ProtectedRoute useOktaAuth={false}>
+                            <TestComponent />
+                        </ProtectedRoute>
+                    } />
+                </Routes>
             </MemoryRouter>
         );
 
@@ -33,7 +39,13 @@ describe('ProtectedRoute', () => {
 
         render(
             <MemoryRouter initialEntries={['/protected']}>
-                <ProtectedRoute component={TestComponent} useOktaAuth={false} />
+                <Routes>
+                    <Route path="/protected" element={
+                        <ProtectedRoute useOktaAuth={false}>
+                            <TestComponent />
+                        </ProtectedRoute>
+                    } />
+                </Routes>
             </MemoryRouter>
         );
 
@@ -50,7 +62,13 @@ describe('ProtectedRoute', () => {
 
         render(
             <MemoryRouter initialEntries={['/protected']}>
-                <ProtectedRoute component={TestComponent} useOktaAuth={true} />
+                <Routes>
+                    <Route path="/protected" element={
+                        <ProtectedRoute useOktaAuth={true}>
+                            <TestComponent />
+                        </ProtectedRoute>
+                    } />
+                </Routes>
             </MemoryRouter>
         );
 

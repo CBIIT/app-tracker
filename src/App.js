@@ -1,5 +1,4 @@
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import './App.less';
@@ -66,53 +65,51 @@ const app = () => {
 	if (isUserLoggedIn) {
 		if (atleastOneChair(tenants)) {
 			routes.push(
-				<ProtectedRoute
+				<Route
 					key='chair-dashboard'
 					path={CHAIR_DASHBOARD}
-					component={ChairDashboard}
+					element={<ProtectedRoute><ChairDashboard /></ProtectedRoute>}
 				/>
 			);
 		}
 
 		if (user.isManager) {
 			routes.push(
-				<ProtectedRoute
+				<Route
 					key='vacancy-dashboard'
 					path={VACANCY_DASHBOARD + '/:tab?'}
-					exact
-					component={VacancyDashboard}
+					element={<ProtectedRoute><VacancyDashboard /></ProtectedRoute>}
 				/>,
-				<ProtectedRoute
+				<Route
 					key='exe-sec-dashboard'
 					path={EXE_SEC_DASHBOARD}
-					component={CommitteeDashboard}
+					element={<ProtectedRoute><CommitteeDashboard /></ProtectedRoute>}
 				/>,
-				<ProtectedRoute
+				<Route
 					key='create-vacancy'
 					path={CREATE_VACANCY}
-					component={CreateVacancy}
+					element={<ProtectedRoute><CreateVacancy /></ProtectedRoute>}
 				/>,
-				<ProtectedRoute
+				<Route
 					key='edit-vacancy'
 					path={EDIT_VACANCY + ':sysId'}
-					component={EditVacancy}
-					exact
+					element={<ProtectedRoute><EditVacancy /></ProtectedRoute>}
 				/>,
 
-				<ProtectedRoute
+				<Route
 					key='edit-draft'
 					path={EDIT_DRAFT + ':sysId'}
-					component={EditDraft}
+					element={<ProtectedRoute><EditDraft /></ProtectedRoute>}
 				/>
 			);
 		}
 
 		if (user.roles.includes(COMMITTEE_MEMBER_ROLE))
 			routes.push(
-				<ProtectedRoute
+				<Route
 					key='committee-dashboard'
 					path={COMMITTEE_DASHBOARD}
-					component={CommitteeDashboard}
+					element={<ProtectedRoute><CommitteeDashboard /></ProtectedRoute>}
 				/>
 			);
 
@@ -122,132 +119,123 @@ const app = () => {
 			user.roles.includes(COMMITTEE_MEMBER_ROLE)
 		) {
 			routes.push(
-				<ProtectedRoute
+				<Route
 					key='manage-application'
 					path={MANAGE_APPLICATION + ':sysId'}
-					component={Application}
+					element={<ProtectedRoute><Application /></ProtectedRoute>}
 				/>,
-				<ProtectedRoute
+				<Route
 					key='manage-vacancy'
 					path={MANAGE_VACANCY + ':sysId/:tab?'}
-					component={ManageDashboard}
-					exact
+					element={<ProtectedRoute><ManageDashboard /></ProtectedRoute>}
 				/>
 			);
 		}
 
 		routes.push(
-			<ProtectedRoute
+			<Route
 				key='applicant-dashboard'
 				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
+				element={<ProtectedRoute><ApplicantDashboard /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='edit-application'
 				path={EDIT_APPLICATION + ':draft?/:appSysId'}
-				component={EditApplication}
+				element={<ProtectedRoute><EditApplication /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='view-application'
 				path={VIEW_APPLICATION + ':appSysId'}
-				component={ApplicantApplicationView}
+				element={<ProtectedRoute><ApplicantApplicationView /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='applicant-profile'
 				path={PROFILE + ':sysId'}
-				component={ApplicantProfile}
+				element={<ProtectedRoute><ApplicantProfile /></ProtectedRoute>}
 			/>
 		);
 	} else {
 		routes.push(
-			<ProtectedRoute
+			<Route
 				key='manage-application'
 				path={MANAGE_APPLICATION + ':sysId'}
-				component={Application}
+				element={<ProtectedRoute><Application /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='vacancy-dashboard'
 				path={VACANCY_DASHBOARD + '/:tab?'}
-				exact
-				component={VacancyDashboard}
+				element={<ProtectedRoute><VacancyDashboard /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='edit-application'
 				path={EDIT_APPLICATION + ':draft?/:appSysId'}
-				component={EditApplication}
+				element={<ProtectedRoute><EditApplication /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='chair-dashboard'
 				path={CHAIR_DASHBOARD}
-				component={ChairDashboard}
+				element={<ProtectedRoute><ChairDashboard /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='create-vacancy'
 				path={CREATE_VACANCY}
-				component={CreateVacancy}
+				element={<ProtectedRoute><CreateVacancy /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='edit-vacancy'
 				path={EDIT_VACANCY + ':sysId'}
-				component={EditVacancy}
-				exact
+				element={<ProtectedRoute><EditVacancy /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='manage-vacancy'
 				path={MANAGE_VACANCY + ':sysId/:tab?'}
-				component={ManageDashboard}
-				exact
+				element={<ProtectedRoute><ManageDashboard /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='edit-draft'
 				path={EDIT_DRAFT + ':sysId'}
-				component={EditDraft}
+				element={<ProtectedRoute><EditDraft /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='committee-dashboard'
 				path={COMMITTEE_DASHBOARD}
-				component={CommitteeDashboard}
+				element={<ProtectedRoute><CommitteeDashboard /></ProtectedRoute>}
 			/>,
-			<ProtectedRoute
+			<Route
 				key='applicant-dashboard'
 				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-				useOktaAuth={true}
+				element={<ProtectedRoute useOktaAuth={true}><ApplicantDashboard /></ProtectedRoute>}
 			/>
 		);
 	}
 
 	routes.push(
-		<ProtectedRoute
+		<Route
 				key='applicant-dashboard'
 				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-				useOktaAuth={true}
+				element={<ProtectedRoute useOktaAuth={true}><ApplicantDashboard /></ProtectedRoute>}
 			/>,
-		<ProtectedRoute
+		<Route
 			key='apply'
 			path={APPLY + ':vacancySysId'}
-			component={Apply}
-			useOktaAuth={true}
+			element={<ProtectedRoute useOktaAuth={true}><Apply /></ProtectedRoute>}
 		/>,
 		<Route
 			key='view-vacancy'
 			path={VIEW_VACANCY + ':sysId'}
-			component={ViewVacancyDetails}
+			element={<ViewVacancyDetails />}
 		/>,
-		<Route key='register-okta' path={REGISTER_OKTA} component={RegisterOkta} />,
-		<Route key='home' path='/' exact component={Home} />,
-		<Route key='404'>
-			<Redirect to='/' />
-		</Route>
+		<Route key='register-okta' path={REGISTER_OKTA} element={<RegisterOkta />} />,
+		<Route key='home' path='/' element={<Home />} />,
+		<Route key='404' path='*' element={<Navigate to='/' replace />} />
 	);
 
 	return !isLoading ? (
 		<Layout>
 			{isUserLoggedIn && <TimeoutModal />}
-			<Switch>{routes}</Switch>
+			<Routes>{routes}</Routes>
 		</Layout>
 	) : null;
 };
 
-export default hot(module)(app);
+export default app;

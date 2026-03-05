@@ -14,7 +14,7 @@ jest.mock('../../hooks/useAuth');
 jest.mock('../../components/Util/RoleValidator/RoleValidator');
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
     useLocation: jest.fn(),
 }));
 
@@ -25,7 +25,7 @@ import { message as antdMessage } from 'antd';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant, isExecSec } from '../../components/Util/RoleValidator/RoleValidator';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const { message } = jest.requireMock('antd');
 
@@ -52,9 +52,7 @@ describe('CommitteeDashboard component tests', () => {
 
     beforeEach(() => {
         const mockPush = jest.fn();
-        jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-            push: mockPush
-        });
+        jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
         useAuth.mockReturnValue({
             auth: { 
@@ -96,9 +94,7 @@ describe('CommitteeDashboard component tests', () => {
 
     test('<CommitteeDashboard /> should show error when user lacks access', async () => {
         const mockPush = jest.fn();
-        jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-            push: mockPush
-        });
+        jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
         // Mock to return false for this specific test
         validateRoleForCurrentTenant.mockImplementation(() => false);

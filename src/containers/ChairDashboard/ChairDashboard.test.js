@@ -14,7 +14,7 @@ jest.mock('../../hooks/useAuth');
 jest.mock('../../components/Util/RoleValidator/RoleValidator');
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
 }));
 
 import ChairDashboard from './ChairDashboard';
@@ -24,7 +24,7 @@ import axios from 'axios';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const { message } = jest.requireMock('antd');
 
@@ -44,9 +44,7 @@ describe('ChairDashboard component tests', () => {
 
     beforeEach(() => {
         const mockPush = jest.fn();
-        jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-            push: mockPush
-        });
+        jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
         useAuth.mockReturnValue({
             auth: {
@@ -100,9 +98,7 @@ describe('ChairDashboard component tests', () => {
 
     test('<ChairDashboard /> should show error when user is not a committee member', () => {
         const mockPush = jest.fn();
-        jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-            push: mockPush
-        });
+        jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
         // Mock to return false for this specific test
         validateRoleForCurrentTenant.mockImplementation(() => false);

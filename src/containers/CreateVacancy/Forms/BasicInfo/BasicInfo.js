@@ -29,13 +29,7 @@ import './BasicInfo.css';
 import '../../CreateVacancy.css';
 import { isRichTextEditorEmpty } from '../../../../components/Util/RichTextValidator/RichTextValidator';
 
-class Editor extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = { editorHtml: '', theme: 'snow' };
-		this.handleChange = this.handleChange.bind(this);
-	}
-}
+const Editor = {};
 
 Editor.modules = {
 	toolbar: [

@@ -1,7 +1,7 @@
 import { render, screen, waitFor, prettyDOM} from '@testing-library/react';
 import Application from './Application';
 import axios from 'axios';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.js';
 
 // Mock dependencies
@@ -9,7 +9,7 @@ jest.mock('axios');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
-  useHistory: jest.fn(),
+  useNavigate: jest.fn(),
 }));
 jest.mock('../../hooks/useAuth');
 
@@ -63,7 +63,7 @@ describe('Application component', () => {
     axios.post.mockResolvedValue({});
 
     useParams.mockReturnValue({ sysId: 'app1' });
-    useHistory.mockReturnValue({ push: jest.fn() });
+    useNavigate.mockReturnValue(jest.fn());
 
     useAuth.mockReturnValue({
       auth: {

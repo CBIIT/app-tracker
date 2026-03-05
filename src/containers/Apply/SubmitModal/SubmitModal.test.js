@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
     mockUseAuth, 
     mockFormData,
@@ -13,7 +13,7 @@ jest.mock('axios');
 jest.mock('./SubmitAppWorkflow/SubmitEdittedApp');
 jest.mock('./SubmitAppWorkflow/SubmitNewApp');
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
     useLocation: jest.fn(),
 }));
 
@@ -29,7 +29,7 @@ describe('SubmitModal component', () => {
         mockHandleCancel = jest.fn();
         useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        useNavigate.mockReturnValue(mockHistoryPush);
         delete window.location;
         window.location = {
             href: '',

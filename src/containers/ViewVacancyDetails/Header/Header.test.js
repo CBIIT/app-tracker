@@ -2,21 +2,16 @@ import React from 'react';
 import { render, screen, waitFor, act, findByText, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import { Button, message, Tooltip } from 'antd';
-import { useParams, useHistory, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
 import { APPLICANT_DASHBOARD, APPLY, REGISTER_OKTA } from '../../../constants/Routes';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
-
-    useParams: jest.fn(),
-    useHistory: jest.fn(),
-
-}));
-jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockUseNavigate,
+    useParams: jest.fn(),
+    useNavigate: jest.fn(),
 }));
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
@@ -43,6 +38,7 @@ const mockUseAuth = {
 describe('Header', () => {
     let mockUseAuth;
     let mockedUsedNavigate;
+    let mockHistoryPush;
 
     const myHeader = () => {
         const handleClick = () => {
@@ -74,7 +70,7 @@ describe('Header', () => {
 
             useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        useNavigate.mockReturnValue(mockHistoryPush);
         delete window.location;
         window.location = {
             href: '',

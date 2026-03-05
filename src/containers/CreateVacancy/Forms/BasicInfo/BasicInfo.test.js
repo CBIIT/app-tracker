@@ -150,7 +150,7 @@ describe('BasicInfo', () => {
 		expect(axios.get).toHaveBeenCalledTimes(2);
 		expect(vacancyOptions).toEqual(mockVacancyOptionsResponse);
 
-		waitFor(() => {
+		await waitFor(() => {
 			const PATSClarification = screen.getByText(
 				/The selections made in the fields below will be included in the package sent to PATS upon selecting a candidate./i
 			);

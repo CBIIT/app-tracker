@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table, message } from 'antd';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
@@ -14,7 +14,7 @@ const chairDashboard = () => {
 	const { auth: { tenants }, currentTenant } = useAuth();
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
@@ -36,7 +36,7 @@ const chairDashboard = () => {
 			message.destroy();
 			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
 			setIsLoading(false);
-			history.push('/');
+			navigate('/');
 		}
 	}, [currentTenant]);
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, userEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import UserPicker from './UserPicker';
 import useAuth from '../../../hooks/useAuth';
 import axios from 'axios';

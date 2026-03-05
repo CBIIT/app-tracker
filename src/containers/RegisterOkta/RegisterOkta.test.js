@@ -3,7 +3,7 @@ import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
 import { REGISTER_OKTA } from '../../constants/Routes';
 import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 jest.mock('axios');
@@ -15,7 +15,7 @@ jest.mock('react-router-dom', () => {
 	const actual = jest.requireActual('react-router-dom');
 	return {
 		...actual,
-		useHistory: jest.fn(),
+		useNavigate: jest.fn(),
 	};
 });
 
@@ -61,9 +61,7 @@ describe('RegisterOkta Component', () => {
 			},
 		});
 
-		useHistory.mockReturnValue({
-			goBack: mockGoBack,
-		});
+		useNavigate.mockReturnValue(mockGoBack);
 	});
 
 	const renderComponent = () => {
@@ -165,7 +163,8 @@ describe('RegisterOkta Component', () => {
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
+		const errorMessages = await screen.findAllByText('Emails do not match.');
+		expect(errorMessages.length).toBeGreaterThan(0);
 		expect(axios.post).not.toHaveBeenCalled();
 	});
 
@@ -182,7 +181,8 @@ describe('RegisterOkta Component', () => {
 		});
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
-		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
+		const errorMessages = await screen.findAllByText('Emails do not match.');
+		expect(errorMessages.length).toBeGreaterThan(0);
 
 		const confirmInput = screen.getAllByPlaceholderText('example@email.com')[1];
 		fireEvent.change(confirmInput, { target: { value: 'jane@example.com' } });

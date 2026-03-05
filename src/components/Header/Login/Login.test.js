@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PROFILE } from '../../../constants/Routes';
 import Login from './Login';
 import useAuth from '../../../hooks/useAuth';
 
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
     useLocation: jest.fn(),
 }));
 
@@ -31,7 +31,7 @@ describe('Login Component', () => {
         };
         useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        useNavigate.mockReturnValue(mockHistoryPush);
         delete window.location;
         window.location = {
             href: '',

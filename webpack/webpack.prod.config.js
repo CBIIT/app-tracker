@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const baseCfg = require('./webpack.base');
 const servicenowConfig = require('./servicenow.config');
 const DEFAULTS = { ASSET_SIZE_LIMIT: 10000 };
@@ -13,8 +12,8 @@ const cfg = {
 	entry: baseCfg.entry,
 	output: {
 		...baseCfg.output,
-		filename: '[name]-[contenthash]-js',
-		chunkFilename: CONFIG.JS_API_PATH + '[name]-[contenthash]-js',
+		filename: '[name]-[contenthash].js',
+		chunkFilename: CONFIG.JS_API_PATH + '[name]-[contenthash].js',
 	},
 	resolve: baseCfg.resolve,
 	stats: 'errors-only',
@@ -22,6 +21,7 @@ const cfg = {
 	devtool: 'hidden-source-map',
 
 	optimization: {
+		moduleIds: 'deterministic',
 		splitChunks: {
 			automaticNameDelimiter: '-',
 			cacheGroups: {
@@ -51,7 +51,6 @@ const cfg = {
 
 	plugins: [
 		new CleanWebpackPlugin(),
-		new webpack.HashedModuleIdsPlugin(),
 		baseCfg.plugins.createIndexHtml(),
 	],
 };

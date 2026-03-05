@@ -15,7 +15,7 @@ const submitEdittedApp = async (
 	setSubmitted,
 	setPercent,
 	setAppSysId,
-	history,
+	navigate,
 	checkAuth,
 	setAuth
 ) => {
@@ -159,7 +159,7 @@ const submitEdittedApp = async (
 					alignItems: 'center',
 				},
 			});
-			history.goBack();
+			navigate(-1);
 		}
 	};
 

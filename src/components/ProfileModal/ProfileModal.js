@@ -1,6 +1,6 @@
 import useAuth from '../../hooks/useAuth';
 import { Modal, Typography, Button } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
 	PROFILE,
 	REGISTER_OKTA
@@ -12,10 +12,10 @@ const ProfileModal = (props) => {
 	const {
 		auth: { isUserLoggedIn, user, oktaLoginAndRedirectUrl },
 	} = useAuth();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const handleRegistration = () => {
-		history.push(REGISTER_OKTA, "_blank")
+		navigate(REGISTER_OKTA)
 	};
 
 	const handleLogin = () => {
@@ -27,7 +27,7 @@ const ProfileModal = (props) => {
 	};
 
 	const handleFinishProfile = () => {
-		history.push(PROFILE + user.uid);
+		navigate(PROFILE + user.uid);
 	};
 
 	return isUserLoggedIn ? (
