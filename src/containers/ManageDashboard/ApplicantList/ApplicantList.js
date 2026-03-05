@@ -129,6 +129,7 @@ const applicantList = (props) => {
 			key: 'totalReceivedReferences',
 		},
 	]);
+	const [isLoadingExcelData, setIsLoadingExcelData] = useState(false);
 	const [allApplicantsForExcel, setAllApplicantsForExcel] = useState([]);
 	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
@@ -483,13 +484,13 @@ const applicantList = (props) => {
 	}, [allApplicantsForExcel]);
 
 	useEffect(() => {
-		if (allApplicantsForExcel.length === 0) {
+		if (allApplicantsForExcel.length === 0 && !isLoadingExcelData) {
 			loadAllApplicantsForExcel();
 		}
-
 	}, [tableLoading]);
 
 	const loadAllApplicantsForExcel = async () => {
+		setIsLoadingExcelData(true);
 		const api =
 			props.vacancyState == ROLLING_CLOSE
 				? GET_ROLLING_APPLICANT_LIST
@@ -503,6 +504,10 @@ const applicantList = (props) => {
 			message.error(
 				'Sorry!  An error occurred while loading the applicants for Excel.  Try reloading.'
 			);
+			setAllApplicantsForExcel([]);
+			setIsLoadingExcelData(false);
+		} finally {
+			setIsLoadingExcelData(false);
 		}
 	};
 
@@ -1162,7 +1167,7 @@ const applicantList = (props) => {
 					marginRight: '4px',
 				}}
 			>
-				<Tooltip title={excelApplicants.length === 0 ? 'Export the current applicant list to Excel. Note: This may take a moment for larger applicant pools.' : ''}>
+				<Tooltip title={excelApplicants.length === 0 ? 'Loading applicant data, please wait... Note: This may take a moment for larger applicant pools.' : 'Export the current applicant list to Excel.'}>
 					<Button
 						disabled={excelApplicants.length === 0}
 						ghost
