@@ -102,7 +102,7 @@ module.exports = {
 			return createHtmlPluginInstance({
 				filename: 'index.html',
 				title: '',
-				chunks: ['app'],
+				chunks: [CONFIG.JS_API_PATH + 'app'],
 				template: 'src/index.html',
 			});
 		},
