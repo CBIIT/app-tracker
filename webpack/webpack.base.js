@@ -100,7 +100,6 @@ module.exports = {
 			return new HtmlWebPackPlugin({
 				filename: 'index.html',
 				title: '',
-				chunks: ['app'],
 				template: 'src/index.html',
 				inject: true,
 			});
