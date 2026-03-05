@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Form,
 	Input,
@@ -12,7 +12,6 @@ import {
 } from 'antd';
 const { Option } = Select;
 import { InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
 import useAuth from '../../../../hooks/useAuth';
 import ReactQuill from 'react-quill';
 const Quill = ReactQuill.Quill;

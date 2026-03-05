@@ -104,8 +104,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			lastModalTimeout > 0.01 &&
 			Math.abs(lastModalTimeout - modalTimeout) > 0.1
 		) {
-			console.log('Saving ...');
-			// it changed, since it only changes when time runs out, save now
+				// it changed, since it only changes when time runs out, save now
 			setLastModalTimeout(modalTimeout);
 			save();
 		}

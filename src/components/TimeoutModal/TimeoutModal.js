@@ -3,7 +3,6 @@ import axios from 'axios';
 import { CHECK_AUTH } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import useTimeout from '../../hooks/useTimeout';
-import { transformDateTimeToDisplay } from '../../components/Util/Date/Date';
 import { Modal, Typography, Button } from 'antd';
 const { Paragraph } = Typography;
 
@@ -23,17 +22,11 @@ const TimeoutModal = () => {
 			timeout = setTimeout(() => {
 				setIsModalOpen(true);
 				setModalTimeout(0);
-				if (auth.user && auth.isUserLoggedIn) {
-					console.log(`User: ${auth.user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'TimeoutModal shown'`);
-				}
 			}, uiTimeout);
 		};
 		const autoCloseModal = () => {
 			timeout = setTimeout(() => {
 				// log user out
-				if (auth.user && auth.isUserLoggedIn) {
-					console.log(`User: ${auth.user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'TimeoutModal autoclose'`);
-				}
 				setIsModalOpen(false);
 				setModalTimeout(auth.sessionTimeout * 0.1);
 				location.href = '/logout.do';
@@ -58,15 +51,9 @@ const TimeoutModal = () => {
 		// extend user session
 		refreshAuth();
 		setIsModalOpen(false);
-		if (auth.user && auth.isUserLoggedIn) {
-			console.log(`User: ${auth.user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session extended'`);
-		}
 	};
 
 	const handleCancel = () => {
-		if (auth.user && auth.isUserLoggedIn) {
-			console.log(`User: ${auth.user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'User logged out'`);
-		}
 		setIsModalOpen(false);
 		location.href = '/logout.do';
 	};

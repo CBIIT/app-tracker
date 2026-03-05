@@ -530,7 +530,6 @@ const individualScoringTable = (props) => {
 				}
 			}
 		} catch (error) {
-			console.error('Error comparing columns:', error);
 			props.updateExcelColumns(columns);
 		}
 	}, [columns, props]);

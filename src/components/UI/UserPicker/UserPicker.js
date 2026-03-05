@@ -28,8 +28,7 @@ const referenceField = ({ value = {}, onChange }) => {
 					setCommitteeMemberOptions(userResponse.data.result)
 					setIsLoading(false);
 				} catch (err) {
-					console.warn('UserPicker: Axios Error while loading users.', err);
-					message.destroy();
+						message.destroy();
 					message.error('Sorry!  An error occurred.  Unable to load users.  Try reloading the page and trying again.');
 					setIsLoading(false);
 				}

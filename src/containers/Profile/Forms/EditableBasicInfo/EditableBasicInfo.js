@@ -78,7 +78,6 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 			}
 
 		} catch (error) {
-			console.log(error);
 			notification.error({
 				message: 'Sorry! There was an error saving your profile.',
 				description: (

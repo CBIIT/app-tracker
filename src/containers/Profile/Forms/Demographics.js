@@ -60,8 +60,7 @@ const DemographicsForm = ({ setDemoOpen }) => {
 					duration: 3,
 				});
 			} catch (e) {
-				console.log(e);
-				message.error('Sorry! There was an error saving your profile.');
+					message.error('Sorry! There was an error saving your profile.');
 			}
 		}
 		setHasProfile(true);

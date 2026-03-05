@@ -249,7 +249,6 @@ describe('ApplicantDocuments', () => {
 
         await waitFor(() => {
             expect(input.files.length).toBe(1); // Second file replaces the first
-            console.log(input.files[0].size);
         });
     });
     // These are attempts to test the file size limit

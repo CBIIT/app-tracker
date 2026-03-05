@@ -65,9 +65,7 @@ const ApplicantDocuments = (props) => {
 		setApplicantDocuments(newApplicantDocuments);
 	}; */
 
-	const onFocusAreaChange = () => {
-		console.log(formInstance.getFieldValue('focusArea'))
-	}
+	const onFocusAreaChange = () => {}
 
 	const onChange = () => {
 		setApplicantDocuments(formInstance.getFieldValue('applicantDocuments'));

@@ -28,7 +28,7 @@ const chairDashboard = () => {
 						)
 					);
 				} catch (err) {
-					console.warn(err);
+					message.error('Sorry! An error occurred while loading.');
 				}
 				setIsLoading(false);
 			})();

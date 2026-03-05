@@ -4,9 +4,7 @@ import { Radio, Space, Form } from 'antd';
 
 const editableRadio = (props) => {
 
-	const onChange = (e) => {
-		console.log('radio checked', e.target.value);
-	  };
+	const onChange = () => {};
 
 	  return(
 

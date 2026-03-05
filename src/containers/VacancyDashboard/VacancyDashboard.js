@@ -82,7 +82,7 @@ const vacancyDashboard = () => {
 		history.push(VACANCY_DASHBOARD + '/' + selectedTab);
 	};
 
-	const cancelToken = axios.CancelToken.source();
+	const cancelToken = axios.CancelToken.source(); // eslint-disable-line import/no-named-as-default-member
 
 	useEffect(() => {
 		if (validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)) {
@@ -101,7 +101,7 @@ const vacancyDashboard = () => {
 					});
 					setData(currentData.data.result);
 				} catch (err) {
-					if (!axios.isCancel)
+					if (!axios.isCancel) // eslint-disable-line import/no-named-as-default-member
 						message.error('Sorry!  An error occurred while loading.');
 				}
 				setIsLoading(false);

@@ -460,7 +460,7 @@ const applicantList = (props) => {
 		data.forEach((applicant) => {
 			let newApplicant = {};
 			columnList.forEach((col) => {
-				if (applicant.hasOwnProperty(col)) {
+				if (Object.prototype.hasOwnProperty.call(applicant, col)) {
 					let val = applicant[col];
 					if (col === 'top_25') {
 						val = applicant[col] === '1' ? 'Yes' : 'No';
@@ -893,7 +893,7 @@ const applicantList = (props) => {
 							return (
 								<>
 									<div>
-										<p classname='PATS-Reminder'>
+										<p className='PATS-Reminder'>
 											<b>REMINDER: </b> Once an individual has been marked
 											selected, a New Appointment package will be prompted in
 											the{' '}

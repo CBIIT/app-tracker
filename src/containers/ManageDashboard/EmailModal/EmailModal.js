@@ -13,7 +13,6 @@ const EmailModal = (props) => {
             props.setEmailButtonDisabled(true);
             await props.handleCloseModal();
         } catch (error) {
-            console.log(error);
             await props.handleCloseModal();
             notification.error({
                 message: 'Sorry! There was an error attempting to send the emails.',

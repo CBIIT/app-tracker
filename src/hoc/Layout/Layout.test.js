@@ -84,7 +84,6 @@ describe('Layout', () => {
 
         const vacancyDashboardLinks = getAllByText('Vacancy Dashboard');
         expect(vacancyDashboardLinks.length).toBeGreaterThan(0);
-        console.log(vacancyDashboardLinks);
         const vacancyDashboardLink = vacancyDashboardLinks.find(link => link.getAttribute('href') === '/vacancy-dashboard');
         expect(vacancyDashboardLink).toBeInTheDocument();
 
