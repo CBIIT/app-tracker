@@ -423,7 +423,7 @@ describe('ApplicantList', () => {
 
 		axios.get
 			.mockResolvedValueOnce({ data: { result: { focusAreaFilter: [] } } })
-			.mockResolvedValueOnce({ data: { result: [] } });
+			.mockResolvedValueOnce({ data: { result: { applicants: [] } } });
 
 		const { container } = render(
 			<HashRouter>

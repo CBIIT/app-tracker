@@ -443,24 +443,22 @@ const applicantList = (props) => {
 			});
 		});
 
-		// concat primary and secondary focus area
-		allApplicantsForExcel.forEach((applicant) => {
-			if (applicant.primary_focus_area && applicant.secondary_focus_area) {
-				applicant.focus_area =
-					applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
-			} else if (applicant.primary_focus_area) {
-				applicant.focus_area = applicant.primary_focus_area;
-			} else if (applicant.secondary_focus_area) {
-				applicant.focus_area = applicant.secondary_focus_area;
-			}
-		});
-
 		let excelData = [];
 		let data = [];
 
-		if (allApplicantsForExcel && allApplicantsForExcel.length > 0) {
-			data.push(...allApplicantsForExcel);
-		}
+		// concat primary and secondary focus area
+		allApplicantsForExcel.forEach((applicant) => {
+			let applicantCopy = { ...applicant };
+			if (applicant.primary_focus_area && applicant.secondary_focus_area) {
+				applicantCopy.focus_area =
+					applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+			} else if (applicant.primary_focus_area) {
+				applicantCopy.focus_area = applicant.primary_focus_area;
+			} else if (applicant.secondary_focus_area) {
+				applicantCopy.focus_area = applicant.secondary_focus_area;
+			}
+			data.push(applicantCopy);
+		});
 
 		data.forEach((applicant) => {
 			let newApplicant = {};
@@ -496,7 +494,8 @@ const applicantList = (props) => {
 				? GET_ROLLING_APPLICANT_LIST
 				: GET_APPLICANT_LIST;
 		try {
-			let apiString = api + sysId + '?offset=' + '0';
+			const excelLimit = 1000;  
+            let apiString = api + sysId + '?offset=0&limit=' + excelLimit; 
 
 			const response = await axios.get(apiString);
 			setAllApplicantsForExcel(response.data.result.applicants);
