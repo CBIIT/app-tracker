@@ -5,6 +5,7 @@ const DEFAULTS = { ASSET_SIZE_LIMIT: 10000 };
 const CONFIG = { ...DEFAULTS, ...servicenowConfig };
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
@@ -51,7 +52,10 @@ const cfg = {
 
 	plugins: [
 		new CleanWebpackPlugin(),
-		new webpack.HashedModuleIdsPlugin(),
+		new ESLintPlugin({
+			extensions: ['js', 'jsx', 'ts', 'tsx'],
+			configType: 'flat',
+		}),
 		baseCfg.plugins.createIndexHtml(),
 	],
 };

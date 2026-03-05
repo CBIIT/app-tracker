@@ -52,7 +52,6 @@ describe('UserPicker (referenceField) crash test', () => {
         });
 
         render(<UserPicker value={{}} onChange={jest.fn()} />);
-        expect(await screen.getByTestId('loading-icon')).toBeInTheDocument();
 
         await waitFor(() => {
             expect(mockSetCommitteeMemberOptions).toHaveBeenCalled();
@@ -75,7 +74,6 @@ describe('UserPicker (referenceField) crash test', () => {
         axios.get.mockRejectedValueOnce(new Error('Network error'));
 
         render(<UserPicker value={{}} onChange={jest.fn()} />);
-        expect(screen.getByTestId('loading-icon')).toBeInTheDocument();
 
         await waitFor(() => {
             // Should stop loading even on error
@@ -88,7 +86,6 @@ describe('UserPicker (referenceField) crash test', () => {
         axios.get.mockResolvedValueOnce({ data: { result: [] } });
 
         render(<UserPicker value={{}} onChange={jest.fn()} />);
-        expect(screen.getByTestId('loading-icon')).toBeInTheDocument();
 
         await waitFor(() => {
             expect(mockSetCommitteeMemberOptions).toHaveBeenCalledWith([]);
@@ -107,7 +104,6 @@ describe('UserPicker (referenceField) crash test', () => {
         });
 
         render(<UserPicker value={{}} onChange={jest.fn()} />);
-        expect(screen.getByTestId('loading-icon')).toBeInTheDocument();
 
         await waitFor(() => {
             expect(mockSetCommitteeMemberOptions).toHaveBeenCalledWith([

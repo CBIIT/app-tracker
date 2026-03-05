@@ -15,7 +15,7 @@ describe('TimeoutModal', () => {
     beforeEach(() => {
         setAuthMock = jest.fn();
         setModalTimeoutMock = jest.fn();
-        jest.useFakeTimers();
+        jest.useFakeTimers({ legacyFakeTimers: true });
         jest.spyOn(global, 'setTimeout');
         useAuth.mockReturnValue({
             auth: {

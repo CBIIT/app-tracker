@@ -9,14 +9,10 @@ import { APPLICANT_DASHBOARD, APPLY, REGISTER_OKTA } from '../../../constants/Ro
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
-
+    ...jest.requireActual('react-router-dom'),
     useParams: jest.fn(),
     useHistory: jest.fn(),
-
-}));
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockUseNavigate,
+    useNavigate: () => jest.fn(),
 }));
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,

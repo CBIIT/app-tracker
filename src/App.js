@@ -1,5 +1,4 @@
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
 import { useEffect, useState } from 'react';
 
 import './App.less';
@@ -250,4 +249,4 @@ const app = () => {
 	) : null;
 };
 
-export default hot(module)(app);
+export default app;

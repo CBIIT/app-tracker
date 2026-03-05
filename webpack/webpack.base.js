@@ -24,10 +24,7 @@ module.exports = {
 	rules: {
 		svg: {
 			test: /\.svg$/,
-			loader: 'svg-url-loader',
-			options: {
-				noquotes: true,
-			},
+			type: 'asset/inline',
 			exclude: /node_modules/,
 		},
 
@@ -43,10 +40,9 @@ module.exports = {
 				'css-loader',
 				'postcss-loader',
 				{
-					loader: 'less-loader', // compiles Less to CSS
+					loader: 'less-loader',
 					options: {
 						lessOptions: {
-							// If you are using less-loader@5 please spread the lessOptions to options directly
 							modifyVars: {
 								'primary-color': '#015ea2',
 								'heading-color': 'rgba(0,0,0,0.65)',
@@ -61,30 +57,31 @@ module.exports = {
 		},
 
 		img: {
-			test: /\.(png|jpg|gif|)$/,
-			loader: 'url-loader',
-			options: {
-				limit: CONFIG.ASSET_SIZE_LIMIT,
-				name: CONFIG.IMG_API_PATH + '[name]-[hash:6]-[ext]',
+			test: /\.(png|jpg|gif)$/,
+			type: 'asset',
+			parser: {
+				dataUrlCondition: {
+					maxSize: CONFIG.ASSET_SIZE_LIMIT,
+				},
+			},
+			generator: {
+				filename: CONFIG.IMG_API_PATH + '[name]-[hash:6][ext]',
 			},
 		},
 		assets: {
 			test: /\.(woff|woff2|ttf|eot)$/,
-			loader: 'url-loader',
-			options: {
-				limit: CONFIG.ASSET_SIZE_LIMIT,
-				name: CONFIG.ASSETS_API_PATH + '[name]-[hash:6]-[ext]',
+			type: 'asset',
+			parser: {
+				dataUrlCondition: {
+					maxSize: CONFIG.ASSET_SIZE_LIMIT,
+				},
+			},
+			generator: {
+				filename: CONFIG.ASSETS_API_PATH + '[name]-[hash:6][ext]',
 			},
 		},
 
-		jsx(args) {
-			args = args || {};
-			var emitWarning = false;
-			if (args.withHot) {
-				// report eslint errors as warnings so hot reloads are not prevented
-				emitWarning = true;
-			}
-
+		jsx() {
 			return {
 				include: [path.join(ROOT_PATH, 'src')],
 				test: /\.(ts|tsx|js|jsx)$/,
@@ -93,12 +90,6 @@ module.exports = {
 					{
 						loader: 'babel-loader',
 					},
-					{
-						loader: 'eslint-loader',
-						options: {
-							emitWarning,
-						},
-					},
 				],
 			};
 		},
@@ -106,17 +97,13 @@ module.exports = {
 
 	plugins: {
 		createIndexHtml() {
-			return createHtmlPluginInstance({
+			return new HtmlWebPackPlugin({
 				filename: 'index.html',
 				title: '',
-				chunks: 'app',
+				chunks: ['app'],
 				template: 'src/index.html',
+				inject: true,
 			});
 		},
 	},
 };
-
-function createHtmlPluginInstance(cfg) {
-	cfg.inject = true;
-	return new HtmlWebPackPlugin(cfg);
-}
