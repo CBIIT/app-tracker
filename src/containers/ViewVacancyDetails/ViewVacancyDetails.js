@@ -43,8 +43,6 @@ const viewVacancyDetails = () => {
 		})();
 	}, []);
 
-	console.log('Vacancy Details: ********', vacancyDetails);
-
 	return isLoading ? (
 		<> </>
 	) : (

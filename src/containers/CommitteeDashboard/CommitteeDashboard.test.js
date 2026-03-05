@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => ({
 
 import CommitteeDashboard from './CommitteeDashboard';
 import { rtRender } from '../test-utils';
-import { waitFor } from '@testing-library/react';
+import { waitFor, screen } from '@testing-library/react';
 import { message as antdMessage } from 'antd';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -104,14 +104,12 @@ describe('CommitteeDashboard component tests', () => {
         validateRoleForCurrentTenant.mockImplementation(() => false);
         isExecSec.mockReturnValue(false);
         
-        const { container } = rtRender(<CommitteeDashboard />);
-        
-        // Add a small delay to allow useEffect to run
-        setTimeout(() => {
-            expect(message.destroy).toHaveBeenCalled();
-            expect(message.error).toHaveBeenCalled();
+        rtRender(<CommitteeDashboard />);
+
+        await waitFor(() => {
+            expect(screen.getByText('Sorry! You do not have committee member access in the selected tenant.')).toBeInTheDocument();
             expect(mockPush).toHaveBeenCalledWith('/');
-        }, 100);
+        });
     });
 
     test('<CommitteeDashboard /> should call validateRoleForCurrentTenant on load', async () => {
