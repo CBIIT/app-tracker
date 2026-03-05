@@ -129,6 +129,7 @@ const applicantList = (props) => {
 			key: 'totalReceivedReferences',
 		},
 	]);
+	const [allApplicantsForExcel, setAllApplicantsForExcel] = useState([]);
 	const [pageSize, setPageSize] = useState(50);
 	const [totalCount, setTotalCount] = useState(0);
 	const [tableLoading, setTableLoading] = useState(false);
@@ -441,20 +442,23 @@ const applicantList = (props) => {
 			});
 		});
 
+		// concat primary and secondary focus area
+		allApplicantsForExcel.forEach((applicant) => {
+			if (applicant.primary_focus_area && applicant.secondary_focus_area) {
+				applicant.focus_area =
+					applicant.primary_focus_area + ', ' + applicant.secondary_focus_area;
+			} else if (applicant.primary_focus_area) {
+				applicant.focus_area = applicant.primary_focus_area;
+			} else if (applicant.secondary_focus_area) {
+				applicant.focus_area = applicant.secondary_focus_area;
+			}
+		});
+
 		let excelData = [];
 		let data = [];
 
-		if (recommendedApplicants && recommendedApplicants.length > 0) {
-			data.push(...recommendedApplicants);
-		}
-		if (nonRecommendedApplicants && nonRecommendedApplicants.length > 0) {
-			data.push(...nonRecommendedApplicants);
-		}
-		if (applicants && applicants.length > 0) {
-			data =
-				props.vacancyState == ROLLING_CLOSE
-					? getFilterData(filter, applicants)
-					: applicants;
+		if (allApplicantsForExcel && allApplicantsForExcel.length > 0) {
+			data.push(...allApplicantsForExcel);
 		}
 
 		data.forEach((applicant) => {
@@ -476,7 +480,31 @@ const applicantList = (props) => {
 		});
 
 		excelData ? setExcelApplicants(excelData) : null;
-	}, [applicants, recommendedApplicants, nonRecommendedApplicants]);
+	}, [allApplicantsForExcel]);
+
+	useEffect(() => {
+		if (allApplicantsForExcel.length === 0) {
+			loadAllApplicantsForExcel();
+		}
+
+	}, [tableLoading]);
+
+	const loadAllApplicantsForExcel = async () => {
+		const api =
+			props.vacancyState == ROLLING_CLOSE
+				? GET_ROLLING_APPLICANT_LIST
+				: GET_APPLICANT_LIST;
+		try {
+			let apiString = api + sysId + '?offset=' + '0';
+
+			const response = await axios.get(apiString);
+			setAllApplicantsForExcel(response.data.result.applicants);
+		} catch (error) {
+			message.error(
+				'Sorry!  An error occurred while loading the applicants for Excel.  Try reloading.'
+			);
+		}
+	};
 
 	const filterChangeHandler = async (e) => {
 		setFilter(e.target.value);
@@ -1131,21 +1159,24 @@ const applicantList = (props) => {
 					display: 'flex',
 					justifyContent: 'flex-end',
 					marginBottom: '4px',
+					marginRight: '4px',
 				}}
 			>
-				<Button
-					disabled={excelApplicants.length === 0}
-					ghost
-					type='primary'
-					onClick={() =>
-						ExportToExcel(
-							excelApplicants,
-							`${props.vacancyTitle}-ApplicantList-${moment(new Date().toString()).format('MM-DD-YYYY')}.xlsx`
-						)
-					}
-				>
-					Export to Excel
-				</Button>
+				<Tooltip title={excelApplicants.length === 0 ? 'Export the current applicant list to Excel. Note: This may take a moment for larger applicant pools.' : ''}>
+					<Button
+						disabled={excelApplicants.length === 0}
+						ghost
+						type='primary'
+						onClick={() =>
+							ExportToExcel(
+								excelApplicants,
+								`${props.vacancyTitle}-ApplicantList-${moment(new Date().toString()).format('MM-DD-YYYY')}.xlsx`
+							)
+						}
+					>
+						Export to Excel
+					</Button>
+				</Tooltip>
 			</div>
 			<div className='applicant-table'>{table}</div>
 			<ReferenceModal

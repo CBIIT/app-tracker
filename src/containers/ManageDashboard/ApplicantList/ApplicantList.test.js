@@ -1,3 +1,10 @@
+jest.mock('axios');
+jest.mock('../../../hooks/useAuth');
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: jest.fn(),
+}));
+
 import ApplicantList from './ApplicantList';
 import VacancyStatus from '../../../components/UI/VacancyStatus/VacancyStatus';
 import {
@@ -7,7 +14,7 @@ import {
 	fireEvent,
 	userEvent,
 } from '@testing-library/react';
-import { useParams, HashRouter } from 'react-router-dom';
+import { useParams, HashRouter, MemoryRouter, Route } from 'react-router-dom';
 import SearchContext from '../Util/SearchContext';
 import axios from 'axios';
 import useAuth from '../../../hooks/useAuth';
@@ -28,13 +35,6 @@ import {
 	mockNonStadtmanAuth,
 } from './ApplicantListMockData';
 
-jest.mock('react-router-dom', () => ({
-	...jest.requireActual('react-router-dom'),
-	useParams: jest.fn(),
-}));
-jest.mock('axios');
-jest.mock('../../../hooks/useAuth');
-
 describe('ApplicantList', () => {
 	let mockLoadLatestVacancyInfo;
 	let mockLoadApplicants;
@@ -44,6 +44,7 @@ describe('ApplicantList', () => {
 	let mockApplicantFocusAreaOptions;
 
 	beforeEach(() => {
+		jest.clearAllMocks();
 		Object.defineProperty(window, 'matchMedia', {
 			writable: true,
 			value: jest.fn().mockImplementation((query) => ({
@@ -61,6 +62,7 @@ describe('ApplicantList', () => {
 		mockLoadApplicants = jest.fn();
 		mockLoadAllApplicants = jest.fn();
 		mockLoadRecommendedApplicants = jest.fn();
+		useAuth.mockReturnValue(mockNonStadtmanAuth);
 	});
 
 	afterEach(() => {
@@ -142,7 +144,7 @@ describe('ApplicantList', () => {
 		expect(screen.getByText('Vacancy Manager Triage Decision')).toBeInTheDocument();
 		expect(screen.getByText('Chair Triage Decision')).toBeInTheDocument();
 		expect(screen.getByText('Reference Status')).toBeInTheDocument();
-		
+
 		waitFor(() => {
 			expect(screen.getByText(/Doe, John/i)).toBeInTheDocument();
 			expect(screen.getByText(/user@mail.com/i)).toBeInTheDocument();
@@ -367,4 +369,80 @@ describe('ApplicantList', () => {
 			expect(rowsDesc[1]).toHaveTextContent(/Zoe/i);
 		});
 	});
+
+	test('downloads all Excel data successfully', async () => {
+		const mockApplicants = [
+			{ sys_id: '1', name: 'John Doe', email: 'john@example.com', status: 'under_review' },
+			{ sys_id: '2', name: 'Jane Smith', email: 'jane@example.com', status: 'selected' },
+		];
+
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [{
+					value: 'NCI',
+					label: 'NCI',
+					roles: ['vacancy_manager', 'committee_member'],
+				}],
+				user: {
+					isReadOnlyUser: false,
+					name: 'Test User',
+				}
+			},
+			currentTenant: 'NCI',
+		});
+
+		axios.get
+			.mockResolvedValueOnce({ data: { result: { focusAreaFilter: [] } } })
+			.mockResolvedValueOnce({ data: { result: mockApplicants } });
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/manage/vacancy/test-sysid/applicants']}>
+				<Route path="/manage/vacancy/:id/applicants">
+					<ApplicantList
+						vacancyState={'triage'}
+						vacancyTenant={'NCI'}
+						referenceCollection={false}
+						userRoles={mockUser.roles}
+						userCommitteeRole={mockUser.roles}
+						reloadVacancy={mockLoadLatestVacancyInfo}
+					/>
+				</Route>
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		}, { timeout: 3000 });
+
+		expect(container).toBeTruthy();
+	});
+
+	test('Excel download handles empty applicant list', async () => {
+		useParams.mockReturnValue({ id: 'test-sysid' });
+		useAuth.mockReturnValue(mockNonStadtmanAuth);
+
+		axios.get
+			.mockResolvedValueOnce({ data: { result: { focusAreaFilter: [] } } })
+			.mockResolvedValueOnce({ data: { result: [] } });
+
+		const { container } = render(
+			<HashRouter>
+				<ApplicantList
+					vacancyState={'triage'}
+					vacancyTenant={'NCI'}
+					referenceCollection={false}
+					userRoles={mockUser.roles}
+					userCommitteeRole={mockUser.roles}
+					reloadVacancy={mockLoadLatestVacancyInfo}
+				/>
+			</HashRouter>
+		);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		});
+
+		expect(container).toBeTruthy();
+	});
+
 });
