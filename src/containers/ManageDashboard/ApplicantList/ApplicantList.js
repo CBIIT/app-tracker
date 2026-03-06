@@ -494,11 +494,12 @@ const applicantList = (props) => {
 				? GET_ROLLING_APPLICANT_LIST
 				: GET_APPLICANT_LIST;
 		try {
-			const excelLimit = 1000;  
-            let apiString = api + sysId + '?offset=0&limit=' + excelLimit; 
+			const excelLimit = 1000;
+			let apiString = api + sysId + '?offset=0&limit=' + excelLimit;
 
 			const response = await axios.get(apiString);
-			setAllApplicantsForExcel(response.data.result.applicants);
+			const applicants = response?.data?.result?.applicants ?? [];
+			setAllApplicantsForExcel(applicants);
 		} catch (error) {
 			message.error(
 				'Sorry!  An error occurred while loading the applicants for Excel.  Try reloading.'
@@ -1166,7 +1167,7 @@ const applicantList = (props) => {
 					marginRight: '4px',
 				}}
 			>
-				<Tooltip title={excelApplicants.length === 0 ? 'Loading applicant data, please wait... Note: This may take a moment for larger applicant pools.' : 'Export the current applicant list to Excel.'}>
+				<Tooltip title={isLoadingExcelData ? 'Loading applicant data, please wait... Note: This may take a moment for larger applicant pools.' : (excelApplicants.length === 0 ? 'No applicant data available for export.' : 'Export the current applicant list to Excel.')}>
 					<Button
 						disabled={excelApplicants.length === 0}
 						ghost
