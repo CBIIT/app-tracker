@@ -1159,7 +1159,7 @@ const applicantList = (props) => {
 				</div>
 			)}
 			<div
-				className='ExportToExcelButtonDiv'
+				className='export-to-excel-button-div'
 				style={{
 					display: 'flex',
 					justifyContent: 'flex-end',
