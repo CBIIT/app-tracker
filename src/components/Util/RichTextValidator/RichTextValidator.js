@@ -1,3 +1,3 @@
 export const isRichTextEditorEmpty = (value) => {
-	return value.replace(/<[^>]*>/g, '').trim().length === 0;
+	return value.replace(/<[^>]*>?/g, '').trim().length === 0;
 };
