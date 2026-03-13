@@ -5,6 +5,9 @@ on:
     branches:
       - dev
 
+permissions:
+  contents: read
+
 jobs:
   jest-tests:
     runs-on: ubuntu-latest
