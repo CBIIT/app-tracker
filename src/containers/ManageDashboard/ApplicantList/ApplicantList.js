@@ -485,7 +485,7 @@ const applicantList = (props) => {
 		if (allApplicantsForExcel.length === 0 && !isLoadingExcelData) {
 			loadAllApplicantsForExcel();
 		}
-	}, [tableLoading]);
+	}, [tableLoading, recommendedApplicantsTableLoading, nonRecommendedApplicantsTableLoading]);
 
 	const loadAllApplicantsForExcel = async () => {
 		setIsLoadingExcelData(true);
