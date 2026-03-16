@@ -1,0 +1,419 @@
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import {
+	GET_USER_APPLICATIONS,
+	REMOVE_USER_APPLICATION_DRAFT,
+	WITHDRAW_USER_APPLICATION,
+} from '../../constants/ApiEndpoints';
+import { EDIT_APPLICATION, VIEW_APPLICATION } from '../../constants/Routes';
+import {
+	Table,
+	ConfigProvider,
+	Empty,
+	Space,
+	Button,
+	Divider,
+	Modal,
+	message,
+	Tooltip,
+} from 'antd';
+import {
+	EditOutlined,
+	DeleteOutlined,
+	MinusCircleOutlined,
+	ExclamationCircleFilled,
+	FileTextOutlined,
+} from '@ant-design/icons';
+import axios from 'axios';
+import Error from '../../components/UI/Error/Error';
+import { transformDateToDisplay } from '../../components/Util/Date/Date';
+import { useFetch } from '../../hooks/useFetch';
+import useAuth from '../../hooks/useAuth';
+import { checkAuth } from '../../constants/checkAuth';
+import './ApplicantDashboard.css';
+
+const applicantDashboard = () => {
+	const history = useHistory();
+	const [removeDraftModalVisible, setRemoveDraftModalVisible] = useState(false);
+	const [withdrawAppModalVisible, setWithdrawAppModalVisible] = useState(false);
+	const [currentApplication, setCurrentApplication] = useState([]);
+
+	let customizeRenderEmpty = () => (
+		<div style={{ textAlign: 'center' }}>
+			<Empty
+				image={Empty.PRESENTED_IMAGE_SIMPLE}
+				description={'No Applications'}
+			/>
+		</div>
+	);
+
+	const handleRemoveModalCancel = () => {
+		setRemoveDraftModalVisible(false);
+	};
+
+	const handleWithdrawModalCancel = () => {
+		setWithdrawAppModalVisible(false);
+	};
+
+	const dateCompare = (dateA, dateB) => {
+		if (dateA == '--' || dateA == '') dateA = null;
+		if (dateB == '--' || dateB == '') dateB = null;
+		return new Date(dateA) - new Date(dateB);
+	};
+
+	const { setAuth } = useAuth();
+	const { isLoading, data, error, setData, setLoading } = useFetch(
+		GET_USER_APPLICATIONS
+	);
+
+	const removeDraft = async () => {
+		try {
+			await axios.post(
+				REMOVE_USER_APPLICATION_DRAFT + currentApplication.draft_id
+			);
+
+			setData((currentData) =>
+				currentData.filter(
+					(data) => data.draft_id !== currentApplication.draft_id
+				)
+			);
+			message.success('Draft removed');
+		} catch (error) {
+			message.error('Sorry, an error occurred while trying to remove draft');
+		} finally {
+			checkAuth(setLoading, setAuth);
+			setRemoveDraftModalVisible(false);
+		}
+	};
+
+	const withdrawApp = async () => {
+		try {
+			await axios.post(WITHDRAW_USER_APPLICATION + currentApplication.app_id);
+			const updatedWithdrawnData = await axios.get(GET_USER_APPLICATIONS);
+			setData(updatedWithdrawnData.data.result);
+			setWithdrawAppModalVisible(false);
+			message.success('Withdrawn application');
+		} catch (error) {
+			setWithdrawAppModalVisible(false);
+			message.error(
+				'Sorry, an error occurred while trying to withdraw application'
+			);
+		}
+	};
+
+	const applicationColumns = [
+		{
+			title: 'Vacancy Title',
+			dataIndex: 'vacancy',
+			key: 'title',
+			sorter: {
+				compare: (a, b) => {
+					const va = String(a?.vacancy ?? '').toLowerCase();
+					const vb = String(b?.vacancy ?? '').toLowerCase();
+					return va.localeCompare(vb);
+				},
+			},
+			defaultSortOrder: 'ascend',
+			render: (title, record) => {
+				switch (record.state) {
+					case 'withdrawn':
+						return <Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>;
+					case 'draft':
+						return record.vacancy_status === 'open' ? (
+							<Link to={EDIT_APPLICATION + 'draft/' + record.draft_id}>
+								{title}
+							</Link>
+						) : (
+							<Link to={'/vacancy/' + record.vacancy_id}>{title}</Link>
+						);
+					default:
+						return <Link to={VIEW_APPLICATION + record.app_id}>{title}</Link>;
+				}
+			},
+		},
+		{
+			title: 'Status',
+			dataIndex: 'state',
+			key: 'state',
+			render: (state) => {
+				if (state == 'withdrawn') {
+					return <span style={{ textTransform: 'capitalize' }}>withdrawn</span>;
+				} else {
+					return (
+						<span style={{ textTransform: 'capitalize' }}>
+							{state === 'draft' ? state : 'Submitted'}
+						</span>
+					);
+				}
+			},
+		},
+		{
+			title: 'Vacancy Closes',
+			dataIndex: 'vacancy_closes',
+			key: 'closes',
+			render: (date) => {
+				let icon = null;
+				
+				if (date) {
+					const today = new Date();
+					const closeDate = new Date(date);
+					const diffInDays = closeDate - today;
+					const daysRemaining = diffInDays / (1000 * 60 * 60 * 24);
+
+					if (daysRemaining <= 5 && daysRemaining > 0) {
+						icon = (
+							<Tooltip title='The vacancy for this application will close soon. Please ensure that all of your reference letters have been submitted before the close date.'>
+								<ExclamationCircleFilled style={{ color: '#faad14' }} />
+							</Tooltip>
+						);
+					}
+				}
+
+				return (
+					<Space>
+						{icon}
+						<span>
+							{date ? transformDateToDisplay(date) : 'Open Until Filled'}
+						</span>
+					</Space>
+				);
+			},
+			sorter: {
+				compare: (a, b) => {
+					const dateA = a.vacancy_closes;
+					const dateB = b.vacancy_closes;
+					return dateCompare(dateA, dateB);
+				},
+			},
+			defaultSortOrder: 'ascend',
+		},
+		{
+			title: 'Application Submitted',
+			dataIndex: 'vacancy_submitted',
+			key: 'submitted',
+			render: (date) => transformDateToDisplay(date),
+			sorter: {
+				compare: (a, b) =>
+					new Date(a.vacancy_submitted) - new Date(b.vacancy_submitted),
+			},
+			defaultSortOrder: 'ascend',
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: (application) => {
+				if (application.state == 'submitted' || application.state == 'triage') {
+					let buttons = [];
+					if (
+						application.vacancy_state === 'live' ||
+						(application.vacancy_state == 'rolling_close' &&
+							application.vacancy_status === 'open')
+					) {
+						buttons.push(
+							<Button
+								key='edit'
+								type='text'
+								onClick={() => {
+									history.push(EDIT_APPLICATION + application.app_id);
+								}}
+							>
+								<EditOutlined /> Edit
+							</Button>,
+							<Divider key='divider' type='vertical' />
+						);
+					}
+					buttons.push(
+						<Button
+							data-testid='withdraw-draft'
+							key='withdraw'
+							type='text'
+							onClick={async () => {
+								setWithdrawAppModalVisible(true);
+								setCurrentApplication(application);
+							}}
+						>
+							<MinusCircleOutlined />
+							Withdraw
+						</Button>
+					);
+					return <Space size='middle'>{buttons}</Space>;
+				} else if (application.state == 'withdrawn') {
+					return (
+						<Button
+							type='text'
+							onClick={() => {
+								history.push('/vacancy/' + application.vacancy_id);
+							}}
+						>
+							<FileTextOutlined />
+							View Vacancy
+						</Button>
+					);
+				} else if (
+					application.vacancy_state == 'rolling_close' &&
+					application.state != 'triage'
+				) {
+					return (
+						<Button
+							key='withdraw'
+							type='text'
+							onClick={async () => {
+								setWithdrawAppModalVisible(true);
+								setCurrentApplication(application);
+							}}
+						>
+							<MinusCircleOutlined />
+							Withdraw
+						</Button>
+					);
+				} else {
+					return (
+						<Space size='middle'>
+							{application.vacancy_status === 'open' && (
+								<>
+									<Button
+										type='text'
+										onClick={() => {
+											history.push(
+												EDIT_APPLICATION + 'draft/' + application.draft_id
+											);
+										}}
+									>
+										<EditOutlined /> Edit
+									</Button>
+									<Divider type='vertical' />
+								</>
+							)}
+							<Button
+								data-testid='remove-draft'
+								type='text'
+								onClick={async () => {
+									setRemoveDraftModalVisible(true);
+									setCurrentApplication(application);
+								}}
+							>
+								<DeleteOutlined /> Remove
+							</Button>
+						</Space>
+					);
+				}
+			},
+		},
+		{
+			title: 'Reference Status',
+			dataIndex: 'reference_status',
+			align: 'center',
+			render: (record) => record,
+		},
+	];
+
+	return isLoading ? (
+		<> </>
+	) : error ? (
+		<Error error={error} />
+	) : (
+		<>
+			<div className='HeaderTitle'>
+				<h1>Your Applications</h1>
+			</div>
+			{data.length > 0 ? (
+				<div className='ApplicantDashboard'>
+					<ConfigProvider renderEmpty={customizeRenderEmpty}>
+						<Table
+							data-testid='applicant-table'
+							className='ApplicantTable'
+							rowKey={(record) => {
+								if (record.app_id != undefined) {
+									return record.app_id;
+								} else if (record.draft_id != undefined) {
+									return record.draft_id;
+								}
+							}}
+							dataSource={data}
+							columns={applicationColumns}
+							scroll={{ x: 'true' }}
+							key='Applications'
+							style={{
+								width: '1170px',
+								display: 'block',
+								paddingLeft: '20px',
+								paddingRight: '20px',
+								paddingTop: '20px',
+							}}
+						></Table>
+					</ConfigProvider>
+				</div>
+			) : (
+				<div className='ApplicantDashboardNoApplications'>
+					<p>
+						You do not have any active applications.{'  '}
+						<Link to='/'>View all open positions↗</Link>
+					</p>
+				</div>
+			)}
+
+			<Modal
+				visible={removeDraftModalVisible}
+				onOk={removeDraft}
+				onCancel={handleRemoveModalCancel}
+				closable={false}
+				okText='Confirm'
+				cancelText='Cancel'
+			>
+				<div>
+					<ExclamationCircleFilled
+						style={{
+							color: '#faad14',
+							fontSize: '24px',
+							display: 'inline-block',
+							marginRight: '15px',
+						}}
+					/>
+					<h2
+						style={{
+							display: 'inline-block',
+						}}
+					>
+						Are you sure you want to remove this draft?
+					</h2>
+					<p>
+						Please confirm you would like to remove this draft or click cancel
+						to return to the previous screen.
+					</p>
+				</div>
+			</Modal>
+			<Modal
+				visible={withdrawAppModalVisible}
+				onOk={withdrawApp}
+				onCancel={handleWithdrawModalCancel}
+				closable={false}
+				okText='Confirm'
+				cancelText='Cancel'
+			>
+				<div>
+					<ExclamationCircleFilled
+						style={{
+							color: '#faad14',
+							fontSize: '24px',
+							display: 'inline-block',
+							marginRight: '15px',
+						}}
+					/>
+					<h2
+						style={{
+							display: 'inline-block',
+						}}
+					>
+						Are you sure you want to withdraw this application?
+					</h2>
+					<p>
+						Please confirm you would like to withdraw this application or click
+						cancel to return to the previous screen.
+					</p>
+				</div>
+			</Modal>
+		</>
+	);
+};
+
+export default applicantDashboard;

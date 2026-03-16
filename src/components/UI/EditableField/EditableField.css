@@ -1,0 +1,41 @@
+/* .EditableFieldContainer {
+	display: flex;
+	width: 80%;
+	flex-direction: row;
+	flex-grow: 1;
+	padding: 0px 4px;
+	margin: 0px;
+}
+
+.EditableFieldContainer:hover {
+	border-color: var(--color-primary);
+}
+
+.EditableFieldContainer:focus-within {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 2px rgba(1, 94, 162, 0.2);
+} */
+/* 
+.Input {
+	display: flex;
+	flex-grow: 1;
+	border: none;
+	outline: none;
+	box-shadow: none; 
+	margin: 0;
+	padding: 0;
+}
+
+.Input input,
+.Input input.focus {
+	border: none;
+	outline: none;
+	box-shadow: none;
+}
+
+.Input:focus,
+.Input:hover {
+	outline: none;
+	border: none;
+	box-shadow: none;
+} */

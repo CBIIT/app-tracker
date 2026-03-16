@@ -1,0 +1,78 @@
+.OuterDiv {
+	background: #01477a;
+	height: 50px;
+	width: 100%;
+}
+
+.NavBar {
+	margin-left: auto;
+	margin-right: auto;
+	letter-spacing: 0;
+	background-color: #01477a;
+	width: min(95%, 1440px);
+	max-width: 1440px;
+	padding-inline: 10px;
+}
+
+.NavBar .ant-menu {
+	background: #01477a;
+	width: 100%;
+	height: 50px;
+	float: left;
+	display: flex;
+	flex-flow: row;
+	align-items: left;
+	border-bottom: none;
+}
+
+.NavBar .ant-menu-horizontal > .ant-menu-item a {
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.NavBar .ant-menu-horizontal > .ant-menu-item {
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.NavBar .ant-menu-horizontal > .ant-menu-item-active {
+	color: white !important;
+}
+
+.NavBar .ant-menu-horizontal > .ant-menu-item-selected {
+	border-bottom: 2px solid white !important;
+}
+
+.NavBar .ant-menu-title-content  {
+	color: white !important;
+	text-decoration: underline;
+}
+
+.NavBar .ant-menu-horizontal .ant-menu-item, .ant-menu-horizontal .ant-menu-submenu {
+    margin: 0px;
+}
+
+.VacanciesSubMenu {
+	background: #01477a;
+	color: white;
+	font-family: var(--ff-primary);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.ant-menu-item a {
+	color: white;
+}
+
+.ant-menu-item a:hover {
+	color: white;
+	text-decoration: underline;
+}
+
+.ant-menu-submenu-popup > .ant-menu {
+	background: #01477a;
+}

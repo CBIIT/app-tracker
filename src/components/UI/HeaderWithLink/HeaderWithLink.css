@@ -1,0 +1,9 @@
+.HeaderWithLink {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	background-color: var(--secondary-bg-color);
+	padding-top: 8px;
+	padding-bottom: 24px;
+}

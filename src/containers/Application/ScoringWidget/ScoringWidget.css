@@ -1,0 +1,22 @@
+.ScoringWidgetContent {
+	padding-inline: 16px;
+	padding-bottom: 16px;
+}
+
+.ScoringWidgetContent .ant-radio-button-wrapper {
+	margin-right: 8px;
+}
+
+.ScoringWidgetContent h2 {
+	font-family: var(--ff-primary);
+	font-size: 14px;
+}
+
+.ScoringWidgetMemberPicker {
+	padding-inline: 16px;
+	margin-bottom: 16px;
+}
+
+.ScoringWidgetMemberPicker h2 {
+	margin-bottom: 5px;
+}

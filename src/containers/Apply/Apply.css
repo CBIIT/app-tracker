@@ -1,0 +1,90 @@
+.ApplyContainer {
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+	padding-top: 20px;
+}
+
+.StepNavigation {
+	flex: 0 1 304px;
+}
+
+.StepContent {
+	width: 100%;
+	margin-bottom: 20px;
+	min-height: 0px;
+}
+
+.StepContentContainer {
+	max-width: 866px;
+	flex: 2 2 866px;
+	padding-inline: 29px;
+	padding-bottom: 40px;
+	padding-top: 20px;
+	width: 100%;
+}
+
+.container-grid {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+}
+
+.step-navigation {
+	height: 368px;
+	width: 344px;
+}
+
+.step-content {
+	min-height: 650px;
+	width: 768px;
+	padding: 20px 30px 20px 30px;
+}
+
+.steps-action {
+	display: flex;
+	justify-content: space-between;
+}
+
+.ant-notification-notice, .ant-notification-notice-content {
+	background-color: #fff2f0;
+}
+
+a {
+ text-decoration: underline;
+}
+
+@media (max-width: 535px) {
+	.steps-action {
+		display: flex;
+		flex-wrap: wrap-reverse;
+	}
+
+	.steps-action > * {
+		margin-top: 15px;
+	}
+}
+
+.save-message > * {
+	background-color: rgb(238, 240, 244);
+	border: 1px solid rgb(36, 94, 157);
+	padding-right: 0px;
+}
+
+.save-X-button {
+	border: none;
+	background-color: rgb(238, 240, 244);
+}
+
+.save-X-button:hover {
+	background-color: rgb(238, 240, 244);
+}
+
+.save-X-button:focus {
+	background-color: rgb(238, 240, 244);
+}
+
+.save-X-button:active {
+	border: none;
+}

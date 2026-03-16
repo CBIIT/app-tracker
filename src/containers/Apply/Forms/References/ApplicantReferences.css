@@ -1,0 +1,47 @@
+.names {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	max-width: 770px;
+}
+
+@media (max-width: 535px) {
+	.names {
+		display: block;
+	}
+}
+
+.names > * {
+	flex-grow: 1;
+	max-width: 250px;
+}
+
+.emailPhoneDiv {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	max-width: 770px;
+}
+
+.emailPhoneDiv > * {
+	display: block;
+	flex-grow: 1;
+	max-width: 375px;
+}
+
+.ApplicantReferencesCollapse {
+	margin-bottom: 16px;
+}
+
+.relationshipTitleDiv {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	max-width: 770px;
+}
+
+.relationshipTitleDiv > * {
+	display: block;
+	flex-grow: 1;
+	max-width: 375px;
+}

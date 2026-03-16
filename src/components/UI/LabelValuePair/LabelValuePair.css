@@ -1,0 +1,17 @@
+.LabelValuePairContainer {
+	display: flex;
+	flex-direction: column;
+	min-width: 160px;
+	margin-right: 16px;
+}
+
+.LabelValuePairContainer h2 {
+	font-family: var(--ff-primary);
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+
+.LabelValuePairContainer > span {
+	margin-bottom: 16px;
+	color: var(--text-light);
+}

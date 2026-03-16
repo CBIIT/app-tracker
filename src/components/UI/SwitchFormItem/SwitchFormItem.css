@@ -1,0 +1,15 @@
+.SwitchFormItemContainer {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	padding-top: 16px;
+	align-items: center;
+	margin-top: 16px;
+	margin-bottom: 16px;
+}
+
+.SwitchFormItemContainer p {
+	margin-left: 10px;
+	margin-bottom: 0px;
+	color: var(--text-light);
+}

@@ -1,0 +1,33 @@
+.OuterContainer {
+	width: 100%;
+	background-color: #edf1f4;
+	padding-bottom: 20px;
+}
+
+.ContentContainer {
+	width: min(95%, 1170px);
+	margin-inline: auto;
+}
+
+.ContentContainer h1 {
+	margin: 0;
+}
+
+.RouteContent {
+	background-color: #ffffff;
+}
+
+.HeaderTitle {
+	background-color: #edf1f4;
+	max-width: 1440px;
+	max-height: 76px;
+	margin: auto;
+	padding: 20px 20px 20px 0px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.ant-alert-message {
+  color: rgb(255, 255, 255) !important; /* Use !important if necessary to override Antd's styles */
+}

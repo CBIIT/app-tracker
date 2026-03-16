@@ -1,0 +1,61 @@
+.HeaderContainer {
+	width: 100%;
+	background-color: var(--secondary-bg-color);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding-top: 16px;
+	padding-bottom: 8px;
+}
+
+.TitleAndDateContainer {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	flex-grow: 2;
+}
+
+.TitleContainer {
+	display: flex;
+}
+
+.TitleAndDateContainer h1 {
+	white-space: normal;
+}
+
+.TitleAndDateContainer label {
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.POCEmail {
+	color: white;
+	text-decoration: underline;
+}
+
+.POCEmail:hover {
+	color: rgba(200, 200, 200, 1);
+}
+
+.DateContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	flex-wrap: wrap;
+	max-width: 450px;
+}
+
+.POCContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	flex-wrap: wrap;
+	max-width: 500px;
+}
+
+.ButtonContainer {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: row-reverse;
+	align-items: center;
+}

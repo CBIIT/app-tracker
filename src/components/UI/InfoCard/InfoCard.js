@@ -1,0 +1,60 @@
+import { useState } from 'react';
+import { Switch } from 'antd';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+
+import './InfoCard.css';
+const infoCard = (props) => {
+	const [hideContent, setHideContent] = useState(props.initiallyHideContent);
+
+	const onHeadingClickHandler = () => {
+		const newHideContent = !hideContent;
+		setHideContent(newHideContent);
+	};
+
+	let infoCardContentStyle = {};
+	if (hideContent) {
+		infoCardContentStyle.display = 'none';
+	} else if (props.referenceInfoCardContentStyle) {
+		infoCardContentStyle = { ...props.style, ...props.referenceInfoCardContentStyle };
+	}
+
+	return (
+		<div
+			className={`InfoCardContainer ${props.className || ''}`}
+			style={props.style}
+		>
+			<div
+				className='InfoCardHeading'
+				onClick={props.allowToggle ? onHeadingClickHandler : null}
+				style={props.allowToggle ? { cursor: 'pointer' } : null}
+			>
+				<h3>{props.title}</h3>
+				{props.onSwitchToggle ? (
+					<div>
+						<Switch
+							className='InfoCardSwitch'
+							checkedChildren={<CheckOutlined />}
+							unCheckedChildren={<CloseOutlined />}
+							title={props.switchTitle}
+							onChange={props.onSwitchToggle}
+							defaultChecked={props.switchInitialValue}
+						/>
+						<span className='InfoCardSwitchLabel'>{props.switchTitle}</span>
+					</div>
+				) : null}
+				{props.additionalText ? (
+				<h3>{props.additionalText}</h3>) : null}
+			</div>
+
+			<hr />
+			<div
+				className='InfoCardContent'
+				style={infoCardContentStyle}
+			>
+				{props.children}
+			</div>
+		</div>
+	);
+};
+
+export default infoCard;

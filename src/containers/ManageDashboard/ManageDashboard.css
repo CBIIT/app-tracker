@@ -1,0 +1,61 @@
+.manage-tabs {
+	position: relative;
+}
+
+.AdvanceButtonDiv {
+	background-color: rgb(237, 240, 243);
+	display: flex !important;
+	justify-content: flex-end;
+}
+.AdvanceButtonDiv .ant-btn-background-ghost.ant-btn-primary {
+	color: #015ea2;
+    border-color: #015ea2;
+    text-shadow: none;
+    margin-left: 10px;
+}
+
+.manage-tabs .ant-tabs-nav-wrap {
+	background-color: rgb(237 240 243);
+}
+
+.manage-tabs .ant-tabs-tab {
+	justify-content: center;
+	width: 160px;
+}
+
+.ManageHeader .HeaderTitle {
+	background-color: #edf1f4;
+	margin-left: 0px;
+	padding: 20px 20px 20px 0px !important;
+	justify-content: left;
+}
+
+.ManageHeader .HeaderLink {
+	padding-top: 15px;
+}
+
+.ManageHeader {
+	display: flex;
+	background-color: #edf1f4;
+	max-width: 1440px;
+	max-height: 76px;
+}
+
+@media (max-width: 575px) {
+	.RatingPlanDiv {
+		padding-top: 50px;
+	}
+}
+
+.ManageDashboardEditButton {
+	float: right;
+	margin-right: 10px;
+}
+
+@media (min-width: 350px) {
+	.ManageDashboardEditButton {
+		position: absolute;
+		top: 70px;
+		right: 20px;
+	}
+}

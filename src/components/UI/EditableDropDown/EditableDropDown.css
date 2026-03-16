@@ -1,0 +1,28 @@
+/* .EditableDropDownContainer {
+	margin-bottom: 14px;
+	padding-right: 130px;
+}
+
+.EditableDropDownContainer h2 {
+	font-family: var(--ff-primary);
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+
+.EditableDropDownContainer form.Item {
+	margin-left:auto;
+	width:50%;
+}
+
+.EditableDropDownContainer > span {
+	margin-bottom: 16px;
+	color: var(--text-light);
+/* } */
+
+/* .ant-select-selector {
+	margin-left: 10;
+} 
+
+.EditableDropDownContainer > .ant-select-selection-item {
+	padding-left: 10 important!
+} */

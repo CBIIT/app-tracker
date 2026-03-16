@@ -1,0 +1,16 @@
+.EditableRadioContainer {
+	margin-bottom: 14px;
+	padding-right: 130px;
+	float:left;
+}
+
+.EditableRadioContainer h2 {
+	font-family: var(--ff-primary);
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+
+.EditableRadioContainer > span {
+	margin-bottom: 16px;
+	color: var(--text-light);
+}

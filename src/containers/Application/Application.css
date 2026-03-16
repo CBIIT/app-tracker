@@ -1,0 +1,42 @@
+.ApplicationContent {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 16px;
+	justify-content: space-between;
+	background-color: var(--secondary-bg-color);
+}
+
+.ApplicationContainer {
+	background-color: var(--secondary-bg-color);
+}
+
+.ApplicationContainerDownloadButtonGroup button {
+	display: block;
+}
+
+.ApplicationContainer h1 {
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.ApplicationContentColumn {
+	display: flex;
+	gap: 16px;
+	flex-grow: 1;
+	flex-direction: column;
+}
+
+.ApplicationHeaderBar {
+	display: flex;
+	flex: row;
+	justify-content: space-between;
+}
+
+.ApplicationHeaderBar h2 {
+	font-size: 18px;
+	font-weight: 600;
+	font-family: var(--ff-heading);
+	margin-top: auto;
+	margin-bottom: auto;
+}
