@@ -1,8 +1,8 @@
 import React from 'react';
-import { render, screen, waitFor, act, findByText, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import axios from 'axios';
-import { Button, message, Tooltip } from 'antd';
-import { useParams, useHistory, useNavigate } from 'react-router-dom';
+import { message } from 'antd';
+import { useParams, useHistory } from 'react-router-dom';
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
 import { APPLICANT_DASHBOARD, APPLY, REGISTER_OKTA } from '../../../constants/Routes';
@@ -26,8 +26,14 @@ jest.mock('antd', () => ({
     ...jest.requireActual('antd'),
     message: {
         error: jest.fn(),
+        info: jest.fn(),
     }
 }));
+jest.mock('../../../components/ProfileModal/ProfileModal', () => (props) => (
+    <div data-testid='profile-modal'>
+        <button onClick={props.handleClose}>Close</button>
+    </div>
+));
 
 const mockUseAuth = {
     auth: {
@@ -43,6 +49,7 @@ const mockUseAuth = {
 describe('Header', () => {
     let mockUseAuth;
     let mockedUsedNavigate;
+    let mockHistoryPush;
 
     const myHeader = () => {
         const handleClick = () => {
@@ -75,6 +82,7 @@ describe('Header', () => {
             useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
         useHistory.mockReturnValue({ push: mockHistoryPush });
+        axios.get.mockResolvedValue({ data: { result: { exists: false } } });
         delete window.location;
         window.location = {
             href: '',
@@ -199,6 +207,146 @@ describe('Header', () => {
         // Assert Email to: label is rendered
         expect(screen.getByText('Email to:')).toBeInTheDocument();
 
+    });
+
+    it('navigates to applicant dashboard and shows info message when user already applied', async () => {
+        useParams.mockReturnValue({ sysId: '123' });
+        axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });
+
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            mockUseAuth.auth.user.hasProfile = true;
+            render(<Header {...mockVacancyProps} />);
+        });
+
+        const applyButton = await screen.findByRole('button', { name: 'Apply' });
+        fireEvent.click(applyButton);
+
+        expect(mockHistoryPush).toHaveBeenCalledWith(APPLICANT_DASHBOARD);
+        expect(await screen.findByText('You have already applied for this position.')).toBeInTheDocument();
+    });
+
+    it('shows error message when checkUserAlreadyApplied call fails', async () => {
+        useParams.mockReturnValue({ sysId: '123' });
+        axios.get.mockRejectedValueOnce(new Error('network error'));
+
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            mockUseAuth.auth.user.hasProfile = true;
+            render(<Header {...mockVacancyProps} />);
+        });
+
+        await waitFor(() => {
+            expect(screen.getByText(/Sorry!\s+An error occurred while loading\./)).toBeInTheDocument();
+        });
+    });
+
+    it('shows profile modal when user has no profile and closes it', async () => {
+        useParams.mockReturnValue({ sysId: '123' });
+        axios.get
+            .mockResolvedValueOnce({ data: { result: { exists: false } } })
+            .mockResolvedValueOnce({ data: { result: { exists: false } } });
+
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            mockUseAuth.auth.user.hasProfile = false;
+            render(<Header {...mockVacancyProps} />);
+        });
+
+        const applyButton = await screen.findByRole('button', { name: 'Apply' });
+        fireEvent.click(applyButton);
+
+        expect(screen.getByTestId('profile-modal')).toBeInTheDocument();
+
+        fireEvent.click(screen.getByText('Close'));
+
+        await waitFor(() => {
+            expect(screen.queryByTestId('profile-modal')).not.toBeInTheDocument();
+        });
+    });
+
+    it('logs message when checkHasProfile call fails', async () => {
+        useParams.mockReturnValue({ sysId: '123' });
+        const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
+        axios.get
+            .mockResolvedValueOnce({ data: { result: { exists: false } } })
+            .mockRejectedValueOnce(new Error('Profile not found'));
+
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = true;
+            mockUseAuth.auth.user.hasProfile = false;
+            render(<Header {...mockVacancyProps} />);
+        });
+
+        await waitFor(() => {
+            expect(consoleSpy).toHaveBeenCalledWith('Failed to find user profile.');
+        });
+
+        consoleSpy.mockRestore();
+    });
+
+    it('renders sign in and apply button for logged out user and navigates to okta link', async () => {
+        useParams.mockReturnValue({ sysId: '123' });
+
+        await act(async () => {
+            mockUseAuth.auth.isUserLoggedIn = false;
+            mockUseAuth.auth.user.hasProfile = true;
+            render(<Header {...mockVacancyProps} />);
+        });
+
+        const signInButton = await screen.findByRole('button', { name: 'Sign In and Apply' });
+        fireEvent.click(signInButton);
+
+        expect(mockHistoryPush).toHaveBeenCalledWith(REGISTER_OKTA);
+    });
+
+    it('does not render action button when vacancy is closed and useCloseDate is true', async () => {
+        await act(async () => {
+            render(
+                <Header
+                    {...mockVacancyProps}
+                    useCloseDate={true}
+                    vacancyStatus='closed'
+                    vacancyState='closed'
+                    closeDate='2025-12-15'
+                />
+            );
+        });
+
+        expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Sign In and Apply' })).not.toBeInTheDocument();
+    });
+
+    it('does not render action button when vacancy is rolling close and useCloseDate is false', async () => {
+        await act(async () => {
+            render(
+                <Header
+                    {...mockVacancyProps}
+                    useCloseDate={false}
+                    vacancyStatus='closed'
+                    vacancyState='rolling_close'
+                    closeDate='2025-12-15'
+                />
+            );
+        });
+
+        expect(screen.queryByRole('button', { name: 'Apply' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Sign In and Apply' })).not.toBeInTheDocument();
+    });
+
+    it('renders open until filled when close date is not provided', async () => {
+        await act(async () => {
+            render(
+                <Header
+                    {...mockVacancyProps}
+                    closeDate=''
+                    vacancyPOC={{}}
+                    vacancyPOCEmail={{}}
+                />
+            );
+        });
+
+        expect(screen.getByText('Open Until Filled')).toBeInTheDocument();
     });
 
 });
