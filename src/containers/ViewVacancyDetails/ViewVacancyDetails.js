@@ -38,7 +38,7 @@ const viewVacancyDetails = () => {
 	useEffect(() => {
 		(async () => {
 			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-			setVacancyDetails(response.data.result);
+			setVacancyDetails(response.data.result.json);
 			setIsLoading(false);
 		})();
 	}, []);
