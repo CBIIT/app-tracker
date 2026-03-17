@@ -116,9 +116,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
 		);
+		const vacancyData = response.data.result?.json || response.data.result;
 
 		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
+		vacancyData.focus_area.forEach((focusArea) => {
 			focusAreaOptions.push({ label: focusArea, value: focusArea });
 		});
 		setFocusArea(focusAreaOptions);
@@ -156,13 +157,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const { basicInfo } = profileData;
 		const address = basicInfo?.address;
 
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		setVacancyTitle(vacancyData.basic_info.vacancy_title.value);
+		setVacancyTenantType(vacancyData.basic_info.tenant.label);
 		if (!editSubmitted) setDraftId(appSysId);
 
 		let applicantDocuments = {};
 
-		response.data.result.vacancy_documents.forEach((document) => {
+		vacancyData.vacancy_documents.forEach((document) => {
 			applicantDocuments[document.title.value] = document.file
 				? document
 				: { ...document, file: { fileList: [] } };
@@ -238,9 +239,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
+		const vacancyData = response.data.result?.json || response.data.result;
 
 		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
+		vacancyData.focus_area.forEach((focusArea) => {
 			focusAreaOptions.push({ label: focusArea, value: focusArea });
 		});
 		setFocusArea(focusAreaOptions);
@@ -307,16 +309,16 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		};
 		const address = basicInfo?.address;
 
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		vacancyDocuments.push(response.data.result.vacancy_documents);
+		setVacancyTitle(vacancyData.basic_info.vacancy_title.value);
+		setVacancyTenantType(vacancyData.basic_info.tenant.label);
+		vacancyDocuments.push(vacancyData.vacancy_documents);
 
 		const references = [];
 
 		for (
 			let i = 0;
 			i <
-			parseInt(response.data.result.basic_info.number_of_recommendation.value);
+			parseInt(vacancyData.basic_info.number_of_recommendation.value);
 			i++
 		) {
 			references.push({});
@@ -325,7 +327,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const newFormData = {
 			...formData,
 			sysId: vacancySysId,
-			applicantDocuments: response.data.result.vacancy_documents.map(
+			applicantDocuments: vacancyData.vacancy_documents.map(
 				(document) =>
 					document.file ? document : { ...document, file: { fileList: [] } }
 			),
