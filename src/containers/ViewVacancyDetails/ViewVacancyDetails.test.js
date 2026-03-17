@@ -1,6 +1,6 @@
 import ViewVacancyDetails from './ViewVacancyDetails';
 import { render, screen } from '@testing-library/react';
-import { useParams, MemoryRouter } from 'react-router-dom';
+import { useParams, useHistory, MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import { mockVacancy, mockVacancy2, mockVacancy3 } from './MockData';
@@ -10,6 +10,7 @@ jest.mock('axios');
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
+	useHistory: jest.fn(),
 }));
 jest.mock('react-quill', () => () => <div data-testid='quill' />);
 jest.mock('../../hooks/useAuth', () => ({
@@ -44,8 +45,27 @@ describe('ViewVacancyDetails', () => {
 		jest.clearAllMocks();
 	});
 
+	test('should show an error notification and go back when fetch fails', async () => {
+		const goBackMock = jest.fn();
+		useParams.mockReturnValue({ sysId: '123' });
+		useHistory.mockReturnValue({ goBack: goBackMock });
+		axios.get.mockRejectedValueOnce(new Error('Request failed'));
+
+		render(
+			<MemoryRouter>
+				<ViewVacancyDetails />
+			</MemoryRouter>
+		);
+
+		expect(
+			await screen.findByText('Sorry! There was an error retrieving the vacancy details.')
+		).toBeInTheDocument();
+		expect(goBackMock).toHaveBeenCalledTimes(1);
+	});
+
 	test('should render ViewVacancyDetails with a Rolling Close Vacancy', async () => {
 		useParams.mockReturnValue({ sysId: '123' });
+		useHistory.mockReturnValue({ goBack: jest.fn() });
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancy)
 		);
@@ -61,6 +81,7 @@ describe('ViewVacancyDetails', () => {
 
 	test('should render ViewVacancyDetails page with a vacancy that uses a close date', async () => {
 		useParams.mockReturnValue({ sysId: '123' });
+		useHistory.mockReturnValue({ goBack: jest.fn() });
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancy2)
 		);
@@ -76,6 +97,7 @@ describe('ViewVacancyDetails', () => {
 
 	test('Should render ViewVacancyDetails page with more than 1 recommendation', async () => {
 		useParams.mockReturnValue({ sysId: '123' });
+		useHistory.mockReturnValue({ goBack: jest.fn() });
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancy3)
 		);
