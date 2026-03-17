@@ -50,7 +50,7 @@ const viewVacancyDetails = () => {
 						<>
 							<p>
 								Please verify if the vacancy has closed. If not, refresh the page and try again. 
-								If the issue persist contact the Help Desk by emailing{' '}
+								If the issue persists, contact the Help Desk by emailing{' '}
 									<a href='mailto:NCIAppSupport@mail.nih.gov'>
 										NCIAppSupport@mail.nih.gov
 									</a>

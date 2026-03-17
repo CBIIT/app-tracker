@@ -321,6 +321,9 @@ describe('Header', () => {
 
     it('shows error message when checkUserAlreadyApplied call fails', async () => {
         useParams.mockReturnValue({ sysId: '123' });
+        const messageErrorSpy = jest
+            .spyOn(message, 'error')
+            .mockImplementation(jest.fn());
         axios.get.mockRejectedValueOnce(new Error('network error'));
 
         await act(async () => {
@@ -330,8 +333,10 @@ describe('Header', () => {
         });
 
         await waitFor(() => {
-            expect(screen.getByText(/Sorry!\s+An error occurred while loading\./)).toBeInTheDocument();
+            expect(messageErrorSpy).toHaveBeenCalledWith('Sorry!  An error occurred while loading.');
         });
+
+        messageErrorSpy.mockRestore();
     });
 
     it('shows profile modal when user has no profile and closes it', async () => {
