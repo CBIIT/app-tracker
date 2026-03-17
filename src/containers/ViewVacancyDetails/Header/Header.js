@@ -91,7 +91,7 @@ const header = (props) => {
 
 	var showUserPOC, showEmailPOC = false;
 	if (props.vacancyPOCType?.value) {
-		let pocTypeValue = JSON.parse(props.vacancyPOCType.value);
+		let pocTypeValue = JSON.parse(props.vacancyPOCType?.value);
 		showUserPOC = pocTypeValue && (pocTypeValue?.includes('Both') || pocTypeValue?.includes('User'));
 		showEmailPOC = pocTypeValue && (pocTypeValue?.includes('Both') || pocTypeValue?.includes('Email Distribution List'));
 	}
