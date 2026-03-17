@@ -209,6 +209,99 @@ describe('Header', () => {
 
     });
 
+    it('does not crash when vacancyPOCType value is literal undefined', () => {
+        const mockVacancyPOC = {
+            label: 'John Doe',
+            email: 'john.doe@example.com',
+        };
+
+        expect(() => {
+            render(
+                <Header
+                    title='Test Vacancy'
+                    openDate='2025-01-15'
+                    closeDate='2025-02-15'
+                    vacancyState='open'
+                    vacancyStatus='open'
+                    useCloseDate={true}
+                    sysId='test-sys-id'
+                    vacancyPOC={mockVacancyPOC}
+                    vacancyPOCType={{ value: 'undefined' }}
+                    vacancyPOCEmail={{}}
+                />
+            );
+        }).not.toThrow();
+
+        expect(screen.queryByText('Point of Contact:')).not.toBeInTheDocument();
+    });
+
+    it('does not crash when vacancyPOCType value is empty or malformed JSON', () => {
+        const mockVacancyPOC = {
+            label: 'John Doe',
+            email: 'john.doe@example.com',
+        };
+
+        expect(() => {
+            render(
+                <Header
+                    title='Test Vacancy'
+                    openDate='2025-01-15'
+                    closeDate='2025-02-15'
+                    vacancyState='open'
+                    vacancyStatus='open'
+                    useCloseDate={true}
+                    sysId='test-sys-id'
+                    vacancyPOC={mockVacancyPOC}
+                    vacancyPOCType={{ value: '   ' }}
+                    vacancyPOCEmail={{}}
+                />
+            );
+        }).not.toThrow();
+
+        expect(screen.queryByText('Point of Contact:')).not.toBeInTheDocument();
+
+        expect(() => {
+            render(
+                <Header
+                    title='Test Vacancy'
+                    openDate='2025-01-15'
+                    closeDate='2025-02-15'
+                    vacancyState='open'
+                    vacancyStatus='open'
+                    useCloseDate={true}
+                    sysId='test-sys-id'
+                    vacancyPOC={mockVacancyPOC}
+                    vacancyPOCType={{ value: '{bad-json' }}
+                    vacancyPOCEmail={{}}
+                />
+            );
+        }).not.toThrow();
+    });
+
+    it('does not render POC when vacancyPOCType parses to non-array JSON', () => {
+        const mockVacancyPOC = {
+            label: 'John Doe',
+            email: 'john.doe@example.com',
+        };
+
+        render(
+            <Header
+                title='Test Vacancy'
+                openDate='2025-01-15'
+                closeDate='2025-02-15'
+                vacancyState='open'
+                vacancyStatus='open'
+                useCloseDate={true}
+                sysId='test-sys-id'
+                vacancyPOC={mockVacancyPOC}
+                vacancyPOCType={{ value: '{"type":"User"}' }}
+                vacancyPOCEmail={{}}
+            />
+        );
+
+        expect(screen.queryByText('Point of Contact:')).not.toBeInTheDocument();
+    });
+
     it('navigates to applicant dashboard and shows info message when user already applied', async () => {
         useParams.mockReturnValue({ sysId: '123' });
         axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });

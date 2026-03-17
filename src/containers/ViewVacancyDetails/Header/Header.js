@@ -4,7 +4,10 @@ import { DownOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { CHECK_USER_ALREADY_APPLIED, CHECK_HAS_PROFILE } from '../../../constants/ApiEndpoints';
+import {
+	CHECK_USER_ALREADY_APPLIED,
+	CHECK_HAS_PROFILE,
+} from '../../../constants/ApiEndpoints';
 import {
 	APPLICANT_DASHBOARD,
 	APPLY,
@@ -61,13 +64,12 @@ const header = (props) => {
 		} catch (e) {
 			console.log('Failed to find user profile.');
 		}
-	}
+	};
 
 	const onButtonClick = (link) => {
 		if (!hasProfile) {
 			setShowProfileDialog(true);
-		}
-		else if (userAlreadyApplied) {
+		} else if (userAlreadyApplied) {
 			history.push(APPLICANT_DASHBOARD);
 			message.info('You have already applied for this position.');
 		} else history.push(link);
@@ -75,7 +77,7 @@ const header = (props) => {
 
 	const handleProfileDialogClose = () => {
 		setShowProfileDialog(false);
-	}
+	};
 
 	const isVacancyClosed = () => {
 		//return props.vacancyState !== LIVE && props.closeDate && props.useCloseDate !== false;
@@ -89,13 +91,27 @@ const header = (props) => {
 		);
 	};
 
-	var showUserPOC, showEmailPOC = false;
-	if (props.vacancyPOCType?.value) {
-		let pocTypeValue = JSON.parse(props.vacancyPOCType?.value);
-		showUserPOC = pocTypeValue && (pocTypeValue?.includes('Both') || pocTypeValue?.includes('User'));
-		showEmailPOC = pocTypeValue && (pocTypeValue?.includes('Both') || pocTypeValue?.includes('Email Distribution List'));
+	const pocTypeValueRaw = props.vacancyPOCType?.value;
+	let pocTypeValue = [];
+	if (typeof pocTypeValueRaw === 'string') {
+		const normalizedPocTypeValue = pocTypeValueRaw.trim();
+		if (normalizedPocTypeValue && normalizedPocTypeValue !== 'undefined') {
+			try {
+				const parsedPocTypeValue = JSON.parse(normalizedPocTypeValue);
+				pocTypeValue = Array.isArray(parsedPocTypeValue)
+					? parsedPocTypeValue
+					: [];
+			} catch (e) {
+				pocTypeValue = [];
+			}
+		}
 	}
-	
+
+	const showUserPOC =
+		pocTypeValue.includes('Both') || pocTypeValue.includes('User');
+	const showEmailPOC =
+		pocTypeValue.includes('Both') ||
+		pocTypeValue.includes('Email Distribution List');
 
 	return (
 		<div className='HeaderContainer'>
@@ -120,16 +136,15 @@ const header = (props) => {
 							<div className='DateItem'>
 								<label>Open Date</label>
 								<span>{transformDateToDisplay(props.openDate)}</span>
-								<span style={{marginLeft:'25px'}}>
+								<span style={{ marginLeft: '25px' }}>
 									<label>Open Until Filled</label>
 								</span>
 							</div>
 						</>
-						
 					)}
 				</div>
 				<div className='POCContainer'>
-					{props.vacancyPOC.label && showUserPOC? (
+					{props.vacancyPOC.label && showUserPOC ? (
 						<div className='POCItem'>
 							<label>Point of Contact:</label>
 							<span>{props.vacancyPOC.label} </span>
@@ -161,7 +176,7 @@ const header = (props) => {
 						''
 					)}
 
-					{props.vacancyPOCEmail?.label && showEmailPOC? (
+					{props.vacancyPOCEmail?.label && showEmailPOC ? (
 						<div className='POCItem'>
 							<label>Email to:</label>
 							<span>{props.vacancyPOCEmail.label} </span>
