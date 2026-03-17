@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import axios from 'axios';
 import ReactQuill from 'react-quill';
@@ -10,6 +10,7 @@ import Divider from './Divider/Divider';
 import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
+import { notification } from 'antd';
 
 const numberToWordMap = {
 	0: 'Zero',
@@ -34,12 +35,37 @@ const viewVacancyDetails = () => {
 	const [vacancyDetails, setVacancyDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const { sysId } = useParams();
+	const history = useHistory();
 
 	useEffect(() => {
 		(async () => {
-			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-			setVacancyDetails(response.data.result.json);
-			setIsLoading(false);
+			try {
+				const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
+				setVacancyDetails(response.data.result.json);
+				setIsLoading(false);
+			} catch (e) {
+				notification.error({
+					message: 'Sorry! There was an error retrieving the vacancy details.',
+					description: (
+						<>
+							<p>
+								Please verify if the vacancy has closed. If not, refresh the page and try again. 
+								If the issue persist contact the Help Desk by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+							</p>
+						</>
+					),
+					duration: 30,
+					style: {
+						height: '225px',
+						display: 'flex',
+						alignItems: 'center',
+					},
+				});
+				history.goBack()
+			}
 		})();
 	}, []);
 
