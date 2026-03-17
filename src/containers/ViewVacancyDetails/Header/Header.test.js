@@ -304,6 +304,9 @@ describe('Header', () => {
 
     it('navigates to applicant dashboard and shows info message when user already applied', async () => {
         useParams.mockReturnValue({ sysId: '123' });
+        const messageInfoSpy = jest
+            .spyOn(message, 'info')
+            .mockImplementation(jest.fn());
         axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });
 
         await act(async () => {
@@ -316,7 +319,9 @@ describe('Header', () => {
         fireEvent.click(applyButton);
 
         expect(mockHistoryPush).toHaveBeenCalledWith(APPLICANT_DASHBOARD);
-        expect(await screen.findByText('You have already applied for this position.')).toBeInTheDocument();
+        expect(messageInfoSpy).toHaveBeenCalledWith('You have already applied for this position.');
+
+        messageInfoSpy.mockRestore();
     });
 
     it('shows error message when checkUserAlreadyApplied call fails', async () => {
