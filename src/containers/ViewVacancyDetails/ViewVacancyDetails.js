@@ -64,7 +64,7 @@ const viewVacancyDetails = () => {
 						alignItems: 'center',
 					},
 				});
-				history.goBack()
+				history.push('/');
 			}
 		})();
 	}, []);

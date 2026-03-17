@@ -45,10 +45,10 @@ describe('ViewVacancyDetails', () => {
 		jest.clearAllMocks();
 	});
 
-	test('should show an error notification and go back when fetch fails', async () => {
-		const goBackMock = jest.fn();
+	test('should show an error notification and redirect to home when fetch fails', async () => {
+		const pushMock = jest.fn();
 		useParams.mockReturnValue({ sysId: '123' });
-		useHistory.mockReturnValue({ goBack: goBackMock });
+		useHistory.mockReturnValue({ push: pushMock });
 		axios.get.mockRejectedValueOnce(new Error('Request failed'));
 
 		render(
@@ -60,12 +60,13 @@ describe('ViewVacancyDetails', () => {
 		expect(
 			await screen.findByText('Sorry! There was an error retrieving the vacancy details.')
 		).toBeInTheDocument();
-		expect(goBackMock).toHaveBeenCalledTimes(1);
+		expect(pushMock).toHaveBeenCalledWith('/');
+		expect(pushMock).toHaveBeenCalledTimes(1);
 	});
 
 	test('should render ViewVacancyDetails with a Rolling Close Vacancy', async () => {
 		useParams.mockReturnValue({ sysId: '123' });
-		useHistory.mockReturnValue({ goBack: jest.fn() });
+		useHistory.mockReturnValue({ push: jest.fn() });
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancy)
 		);
@@ -81,7 +82,7 @@ describe('ViewVacancyDetails', () => {
 
 	test('should render ViewVacancyDetails page with a vacancy that uses a close date', async () => {
 		useParams.mockReturnValue({ sysId: '123' });
-		useHistory.mockReturnValue({ goBack: jest.fn() });
+		useHistory.mockReturnValue({ push: jest.fn() });
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancy2)
 		);
@@ -97,7 +98,7 @@ describe('ViewVacancyDetails', () => {
 
 	test('Should render ViewVacancyDetails page with more than 1 recommendation', async () => {
 		useParams.mockReturnValue({ sysId: '123' });
-		useHistory.mockReturnValue({ goBack: jest.fn() });
+		useHistory.mockReturnValue({ push: jest.fn() });
 		axios.get.mockImplementationOnce(() =>
 			Promise.resolve(mockVacancy3)
 		);
