@@ -112,6 +112,7 @@ const header = (props) => {
 	const showEmailPOC =
 		pocTypeValue.includes('Both') ||
 		pocTypeValue.includes('Email Distribution List');
+	const vacancyPOC = props.vacancyPOC || {};
 
 	return (
 		<div className='HeaderContainer'>
@@ -144,10 +145,10 @@ const header = (props) => {
 					)}
 				</div>
 				<div className='POCContainer'>
-					{props.vacancyPOC.label && showUserPOC ? (
+					{vacancyPOC.label && showUserPOC ? (
 						<div className='POCItem'>
 							<label>Point of Contact:</label>
-							<span>{props.vacancyPOC.label} </span>
+							<span>{vacancyPOC.label} </span>
 							<Tooltip
 								title={
 									<span>
@@ -156,9 +157,9 @@ const header = (props) => {
 										contact via email at <br />
 										<a
 											className='POCEmail'
-											href={`mailto: ${props.vacancyPOC.email}?subject = Issues with ${props.title} vacancy`}
+											href={`mailto: ${vacancyPOC.email}?subject = Issues with ${props.title} vacancy`}
 										>
-											{props.vacancyPOC.email}
+											{vacancyPOC.email}
 										</a>
 										.
 										<br />

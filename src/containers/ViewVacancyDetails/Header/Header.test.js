@@ -278,6 +278,48 @@ describe('Header', () => {
         expect(screen.queryByText('Point of Contact:')).not.toBeInTheDocument();
     });
 
+    it('does not crash when vacancyPOC is undefined', () => {
+        expect(() => {
+            render(
+                <Header
+                    title='Test Vacancy'
+                    openDate='2025-01-15'
+                    closeDate='2025-02-15'
+                    vacancyState='open'
+                    vacancyStatus='open'
+                    useCloseDate={true}
+                    sysId='test-sys-id'
+                    vacancyPOC={undefined}
+                    vacancyPOCType={{ value: JSON.stringify(['User']) }}
+                    vacancyPOCEmail={{}}
+                />
+            );
+        }).not.toThrow();
+
+        expect(screen.queryByText('Point of Contact:')).not.toBeInTheDocument();
+    });
+
+    it('does not crash when vacancyPOC is null', () => {
+        expect(() => {
+            render(
+                <Header
+                    title='Test Vacancy'
+                    openDate='2025-01-15'
+                    closeDate='2025-02-15'
+                    vacancyState='open'
+                    vacancyStatus='open'
+                    useCloseDate={true}
+                    sysId='test-sys-id'
+                    vacancyPOC={null}
+                    vacancyPOCType={{ value: JSON.stringify(['User']) }}
+                    vacancyPOCEmail={{}}
+                />
+            );
+        }).not.toThrow();
+
+        expect(screen.queryByText('Point of Contact:')).not.toBeInTheDocument();
+    });
+
     it('navigates to applicant dashboard and shows info message when user already applied', async () => {
         useParams.mockReturnValue({ sysId: '123' });
         const messageInfoSpy = jest
