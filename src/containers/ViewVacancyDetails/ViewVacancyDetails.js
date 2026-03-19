@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
 import ReactQuill from 'react-quill';
@@ -7,6 +7,7 @@ import { extractAndTransformMandatoryStatements } from '../../components/Util/Va
 
 import Header from './Header/Header';
 import Divider from './Divider/Divider';
+import { validateVacancyData } from './validateVacancyData';
 import { VACANCY_DETAILS_FOR_APPLICANTS } from '../../constants/ApiEndpoints';
 
 import './ViewVacancyDetails.css';
@@ -34,16 +35,26 @@ const numberToWordMap = {
 const viewVacancyDetails = () => {
 	const [vacancyDetails, setVacancyDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasError, setHasError] = useState(false);
 	const { sysId } = useParams();
-	const history = useHistory();
+
 
 	useEffect(() => {
 		(async () => {
 			try {
 				const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-				setVacancyDetails(response.data.result.json);
+				const jsonData = response.data.result.json;
+
+				if (!jsonData?.basic_info || typeof jsonData.basic_info !== 'object') {
+					throw new Error('Invalid vacancy data')
+				}
+
+				const validateData = validateVacancyData(jsonData);
+				setVacancyDetails(validateData);
 				setIsLoading(false);
 			} catch (e) {
+				setHasError(true);
+				setIsLoading(false);
 				notification.error({
 					message: 'Sorry! There was an error retrieving the vacancy details.',
 					description: (
@@ -64,32 +75,39 @@ const viewVacancyDetails = () => {
 						alignItems: 'center',
 					},
 				});
-				history.push('/');
 			}
 		})();
 	}, []);
 
 	return isLoading ? (
 		<> </>
+	) : hasError ? (
+		<div className='Content'>
+			<h2>Unable to load vacancy details</h2>
+			<p>
+				Please refresh the page and try again. If the issue persists, contact the Help Desk by emailing{' '}
+				<a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
+			</p>
+		</div>
 	) : (
 		<>
 			<Header
-				title={vacancyDetails.basic_info.vacancy_title.value}
-				openDate={vacancyDetails.basic_info.open_date.value}
-				closeDate={vacancyDetails.basic_info.close_date.value}
-				useCloseDate={vacancyDetails.basic_info.use_close_date.value == '0' ? false : true}
-				vacancyState={vacancyDetails.basic_info.state.value}
-				vacancyStatus={vacancyDetails.basic_info.status.value}
-				vacancyPOCType={vacancyDetails.basic_info.vacancy_poc_type}
-				vacancyPOC={vacancyDetails.basic_info.vacancy_poc}
-				vacancyPOCEmail={vacancyDetails.basic_info.vacancy_poc_email}
+				title={vacancyDetails.basic_info.vacancy_title?.value ?? 'N/A'}
+				openDate={vacancyDetails.basic_info.open_date?.value ?? 'N/A'}
+				closeDate={vacancyDetails.basic_info.close_date?.value ?? 'N/A'}
+				useCloseDate={(vacancyDetails.basic_info.use_close_date?.value ?? '1') !== '0'}
+				vacancyState={vacancyDetails.basic_info.state?.value ?? 'N/A'}
+				vacancyStatus={vacancyDetails.basic_info.status?.value ?? 'N/A'}
+				vacancyPOCType={vacancyDetails.basic_info.vacancy_poc_type ?? 'N/A'}
+				vacancyPOC={vacancyDetails.basic_info.vacancy_poc ?? 'N/A'}
+				vacancyPOCEmail={vacancyDetails.basic_info.vacancy_poc_email ?? 'N/A'}
 				sysId={sysId}
 			/>
 			<div className='Content'>
 				<ReactQuill
 					className='RichText'
 					readOnly={true}
-					value={vacancyDetails.basic_info.vacancy_description.value}
+					value={vacancyDetails.basic_info.vacancy_description?.value ?? 'N/A'}
 					theme='bubble'
 				/>
 
@@ -102,24 +120,22 @@ const viewVacancyDetails = () => {
 										{document.title.value +
 											(document.is_optional.value == 1 ? ' (optional)' : '')}
 									</li>
-							  ))
+								))
 							: null}
-						{vacancyDetails.basic_info.number_of_recommendation.value ==
-						0 ? null : (
-							<li>Full Contact Details for&nbsp; 
+						{(vacancyDetails.basic_info.number_of_recommendation?.value ?? 0) == 0
+							? null
+							: <li>Full Contact Details for&nbsp; 
 								{numberToWordMap[
-									vacancyDetails.basic_info.number_of_recommendation.value
+									vacancyDetails.basic_info.number_of_recommendation?.value
 								] +
 									' (' +
-									vacancyDetails.basic_info.number_of_recommendation.value +
+									vacancyDetails.basic_info.number_of_recommendation?.value +
 									') Reference' +
-									(vacancyDetails.basic_info.number_of_recommendation.value >
-										1 ||
-									vacancyDetails.basic_info.number_of_recommendation.value == 0
+									(vacancyDetails.basic_info.number_of_recommendation?.value >
+										1
 										? 's'
 										: '') }
-							</li>
-						)}
+							</li>}
 					</ul>
 				</div>
 			</div>
