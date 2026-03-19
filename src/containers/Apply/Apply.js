@@ -116,7 +116,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
 		);
-		const vacancyData = response.data.result?.json || response.data.result;
+		const vacancyData = response.data.result.json;
 
 		var focusAreaOptions = [];
 		vacancyData.focus_area.forEach((focusArea) => {
@@ -239,7 +239,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
-		const vacancyData = response.data.result?.json || response.data.result;
+		const vacancyData = response.data.result.json;
 
 		var focusAreaOptions = [];
 		vacancyData.focus_area.forEach((focusArea) => {

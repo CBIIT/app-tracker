@@ -544,10 +544,13 @@ describe('Apply component', () => {
 				...mockVacancyResponse.data,
 				result: {
 					...mockVacancyResponse.data.result,
-					vacancy_documents: [],
-					basic_info: {
-						...mockVacancyResponse.data.result.basic_info,
-						number_of_recommendation: { label: '0', value: '0' },
+					json: {
+						...mockVacancyResponse.data.result.json,
+						vacancy_documents: [],
+						basic_info: {
+							...mockVacancyResponse.data.result.json.basic_info,
+							number_of_recommendation: { label: '0', value: '0' },
+						},
 					},
 				},
 			},

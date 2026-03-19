@@ -51,14 +51,6 @@ describe('Header', () => {
     let mockedUsedNavigate;
     let mockHistoryPush;
 
-    const myHeader = () => {
-        const handleClick = () => {
-            APPLY + mockVacancyProps.sysId;
-        };
-
-        return <Button data-testid="apply-button" onClick={handleClick}>Apply</Button>;
-    };
-
     const mockVacancyProps = {
         closeDate: '',
         openDate: '2024-09-13',

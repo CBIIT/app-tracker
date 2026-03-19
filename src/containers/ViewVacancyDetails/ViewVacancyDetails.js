@@ -41,7 +41,7 @@ const viewVacancyDetails = () => {
 		(async () => {
 			try {
 				const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + sysId);
-				setVacancyDetails(response.data.result.json);
+			setVacancyDetails(response.data.result.json);
 				setIsLoading(false);
 			} catch (e) {
 				notification.error({

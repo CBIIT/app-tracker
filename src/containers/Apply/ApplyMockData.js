@@ -12,47 +12,49 @@ export const mockDefaultFormData = {
 export const mockVacancyResponse = {
     data: {
         result: {
-            basic_info: {
-                number_of_recommendation: {label: '1', value: '1'},
-                tenant: {label: 'test tenant', value: '123'},
-                vacancy_title: {label: 'Test Vacancy', value: 'Test Vacancy'},
-            },
-            vacancy_documents: [
-                {
-                    is_optional: {label: 'false', value: '0'},
-                    title: {label: 'Test Document', value: 'Test Document'},
-                    vacancy_id: {label: 'Test Vacancy', value: '12345'},
+            json: {
+                basic_info: {
+                    number_of_recommendation: {label: '1', value: '1'},
+                    tenant: {label: 'test tenant', value: '123'},
+                    vacancy_title: {label: 'Test Vacancy', value: 'Test Vacancy'},
                 },
-            ],
-            focus_area: [
-                "Biochemistry/Proteomics/Metabolomics",
-                "Biomedical Engineering/Biophysics/Physics",
-                "Cancer Biology",
-                "Cell Biology",
-                "Chemistry/Chemical Biology/Toxicology",
-                "Chromosome Biology/Epigenetics/Transcription",
-                "Cognitive Neuroscience",
-                "Computational Biology/Bioinformatics/Biostatistics/Mathematics",
-                "Developmental Biology",
-                "Epidemiology/Population Sciences",
-                "Genetics/Genomics",
-                "Health Disparities",
-                "Immunology",
-                "Microbiology/Infectious diseases (non-viral)",
-                "Molecular and Cellular Neuroscience",
-                "Molecular Biology",
-                "Molecular Pharmacology/Cell Signaling",
-                "Neurodevelopment",
-                "RNA Biology",
-                "Social and Behavioral Sciences",
-                "Stem Cells/Induced Pluripotent Stem Cells",
-                "Structural Biology",
-                "Synapses and Circuits",
-                "Systems Biology/Physiology",
-                "Translation from Pre-clinical to Clinical Research/Clinical Informatics",
-                "Virology"
-            ],
-            exists: true
+                vacancy_documents: [
+                    {
+                        is_optional: {label: 'false', value: '0'},
+                        title: {label: 'Test Document', value: 'Test Document'},
+                        vacancy_id: {label: 'Test Vacancy', value: '12345'},
+                    },
+                ],
+                focus_area: [
+                    "Biochemistry/Proteomics/Metabolomics",
+                    "Biomedical Engineering/Biophysics/Physics",
+                    "Cancer Biology",
+                    "Cell Biology",
+                    "Chemistry/Chemical Biology/Toxicology",
+                    "Chromosome Biology/Epigenetics/Transcription",
+                    "Cognitive Neuroscience",
+                    "Computational Biology/Bioinformatics/Biostatistics/Mathematics",
+                    "Developmental Biology",
+                    "Epidemiology/Population Sciences",
+                    "Genetics/Genomics",
+                    "Health Disparities",
+                    "Immunology",
+                    "Microbiology/Infectious diseases (non-viral)",
+                    "Molecular and Cellular Neuroscience",
+                    "Molecular Biology",
+                    "Molecular Pharmacology/Cell Signaling",
+                    "Neurodevelopment",
+                    "RNA Biology",
+                    "Social and Behavioral Sciences",
+                    "Stem Cells/Induced Pluripotent Stem Cells",
+                    "Structural Biology",
+                    "Synapses and Circuits",
+                    "Systems Biology/Physiology",
+                    "Translation from Pre-clinical to Clinical Research/Clinical Informatics",
+                    "Virology"
+                ],
+                exists: true
+            }
         }
     }
 };
