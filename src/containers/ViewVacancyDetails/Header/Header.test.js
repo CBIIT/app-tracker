@@ -14,10 +14,6 @@ jest.mock('react-router-dom', () => ({
     useHistory: jest.fn(),
 
 }));
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockUseNavigate,
-}));
 jest.mock('../../../hooks/useAuth', () => ({
     __esModule: true,
     default: jest.fn(),
@@ -35,20 +31,8 @@ jest.mock('../../../components/ProfileModal/ProfileModal', () => (props) => (
     </div>
 ));
 
-const mockUseAuth = {
-    auth: {
-        iTrustGlideSsoId: 'testSsoId',
-        iTrustUrl: 'https://test.itrust.com',
-        isUserLoggedIn: false,
-        user: { firstName: 'John', lastInitial: 'D' },
-        oktaLoginAndRedirectUrl: 'https://test.okta.com',
-
-    },
-}
-
 describe('Header', () => {
     let mockUseAuth;
-    let mockedUsedNavigate;
     let mockHistoryPush;
 
     const mockVacancyProps = {
