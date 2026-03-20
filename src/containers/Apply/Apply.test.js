@@ -382,6 +382,7 @@ describe('Apply component', () => {
 				})
 			);
 			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+			expect(screen.getByText(/Verify that the vacancy you are applying to has not closed/)).toBeInTheDocument();
 		});
 	});
 
@@ -590,6 +591,7 @@ describe('Apply component', () => {
 				})
 			);
 			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+			expect(screen.getByText(/Verify that the vacancy you are applying to has not closed/)).toBeInTheDocument();
 		});
 	});
 
@@ -610,6 +612,7 @@ describe('Apply component', () => {
 				})
 			);
 			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+			expect(screen.getByText(/Verify that the vacancy you are applying to has not closed/)).toBeInTheDocument();
 		});
 	});
 
@@ -629,6 +632,7 @@ describe('Apply component', () => {
 				})
 			);
 			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+			expect(screen.getByText(/Verify that the vacancy you are applying to has not closed/)).toBeInTheDocument();
 		});
 	});
 });

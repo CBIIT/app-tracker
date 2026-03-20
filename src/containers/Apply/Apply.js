@@ -214,8 +214,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				description: (
 					<>
 						<p>
-							Please refresh the page and try again. If the issue persists,
-							contact the Help Desk by emailing{' '}
+							Please refresh the page and try again. Verify that the vacancy you
+							are applying to has not closed. If the issue persists, contact the
+							Help Desk by emailing{' '}
 							<a href='mailto:NCIAppSupport@mail.nih.gov'>
 								NCIAppSupport@mail.nih.gov
 							</a>
@@ -297,8 +298,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				description: (
 					<>
 						<p>
-							Please refresh the page and try again. If the issue persists,
-							contact the Help Desk by emailing{' '}
+							Please refresh the page and try again. Verify that the vacancy you
+							are applying to has not closed. If the issue persists, contact the
+							Help Desk by emailing{' '}
 							<a href='mailto:NCIAppSupport@mail.nih.gov'>
 								NCIAppSupport@mail.nih.gov
 							</a>
@@ -537,8 +539,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			<div className='Content'>
 				<h2>Unable to load application</h2>
 				<p>
-					Please refresh the page and try again. If the issue persists, contact
-					the Help Desk by emailing{' '}
+					Please refresh the page and try again. Verify that the vacancy you are
+					applying to has not closed. If the issue persists, contact the Help Desk
+					by emailing{' '}
 					<a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
 				</p>
 			</div>
