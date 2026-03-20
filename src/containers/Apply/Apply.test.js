@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { message, notification } from 'antd';
 import Apply from './Apply';
@@ -526,7 +525,7 @@ describe('Apply component', () => {
 	});
 
 	test('should open submit modal on final step and handle modal actions', async () => {
-		const reviewOnlyVacancyResponse = {
+		const submitFlowVacancyResponse = {
 			...mockVacancyResponse,
 			data: {
 				...mockVacancyResponse.data,
@@ -534,17 +533,16 @@ describe('Apply component', () => {
 					...mockVacancyResponse.data.result,
 					json: {
 						...mockVacancyResponse.data.result.json,
-						vacancy_documents: [],
 						basic_info: {
 							...mockVacancyResponse.data.result.json.basic_info,
-							number_of_recommendation: { label: '0', value: '0' },
+							number_of_recommendation: { label: '1', value: '1' },
 						},
 					},
 				},
 			},
 		};
 
-		axios.get.mockResolvedValueOnce(reviewOnlyVacancyResponse);
+		axios.get.mockResolvedValueOnce(submitFlowVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
 		axios.post.mockResolvedValue({ data: { result: { draft_id: '444' } } });
 
@@ -556,6 +554,16 @@ describe('Apply component', () => {
 
 		await waitFor(() => {
 			expect(screen.getByTestId('next-button')).toBeInTheDocument();
+			expect(screen.getByTestId('next-button')).toHaveTextContent('Next');
+		});
+
+		fireEvent.click(screen.getByTestId('next-button'));
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-references-form')).toBeInTheDocument();
+		});
+
+		fireEvent.click(screen.getByTestId('next-button'));
+		await waitFor(() => {
 			expect(screen.getByTestId('next-button')).toHaveTextContent('Submit Application');
 		});
 
@@ -571,7 +579,7 @@ describe('Apply component', () => {
 
 		fireEvent.click(screen.getByTestId('submit-modal-return-to-documents'));
 		await waitFor(() => {
-			expect(screen.getByTestId('next-button')).toHaveTextContent('Submit Application');
+			expect(screen.getByTestId('next-button')).toHaveTextContent('Next');
 		});
 	});
 
@@ -633,6 +641,209 @@ describe('Apply component', () => {
 			);
 			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
 			expect(screen.getByText(/Verify that the vacancy you are applying to has not closed/)).toBeInTheDocument();
+		});
+	});
+
+	test('should handle non-array focus_area in new application flow', async () => {
+		const malformedFocusAreaResponse = {
+			...mockVacancyResponse,
+			data: {
+				...mockVacancyResponse.data,
+				result: {
+					...mockVacancyResponse.data.result,
+					json: {
+						...mockVacancyResponse.data.result.json,
+						focus_area: 'not-an-array',
+					},
+				},
+			},
+		};
+
+		axios.get.mockResolvedValueOnce(malformedFocusAreaResponse);
+		axios.get.mockResolvedValueOnce(mockProfileResponse);
+		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: '444' } } });
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('next-button')).toBeInTheDocument();
+			expect(screen.queryByText('Unable to load application')).not.toBeInTheDocument();
+			expect(notification.error).not.toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+		});
+	});
+
+	test('should handle non-array focus_area in existing application flow', async () => {
+		const malformedFocusAreaResponse = {
+			...mockVacancyResponse,
+			data: {
+				...mockVacancyResponse.data,
+				result: {
+					...mockVacancyResponse.data.result,
+					json: {
+						...mockVacancyResponse.data.result.json,
+						focus_area: { unexpected: true },
+					},
+				},
+			},
+		};
+
+		axios.get.mockResolvedValueOnce(malformedFocusAreaResponse);
+		axios.get.mockResolvedValueOnce(mockProfileResponse);
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply initialValues={{ sysId: '222', applicantDocuments: [] }} editSubmitted={true} />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('next-button')).toBeInTheDocument();
+			expect(screen.queryByText('Unable to load application')).not.toBeInTheDocument();
+			expect(notification.error).not.toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+		});
+	});
+
+	test('should show error UI when vacancy_documents is non-array in new application flow', async () => {
+		const malformedVacancyDocumentsResponse = {
+			...mockVacancyResponse,
+			data: {
+				...mockVacancyResponse.data,
+				result: {
+					...mockVacancyResponse.data.result,
+					json: {
+						...mockVacancyResponse.data.result.json,
+						vacancy_documents: { invalid: true },
+					},
+				},
+			},
+		};
+
+		axios.get.mockResolvedValueOnce(malformedVacancyDocumentsResponse);
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+		});
+	});
+
+	test('should show error UI when vacancy_documents is non-array in existing application flow', async () => {
+		const malformedVacancyDocumentsResponse = {
+			...mockVacancyResponse,
+			data: {
+				...mockVacancyResponse.data,
+				result: {
+					...mockVacancyResponse.data.result,
+					json: {
+						...mockVacancyResponse.data.result.json,
+						vacancy_documents: 'invalid-array-shape',
+					},
+				},
+			},
+		};
+
+		axios.get.mockResolvedValueOnce(malformedVacancyDocumentsResponse);
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply initialValues={{ sysId: '222', applicantDocuments: [] }} editSubmitted={true} />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+		});
+	});
+
+	test('should show error UI when vacancy_documents is empty in new application flow', async () => {
+		const emptyVacancyDocumentsResponse = {
+			...mockVacancyResponse,
+			data: {
+				...mockVacancyResponse.data,
+				result: {
+					...mockVacancyResponse.data.result,
+					json: {
+						...mockVacancyResponse.data.result.json,
+						vacancy_documents: [],
+					},
+				},
+			},
+		};
+
+		axios.get.mockResolvedValueOnce(emptyVacancyDocumentsResponse);
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+		});
+	});
+
+	test('should show error UI when vacancy_documents is empty in existing application flow', async () => {
+		const emptyVacancyDocumentsResponse = {
+			...mockVacancyResponse,
+			data: {
+				...mockVacancyResponse.data,
+				result: {
+					...mockVacancyResponse.data.result,
+					json: {
+						...mockVacancyResponse.data.result.json,
+						vacancy_documents: [],
+					},
+				},
+			},
+		};
+
+		axios.get.mockResolvedValueOnce(emptyVacancyDocumentsResponse);
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply initialValues={{ sysId: '222', applicantDocuments: [] }} editSubmitted={true} />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
 		});
 	});
 });

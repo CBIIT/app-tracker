@@ -71,7 +71,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
-	const [vacancyDocuments] = useState([]);
+	const [vacancyDocuments, setVacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
 	const [hasError, setHasError] = useState(false);
 	const [focusArea, setFocusArea] = useState([]);
@@ -125,7 +125,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				throw new Error('Invalid vacancy data');
 			}
 
-			const focusAreaOptions = (vacancyData.focus_area ?? []).map((area) => ({
+			const focusAreas = Array.isArray(vacancyData.focus_area)
+				? vacancyData.focus_area
+				: [];
+			const focusAreaOptions = focusAreas.map((area) => ({
 				label: area,
 				value: area,
 			}));
@@ -138,11 +141,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 			setVacancyTitle(vacancyData.basic_info.vacancy_title?.value);
 			setVacancyTenantType(vacancyData.basic_info.tenant?.label);
+			const currentVacancyDocuments = Array.isArray(vacancyData.vacancy_documents)
+				? vacancyData.vacancy_documents
+				: [];
+
+			if (currentVacancyDocuments.length === 0) {
+				throw new Error('Missing vacancy documents data');
+			}
+
+			setVacancyDocuments(currentVacancyDocuments);
 			if (!editSubmitted) setDraftId(appSysId);
 
 			let applicantDocuments = {};
 
-			(vacancyData.vacancy_documents ?? []).forEach((document) => {
+			currentVacancyDocuments.forEach((document) => {
 				applicantDocuments[document.title.value] = document.file
 					? document
 					: { ...document, file: { fileList: [] } };
@@ -247,7 +259,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 				throw new Error('Invalid vacancy data');
 			}
 
-			const focusAreaOptions = (vacancyData.focus_area ?? []).map((area) => ({
+			const focusAreas = Array.isArray(vacancyData.focus_area)
+				? vacancyData.focus_area
+				: [];
+			const focusAreaOptions = focusAreas.map((area) => ({
 				label: area,
 				value: area,
 			}));
@@ -260,7 +275,15 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 			setVacancyTitle(vacancyData.basic_info.vacancy_title?.value);
 			setVacancyTenantType(vacancyData.basic_info.tenant?.label);
-			vacancyDocuments.push(vacancyData.vacancy_documents);
+			const currentVacancyDocuments = Array.isArray(vacancyData.vacancy_documents)
+				? vacancyData.vacancy_documents
+				: [];
+
+			if (currentVacancyDocuments.length === 0) {
+				throw new Error('Missing vacancy documents data');
+			}
+
+			setVacancyDocuments(currentVacancyDocuments);
 
 			const numReferences = parseInt(
 				vacancyData.basic_info.number_of_recommendation?.value ?? '0'
@@ -270,7 +293,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			const newFormData = {
 				...formData,
 				sysId: vacancySysId,
-				applicantDocuments: (vacancyData.vacancy_documents ?? []).map(
+				applicantDocuments: currentVacancyDocuments.map(
 					(document) =>
 						document.file ? document : { ...document, file: { fileList: [] } }
 				),
@@ -280,7 +303,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			};
 			setFormData(newFormData);
 
-			const newData = { ...newFormData, vacancyDocuments: vacancyDocuments };
+			const newData = {
+				...newFormData,
+				vacancyDocuments: currentVacancyDocuments,
+			};
 			const data = { jsonobj: JSON.stringify(newData) };
 
 			if (draftId) {
