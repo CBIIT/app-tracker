@@ -272,33 +272,18 @@ describe('Apply component', () => {
 	});
 
 	test('should show required fields error on save when profile is missing basic info', async () => {
-		const incompleteProfileResponse = {
-			data: {
-				result: {
-					response: {
-						basic_info: {
-							first_name: '',
-							middle_name: '',
-							last_name: '',
-							email: '',
-							phone: '+1234567890',
-							business_phone: '+1234567890',
-							highest_level_of_education: 'PhD',
-							us_citizen: '1',
-							address: '123 Main St',
-							address_2: 'Apt 1',
-							city: 'City',
-							state_province: 'ST',
-							zip_code: '12345',
-							country: 'USA',
-						},
-					},
-				},
+		convertDataFromBackend.mockReturnValueOnce({
+			...mockProfileData,
+			basicInfo: {
+				...mockProfileData.basicInfo,
+				firstName: '',
+				lastName: '',
+				email: '',
 			},
-		};
+		});
 
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
-		axios.get.mockResolvedValueOnce(incompleteProfileResponse);
+		axios.get.mockResolvedValueOnce(mockProfileResponse);
 		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: '444' } } });
 
 		render(
@@ -379,7 +364,7 @@ describe('Apply component', () => {
 		});
 	});
 
-	test('should show save failed notification when initial draft creation fails', async () => {
+	test('should show error UI when initial draft creation fails', async () => {
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
 		axios.post.mockRejectedValueOnce(new Error('draft save failed'));
@@ -392,9 +377,11 @@ describe('Apply component', () => {
 
 		await waitFor(() => {
 			expect(notification.error).toHaveBeenCalledWith(
-				expect.objectContaining({ message: 'Save Failed' })
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
 			);
-			expect(mockGoBack).toHaveBeenCalled();
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
 		});
 	});
 
@@ -584,6 +571,64 @@ describe('Apply component', () => {
 		fireEvent.click(screen.getByTestId('submit-modal-return-to-documents'));
 		await waitFor(() => {
 			expect(screen.getByTestId('next-button')).toHaveTextContent('Submit Application');
+		});
+	});
+
+	test('should show error UI when new application vacancy fetch fails', async () => {
+		axios.get.mockRejectedValueOnce(new Error('vacancy fetch failed'));
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+		});
+	});
+
+	test('should show error UI when new application profile fetch fails', async () => {
+		axios.get.mockResolvedValueOnce(mockVacancyResponse);
+		axios.get.mockRejectedValueOnce(new Error('profile fetch failed'));
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+		});
+	});
+
+	test('should show error UI when existing application load fails', async () => {
+		axios.get.mockRejectedValueOnce(new Error('existing application load failed'));
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply initialValues={{ sysId: '222', applicantDocuments: [] }} editSubmitted={true} />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(notification.error).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'Sorry! There was an error loading your application.',
+				})
+			);
+			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
 		});
 	});
 });
