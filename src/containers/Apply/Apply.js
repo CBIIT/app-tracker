@@ -71,8 +71,9 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [draftId, setDraftId] = useState();
 	const [vacancyTenantType, setVacancyTenantType] = useState();
-	const [vacancyDocuments] = useState([]);
+	const [vacancyDocuments, setVacancyDocuments] = useState([]);
 	const [lastModalTimeout, setLastModalTimeout] = useState();
+	const [hasError, setHasError] = useState(false);
 	const [focusArea, setFocusArea] = useState([]);
 
 	const history = useHistory();
@@ -88,12 +89,15 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			if (initialValues) {
-				await loadExistingApplication();
-			} else {
-				await instantiateNewApplication();
+			try {
+				if (initialValues) {
+					await loadExistingApplication();
+				} else {
+					await instantiateNewApplication();
+				}
+			} finally {
+				setIsLoading(false);
 			}
-			setIsLoading(false);
 		})();
 	}, []);
 
@@ -113,255 +117,118 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	}, checkTimeDuration);
 
 	const loadExistingApplication = async () => {
-		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + vacancyId
-		);
+		try {
+			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + vacancyId);
+			const vacancyData = response?.data?.result?.json;
 
-		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
-			focusAreaOptions.push({ label: focusArea, value: focusArea });
-		});
-		setFocusArea(focusAreaOptions);
-		
-		const profileResponse = await axios
-			.get(GET_PROFILE + user.uid)
-			.catch(function () {
-				notification.error({
-					message: 'Sorry! There was an error retrieving your profile.',
-					description: (
-						<>
-							<p>
-								Please verify if the vacancy has closed. If not, please log out
-								and re-login to resubmit your application. If the issue
-								continues, contact the Help Desk by emailing{' '}
-								<a href='mailto:NCIAppSupport@mail.nih.gov'>
-									NCIAppSupport@mail.nih.gov
-								</a>
-							</p>
-						</>
-					),
-					duration: 30,
-					style: {
-						height: '225px',
-						display: 'flex',
-						alignItems: 'center',
-					},
-				});
-				history.goBack();
+			if (!vacancyData?.basic_info || typeof vacancyData.basic_info !== 'object') {
+				throw new Error('Invalid vacancy data');
+			}
+
+			const focusAreas = Array.isArray(vacancyData.focus_area)
+				? vacancyData.focus_area
+				: [];
+			const focusAreaOptions = focusAreas.map((area) => ({
+				label: area,
+				value: area,
+			}));
+			setFocusArea(focusAreaOptions);
+
+			const profileResponse = await axios.get(GET_PROFILE + user.uid);
+			const profileData = convertDataFromBackend(profileResponse?.data?.result?.response);
+			const { basicInfo } = profileData;
+			const address = basicInfo?.address;
+
+			setVacancyTitle(vacancyData.basic_info.vacancy_title?.value);
+			setVacancyTenantType(vacancyData.basic_info.tenant?.label);
+			const currentVacancyDocuments = Array.isArray(vacancyData.vacancy_documents)
+				? vacancyData.vacancy_documents
+				: [];
+
+			if (currentVacancyDocuments.length === 0) {
+				throw new Error('Missing vacancy documents data');
+			}
+
+			setVacancyDocuments(currentVacancyDocuments);
+			if (!editSubmitted) setDraftId(appSysId);
+
+			let applicantDocuments = {};
+
+			currentVacancyDocuments.forEach((document) => {
+				applicantDocuments[document.title.value] = document.file
+					? document
+					: { ...document, file: { fileList: [] } };
 			});
 
-		const profileData = convertDataFromBackend(
-			profileResponse.data.result.response
-		);
-		const { basicInfo } = profileData;
-		const address = basicInfo?.address;
-
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		if (!editSubmitted) setDraftId(appSysId);
-
-		let applicantDocuments = {};
-
-		response.data.result.vacancy_documents.forEach((document) => {
-			applicantDocuments[document.title.value] = document.file
-				? document
-				: { ...document, file: { fileList: [] } };
-		});
-
-		if (
-			editSubmitted &&
-			initialValues.applicantDocuments &&
-			initialValues.applicantDocuments.length > 0
-		) {
-			initialValues.applicantDocuments.forEach((applicantDocument) => {
-				if (
-					applicantDocument &&
-					applicantDocument.title &&
-					applicantDocument.title.label
-				) {
-					applicantDocuments[applicantDocument.title.label] = {
-						...applicantDocuments[applicantDocument.title.label],
-						...applicantDocument,
-					};
-					var initialFiles = initialValues.applicantDocuments.filter(
-						(iv) => iv.title.label === applicantDocument.title.label
-					);
-					if (initialFiles != null && initialFiles.length > 0) {
-						applicantDocuments[applicantDocument.title.label].file =
-							initialFiles[0].file;
-						if (initialFiles[0].file.fileList.length > 0) {
-							if (initialFiles[0] && initialFiles[0].uploadedDocument) {
-								applicantDocuments[
-									applicantDocument.title.label
-								].uploadedDocument = {
-									fileName: initialFiles[0]?.uploadedDocument?.fileName,
-									attachSysId: initialFiles[0]?.uploadedDocument?.attachSysId,
-									downloadLink: initialFiles[0]?.uploadedDocument?.downloadLink,
-									markedToDelete:
-										initialFiles[0]?.uploadedDocument?.markedToDelete,
-								};
-							} else {
-								// its missing because this is getting rehydrated ... clear it out
-								applicantDocuments[
-									applicantDocument.title.label
-								].uploadedDocument = {};
-								applicantDocuments[applicantDocument.title.label].file = {
-									fileList: [],
-								};
+			if (
+				editSubmitted &&
+				initialValues.applicantDocuments &&
+				initialValues.applicantDocuments.length > 0
+			) {
+				initialValues.applicantDocuments.forEach((applicantDocument) => {
+					if (
+						applicantDocument &&
+						applicantDocument.title &&
+						applicantDocument.title.label
+					) {
+						applicantDocuments[applicantDocument.title.label] = {
+							...applicantDocuments[applicantDocument.title.label],
+							...applicantDocument,
+						};
+						var initialFiles = initialValues.applicantDocuments.filter(
+							(iv) => iv.title.label === applicantDocument.title.label
+						);
+						if (initialFiles != null && initialFiles.length > 0) {
+							applicantDocuments[applicantDocument.title.label].file =
+								initialFiles[0].file;
+							if (initialFiles[0].file.fileList.length > 0) {
+								if (initialFiles[0] && initialFiles[0].uploadedDocument) {
+									applicantDocuments[
+										applicantDocument.title.label
+									].uploadedDocument = {
+										fileName: initialFiles[0]?.uploadedDocument?.fileName,
+										attachSysId: initialFiles[0]?.uploadedDocument?.attachSysId,
+										downloadLink: initialFiles[0]?.uploadedDocument?.downloadLink,
+										markedToDelete:
+											initialFiles[0]?.uploadedDocument?.markedToDelete,
+									};
+								} else {
+									// its missing because this is getting rehydrated ... clear it out
+									applicantDocuments[
+										applicantDocument.title.label
+									].uploadedDocument = {};
+									applicantDocuments[applicantDocument.title.label].file = {
+										fileList: [],
+									};
+								}
 							}
 						}
+					} else {
+						applicantDocuments[applicantDocument.documentName] = {
+							...applicantDocuments[applicantDocument.documentName],
+							...applicantDocument,
+						};
 					}
-				} else {
-					applicantDocuments[applicantDocument.documentName] = {
-						...applicantDocuments[applicantDocument.documentName],
-						...applicantDocument,
-					};
-				}
-			});
-		}
-
-		const formData = {
-			...initialValues,
-			applicantDocuments: Object.values(applicantDocuments),
-			basicInfo: basicInfo,
-			address: address,
-		};
-		setFormData(formData);
-	};
-
-	const {
-		auth: { user },
-		setAuth,
-	} = useAuth();
-
-	const instantiateNewApplication = async () => {
-		const response = await axios.get(
-			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
-		);
-
-		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
-			focusAreaOptions.push({ label: focusArea, value: focusArea });
-		});
-		setFocusArea(focusAreaOptions);
-		
-
-		const profileResponse = await axios
-			.get(GET_PROFILE + user.uid)
-			.catch(function () {
-				notification.error({
-					message: 'Sorry! There was an error retrieving your profile.',
-					description: (
-						<>
-							<p>
-								Please verify if the vacancy has closed. If not, please log out
-								and re-login to resubmit your application. If the issue
-								continues, contact the Help Desk by emailing{' '}
-								<a href='mailto:NCIAppSupport@mail.nih.gov'>
-									NCIAppSupport@mail.nih.gov
-								</a>
-							</p>
-						</>
-					),
-					duration: 30,
-					style: {
-						height: '225px',
-						display: 'flex',
-						alignItems: 'center',
-					},
 				});
-				history.goBack();
-			});
-
-		// commented for Jest testing. Do not remove.
-		// const profileData = convertDataFromBackend(profileResponse.data.result.response)
-		// const {basicInfo, demographics} = profileData;
-		// const address = basicInfo?.address;
-
-		const profileData = profileResponse.data.result.response;
-		const basicInfo = {
-			firstName: profileData.basic_info?.first_name,
-			middleName: profileData.basic_info?.middle_name
-				? profileData.basic_info?.middle_name
-				: null,
-			lastName: profileData.basic_info?.last_name,
-			email: profileData.basic_info?.email,
-			phonePrefix: profileData.basic_info?.phone.slice(0, 2),
-			phone: profileData.basic_info?.phone.slice(2),
-			businessPhonePrefix: profileData.basic_info?.business_phone
-				? profileData.basic_info.business_phone?.slice(0, 2)
-				: '+1',
-			businessPhone: profileData.basic_info?.business_phone
-				? profileData.basic_info.business_phone.slice(2)
-				: null,
-			highestLevelEducation: profileData.basic_info?.highest_level_of_education,
-			isUsCitizen: parseInt(profileData.basic_info?.us_citizen),
-			address: {
-				address: profileData.basic_info?.address,
-				address2: profileData.basic_info?.address_2,
-				city: profileData.basic_info?.city,
-				stateProvince: profileData.basic_info?.state_province,
-				zip: profileData.basic_info?.zip_code,
-				country: profileData.basic_info?.country,
-			},
-		};
-		const address = basicInfo?.address;
-
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		vacancyDocuments.push(response.data.result.vacancy_documents);
-
-		const references = [];
-
-		for (
-			let i = 0;
-			i <
-			parseInt(response.data.result.basic_info.number_of_recommendation.value);
-			i++
-		) {
-			references.push({});
-		}
-
-		const newFormData = {
-			...formData,
-			sysId: vacancySysId,
-			applicantDocuments: response.data.result.vacancy_documents.map(
-				(document) =>
-					document.file ? document : { ...document, file: { fileList: [] } }
-			),
-			references: references,
-			address: address,
-			basicInfo: basicInfo,
-		};
-		setFormData(newFormData);
-
-		const newData = {
-			...newFormData,
-			vacancyDocuments: vacancyDocuments,
-		};
-
-		let data = {
-			jsonobj: JSON.stringify(newData),
-		};
-
-		if (draftId) {
-			data['sys_id'] = draftId;
-		}
-
-		try{ 
-			const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
-			if (saveDraftResponse) {
-			setDraftId(saveDraftResponse.data.result.draft_id);
 			}
+
+			const formData = {
+				...initialValues,
+				applicantDocuments: Object.values(applicantDocuments),
+				basicInfo: basicInfo,
+				address: address,
+			};
+			setFormData(formData);
 		} catch (e) {
+			setHasError(true);
 			notification.error({
-				message: 'Save Failed',
+				message: 'Sorry! There was an error loading your application.',
 				description: (
 					<>
 						<p>
-							Please verify if the vacancy has closed. If not, please log out
-							and re-login to resubmit your application. If the issue continues,
-							contact the Help Desk by emailing{' '}
+							Please refresh the page and try again. Verify that the vacancy you
+							are applying to has not closed. If the issue persists, contact the
+							Help Desk by emailing{' '}
 							<a href='mailto:NCIAppSupport@mail.nih.gov'>
 								NCIAppSupport@mail.nih.gov
 							</a>
@@ -375,7 +242,104 @@ const Apply = ({ initialValues, editSubmitted }) => {
 					alignItems: 'center',
 				},
 			});
-			history.goBack();
+		}
+	};
+
+	const {
+		auth: { user },
+		setAuth,
+	} = useAuth();
+
+	const instantiateNewApplication = async () => {
+		try {
+			const response = await axios.get(VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId);
+			const vacancyData = response?.data?.result?.json;
+
+			if (!vacancyData?.basic_info || typeof vacancyData.basic_info !== 'object') {
+				throw new Error('Invalid vacancy data');
+			}
+
+			const focusAreas = Array.isArray(vacancyData.focus_area)
+				? vacancyData.focus_area
+				: [];
+			const focusAreaOptions = focusAreas.map((area) => ({
+				label: area,
+				value: area,
+			}));
+			setFocusArea(focusAreaOptions);
+
+			const profileResponse = await axios.get(GET_PROFILE + user.uid);
+			const profileData = convertDataFromBackend(profileResponse?.data?.result?.response);
+			const { basicInfo } = profileData;
+			const address = basicInfo?.address;
+
+			setVacancyTitle(vacancyData.basic_info.vacancy_title?.value);
+			setVacancyTenantType(vacancyData.basic_info.tenant?.label);
+			const currentVacancyDocuments = Array.isArray(vacancyData.vacancy_documents)
+				? vacancyData.vacancy_documents
+				: [];
+
+			if (currentVacancyDocuments.length === 0) {
+				throw new Error('Missing vacancy documents data');
+			}
+
+			setVacancyDocuments(currentVacancyDocuments);
+
+			const numReferences = parseInt(
+				vacancyData.basic_info.number_of_recommendation?.value ?? '0'
+			);
+			const references = Array.from({ length: numReferences }, () => ({}));
+
+			const newFormData = {
+				...formData,
+				sysId: vacancySysId,
+				applicantDocuments: currentVacancyDocuments.map(
+					(document) =>
+						document.file ? document : { ...document, file: { fileList: [] } }
+				),
+				references,
+				address,
+				basicInfo,
+			};
+			setFormData(newFormData);
+
+			const newData = {
+				...newFormData,
+				vacancyDocuments: currentVacancyDocuments,
+			};
+			const data = { jsonobj: JSON.stringify(newData) };
+
+			if (draftId) {
+				data['sys_id'] = draftId;
+			}
+
+			const saveDraftResponse = await axios.post(SAVE_APP_DRAFT, data);
+			if (saveDraftResponse) {
+				setDraftId(saveDraftResponse.data.result.draft_id);
+			}
+		} catch (e) {
+			setHasError(true);
+			notification.error({
+				message: 'Sorry! There was an error loading your application.',
+				description: (
+					<>
+						<p>
+							Please refresh the page and try again. Verify that the vacancy you
+							are applying to has not closed. If the issue persists, contact the
+							Help Desk by emailing{' '}
+							<a href='mailto:NCIAppSupport@mail.nih.gov'>
+								NCIAppSupport@mail.nih.gov
+							</a>
+						</p>
+					</>
+				),
+				duration: 30,
+				style: {
+					height: '225px',
+					display: 'flex',
+					alignItems: 'center',
+				},
+			});
 		}
 	};
 
@@ -595,6 +559,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		// moving application back to documents step in case of error
 		setCurrentStep(0);
 	};
+
+	if (hasError) {
+		return (
+			<div className='Content'>
+				<h2>Unable to load application</h2>
+				<p>
+					Please refresh the page and try again. Verify that the vacancy you are
+					applying to has not closed. If the issue persists, contact the Help Desk
+					by emailing{' '}
+					<a href='mailto:NCIAppSupport@mail.nih.gov'>NCIAppSupport@mail.nih.gov</a>
+				</p>
+			</div>
+		);
+	}
 
 	return (
 		<>
