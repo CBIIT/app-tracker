@@ -28,13 +28,13 @@ const submitEdittedApp = async (
 
 	const attachDocuments = async () => {
 		try {
-			const documentsToDelete = infoToSend.vacancy_documents.map((document) => {
-				if (document?.uploadedDocument?.markedToDelete) {
-					return axios.delete(
-						SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
-					);
-				}
-			});
+			// const documentsToDelete = infoToSend.vacancy_documents.map((document) => {
+			// 	if (document?.uploadedDocument?.markedToDelete) {
+			// 		return axios.delete(
+			// 			SERVICE_NOW_ATTACHMENT + document.uploadedDocument.attachSysId
+			// 		);
+			// 	}
+			// });
 
 			const documentsToUpload = infoToSend.vacancy_documents.map((document) => {
 				if (document.file.file || document.file.fileList.length > 0) {
@@ -55,7 +55,8 @@ const submitEdittedApp = async (
 				}
 			});
 
-			await Promise.all([...documentsToDelete, ...documentsToUpload]);
+			// await Promise.all([...documentsToDelete, ...documentsToUpload]);
+			await Promise.all([...documentsToUpload]);
 			setPercent(50);
 		} catch (e) {
 			setSubmitted(false);
