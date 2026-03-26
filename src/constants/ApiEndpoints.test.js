@@ -117,6 +117,10 @@ describe('ApiEndpoints', () => {
         expect(ApiEndpoints.SERVICE_NOW_ATTACHMENT).toBe('/api/now/attachment/');
     });
 
+    it('should have the correct value for DELETE_ATTACHMENT', () => {
+        expect(ApiEndpoints.DELETE_ATTACHMENT).toBe('/api/x_g_nci_app_tracke/attachment/delete_attachment/');
+    });
+
     it('should have the correct value for EDIT_VACANCY', () => {
         expect(ApiEndpoints.EDIT_VACANCY).toBe('/api/x_g_nci_app_tracke/vacancy/edit');
     });

@@ -55,7 +55,7 @@ const showAttachmentSubmissionError = () => {
 	});
 };
 
-const getMissingRequiredAttachments = (mandatoryDocuments = []) => {
+export const getMissingRequiredAttachments = (mandatoryDocuments = []) => {
 	const requiredDocuments = mandatoryDocuments.filter(
 		(doc) => doc.is_optional === 'false'
 	);

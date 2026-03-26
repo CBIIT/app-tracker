@@ -10,7 +10,7 @@ import {
 jest.mock('../../../hooks/useAuth');
 jest.mock('../../../constants/checkAuth');
 jest.mock('axios');
-jest.mock('./SubmitAppWorkflow/SubmitEdittedApp');
+jest.mock('./SubmitAppWorkflow/SubmitEditedApp');
 jest.mock('./SubmitAppWorkflow/SubmitNewApp');
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn(),
