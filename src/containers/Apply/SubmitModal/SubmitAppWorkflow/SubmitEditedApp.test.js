@@ -3,6 +3,17 @@ import { message, notification } from 'antd';
 import submitEditedApp from './SubmitEditedApp';
 import { getMissingRequiredAttachments } from './SubmitEditedApp';
 import {
+	createMockTransformedData,
+	mockEmptyAttachmentCheckResponse,
+	mockMissingRequiredAttachmentResponse,
+	mockNoMissingAttachmentResponse,
+	mockSubmitEditedAppData,
+	mockSubmittedAppSysId,
+	mockSuccessfulApplicationSubmissionResponse,
+	mockSuccessfulAttachmentCheckResponse,
+	mockUnsuccessfulApplicationSubmissionResponse,
+} from './SubmitEditedAppMockData';
+import {
 	APPLICATION_SUBMISSION,
 	ATTACHMENT_CHECK_FOR_APPLICATIONS,
 	DELETE_ATTACHMENT,
@@ -35,58 +46,15 @@ const createCallbacks = () => ({
 	setAuth: jest.fn(),
 });
 
-const createTransformedData = (overrides = {}) => ({
-	vacancy_documents: [
-		{
-			uploadedDocument: {
-				markedToDelete: true,
-				attachSysId: 'attach-delete-1',
-			},
-			table_name: 'x_table',
-			table_sys_id: 'table-1',
-		},
-		{
-			file: {
-				file: {
-					name: 'resume.pdf',
-					type: 'application/pdf',
-				},
-			},
-			table_name: 'x_table',
-			table_sys_id: 'table-2',
-		},
-		{
-			file: {
-				fileList: [
-					{
-						name: 'cover-letter.docx',
-						type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-					},
-				],
-			},
-			table_name: 'x_table',
-			table_sys_id: 'table-3',
-		},
-		{
-			file: {
-				fileList: [],
-			},
-			table_name: 'x_table',
-			table_sys_id: 'table-4',
-		},
-	],
-	...overrides,
-});
-
 describe('submitEditedApp', () => {
-	const data = { some: 'form-data' };
-	const submittedAppSysId = 'app-123';
+	const data = mockSubmitEditedAppData;
+	const submittedAppSysId = mockSubmittedAppSysId;
 
 	beforeEach(() => {
 		jest.clearAllMocks();
 		message.error = jest.fn();
 		notification.error = jest.fn();
-		transformJsonToBackend.mockReturnValue(createTransformedData());
+		transformJsonToBackend.mockReturnValue(createMockTransformedData());
 	});
 
 	test('returns an empty array when required attachments helper is called without arguments', () => {
@@ -98,23 +66,8 @@ describe('submitEditedApp', () => {
 
 		axios.delete.mockResolvedValue({});
 		axios.post.mockResolvedValue({});
-		axios.get.mockResolvedValue({
-			data: {
-				result: {
-					messages: [
-						{ is_optional: 'false', exists: true },
-						{ is_optional: 'true', exists: false },
-					],
-				},
-			},
-		});
-		axios.put.mockResolvedValue({
-			data: {
-				result: {
-					status: 200,
-				},
-			},
-		});
+		axios.get.mockResolvedValue(mockSuccessfulAttachmentCheckResponse);
+		axios.put.mockResolvedValue(mockSuccessfulApplicationSubmissionResponse);
 
 		await submitEditedApp(
 			callbacks.setConfirmLoading,
@@ -193,14 +146,8 @@ describe('submitEditedApp', () => {
 		const callbacks = createCallbacks();
 
 		transformJsonToBackend.mockReturnValue({});
-		axios.get.mockResolvedValue({ data: { result: {} } });
-		axios.put.mockResolvedValue({
-			data: {
-				result: {
-					status: 500,
-				},
-			},
-		});
+		axios.get.mockResolvedValue(mockEmptyAttachmentCheckResponse);
+		axios.put.mockResolvedValue(mockUnsuccessfulApplicationSubmissionResponse);
 
 		await submitEditedApp(
 			callbacks.setConfirmLoading,
@@ -231,13 +178,7 @@ describe('submitEditedApp', () => {
 		const callbacks = createCallbacks();
 
 		transformJsonToBackend.mockReturnValue({ vacancy_documents: [] });
-		axios.get.mockResolvedValue({
-			data: {
-				result: {
-					messages: [{ is_optional: 'false', exists: false }],
-				},
-			},
-		});
+		axios.get.mockResolvedValue(mockMissingRequiredAttachmentResponse);
 
 		await submitEditedApp(
 			callbacks.setConfirmLoading,
@@ -273,13 +214,7 @@ describe('submitEditedApp', () => {
 		const callbacks = createCallbacks();
 
 		transformJsonToBackend.mockReturnValue({ vacancy_documents: [] });
-		axios.get.mockResolvedValue({
-			data: {
-				result: {
-					messages: [],
-				},
-			},
-		});
+		axios.get.mockResolvedValue(mockNoMissingAttachmentResponse);
 		axios.put.mockRejectedValue({
 			response: {
 				status: 400,
@@ -310,13 +245,7 @@ describe('submitEditedApp', () => {
 		const callbacks = createCallbacks();
 
 		transformJsonToBackend.mockReturnValue({ vacancy_documents: [] });
-		axios.get.mockResolvedValue({
-			data: {
-				result: {
-					messages: [],
-				},
-			},
-		});
+		axios.get.mockResolvedValue(mockNoMissingAttachmentResponse);
 		axios.put.mockRejectedValue(
 			new Error('Request failed with status code 400')
 		);
@@ -343,13 +272,7 @@ describe('submitEditedApp', () => {
 		const callbacks = createCallbacks();
 
 		transformJsonToBackend.mockReturnValue({ vacancy_documents: [] });
-		axios.get.mockResolvedValue({
-			data: {
-				result: {
-					messages: [],
-				},
-			},
-		});
+		axios.get.mockResolvedValue(mockNoMissingAttachmentResponse);
 		axios.put.mockRejectedValue(new Error('Network Error'));
 
 		await submitEditedApp(

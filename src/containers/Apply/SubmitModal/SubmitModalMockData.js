@@ -183,7 +183,7 @@ export const mockAttachmentDeleteResponse = {
 	},
 };
 
-// Mocks a failed response from the SERVICE_NOW_ATTACHMENT endpoint
+
 
 // Mocks a successful response from the ATTACHMENT_CHECK_FOR_APPLICATIONS endpoint
 export const mockApplicationAttachmentCheckResponse = {
