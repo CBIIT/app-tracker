@@ -2,152 +2,198 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
-import { 
-    mockUseAuth, 
-    mockFormData,
-} from './SubmitModalMockData';
+import { VIEW_APPLICATION } from '../../../constants/Routes';
+import submitEditedApp from './SubmitAppWorkflow/SubmitEditedApp';
+import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
+import { mockUseAuth, mockFormData } from './SubmitModalMockData';
 
 jest.mock('../../../hooks/useAuth');
 jest.mock('../../../constants/checkAuth');
 jest.mock('axios');
-jest.mock('./SubmitAppWorkflow/SubmitEdittedApp');
+jest.mock('./SubmitAppWorkflow/SubmitEditedApp');
 jest.mock('./SubmitAppWorkflow/SubmitNewApp');
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn(),
-    useLocation: jest.fn(),
+	Link: ({ children, to }) => <a href={to}>{children}</a>,
+	useHistory: jest.fn(),
+	useLocation: jest.fn(),
 }));
 
 describe('SubmitModal component', () => {
-    const mockVisible = true;
-    let mockHandleCancel;
-    let mockDraftId;
-    let mockEditSubmitted; // returns True or False
-    let mockAppSysId;
-    let mockHistoryPush;
+	const mockVisible = true;
+	let mockHandleCancel;
+	let mockDraftId;
+	let mockSubmittedAppSysId;
+	let mockHistoryPush;
+	let mockReturnToDocuments;
+	let mockSetAuth;
 
-    beforeEach(() => {
-        mockHandleCancel = jest.fn();
-        useAuth.mockReturnValue(mockUseAuth);
-        mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
-        delete window.location;
-        window.location = {
-            href: '',
-            assign: jest.fn(),
-        }
-    });
+	const renderSubmitModal = (props = {}) =>
+		render(
+			<SubmitModal
+				visible={mockVisible}
+				onCancel={mockHandleCancel}
+				data={mockFormData}
+				draftId={mockDraftId}
+				editSubmitted={false}
+				submittedAppSysId={mockSubmittedAppSysId}
+				returnToDocuments={mockReturnToDocuments}
+				{...props}
+			/>
+		);
 
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
+	beforeEach(() => {
+		mockHandleCancel = jest.fn();
+		mockDraftId = 'draft-123';
+		mockSubmittedAppSysId = 'app-456';
+		mockHistoryPush = jest.fn();
+		mockReturnToDocuments = jest.fn();
+		mockSetAuth = jest.fn();
+		useAuth.mockReturnValue({ ...mockUseAuth, setAuth: mockSetAuth });
+		useHistory.mockReturnValue({ push: mockHistoryPush });
+		submitNewApp.mockReset();
+		submitEditedApp.mockReset();
+	});
 
-    test('should render SubmitModal component', () => {
-        render(<SubmitModal
-            visible={mockVisible}
-            onCancel={mockHandleCancel}
-            data={mockFormData}
-            draftId={mockDraftId}
-            editSubmitted={mockEditSubmitted}
-            submittedAppSysId={mockAppSysId}
-        />);
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
 
-        const handleOkElement = screen.getByText(/Ok/i);
-        expect(handleOkElement).toBeInTheDocument();
+	test('renders the initial confirmation modal', () => {
+		renderSubmitModal();
 
-        const handleCancelElement = screen.getByText(/Cancel/i);
-        expect(handleCancelElement).toBeInTheDocument();
+		expect(screen.getByText(/Ok/i)).toBeInTheDocument();
+		expect(screen.getByText(/Cancel/i)).toBeInTheDocument();
+		expect(
+			screen.getByText(/Ready to submit application\?/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				/Please ensure that the correct documents have been submitted\./i
+			)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				/Once the application is submitted, and the close date has been reached, it cannot be edited\./i
+			)
+		).toBeInTheDocument();
+	});
 
-        const header = screen.getByText(/Ready to submit application?/i);
-        expect(header).toBeInTheDocument();
+	test('submits a new application and renders the in-progress state', async () => {
+		submitNewApp.mockImplementation(
+			(setConfirmLoading, data, draftId, setSubmitted, setPercent) => {
+				setConfirmLoading(true);
+				setSubmitted(true);
+				setPercent(50);
+			}
+		);
 
-        const p1 = screen.getByText(/Please ensure that the correct documents have been submitted./i);
-        expect(p1).toBeInTheDocument();
+		renderSubmitModal();
+		fireEvent.click(screen.getByText(/Ok/i));
 
-        const p2 = screen.getByText(/Once the application is submitted, and the close date has been reached, it cannot be edited./i);
-        expect(p2).toBeInTheDocument();
-    });
+		await waitFor(() => {
+			expect(submitNewApp).toHaveBeenCalledWith(
+				expect.any(Function),
+				mockFormData,
+				mockDraftId,
+				expect.any(Function),
+				expect.any(Function),
+				expect.any(Function),
+				mockHandleCancel,
+				mockReturnToDocuments,
+				expect.any(Function),
+				mockSetAuth
+			);
+		});
 
-    test('should render updated modal to let user know that a new application is being submitted', () => {
-        mockEditSubmitted = false;
+		expect(
+			screen.getByText(/Application is being submitted/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				/Please do not close or refresh the browser window while the system is uploading your application\./i
+			)
+		).toBeInTheDocument();
+		expect(screen.getByTestId('percent-bar')).toBeInTheDocument();
+		expect(
+			screen.queryByText(/Application Submitted/i)
+		).not.toBeInTheDocument();
+	});
 
-        render(<SubmitModal
-            visible={mockVisible}
-            onCancel={mockHandleCancel}
-            data={mockFormData}
-            draftId={mockDraftId}
-            editSubmitted={mockEditSubmitted}
-            submittedAppSysId={mockAppSysId}
-        />);
+	test('submits an edited application and renders the in-progress state', async () => {
+		submitEditedApp.mockImplementation(
+			(
+				setConfirmLoading,
+				data,
+				submittedAppSysId,
+				setSubmitted,
+				setPercent
+			) => {
+				setConfirmLoading(true);
+				setSubmitted(true);
+				setPercent(25);
+			}
+		);
 
-        const handleOkElement = screen.getByText(/Ok/i);
-        waitFor(() => {
-            fireEvent.click(handleOkElement);
+		renderSubmitModal({ editSubmitted: true });
+		fireEvent.click(screen.getByText(/Ok/i));
 
-            const header = screen.getByText(/Application is being submitted/i);
-            expect(header).toBeInTheDocument();
+		await waitFor(() => {
+			expect(submitEditedApp).toHaveBeenCalledWith(
+				expect.any(Function),
+				mockFormData,
+				mockSubmittedAppSysId,
+				expect.any(Function),
+				expect.any(Function),
+				expect.any(Function),
+				expect.objectContaining({ push: mockHistoryPush }),
+				expect.any(Function),
+				mockSetAuth
+			);
+		});
 
-            // This will be displaying while the application is being submitted
-            const p1 = screen.getByText(/Please do not close or refresh the browser window while the system is uploading your application./i);
-            expect(p1).toBeInTheDocument();
-            expect(screen.getByTestId('percent-bar')).toBeInTheDocument();
+		expect(
+			screen.getByText(/Application is being submitted/i)
+		).toBeInTheDocument();
+		expect(screen.getByTestId('percent-bar')).toBeInTheDocument();
+	});
 
-            // This will display after the application has been submitted
-            const header2 = screen.getByText(/Application Submitted/i);
-            expect(header2).toBeInTheDocument();
+	test('renders the submitted state and closes to the dashboard on Done', async () => {
+		submitNewApp.mockImplementation(
+			(
+				setConfirmLoading,
+				data,
+				draftId,
+				setSubmitted,
+				setPercent,
+				setAppSysId
+			) => {
+				setConfirmLoading(false);
+				setSubmitted(true);
+				setPercent(100);
+				setAppSysId('submitted-789');
+			}
+		);
 
-            const p2 = screen.getByText(/View and print here./i);
-            expect(p2).toBeInTheDocument();
-        });
-    });
+		renderSubmitModal();
+		fireEvent.click(screen.getByText(/Ok/i));
 
-    test('Should render modal letting user know that their edited app is being submitted', () => {
-        mockEditSubmitted = true;
+		await waitFor(() => {
+			expect(screen.getByText(/Application Submitted/i)).toBeInTheDocument();
+		});
 
-        render(<SubmitModal
-            visible={mockVisible}
-            onCancel={mockHandleCancel}
-            data={mockFormData}
-            draftId={mockDraftId}
-            editSubmitted={mockEditSubmitted}
-            submittedAppSysId={mockAppSysId}
-        />);
+		const link = screen.getByRole('link', { name: /here/i });
+		expect(link).toHaveAttribute('href', VIEW_APPLICATION + 'submitted-789');
 
-        const handleOkElement = screen.getByText(/Ok/i);
-        waitFor(() => {
-            fireEvent.click(handleOkElement);
+		fireEvent.click(screen.getByText(/Done/i));
+		expect(mockHistoryPush).toHaveBeenCalledWith('/');
+	});
 
-            const header = screen.getByText(/Application is being submitted/i);
-            expect(header).toBeInTheDocument();
+	test('calls onCancel when cancel button is clicked from the confirmation state', () => {
+		renderSubmitModal();
 
-            // This will be displaying while the application is being submitted
-            const p1 = screen.getByText(/Please do not close or refresh the browser window while the system is uploading your application./i);
-            expect(p1).toBeInTheDocument();
-            expect(screen.getByTestId('percent-bar')).toBeInTheDocument();
+		fireEvent.click(screen.getByText(/Cancel/i));
 
-            // This will display after the application has been submitted
-            const header2 = screen.getByText(/Application Submitted/i);
-            expect(header2).toBeInTheDocument();
-
-            const p2 = screen.getByText(/View and print here./i);
-            expect(p2).toBeInTheDocument();
-        });
-    });
-
-    test('should handle the onCancel when cancel button is clicked', () => {
-        render(<SubmitModal
-            visible={mockVisible}
-            onCancel={mockHandleCancel}
-            data={mockFormData}
-            draftId={mockDraftId}
-            editSubmitted={mockEditSubmitted}
-            submittedAppSysId={mockAppSysId}
-        />);
-
-        const handleCancelElement = screen.getByText(/Cancel/i);
-        waitFor(() => {
-            fireEvent.click(handleCancelElement);
-            expect(mockHandleCancel).toHaveBeenCalledTimes(1);
-            expect(mockHistoryPush).toHaveBeenCalledWith('/');
-        });
-    });
+		expect(mockHandleCancel).toHaveBeenCalledTimes(1);
+		expect(mockHistoryPush).not.toHaveBeenCalled();
+	});
 });
