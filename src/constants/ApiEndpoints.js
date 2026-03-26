@@ -149,6 +149,9 @@ export const SAVE_VACANCY_DRAFT = '/api/x_g_nci_app_tracke/vacancy/save_draft';
 
 export const SUBMIT_VACANCY = '/api/x_g_nci_app_tracke/vacancy/submit_vacancy';
 
+// Attachment Scripted REST API Endpoints
+export const DELETE_ATTACHMENT = '/api/x_g_nci_app_tracke/attachment/delete_attachment/';
+
 // ServiceNow Scripted REST API Endpoints
 export const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 
