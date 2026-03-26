@@ -13,7 +13,7 @@ export const mockSaveAppDraftResponse = {
 		result: {
 			response: {
 				status: 200,
-				message: 'Sucessfully updated draft_id:' + '123',
+				message: 'Successfully updated draft_id:' + '123',
 				draft_id: '123',
 			},
 		},
@@ -103,10 +103,10 @@ export const mockAttachmentCheckResponse = {
 	data: {
 		result: {
 			response: {
-				"exists": true,
-				"filename": "Cirriculum Vitae (CV).docx",
-				"is_optional": false,
-				"message": "Attachment available",
+				exists: true,
+				filename: 'Curriculum Vitae (CV).docx',
+				is_optional: false,
+				message: 'Attachment available',
 				status: 200,
 			},
 		},
@@ -156,7 +156,8 @@ export const mockClosedVacancyResponse = {
 		result: {
 			response: {
 				status: 404,
-				message: 'Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.',
+				message:
+					'Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.',
 			},
 		},
 	},
@@ -183,17 +184,15 @@ export const mockAttachmentDeleteResponse = {
 	},
 };
 
-
-
 // Mocks a successful response from the ATTACHMENT_CHECK_FOR_APPLICATIONS endpoint
 export const mockApplicationAttachmentCheckResponse = {
 	data: {
 		result: {
 			response: {
-				"exists": true,
-				"filename": "Cirriculum Vitae (CV).docx",
-				"is_optional": false,
-				"message": "Attachment available",
+				exists: true,
+				filename: 'Curriculum Vitae (CV).docx',
+				is_optional: false,
+				message: 'Attachment available',
 				status: 200,
 			},
 		},
@@ -207,12 +206,12 @@ export const mockApplicationUpdateResponse = {
 	data: {
 		result: {
 			response: {
-				'status': 200, 
-				'message': 'Application updated successfully.'
+				status: 200,
+				message: 'Application updated successfully.',
 			},
 		},
 	},
-}
+};
 
 // Mocks a failed response from the APPLICATION_SUBMISSION endpoint
 
@@ -532,17 +531,17 @@ export const mockInfoToSendEdit = {
 // file: {
 //     file: {
 //         uid: 'rc-upload-1737555580020-15',
-//         name: 'Cirriculum Vitae (CV).docx',
+//         name: 'Curriculum Vitae (CV).docx',
 //         size: 14296046,
 //         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 //     },
 //     fileList: [
 //         {
 //             0: {
-//                 name: 'Cirriculum Vitae (CV).docx',
+//                 name: 'Curriculum Vitae (CV).docx',
 //                 originFileObj: {
 //                     uid: 'rc-upload-1737555580020-15',
-//                     name: 'Cirriculum Vitae (CV).docx',
+//                     name: 'Curriculum Vitae (CV).docx',
 //                     size: 14296046,
 //                     type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 //                     uid: 'rc-upload-1737555580020-15',

@@ -52,11 +52,13 @@ describe('SubmitModalMockData', () => {
 	test('exports draft and document response mocks', () => {
 		expect(mockSaveAppDraftResponse.data.result.response).toEqual({
 			status: 200,
-			message: 'Sucessfully updated draft_id:123',
+			message: 'Successfully updated draft_id:123',
 			draft_id: '123',
 		});
 		expect(mockSaveAppDraftFailResponse.data.result.response.status).toBe(500);
-		expect(mockSaveDraftDocResponse.data.result.response.response).toMatchObject({
+		expect(
+			mockSaveDraftDocResponse.data.result.response.response
+		).toMatchObject({
 			file_name: 'doc1.docx',
 			table_sys_id: '456',
 			table_name: 'application_documents',
@@ -82,11 +84,13 @@ describe('SubmitModalMockData', () => {
 		expect(mockFileAttachResponse.data.result.response.status).toBe(200);
 		expect(mockAttachmentCheckResponse.data.result.response).toMatchObject({
 			exists: true,
-			filename: 'Cirriculum Vitae (CV).docx',
+			filename: 'Curriculum Vitae (CV).docx',
 			message: 'Attachment available',
 			status: 200,
 		});
-		expect(mockAttachmentCheckFailResponse.data.result.response.status).toBe(500);
+		expect(mockAttachmentCheckFailResponse.data.result.response.status).toBe(
+			500
+		);
 		expect(mockSubmitAppResponse.data.result.response).toMatchObject({
 			status: 200,
 			app_sys_id: '123',
@@ -104,7 +108,9 @@ describe('SubmitModalMockData', () => {
 			markedToDelete: true,
 		});
 		expect(mockAttachmentDeleteResponse.data.result.response.status).toBe(200);
-		expect(mockApplicationAttachmentCheckResponse.data.result.response).toMatchObject({
+		expect(
+			mockApplicationAttachmentCheckResponse.data.result.response
+		).toMatchObject({
 			exists: true,
 			status: 200,
 		});
