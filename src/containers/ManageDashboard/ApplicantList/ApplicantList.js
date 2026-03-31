@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { message, Table, Tooltip, Collapse, Button, Radio } from 'antd';
 import { useParams } from 'react-router-dom';
 import {
@@ -48,6 +48,7 @@ import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
 import ExportToExcel from '../Util/ExportToExcel';
 import moment from 'moment';
+import { request } from 'express';
 
 const { Panel } = Collapse;
 const renderDecision = (text) =>
@@ -153,6 +154,9 @@ const applicantList = (props) => {
 		setSearchedColumn,
 		searchInput,
 	} = contextValue;
+	const allApplicantsRequestRef = useRef(0);
+	const recommendedRequestRef = useRef(0);
+	const nonRecommendedRequestRef = useRef(0);
 
 	const {
 		auth: { tenants },
@@ -511,6 +515,7 @@ const applicantList = (props) => {
 		orderColumn,
 		focusArea = focusAreaFilter
 	) => {
+		const requestId = ++recommendedRequestRef.current;
 		setRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(
 			page,
@@ -520,6 +525,9 @@ const applicantList = (props) => {
 			'yes',
 			focusArea
 		);
+		if (requestId !== recommendedRequestRef.current) {
+			return;
+		}
 		setRecommendedApplicantsTableLoading(false);
 		setRecommendedApplicants(data.applicants);
 		setRecommendedApplicantsTotalCount(data.totalCount);
@@ -533,6 +541,7 @@ const applicantList = (props) => {
 		orderColumn,
 		focusArea = focusAreaFilter
 	) => {
+		const requestId = ++nonRecommendedRequestRef.current;
 		setNonRecommendedApplicantsTableLoading(true);
 		const data = await loadApplicants(
 			page,
@@ -542,6 +551,9 @@ const applicantList = (props) => {
 			'no',
 			focusArea
 		);
+		if (requestId !== nonRecommendedRequestRef.current) {
+			return
+		}
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
 		setNonRecommendedApplicantsTotalCount(data.totalCount);
@@ -559,6 +571,7 @@ const applicantList = (props) => {
 		orderColumn,
 		focusArea = focusAreaFilter
 	) => {
+		const requestId = ++allApplicantsRequestRef.current;
 		setTableLoading(true);
 		const data = await loadApplicants(
 			page,
@@ -568,6 +581,9 @@ const applicantList = (props) => {
 			undefined,
 			focusArea
 		);
+		if (requestId !== allApplicantsRequestRef.current) {
+			return;
+		}
 		setTableLoading(false);
 		if (data && data.applicants) {
 			setApplicants(data.applicants);
