@@ -59,7 +59,7 @@
 	border-color: var(--color-primary);
 }
 
-.ExportToExcelButtonDiv .ant-btn.ant-btn-default {
+.export-to-excel-button-div .ant-btn.ant-btn-default {
 	color: #015ea2;
     border-color: #015ea2;
     text-shadow: none;
