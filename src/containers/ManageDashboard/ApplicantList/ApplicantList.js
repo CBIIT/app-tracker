@@ -365,7 +365,7 @@ const applicantList = (props) => {
 	const [
 		recommendedApplicantsTableLoading,
 		setRecommendedApplicantsTableLoading,
-	] = useState([false]);
+	] = useState(false);
 	const [nonRecommendedApplicants, setNonRecommendedApplicants] = useState([]);
 	const [
 		nonRecommendedApplicantsPageSize,

@@ -1,114 +1,134 @@
-// window.matchMedia = window.matchMedia || function () {
-//   return {
-//     matches: false,
-//     media: '',
-//     onchange: null,
-//     addListener: jest.fn(),
-//     removeListener: jest.fn(),
-//     addEventListener: jest.fn(),
-//     removeEventListener: jest.fn(),
-//     dispatchEvent: jest.fn(),
-//   };
-// };
+window.matchMedia = window.matchMedia || function () {
+  return {
+    matches: false,
+    media: '',
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  };
+};
 
-// import React from 'react';
-// import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-// import axios from 'axios';
-// import ApplicantList from './ApplicantList';
-// import ExportToExcel from '../Util/ExportToExcel';
-// import { rtRender } from '../../test-utils';
+import React from 'react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
+import axios from 'axios';
+import ApplicantList from './ApplicantList';
+import ExportToExcel from '../Util/ExportToExcel';
+import SearchContext from '../Util/SearchContext';
+import { mockSearchContextValue, mockNonStadtmanAuth } from './ApplicantListMockData';
+import { rtRender } from '../../test-utils';
+import useAuth from '../../../hooks/useAuth';
+import {
+  GET_APPLICANT_LIST,
+  GET_APPLICANT_FOCUS_AREA,
+} from '../../../constants/ApiEndpoints';
 
-// jest.mock('axios');
-// jest.mock('../Util/ExportToExcel', () => ({
-//   __esModule: true,
-//   default: jest.fn(),
-// }));
+jest.mock('axios');
+jest.mock('../../../hooks/useAuth');
+jest.mock('../Util/ExportToExcel', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
-// // mock react-router useParams used by component
-// jest.mock('react-router-dom', () => ({
-//   ...jest.requireActual('react-router-dom'),
-//   useParams: jest.fn(),
-// }));
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn(),
+}));
 
-// describe('ApplicantList Excel export', () => {
-//   beforeEach(() => {
-//     jest.clearAllMocks();
-//   });
+describe('ApplicantList Excel export', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useAuth.mockReturnValue(mockNonStadtmanAuth);
+  });
 
-//   test('clicking Export to Excel calls ExportToExcel with data and filename', async () => {
+  test('clicking Export to Excel calls ExportToExcel with data and filename', async () => {
+    const mockApplicants = [
+      {
+        sys_id: '1',
+        applicant_name: 'Doe, John',
+        applicant_email: 'john@example.com',
+        submitted: '2025-01-01T12:00:00Z',
+      },
+    ];
 
-//     const mockApplicants = [
-//       {
-//         sys_id: '1',
-//         applicant_name: 'Doe, John',
-//         applicant_email: 'john@example.com',
-//         submitted: '2025-01-01T12:00:00Z',
-//       },
-//     ];
+    axios.get.mockImplementation((url) => {
+      console.log('Axios call to:', url);
 
-//     axios.get.mockImplementation((url) => {
-//       if (String(url).includes('/focus') || String(url).toLowerCase().includes('focusarea')) {
-//         return Promise.resolve({
-//           data: {
-//             result: {
-//               options: [{ id: 'fa1', label: 'Focus Area 1' }],
-//             },
-//           },
-//         });
-//       }
+      if (url.includes(GET_APPLICANT_FOCUS_AREA)) {
+        return Promise.resolve({
+          data: {
+            result: {
+              focusAreaFilter: ['Cancer Biology', 'Immunology'],
+            },
+          },
+        });
+      }
 
-//       if (String(url).includes('applicant') || String(url).includes('applicants')) {
-//         return Promise.resolve({
-//           data: {
-//             result: {
-//               applicants: mockApplicants,
-//               totalCount: mockApplicants.length,
-//               pageSize: 10,
-//             },
-//           },
-//         });
-//       }
-//       return Promise.resolve({ data: {} });
-//     });
+      if (url.includes(GET_APPLICANT_LIST)) {
+        return Promise.resolve({
+          data: {
+            result: {
+              applicants: mockApplicants,
+              totalCount: mockApplicants.length,
+              pageSize: 10,
+            },
+          },
+        });
+      }
 
-//     const { useParams } = require('react-router-dom');
-//     useParams.mockReturnValue({ sysId: 'test-sysid' });
+      return Promise.resolve({ data: {} });
+    });
 
-//     // render component
-//     rtRender(
-//       <ApplicantList
-//         vacancyTitle={'Test Vacancy'}
-//         vacancyState={'triage'}
-//         vacancyTenant={'NCI'}
-//         referenceCollection={false}
-//         userRoles={[]}
-//         userCommitteeRole={''}
-//         reloadVacancy={jest.fn()}
-//       />
-//     );
-//     // wait for data load
-//     await screen.findByText(/Doe, John/i);
+    const { useParams } = require('react-router-dom');
+    useParams.mockReturnValue({ sysId: 'test-sysid' });
 
-//     // find export button
-//     const exportButton = await screen.findByRole('button', { name: /export to excel/i });
-//     expect(exportButton).toBeInTheDocument();
+    rtRender(
+      <SearchContext.Provider value={mockSearchContextValue}>
+        <ApplicantList
+          vacancyTitle={'Test Vacancy'}
+          vacancyState={'triage'}
+          vacancyTenant={'NCI'}
+          referenceCollection={false}
+          userRoles={[]}
+          userCommitteeRole={''}
+          reloadVacancy={jest.fn()}
+        />
+      </SearchContext.Provider>
+    );
 
-//     // fallback: if button remains disabled, enable for test
-//     if (exportButton.disabled || exportButton.getAttribute('aria-disabled') === 'true') {
-//       exportButton.removeAttribute('disabled');
-//       exportButton.setAttribute('aria-disabled', 'false');
-//       exportButton.disabled = false;
-//     }
+    // Wait for applicant data
+    await screen.findByText(/Doe, John/i);
 
-//     // click
-//     fireEvent.click(exportButton);
+    // Wait longer for excel data to load
+    let exportButton;
+    await waitFor(() => {
+      exportButton = screen.getByRole('button', { name: /export to excel/i });
+      if (exportButton.disabled) {
+        console.log('🔸 Button still disabled - axios.get call count:', axios.get.mock.calls.length);
+        axios.get.mock.calls.forEach((call, idx) => {
+          console.log(`  Call ${idx + 1}:`, call[0]);
+        });
+        throw new Error('Button disabled');
+      }
+    }, { timeout: 15000 });
 
-//     // assert ExportToExcel was called
-//     await waitFor(() => expect(ExportToExcel).toHaveBeenCalledTimes(1));
+    expect(exportButton).not.toBeDisabled();
 
-//     const [calledData, calledFilename] = ExportToExcel.mock.calls[0];
-//     expect(Array.isArray(calledData)).toBe(true);
-//     expect(calledData.length).toBeGreaterThan(0);
-//     expect(typeof calledFilename).toBe('string');
-//   });
-// });
+    // Click the button
+    fireEvent.click(exportButton);
+
+    // Verify ExportToExcel was called
+    await waitFor(() => {
+      expect(ExportToExcel).toHaveBeenCalledTimes(1);
+    });
+
+    const [calledData, calledFilename] = ExportToExcel.mock.calls[0];
+    expect(Array.isArray(calledData)).toBe(true);
+    expect(calledData.length).toBeGreaterThan(0);
+    expect(typeof calledFilename).toBe('string');
+  });
+
+
+});
