@@ -147,6 +147,7 @@ const applicantList = (props) => {
 	const [referencesSent, setReferencesSent] = useState();
 	const [rejectionEmailSent, setRejectionEmailSent] = useState();
 	const [focusAreaFilter, setFocusAreaFilter] = useState([]);
+	const [isLoadingFocusArea, setIsLoadingFocusArea] = useState(true);
 	const [applicantFocusArea, setApplicantFocusArea] = useState([]);
 	const {
 		searchText,
@@ -364,7 +365,7 @@ const applicantList = (props) => {
 	const [
 		recommendedApplicantsTableLoading,
 		setRecommendedApplicantsTableLoading,
-	] = useState(false);
+	] = useState([false]);
 	const [nonRecommendedApplicants, setNonRecommendedApplicants] = useState([]);
 	const [
 		nonRecommendedApplicantsPageSize,
@@ -403,8 +404,12 @@ const applicantList = (props) => {
 
 	useEffect(() => {
 		const fetchApplicantFocusArea = async () => {
+			try {
 			const response = await axios.get(GET_APPLICANT_FOCUS_AREA + sysId);
 			setApplicantFocusArea(response.data.result.focusAreaFilter);
+			} finally {
+				setIsLoadingFocusArea(false);
+			}
 		};
 		fetchApplicantFocusArea();
 	}, []);
@@ -483,11 +488,11 @@ const applicantList = (props) => {
 
 	useEffect(() => {
 		// only load all applicants for excel if the tables are done loading and there are no applicants loaded for excel yet to avoid unnecessary api calls
-		if ((!tableLoading && !recommendedApplicantsTableLoading && !nonRecommendedApplicantsTableLoading)
+		if ((!tableLoading && !recommendedApplicantsTableLoading && !nonRecommendedApplicantsTableLoading && !isLoadingFocusArea)
 			&& (allApplicantsForExcel.length === 0 && !isLoadingExcelData)) {
 			loadAllApplicantsForExcel();
 		}
-	}, [tableLoading, recommendedApplicantsTableLoading, nonRecommendedApplicantsTableLoading]);
+	}, [tableLoading, recommendedApplicantsTableLoading, nonRecommendedApplicantsTableLoading, isLoadingFocusArea]);
 
 	const loadAllApplicantsForExcel = async () => {
 		setIsLoadingExcelData(true);
