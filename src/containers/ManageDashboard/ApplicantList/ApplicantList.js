@@ -48,7 +48,6 @@ import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
 import ExportToExcel from '../Util/ExportToExcel';
 import moment from 'moment';
-import { request } from 'express';
 
 const { Panel } = Collapse;
 const renderDecision = (text) =>
