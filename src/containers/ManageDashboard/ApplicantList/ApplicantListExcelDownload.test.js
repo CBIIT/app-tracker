@@ -13,7 +13,6 @@ window.matchMedia = window.matchMedia || function () {
 
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { HashRouter } from 'react-router-dom';
 import axios from 'axios';
 import ApplicantList from './ApplicantList';
 import ExportToExcel from '../Util/ExportToExcel';
@@ -77,17 +76,15 @@ describe('ApplicantList Excel export', () => {
 
     // render component
     rtRender(
-      <HashRouter>
-        <ApplicantList
-          vacancyTitle={'Test Vacancy'}
-          vacancyState={'triage'}
-          vacancyTenant={'NCI'}
-          referenceCollection={false}
-          userRoles={[]}
-          userCommitteeRole={''}
-          reloadVacancy={jest.fn()}
-        />
-      </HashRouter>
+      <ApplicantList
+        vacancyTitle={'Test Vacancy'}
+        vacancyState={'triage'}
+        vacancyTenant={'NCI'}
+        referenceCollection={false}
+        userRoles={[]}
+        userCommitteeRole={''}
+        reloadVacancy={jest.fn()}
+      />
     );
     // wait for data load
     await screen.findByText(/Doe, John/i);

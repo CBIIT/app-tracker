@@ -364,7 +364,7 @@ const applicantList = (props) => {
 	const [
 		recommendedApplicantsTableLoading,
 		setRecommendedApplicantsTableLoading,
-	] = useState([]);
+	] = useState(false);
 	const [nonRecommendedApplicants, setNonRecommendedApplicants] = useState([]);
 	const [
 		nonRecommendedApplicantsPageSize,
@@ -377,7 +377,7 @@ const applicantList = (props) => {
 	const [
 		nonRecommendedApplicantsTableLoading,
 		setNonRecommendedApplicantsTableLoading,
-	] = useState([]);
+	] = useState(false);
 	const pageSizeOptions = [10, 25, 50];
 	const tablePagination = {
 		pageSizeOptions: pageSizeOptions,
@@ -482,7 +482,9 @@ const applicantList = (props) => {
 	}, [allApplicantsForExcel]);
 
 	useEffect(() => {
-		if (allApplicantsForExcel.length === 0 && !isLoadingExcelData) {
+		// only load all applicants for excel if the tables are done loading and there are no applicants loaded for excel yet to avoid unnecessary api calls
+		if ((!tableLoading && !recommendedApplicantsTableLoading && !nonRecommendedApplicantsTableLoading)
+			&& (allApplicantsForExcel.length === 0 && !isLoadingExcelData)) {
 			loadAllApplicantsForExcel();
 		}
 	}, [tableLoading, recommendedApplicantsTableLoading, nonRecommendedApplicantsTableLoading]);
