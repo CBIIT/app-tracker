@@ -7,7 +7,7 @@ import { VIEW_APPLICATION } from '../../../constants/Routes';
 import useAuth from '../../../hooks/useAuth';
 import { checkAuth } from '../../../constants/checkAuth';
 import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
-import submitEdittedApp from './SubmitAppWorkflow/SubmitEdittedApp';
+import submitEditedApp from './SubmitAppWorkflow/SubmitEditedApp';
 
 const submitModal = ({
 	data,
@@ -31,7 +31,7 @@ const submitModal = ({
 		setConfirmLoading(true);
 
 		if (editSubmitted) {
-			submitEdittedApp(
+			submitEditedApp(
 				setConfirmLoading,
 				data,
 				submittedAppSysId,
