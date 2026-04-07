@@ -591,7 +591,7 @@ const applicantList = (props) => {
 			focusArea
 		);
 		if (requestId !== nonRecommendedRequestRef.current) {
-			return
+			return;
 		}
 		setNonRecommendedApplicantsTableLoading(false);
 		setNonRecommendedApplicants(data.applicants);
