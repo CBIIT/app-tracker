@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import {  useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import { Table, ConfigProvider, Empty, message } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
-import { COMMITTEE_MEMBER_ROLE, COMMITTEE_EXEC_SEC } from '../../constants/Roles.js'
-import { validateRoleForCurrentTenant, isExecSec } from '../../components/Util/RoleValidator/RoleValidator';
+import {
+	COMMITTEE_MEMBER_ROLE,
+	COMMITTEE_EXEC_SEC,
+} from '../../constants/Roles.js';
+import {
+	validateRoleForCurrentTenant,
+	isExecSec,
+} from '../../components/Util/RoleValidator/RoleValidator';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -23,40 +29,56 @@ const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [readOnly, setreadOnly] = useState(false);
-	const { auth: { user, tenants }, currentTenant} = useAuth();
+	const {
+		auth: { user, tenants },
+		currentTenant,
+	} = useAuth();
 	const history = useHistory();
 
 	const location = useLocation();
 	let customizeRenderEmpty = () => (
 		<div style={{ textAlign: 'center' }}>
-			<Empty
-				image={Empty.PRESENTED_IMAGE_SIMPLE}
-				description={'No Vacancies Assigned To You'}
-			/>
+			<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			<p>No Vacancies Assigned To You</p>
 		</div>
 	);
 
 	useEffect(() => {
-		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants) || isExecSec(currentTenant, tenants)) {
+		if (
+			validateRoleForCurrentTenant(
+				COMMITTEE_MEMBER_ROLE,
+				currentTenant,
+				tenants
+			) ||
+			isExecSec(currentTenant, tenants)
+		) {
 			(async () => {
 				setIsLoading(true);
 				try {
-					setreadOnly(user.isReadOnlyUser)
-					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant
+					setreadOnly(user.isReadOnlyUser);
+					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
 					const currentData = await axios.get(url);
 
-					const committeeMemberData = (location.pathname === EXE_SEC_DASHBOARD) ?
-						currentData.data.result.filter(
-							(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC) : currentData.data.result;
+					const committeeMemberData =
+						location.pathname === EXE_SEC_DASHBOARD
+							? currentData.data.result.filter(
+									(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
+								)
+							: currentData.data.result;
 					setData(committeeMemberData);
 				} catch (err) {
 					message.error('Sorry!  An error occurred.');
+				} finally {
+					setIsLoading(false);
 				}
-				setIsLoading(false);
 			})();
 		} else {
 			message.destroy();
-			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
+			message.error({
+				duration: 3,
+				content:
+					'Sorry! You do not have committee member access in the selected tenant.',
+			});
 			setIsLoading(false);
 			history.push('/');
 		}
@@ -74,7 +96,7 @@ const committeeDashboard = () => {
 						pagination={{ hideOnSinglePage: true }}
 						rowKey={(record) => record.vacancy_id}
 						dataSource={data}
-						columns={readOnly ? committeeColumns.slice(0,3) : committeeColumns}
+						columns={readOnly ? committeeColumns.slice(0, 3) : committeeColumns}
 						scroll={{ x: 'true' }}
 						key='CommitteeVacancies'
 						style={{
@@ -119,8 +141,8 @@ const committeeColumns = [
 				{number == 1
 					? 'applicant'
 					: number == undefined
-					? '0 applicants'
-					: 'applicants'}
+						? '0 applicants'
+						: 'applicants'}
 			</Link>
 		),
 	},
