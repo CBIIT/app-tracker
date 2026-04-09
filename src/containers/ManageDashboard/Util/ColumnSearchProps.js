@@ -128,8 +128,6 @@ export const getColumnSearchProps = (
 			}}
 		/>
 	),
-	// onFilter: (value, record) =>
-	// 	record[dataIndex].toLowerCase().includes(value.toLowerCase()),
 	onFilterDropdownOpenChange: (visible) => {
 		if (visible) {
 			setTimeout(() => searchInput.current?.select(), 100);

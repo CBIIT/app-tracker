@@ -1,7 +1,6 @@
 import CommitteeDashboard from './CommitteeDashboard';
 import { rtRender } from '../test-utils';
 import { waitFor, screen } from '@testing-library/react';
-import { Table, ConfigProvider, Empty, message } from 'antd';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import {
