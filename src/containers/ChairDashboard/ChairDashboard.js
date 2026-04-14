@@ -22,8 +22,14 @@ const chairDashboard = () => {
 				setIsLoading(true);
 				try {
 					const currentData = await axios.get(GET_COMMITTEE_CHAIR_VACANCIES  + currentTenant);
+					const jsonData = currentData.data.result;
+
+					if (!jsonData?.list || typeof jsonData.list !== 'object') {
+						throw new Error('Invalid vacancy data')
+					}
+
 					setData(
-						currentData.data.result.filter(
+						jsonData.list.filter(
 							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
 						)
 					);
