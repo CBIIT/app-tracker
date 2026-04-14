@@ -1,52 +1,105 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { Table, message } from 'antd';
+import { Table, message, notification } from 'antd';
+import { validateVacancyData } from './Utils/validateVacancyData.js';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
-import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js'
+import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js';
 import useAuth from '../../hooks/useAuth';
 
 const chairDashboard = () => {
-	const { auth: { tenants }, currentTenant } = useAuth();
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasError, setHasError] = useState(false);
 	const history = useHistory();
 
 	useEffect(() => {
-		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
+		if (
+			validateRoleForCurrentTenant(
+				COMMITTEE_MEMBER_ROLE,
+				currentTenant,
+				tenants
+			)
+		) {
 			(async () => {
-				setIsLoading(true);
 				try {
-					const currentData = await axios.get(GET_COMMITTEE_CHAIR_VACANCIES  + currentTenant);
+					const currentData = await axios.get(
+						GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
+					);
 					const jsonData = currentData.data.result;
 
 					if (!jsonData?.list || typeof jsonData.list !== 'object') {
-						throw new Error('Invalid vacancy data')
+						throw new Error('Invalid vacancy data');
 					}
 
+					const validateData = validateVacancyData(jsonData);
+
 					setData(
-						jsonData.list.filter(
+						validateData.list.filter(
 							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
 						)
 					);
+					setIsLoading(false);
 				} catch (err) {
-					console.warn(err);
+					setHasError(true);
+					setIsLoading(false);
+					notification.error({
+						message: 'Sorry! There was an error retrieving the vacancies.',
+						description: (
+							<>
+								<p>
+									Please refresh the page and try again or try logging out and
+									logging back in. If the issue persists, contact the Help Desk
+									by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '225px',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
 				}
-				setIsLoading(false);
 			})();
 		} else {
 			message.destroy();
-			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
+			message.error({
+				duration: 3,
+				content:
+					'Sorry! You do not have committee member access in the selected tenant.',
+			});
 			setIsLoading(false);
 			history.push('/');
 		}
 	}, [currentTenant]);
 
-	return (
+	return isLoading ? (
+		<> </>
+	) : hasError ? (
+		<div className='Content'>
+			<h2>Unable to load vacancies</h2>
+			<p>
+				Please refresh the page and try again. If the issue persists, contact
+				the Help Desk by emailing{' '}
+				<a href='mailto:NCIAppSupport@mail.nih.gov'>
+					NCIAppSupport@mail.nih.gov
+				</a>
+			</p>
+		</div>
+	) : (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
