@@ -33,37 +33,37 @@ jest.mock('./AdminScoringWidget/AdminScoringWidget', () => (props) => {
   return <mock-AdminScoringWidget />;
 });
 
-const mockScoringWidget = jest.fn();
-jest.mock('./ScoringWidget/ScoringWidget', () => (props) => {
-  mockScoringWidget(props);
-  return (
-    <div data-testid="scoring-widget">
-      <h3>{props.title}</h3>
-      <div>{props.description}</div>
-      {props.onScoreCommentsChange && (
-        <textarea 
-          data-testid="score-comments"
-          onChange={props.onScoreCommentsChange}
-        >
-          {props.triageComments}
-        </textarea>
-      )}
-      {props.categories && props.categories.map((cat, i) => <div key={i}>{cat.title}</div>)}
-      {props.onSaveClick && (
-        <button data-testid="save-scoring-button" onClick={props.onSaveClick}>
-          Save
-        </button>
-      )}
-    </div>
-  );
-});
+// const mockScoringWidget = jest.fn();
+// jest.mock('./ScoringWidget/ScoringWidget', () => (props) => {
+//   mockScoringWidget(props);
+//   return (
+//     <div data-testid="scoring-widget">
+//       <h3>{props.title}</h3>
+//       <div>{props.description}</div>
+//       {props.onScoreCommentsChange && (
+//         <textarea 
+//           data-testid="score-comments"
+//           onChange={props.onScoreCommentsChange}
+//         >
+//           {props.triageComments}
+//         </textarea>
+//       )}
+//       {props.categories && props.categories.map((cat, i) => <div key={i}>{cat.title}</div>)}
+//       {props.onSaveClick && (
+//         <button data-testid="save-scoring-button" onClick={props.onSaveClick}>
+//           Save
+//         </button>
+//       )}
+//     </div>
+//   );
+// });
 
 describe('Application component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     message.success.mockClear?.();
     message.error.mockClear?.();
-    
+
     axios.get.mockResolvedValue({
       data: {
         result: {
@@ -106,7 +106,7 @@ describe('Application component', () => {
         },
       },
     });
-    
+
     axios.put.mockResolvedValue({ data: { result: { recused: false } } });
     axios.post.mockResolvedValue({});
 
@@ -143,8 +143,8 @@ describe('Application component', () => {
   window.matchMedia = window.matchMedia || function () {
     return {
       matches: false,
-      addListener: function () {},
-      removeListener: function () {},
+      addListener: function () { },
+      removeListener: function () { },
     };
   };
 
@@ -178,7 +178,7 @@ describe('Application component', () => {
                   require_focus_area: { value: '0' },
                 },
                 user: {
-                  committee_role_of_current_vacancy: 'x_g_nci_app_tracke.committee_member_voting',
+                  committee_role_of_current_vacancy: 'Member',
                 },
               },
             },
@@ -308,7 +308,88 @@ describe('Application component', () => {
     });
   });
 
-  describe('unrecuseSelf function', () => {
+  describe('unrecuseSelf function', async () => {
+    const buildApplicationResult = (recusedValue = '1') => ({
+      basic_info: {
+        vacancy: { value: 'vac1', label: 'Vacancy 1' },
+        state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+        tenant: { label: 'Tenant' },
+        number_of_categories: { value: '1' },
+        triage: { value: '' },
+        triage_comments: { value: '' },
+        chair_triage: { value: '' },
+        chair_triage_comment: { value: '' },
+        require_focus_area: { value: '0' },
+        display_references: { value: '0' },
+        sys_id: 'sysid1',
+        first_name: 'John',
+        middle_name: 'A',
+        last_name: 'Doe',
+        email: 'john.doe@example.com',
+        phone: { value: '123-456-7890' },
+        business_phone: { value: '098-765-4321' },
+        highest_level_of_education: 'PhD',
+        us_citizen: true,
+        address: '123 Main St',
+        address_2: 'Apt 4',
+        city: 'Anytown',
+        state_province: 'CA',
+        zip_code: '12345',
+        country: 'USA',
+      },
+      references: [],
+      app_documents: [],
+      individual_scoring: {
+        recused: { value: recusedValue },
+        category_1: { value: '' },
+        comments: { value: '' },
+        recommend: { value: '' },
+      },
+      additional_documents: [],
+    });
+
+    const setupVacancyAndApplicationMocks = ({
+      recusedValue = '1',
+      putReject = false,
+    } = {}) => {
+      if (putReject) {
+        axios.put.mockRejectedValueOnce(new Error('Network error'));
+      } else {
+        axios.put.mockResolvedValueOnce({
+          data: { result: { recused: false } },
+        });
+      }
+
+      axios.get.mockImplementation((url) => {
+        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
+          return Promise.resolve({
+            data: {
+              result: {
+                basic_info: {
+                  state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+                  number_of_categories: { value: '1' },
+                  require_focus_area: { value: '0' },
+                },
+                user: {
+                  committee_role_of_current_vacancy: 'Member',
+                },
+              },
+            },
+          });
+        }
+
+        return Promise.resolve({
+          data: {
+            result: buildApplicationResult(recusedValue),
+          },
+        });
+      });
+    };
+
+    const unrecuseLink = await screen.findByText(/unrecuse\s+self/i, {
+      selector: 'a',
+    });
+
     beforeEach(() => {
       jest.clearAllMocks();
       message.success.mockClear?.();
@@ -316,71 +397,8 @@ describe('Application component', () => {
     });
 
     test('successfully unrecuses self and displays success message', async () => {
-      axios.put.mockResolvedValueOnce({
-        data: { result: { recused: false } },
-      });
       jest.spyOn(message, 'success').mockImplementation();
-
-      axios.get.mockImplementation((url) => {
-        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
-          return Promise.resolve({
-            data: {
-              result: {
-                basic_info: {
-                  state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                  number_of_categories: { value: '1' },
-                  require_focus_area: { value: '0' },
-                },
-                user: {
-                  committee_role_of_current_vacancy: 'x_g_nci_app_tracke.committee_member_voting',
-                },
-              },
-            },
-          });
-        }
-        return Promise.resolve({
-          data: {
-            result: {
-              basic_info: {
-                vacancy: { value: 'vac1', label: 'Vacancy 1' },
-                state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                tenant: { label: 'Tenant' },
-                number_of_categories: { value: '1' },
-                triage: { value: '' },
-                triage_comments: { value: '' },
-                chair_triage: { value: '' },
-                chair_triage_comment: { value: '' },
-                require_focus_area: { value: '0' },
-                display_references: { value: '0' },
-                sys_id: 'sysid1',
-                first_name: 'John',
-                middle_name: 'A',
-                last_name: 'Doe',
-                email: 'john.doe@example.com',
-                phone: { value: '123-456-7890' },
-                business_phone: { value: '098-765-4321' },
-                highest_level_of_education: 'PhD',
-                us_citizen: true,
-                address: '123 Main St',
-                address_2: 'Apt 4',
-                city: 'Anytown',
-                state_province: 'CA',
-                zip_code: '12345',
-                country: 'USA',
-              },
-              references: [],
-              app_documents: [],
-              individual_scoring: {
-                recused: { value: '1' },
-                category_1: { value: '' },
-                comments: { value: '' },
-                recommend: { value: '' },
-              },
-              additional_documents: [],
-            },
-          },
-        });
-      });
+      setupVacancyAndApplicationMocks({ recusedValue: '1' });
 
       render(<Application />);
 
@@ -388,188 +406,48 @@ describe('Application component', () => {
         expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
       });
 
-      // Find and click the "Unrecuse self" link
-      const unrecuseLink = screen.queryByText((content, element) => {
-        return element && element.tagName === 'A' && /unrecuse\s+self/i.test(content);
-      });
-
-      if (unrecuseLink) {
-        fireEvent.click(unrecuseLink);
-
-        // Verify axios.put was called with correct parameters
-        await waitFor(() => {
-          expect(axios.put).toHaveBeenCalledWith(
-            expect.any(String),
-            expect.objectContaining({
-              applicationId: 'app1',
-              recuse: false,
-            })
-          );
-        });
-
-        // Verify success message was displayed
-        expect(message.success).toHaveBeenCalledWith(
-          'You have successfully unrecused yourself for the scoring of this applicant.'
-        );
-      }
-    });
-
-    test('calls RECUSE endpoint with correct applicationId and recuse false', async () => {
-      const mockRecuseEndpoint = 'RECUSE_ENDPOINT';
-      axios.put.mockResolvedValueOnce({
-        data: { result: { recused: false } },
-      });
-
-      axios.get.mockImplementation((url) => {
-        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
-          return Promise.resolve({
-            data: {
-              result: {
-                basic_info: {
-                  state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                  number_of_categories: { value: '1' },
-                  require_focus_area: { value: '0' },
-                },
-                user: {
-                  committee_role_of_current_vacancy: 'x_g_nci_app_tracke.committee_member_voting',
-                },
-              },
-            },
-          });
-        }
-        return Promise.resolve({
-          data: {
-            result: {
-              basic_info: {
-                vacancy: { value: 'vac1', label: 'Vacancy 1' },
-                state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                tenant: { label: 'Tenant' },
-                number_of_categories: { value: '1' },
-                triage: { value: '' },
-                triage_comments: { value: '' },
-                chair_triage: { value: '' },
-                chair_triage_comment: { value: '' },
-                require_focus_area: { value: '0' },
-                display_references: { value: '0' },
-                sys_id: 'sysid1',
-                first_name: 'John',
-                middle_name: 'A',
-                last_name: 'Doe',
-                email: 'john.doe@example.com',
-                phone: { value: '123-456-7890' },
-                business_phone: { value: '098-765-4321' },
-                highest_level_of_education: 'PhD',
-                us_citizen: true,
-                address: '123 Main St',
-                address_2: 'Apt 4',
-                city: 'Anytown',
-                state_province: 'CA',
-                zip_code: '12345',
-                country: 'USA',
-              },
-              references: [],
-              app_documents: [],
-              individual_scoring: {
-                recused: { value: '1' },
-                category_1: { value: '' },
-                comments: { value: '' },
-                recommend: { value: '' },
-              },
-              additional_documents: [],
-            },
-          },
-        });
-      });
-
-      render(<Application />);
+      await clickUnrecuseLink();
 
       await waitFor(() => {
-        expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
-      });
-
-      const unrecuseLink = screen.queryByText((content, element) => {
-        return element && element.tagName === 'A' && /unrecuse\s+self/i.test(content);
-      });
-
-      if (unrecuseLink) {
-        fireEvent.click(unrecuseLink);
-
-        // Verify the PUT request was made
-        await waitFor(() => {
-          expect(axios.put).toHaveBeenCalled();
-          const callArgs = axios.put.mock.calls[0];
-          expect(callArgs[1]).toEqual({
+        expect(axios.put).toHaveBeenCalledWith(
+          expect.any(String),
+          expect.objectContaining({
             applicationId: 'app1',
             recuse: false,
-          });
-        });
-      }
+          })
+        );
+      });
+
+      expect(message.success).toHaveBeenCalledWith(
+        'You have successfully unrecused yourself for the scoring of this applicant.'
+      );
+    });
+
+    test('calls RECUSE endpoint with correct payload', async () => {
+      setupVacancyAndApplicationMocks({ recusedValue: '1' });
+
+      render(<Application />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+      });
+
+      await clickUnrecuseLink();
+
+      await waitFor(() => {
+        expect(axios.put).toHaveBeenCalled();
+      });
+
+      const [, payload] = axios.put.mock.calls[0];
+      expect(payload).toEqual({
+        applicationId: 'app1',
+        recuse: false,
+      });
     });
 
     test('displays error message on unrecuse failure', async () => {
-      axios.put.mockRejectedValueOnce(new Error('Network error'));
       jest.spyOn(message, 'error').mockImplementation();
-
-      axios.get.mockImplementation((url) => {
-        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
-          return Promise.resolve({
-            data: {
-              result: {
-                basic_info: {
-                  state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                  number_of_categories: { value: '1' },
-                  require_focus_area: { value: '0' },
-                },
-                user: {
-                  committee_role_of_current_vacancy: 'x_g_nci_app_tracke.committee_member_voting',
-                },
-              },
-            },
-          });
-        }
-        return Promise.resolve({
-          data: {
-            result: {
-              basic_info: {
-                vacancy: { value: 'vac1', label: 'Vacancy 1' },
-                state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                tenant: { label: 'Tenant' },
-                number_of_categories: { value: '1' },
-                triage: { value: '' },
-                triage_comments: { value: '' },
-                chair_triage: { value: '' },
-                chair_triage_comment: { value: '' },
-                require_focus_area: { value: '0' },
-                display_references: { value: '0' },
-                sys_id: 'sysid1',
-                first_name: 'John',
-                middle_name: 'A',
-                last_name: 'Doe',
-                email: 'john.doe@example.com',
-                phone: { value: '123-456-7890' },
-                business_phone: { value: '098-765-4321' },
-                highest_level_of_education: 'PhD',
-                us_citizen: true,
-                address: '123 Main St',
-                address_2: 'Apt 4',
-                city: 'Anytown',
-                state_province: 'CA',
-                zip_code: '12345',
-                country: 'USA',
-              },
-              references: [],
-              app_documents: [],
-              individual_scoring: {
-                recused: { value: '1' },
-                category_1: { value: '' },
-                comments: { value: '' },
-                recommend: { value: '' },
-              },
-              additional_documents: [],
-            },
-          },
-        });
-      });
+      setupVacancyAndApplicationMocks({ recusedValue: '1', putReject: true });
 
       render(<Application />);
 
@@ -577,126 +455,13 @@ describe('Application component', () => {
         expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
       });
 
-      // Find and click the "Unrecuse self" link
-      const unrecuseLink = screen.queryByText((content, element) => {
-        return element && element.tagName === 'A' && /unrecuse\s+self/i.test(content);
-      });
-
-      if (unrecuseLink) {
-        fireEvent.click(unrecuseLink);
-
-        // Verify error message was displayed
-        await waitFor(() => {
-          expect(message.error).toHaveBeenCalledWith(
-            'Sorry, something went wrong!  Try refreshing the page and trying again.'
-          );
-        });
-      }
-    });
-
-    test('unrecuseSelf function is invoked when unrecuse link is clicked', async () => {
-      const unrecuseSelfMock = jest.fn();
-      
-      axios.put.mockResolvedValueOnce({
-        data: { result: { recused: false } },
-      });
-      jest.spyOn(message, 'success').mockImplementation();
-
-      axios.get.mockImplementation((url) => {
-        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
-          return Promise.resolve({
-            data: {
-              result: {
-                basic_info: {
-                  state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                  number_of_categories: { value: '1' },
-                  require_focus_area: { value: '0' },
-                },
-                user: {
-                  committee_role_of_current_vacancy: 'x_g_nci_app_tracke.committee_member_voting',
-                },
-              },
-            },
-          });
-        }
-        return Promise.resolve({
-          data: {
-            result: {
-              basic_info: {
-                vacancy: { value: 'vac1', label: 'Vacancy 1' },
-                state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                tenant: { label: 'Tenant' },
-                number_of_categories: { value: '1' },
-                triage: { value: '' },
-                triage_comments: { value: '' },
-                chair_triage: { value: '' },
-                chair_triage_comment: { value: '' },
-                require_focus_area: { value: '0' },
-                display_references: { value: '0' },
-                sys_id: 'sysid1',
-                first_name: 'John',
-                middle_name: 'A',
-                last_name: 'Doe',
-                email: 'john.doe@example.com',
-                phone: { value: '123-456-7890' },
-                business_phone: { value: '098-765-4321' },
-                highest_level_of_education: 'PhD',
-                us_citizen: true,
-                address: '123 Main St',
-                address_2: 'Apt 4',
-                city: 'Anytown',
-                state_province: 'CA',
-                zip_code: '12345',
-                country: 'USA',
-              },
-              references: [],
-              app_documents: [],
-              individual_scoring: {
-                recused: { value: '1' },
-                category_1: { value: '' },
-                comments: { value: '' },
-                recommend: { value: '' },
-              },
-              additional_documents: [],
-            },
-          },
-        });
-      });
-
-      render(<Application />);
+      await clickUnrecuseLink();
 
       await waitFor(() => {
-        expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
-      });
-
-      // Find and click the "Unrecuse self" link to trigger unrecuseSelf function
-      const unrecuseLink = screen.queryByText((content, element) => {
-        return element && element.tagName === 'A' && /unrecuse\s+self/i.test(content);
-      });
-
-      if (unrecuseLink) {
-        fireEvent.click(unrecuseLink);
-
-        // Verify that axios.put was called (evidence that unrecuseSelf executed)
-        await waitFor(() => {
-          expect(axios.put).toHaveBeenCalled();
-          expect(axios.put).toHaveBeenCalledWith(
-            expect.any(String),
-            expect.objectContaining({
-              applicationId: 'app1',
-              recuse: false,
-            })
-          );
-        });
-
-        // Verify that the recused state was updated based on the response
-        expect(message.success).toHaveBeenCalledWith(
-          'You have successfully unrecused yourself for the scoring of this applicant.'
+        expect(message.error).toHaveBeenCalledWith(
+          'Sorry, something went wrong!  Try refreshing the page and trying again.'
         );
-
-        // Track that the function was executed by verifying axios call count
-        expect(axios.put.mock.calls.length).toBeGreaterThan(0);
-      }
+      });
     });
   });
 
