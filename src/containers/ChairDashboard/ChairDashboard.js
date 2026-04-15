@@ -10,6 +10,11 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js';
 import useAuth from '../../hooks/useAuth';
+import {
+	normalizeStatus,
+	compareStatus,
+	formatStatusDisplay,
+} from './Utils/statusHelper.js';
 
 const chairDashboard = () => {
 	const {
@@ -43,7 +48,7 @@ const chairDashboard = () => {
 					const validateData = validateVacancyData(jsonData);
 
 					setData(
-						validateData.list.filter(
+						validateData?.list.filter(
 							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
 						)
 					);
@@ -151,27 +156,13 @@ const chairColumns = [
 		dataIndex: 'status',
 		key: 'status',
 		sorter: {
-			compare: (a, b) => a.status.localeCompare(b.status),
+			compare: (a, b) => compareStatus(a.status, b.status),
 			multiple: 2,
 		},
 		defaultSortOrder: 'ascend',
 		render: (status) => {
-			if (status.includes('owm')) {
-				status = status.split('_')[0].toUpperCase() + status.substring(3);
-			}
-			if (status.includes('_')) {
-				status = status
-					.split('_')
-					.map((word) => word[0].toUpperCase() + word.substring(1))
-					.join(' ');
-				return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
-			} else {
-				return (
-					<span style={{ color: 'rgb(86,86,86)' }}>
-						{status.charAt(0).toUpperCase() + status.slice(1)}
-					</span>
-				);
-			}
+			const normalizedStatus = normalizeStatus(status);
+			return formatStatusDisplay(normalizedStatus);
 		},
 	},
 ];
