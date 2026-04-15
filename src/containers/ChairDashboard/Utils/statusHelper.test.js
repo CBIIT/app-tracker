@@ -52,5 +52,33 @@ describe('statusHelpers utilities', () => {
             const result = compareStatus(null, 'open');
             expect(typeof result).toBe('number');
         })
-    })
-})
+    });
+
+    describe('formayStatusDisplay', () => {
+        test('should display "N/A" for empty string', () => {
+            const result = formatStatusDisplay('');
+            expect(result.props.children).toBe('N/A');
+        });
+
+        test('should capitalize simple status', () => {
+            const result = formatStatusDisplay('open');
+            expect(result.props.children).toBe('Open');
+        });
+
+        test('should format underscore-seperated status', () => {
+            const result = formatStatusDisplay('under_review');
+            expect(result.props.children).toBe('Under Review');
+        });
+
+        test('should handle owm-prefix status', () => {
+            const result = formatStatusDisplay('owm_pending');
+            expect(result.props.children).toBe('Owm Pending');
+        });
+
+        test('should always return styled span', () => {
+            const result = formatStatusDisplay('open');
+            expect(result.type).toBe('span');
+            expect(result.props.style.color).toBe('rgb(86,86,86)');
+        });
+    });
+});
