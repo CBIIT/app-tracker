@@ -168,7 +168,7 @@ describe('Application component', () => {
       });
 
       axios.get.mockImplementation((url) => {
-        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
+        if (url.includes('get_vacancy_manager_view')) {
           return Promise.resolve({
             data: {
               result: {
@@ -361,7 +361,7 @@ describe('Application component', () => {
       }
 
       axios.get.mockImplementation((url) => {
-        if (url.includes('GET_VACANCY_MANAGER_VIEW')) {
+        if (url.includes('get_vacancy_manager_view')) {
           return Promise.resolve({
             data: {
               result: {
