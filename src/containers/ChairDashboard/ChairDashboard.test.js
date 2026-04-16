@@ -6,7 +6,7 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { useHistory } from 'react-router-dom';
-import { waitFor, screen } from '@testing-library/react';
+import { waitFor, screen, fireEvent } from '@testing-library/react';
 
 const { message } = jest.requireMock('antd');
 jest.mock('antd', () => {
@@ -141,7 +141,7 @@ describe('ChairDashboard component tests', () => {
 			push: mockPush,
 		});
 
-		validateRoleForCurrentTenant.mockReturnValue(false);
+		validateRoleForCurrentTenant.mockReturnValueOnce(false);
 
 		rtRender(<ChairDashboard />);
 
@@ -277,5 +277,55 @@ describe('ChairDashboard component tests', () => {
 		expect(await screen.findByText('Job 1')).toBeInTheDocument();
 		expect(await screen.findByText('Job 2')).toBeInTheDocument();
 		expect(await screen.findByText('Job 3')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should display error UI when list payload is invalid', async () => {
+		axios.get.mockResolvedValue({
+			data: {
+				result: {
+					status: 200,
+					list: 'invalid-list-value',
+				},
+			},
+		});
+
+		rtRender(<ChairDashboard />);
+
+		expect(await screen.findByText('Unable to load vacancies')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should sort vacancies by title when title header is clicked', async () => {
+		const unsortedVacancies = {
+			status: 200,
+			list: [
+				{
+					vacancy_id: 10,
+					vacancy_title: 'Zulu Role',
+					applicants: 2,
+					status: 'open',
+				},
+				{
+					vacancy_id: 11,
+					vacancy_title: 'Alpha Role',
+					applicants: 4,
+					status: 'open',
+				},
+			],
+		};
+
+		axios.get.mockResolvedValue({ data: { result: unsortedVacancies } });
+		const localeCompareSpy = jest.spyOn(String.prototype, 'localeCompare');
+		rtRender(<ChairDashboard />);
+
+		await screen.findByText('Zulu Role');
+		await screen.findByText('Alpha Role');
+		const titleHeader = screen.getByText('Vacancy Title');
+		fireEvent.click(titleHeader);
+
+		await waitFor(() => {
+			expect(localeCompareSpy).toHaveBeenCalled();
+		});
+
+		localeCompareSpy.mockRestore();
 	});
 });

@@ -91,9 +91,7 @@ const chairDashboard = () => {
 		}
 	}, [currentTenant]);
 
-	return isLoading ? (
-		<> </>
-	) : hasError ? (
+	return hasError ? (
 		<div className='Content'>
 			<h2>Unable to load vacancies</h2>
 			<p>
