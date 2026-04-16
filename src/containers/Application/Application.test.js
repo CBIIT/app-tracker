@@ -542,4 +542,52 @@ describe('Application component', () => {
       );
     });
   });
+
+  test('navigates to applicants list when view applicants list is clicked', async () => {
+    const push = jest.fn();
+    useHistory.mockReturnValue({ push });
+
+    mockApplicationAndVacancyGet({
+      application: {
+        basic_info: {
+          vacancy: { value: 'vac1', label: 'Vacancy 1' },
+          state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+          tenant: { label: 'Tenant' },
+          number_of_categories: { value: '1' },
+          triage: { value: '' },
+          triage_comments: { value: '' },
+          chair_triage: { value: '' },
+          chair_triage_comment: { value: '' },
+          require_focus_area: { value: '0' },
+          display_references: { value: '0' },
+          sys_id: { value: 'sysid1' },
+          first_name: { value: 'John' },
+          middle_name: { value: 'A' },
+          last_name: { value: 'Doe' },
+          email: { value: 'john.doe@example.com' },
+          phone: { value: '123-456-7890' },
+          business_phone: { value: '098-765-4321' },
+          highest_level_of_education: { value: 'PhD' },
+          us_citizen: { value: true },
+          address: { value: '123 Main St' },
+          address_2: { value: 'Apt 4' },
+          city: { value: 'Anytown' },
+          state_province: { value: 'CA' },
+          zip_code: { value: '12345' },
+          country: { value: 'USA' },
+        },
+      },
+    });
+
+    render(<Application />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /view applicants list/i }));
+
+    expect(push).toHaveBeenCalledWith('/manage/vacancy/vac1/applicants');
+  });
+
 });
