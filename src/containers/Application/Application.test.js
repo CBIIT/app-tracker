@@ -396,4 +396,150 @@ describe('Application component', () => {
       });
     });
   });
+
+  describe('unRecuse function', () => {
+    test('successfully unrecuses self and displays success message', async () => {
+      axios.put.mockResolvedValueOnce({
+        data: { result: { recused: false } },
+      });
+      jest.spyOn(message, 'success').mockImplementation();
+
+      mockApplicationAndVacancyGet({
+        application: {
+          individual_scoring: {
+            recused: { value: '1' },
+            category_1: { value: '5' },
+            comments: { value: 'Good candidate' },
+            recommend: { value: 'yes' },
+          },
+        },
+      });
+
+      render(<Application />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByText(/Unrecuse self/i));
+
+      await waitFor(() => {
+        expect(axios.put).toHaveBeenCalled();
+      });
+
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringMatching(/recuse/i),
+        { applicationId: 'app1', recuse: false }
+      );
+
+      expect(message.success).toHaveBeenCalledWith(
+        'You have successfully unrecused yourself for the scoring of this applicant.'
+      );
+    });
+  });
+
+  describe('chair triage validation', () => {
+    test('shows validation error when chair selects no without comments', async () => {
+      jest.spyOn(message, 'error').mockImplementation();
+
+      mockApplicationAndVacancyGet({
+        vacancy: {
+          user: {
+            committee_role_of_current_vacancy: 'Chair',
+          },
+        },
+      });
+
+      render(<Application />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+      });
+
+      const chairCard = screen
+        .getByText(/Committee Chair Feedback and Notes/i)
+        .closest('.InfoCardContainer');
+
+      fireEvent.click(
+        within(chairCard).getByText(/Committee Chair Feedback and Notes/i)
+      );
+
+      fireEvent.click(within(chairCard).getByRole('radio', { name: /no/i }));
+      fireEvent.click(within(chairCard).getByRole('button', { name: /save triage/i }));
+
+      expect(axios.post).not.toHaveBeenCalled();
+      expect(message.error).toHaveBeenCalledWith(
+        'Please provide a note for why "no" was selected.'
+      );
+    });
+
+  });
+
+  test('displays error message when display reference toggle fails', async () => {
+    axios.post.mockRejectedValueOnce(new Error('Network error'));
+    jest.spyOn(message, 'error').mockImplementation();
+
+    useAuth.mockReturnValue({
+      auth: {
+        isUserLoggedIn: true,
+        user: {
+          isManager: false,
+          isCommitteeMember: true,
+          roles: [],
+          hasApplications: false,
+          uid: '123',
+        },
+        tenants: [
+          {
+            value: 'tenant value 1',
+            label: 'tenant 1',
+            roles: ['x_g_nci_app_tracke.vacancy_manager'],
+            is_exec_sec: false,
+            is_read_only_user: false,
+            is_chair: false,
+            is_hr: false,
+            properties: [],
+          },
+        ],
+      },
+      currentTenant: 'tenant value 1',
+    });
+
+    mockApplicationAndVacancyGet({
+      application: {
+        references: [
+          {
+            ref_sys_id: 'ref1',
+            name: 'Reference Person',
+            email: 'ref@example.com',
+            phone: '555-111-2222',
+            relationship: 'Supervisor',
+            title: 'Director',
+            organization: 'NCI',
+            contact_allowed: 'Yes',
+            documents: [],
+          },
+        ],
+      },
+    });
+
+    render(<Application />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+    });
+
+    const referencesCard = screen
+      .getByText(/References/i)
+      .closest('.InfoCardContainer');
+    const toggle = within(referencesCard).getByRole('switch');
+
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(message.error).toHaveBeenCalledWith(
+        'Sorry!  An error occurred.  Unable to save.  Try reloading the page and trying again.'
+      );
+    });
+  });
 });
