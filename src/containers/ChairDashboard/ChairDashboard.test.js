@@ -6,6 +6,7 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { useHistory } from 'react-router-dom';
+import { waitFor, screen } from '@testing-library/react';
 
 const { message } = jest.requireMock('antd');
 jest.mock('antd', () => {
@@ -38,20 +39,23 @@ window.matchMedia =
 	};
 
 describe('ChairDashboard component tests', () => {
-	const mockVacancies = [
-		{
-			vacancy_id: 1,
-			vacancy_title: 'Senior Dev',
-			applicants: 5,
-			status: 'open',
-		},
-		{
-			vacancy_id: 2,
-			vacancy_title: 'Junior Dev',
-			applicants: 3,
-			status: 'under_review',
-		},
-	];
+	const mockVacancies = {
+		status: 200,
+		list: [
+			{
+				vacancy_id: 1,
+				vacancy_title: 'Senior Dev',
+				applicants: 5,
+				status: 'open',
+			},
+			{
+				vacancy_id: 2,
+				vacancy_title: 'Junior Dev',
+				applicants: 3,
+				status: 'under_review',
+			},
+		],
+	};
 
 	beforeEach(() => {
 		const mockPush = jest.fn();
@@ -89,8 +93,8 @@ describe('ChairDashboard component tests', () => {
 	});
 
 	test('<ChairDashboard /> should display header', async () => {
-		const { findByText } = rtRender(<ChairDashboard />);
-		expect(await findByText('Vacancies Assigned To You')).toBeInTheDocument();
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('Vacancies Assigned To You')).toBeInTheDocument();
 	});
 
 	test('<ChairDashboard /> should fetch vacancies on mount', () => {
@@ -101,49 +105,177 @@ describe('ChairDashboard component tests', () => {
 	});
 
 	test('<ChairDashboard /> should filter out live and final status vacancies', async () => {
-		const vacanciesWithStatuses = [
-			{
-				vacancy_id: 1,
-				vacancy_title: 'Open Job',
-				applicants: 5,
-				status: 'open',
-			},
-			{
-				vacancy_id: 2,
-				vacancy_title: 'Live Job',
-				applicants: 10,
-				status: 'live',
-			},
-			{
-				vacancy_id: 3,
-				vacancy_title: 'Final Job',
-				applicants: 2,
-				status: 'final',
-			},
-		];
+		const vacanciesWithStatuses = {
+			status: 200,
+			list: [
+				{
+					vacancy_id: 1,
+					vacancy_title: 'Open Job',
+					applicants: 5,
+					status: 'open',
+				},
+				{
+					vacancy_id: 2,
+					vacancy_title: 'Live Job',
+					applicants: 10,
+					status: 'live',
+				},
+				{
+					vacancy_id: 3,
+					vacancy_title: 'Final Job',
+					applicants: 2,
+					status: 'final',
+				},
+			],
+		};
 		axios.get.mockResolvedValue({ data: { result: vacanciesWithStatuses } });
-		const { findByText, queryByText } = rtRender(<ChairDashboard />);
-		await findByText('Open Job');
-		expect(queryByText('Live Job')).not.toBeInTheDocument();
-		expect(queryByText('Final Job')).not.toBeInTheDocument();
+		rtRender(<ChairDashboard />);
+		await screen.findByText('Open Job');
+		expect(screen.queryByText('Live Job')).not.toBeInTheDocument();
+		expect(screen.queryByText('Final Job')).not.toBeInTheDocument();
 	});
 
-	test('<ChairDashboard /> should show error when user is not a committee member', () => {
+	test('<ChairDashboard /> should show error when user is not a committee member', async () => {
 		const mockPush = jest.fn();
 		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
 			push: mockPush,
 		});
 
-		// Mock to return false for this specific test
-		validateRoleForCurrentTenant.mockImplementation(() => false);
+		validateRoleForCurrentTenant.mockReturnValue(false);
 
 		rtRender(<ChairDashboard />);
 
-		// Add a small delay to allow useEffect to run
-		setTimeout(() => {
-			expect(message.destroy).toHaveBeenCalled();
-			expect(message.error).toHaveBeenCalled();
-			expect(mockPush).toHaveBeenCalledWith('/');
-		}, 100);
+		await waitFor(
+			() => {
+				expect(
+					screen.getByText(
+						'Sorry! You do not have committee member access in the selected tenant.'
+					)
+				).toBeInTheDocument();
+			},
+			{ timeout: 2000 }
+		);
+		expect(mockPush).toHaveBeenCalledWith('/');
+	});
+
+	test('<ChairDashboard /> should display error message when API fails', async () => {
+		axios.get.mockRejectedValue(new Error('API Error'));
+		rtRender(<ChairDashboard />);
+		await waitFor(
+			() => {
+				expect(
+					screen.getByText(/Sorry! There was an error retrieving the vacancies/)
+				).toBeInTheDocument();
+			},
+			{ timeout: 3000 }
+		);
+	});
+
+	test('<ChairDashboard /> should display help desk email in error message', async () => {
+		axios.get.mockRejectedValue(new Error('API Error'));
+		rtRender(<ChairDashboard />);
+		await waitFor(
+			() => {
+				const emailLink = screen.getByRole('link', {
+					name: /NCIAppSupport@mail.nih.gov/i,
+				});
+				expect(emailLink).toHaveAttribute(
+					'href',
+					'mailto:NCIAppSupport@mail.nih.gov'
+				);
+			},
+			{ timeout: 3000 }
+		);
+	});
+
+	test('<ChairDashboard /> should render table with vacancies', async () => {
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('Senior Dev')).toBeInTheDocument();
+		expect(await screen.findByText('Junior Dev')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should render table headers', async () => {
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('Vacancy Title')).toBeInTheDocument();
+		expect(await screen.findByText('Applicants')).toBeInTheDocument();
+		expect(await screen.findByText('Status')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should render vacancy title as link', async () => {
+		rtRender(<ChairDashboard />);
+		const vacancyTitle = await screen.findByText('Senior Dev');
+		const vacancyLink = vacancyTitle.closest('a');
+		expect(vacancyLink).toHaveAttribute('href', '#/manage/vacancy/1');
+	});
+
+	test('<ChairDashboard /> should render applicants count with correct singular/plural text', async () => {
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('5 applicants')).toBeInTheDocument();
+		expect(await screen.findByText('3 applicants')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should render single applicant with singular text', async () => {
+		const vacanciesWithSingleApplicant = {
+			status: 200,
+			list: [
+				{
+					vacancy_id: 1,
+					vacancy_title: 'Senior Dev',
+					applicants: 1,
+					status: 'open',
+				},
+			],
+		};
+		axios.get.mockResolvedValue({ data: { result: vacanciesWithSingleApplicant } });
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('1 applicant')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should render applicants link with correct href', async () => {
+		rtRender(<ChairDashboard />);
+		const applicantsText = await screen.findByText('5 applicants');
+		const applicantsLink = applicantsText.closest('a');
+		expect(applicantsLink).toHaveAttribute('href', '#/manage/vacancy/1/applicants');
+	});
+
+	test('<ChairDashboard /> should render empty state when no vacancies', async () => {
+		const emptyVacancies = {
+			status: 200,
+			list: [],
+		};
+		axios.get.mockResolvedValue({ data: { result: emptyVacancies } });
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('Vacancies Assigned To You')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should display all vacancies when no filter matches', async () => {
+		const allOpenVacancies = {
+			status: 200,
+			list: [
+				{
+					vacancy_id: 1,
+					vacancy_title: 'Job 1',
+					applicants: 5,
+					status: 'open',
+				},
+				{
+					vacancy_id: 2,
+					vacancy_title: 'Job 2',
+					applicants: 3,
+					status: 'under_review',
+				},
+				{
+					vacancy_id: 3,
+					vacancy_title: 'Job 3',
+					applicants: 8,
+					status: 'review_complete',
+				},
+			],
+		};
+		axios.get.mockResolvedValue({ data: { result: allOpenVacancies } });
+		rtRender(<ChairDashboard />);
+		expect(await screen.findByText('Job 1')).toBeInTheDocument();
+		expect(await screen.findByText('Job 2')).toBeInTheDocument();
+		expect(await screen.findByText('Job 3')).toBeInTheDocument();
 	});
 });
