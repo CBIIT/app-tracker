@@ -1,9 +1,10 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import Application from './Application';
 import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.js';
 import { message } from 'antd';
+import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
 
 // Mock dependencies
 jest.mock('axios');
@@ -27,36 +28,99 @@ jest.mock('antd', () => {
   };
 });
 
+jest.mock('./ScoringWidget/ScoringWidgetSlider/ScoringWidgetSlider', () => (props) => (
+  <button
+    type="button"
+    data-testid={`slider-${props.title}`}
+    onClick={() => props.onChange(8)}
+  >
+    {props.title}: {props.value ?? 'unset'}
+  </button>
+));
+
 const mockAdminScoringWidget = jest.fn();
 jest.mock('./AdminScoringWidget/AdminScoringWidget', () => (props) => {
   mockAdminScoringWidget(props);
   return <mock-AdminScoringWidget />;
 });
 
-// const mockScoringWidget = jest.fn();
-// jest.mock('./ScoringWidget/ScoringWidget', () => (props) => {
-//   mockScoringWidget(props);
-//   return (
-//     <div data-testid="scoring-widget">
-//       <h3>{props.title}</h3>
-//       <div>{props.description}</div>
-//       {props.onScoreCommentsChange && (
-//         <textarea 
-//           data-testid="score-comments"
-//           onChange={props.onScoreCommentsChange}
-//         >
-//           {props.triageComments}
-//         </textarea>
-//       )}
-//       {props.categories && props.categories.map((cat, i) => <div key={i}>{cat.title}</div>)}
-//       {props.onSaveClick && (
-//         <button data-testid="save-scoring-button" onClick={props.onSaveClick}>
-//           Save
-//         </button>
-//       )}
-//     </div>
-//   );
-// });
+const buildApplicationResponse = (overrides = {}) => ({
+  data: {
+    result: {
+      basic_info: {
+        vacancy: { value: 'vac1', label: 'Vacancy 1' },
+        state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+        tenant: { label: 'Tenant' },
+        number_of_categories: { value: '1' },
+        triage: { value: '' },
+        triage_comments: { value: '' },
+        chair_triage: { value: '' },
+        chair_triage_comment: { value: '' },
+        require_focus_area: { value: '0' },
+        display_references: { value: '0' },
+        sys_id: 'sysid1',
+        first_name: 'John',
+        middle_name: 'A',
+        last_name: 'Doe',
+        email: 'john.doe@example.com',
+        phone: { value: '123-456-7890' },
+        business_phone: { value: '098-765-4321' },
+        highest_level_of_education: 'PhD',
+        us_citizen: true,
+        address: '123 Main St',
+        address_2: 'Apt 4',
+        city: 'Anytown',
+        state_province: 'CA',
+        zip_code: '12345',
+        country: 'USA',
+      },
+      references: [],
+      app_documents: [],
+      individual_scoring: {
+        recused: { value: '0' },
+        category_1: { value: '5' },
+        comments: { value: 'Good candidate' },
+        recommend: { value: 'yes' },
+      },
+      additional_documents: [],
+      ...overrides,
+    },
+  },
+});
+
+const buildVacancyManagerViewResponse = (overrides = {}) => ({
+  data: {
+    result: {
+      basic_info: {
+        state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+        number_of_categories: { value: '1' },
+        require_focus_area: { value: '0' },
+        tenant: { label: 'Tenant' },
+      },
+      user: {
+        committee_role_of_current_vacancy: 'Member',
+      },
+      ...overrides,
+    },
+  },
+});
+
+const mockApplicationAndVacancyGet = ({
+  application = {},
+  vacancy = {},
+} = {}) => {
+  axios.get.mockImplementation((url) => {
+    if (url.includes('get_vacancy_manager_view')) {
+      return Promise.resolve(
+        buildVacancyManagerViewResponse(vacancy)
+      );
+    }
+
+    return Promise.resolve(
+      buildApplicationResponse(application)
+    );
+  });
+};
 
 describe('Application component', () => {
   beforeEach(() => {
@@ -64,48 +128,7 @@ describe('Application component', () => {
     message.success.mockClear?.();
     message.error.mockClear?.();
 
-    axios.get.mockResolvedValue({
-      data: {
-        result: {
-          basic_info: {
-            vacancy: { value: 'vac1', label: 'Vacancy 1' },
-            state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-            tenant: { label: 'Tenant' },
-            number_of_categories: { value: '1' },
-            triage: { value: '' },
-            triage_comments: { value: '' },
-            chair_triage: { value: '' },
-            chair_triage_comment: { value: '' },
-            require_focus_area: { value: '0' },
-            display_references: { value: '0' },
-            sys_id: 'sysid1',
-            first_name: 'John',
-            middle_name: 'A',
-            last_name: 'Doe',
-            email: 'john.doe@example.com',
-            phone: { value: '123-456-7890' },
-            business_phone: { value: '098-765-4321' },
-            highest_level_of_education: 'PhD',
-            us_citizen: true,
-            address: '123 Main St',
-            address_2: 'Apt 4',
-            city: 'Anytown',
-            state_province: 'CA',
-            zip_code: '12345',
-            country: 'USA',
-          },
-          references: [],
-          app_documents: [],
-          individual_scoring: {
-            recused: { value: '0' },
-            category_1: { value: '5' },
-            comments: { value: 'Good candidate' },
-            recommend: { value: 'yes' },
-          },
-          additional_documents: [],
-        },
-      },
-    });
+    mockApplicationAndVacancyGet();
 
     axios.put.mockResolvedValue({ data: { result: { recused: false } } });
     axios.post.mockResolvedValue({});
@@ -167,67 +190,7 @@ describe('Application component', () => {
         data: { result: { recused: true } },
       });
 
-      axios.get.mockImplementation((url) => {
-        if (url.includes('get_vacancy_manager_view')) {
-          return Promise.resolve({
-            data: {
-              result: {
-                basic_info: {
-                  state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                  number_of_categories: { value: '1' },
-                  require_focus_area: { value: '0' },
-                  tenant: { label: 'Tenant' },
-                },
-                user: {
-                  committee_role_of_current_vacancy: 'Member',
-                },
-              },
-            },
-          });
-        }
-        return Promise.resolve({
-          data: {
-            result: {
-              basic_info: {
-                vacancy: { value: 'vac1', label: 'Vacancy 1' },
-                state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
-                tenant: { label: 'Tenant' },
-                number_of_categories: { value: '1' },
-                triage: { value: '' },
-                triage_comments: { value: '' },
-                chair_triage: { value: '' },
-                chair_triage_comment: { value: '' },
-                require_focus_area: { value: '0' },
-                display_references: { value: '0' },
-                sys_id: 'sysid1',
-                first_name: 'John',
-                middle_name: 'A',
-                last_name: 'Doe',
-                email: 'john.doe@example.com',
-                phone: { value: '123-456-7890' },
-                business_phone: { value: '098-765-4321' },
-                highest_level_of_education: 'PhD',
-                us_citizen: true,
-                address: '123 Main St',
-                address_2: 'Apt 4',
-                city: 'Anytown',
-                state_province: 'CA',
-                zip_code: '12345',
-                country: 'USA',
-              },
-              references: [],
-              app_documents: [],
-              individual_scoring: {
-                recused: { value: '0' },
-                category_1: { value: '5' },
-                comments: { value: 'Good candidate' },
-                recommend: { value: 'yes' },
-              },
-              additional_documents: [],
-            },
-          },
-        });
-      });
+      mockApplicationAndVacancyGet();
 
       jest.spyOn(message, 'success').mockImplementation();
 
@@ -263,13 +226,68 @@ describe('Application component', () => {
       axios.post.mockResolvedValueOnce({ data: {} });
       jest.spyOn(message, 'success').mockImplementation();
 
+      useAuth.mockReturnValue({
+        auth: {
+          isUserLoggedIn: true,
+          user: {
+            isManager: false,
+            isCommitteeMember: true,
+            roles: [],
+            hasApplications: false,
+            uid: '123',
+          },
+          tenants: [
+            {
+              value: 'tenant value 1',
+              label: 'tenant 1',
+              roles: ['x_g_nci_app_tracke.vacancy_manager'],
+              is_exec_sec: false,
+              is_read_only_user: false,
+              is_chair: false,
+              is_hr: false,
+              properties: [],
+            },
+          ],
+        },
+        currentTenant: 'tenant value 1',
+      });
+
+      mockApplicationAndVacancyGet({
+        application: {
+          references: [
+            {
+              ref_sys_id: 'ref1',
+              name: 'Reference Person',
+              email: 'ref@example.com',
+              phone: '555-111-2222',
+              relationship: 'Supervisor',
+              title: 'Director',
+              organization: 'NCI',
+              contact_allowed: 'Yes',
+              documents: [],
+            },
+          ],
+        },
+      });
+
       render(<Application />);
 
       await waitFor(() => {
         expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
       });
 
-      expect(axios.post).toBeDefined();
+      const referencesCard = screen.getByText(/References/i).closest('.InfoCardContainer');
+      const toggle = within(referencesCard).getByRole('switch');
+
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(axios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/display_references\/undefined\/true$/)
+        );
+      });
+
+      expect(message.success).toHaveBeenCalledWith('References preference saved.');
     });
 
     test('displays error message when toggle fails', async () => {
@@ -292,17 +310,23 @@ describe('Application component', () => {
     });
 
     test('onTriageCommentsChange updates triage comments', async () => {
+      isAllowedToVacancyManagerTriage.mockReturnValue(true);
+      mockApplicationAndVacancyGet();
+
       render(<Application />);
 
       await waitFor(() => {
         expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
       });
 
-      const textareas = screen.queryAllByRole('textbox');
-      if (textareas.length > 0) {
-        fireEvent.change(textareas[0], { target: { value: 'Triage test comment' } });
-        expect(textareas[0].value).toBe('Triage test comment');
-      }
+      fireEvent.click(screen.getByText(/Vacancy Manager Team Feedback/i));
+
+      const triageCommentsTextarea = await screen.findByPlaceholderText(/add notes \(optional\)/i);
+      fireEvent.change(triageCommentsTextarea, {
+        target: { value: 'Triage test comment' },
+      });
+
+      expect(triageCommentsTextarea.value).toBe('Triage test comment');
     });
 
     test('onScoreCommentsChange updates individual score comments', async () => {
@@ -318,6 +342,7 @@ describe('Application component', () => {
         expect(textareas[0].value).toBe('Score comment');
       }
     });
+
   });
 
 
@@ -361,11 +386,14 @@ describe('Application component', () => {
         expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
       });
 
-      const sliders = screen.queryAllByRole('slider');
-      if (sliders.length > 0) {
-        fireEvent.change(sliders[0], { target: { value: 8 } });
-        expect(sliders[0].value).toBe('8');
-      }
+      const categorySlider = await screen.findByTestId('slider-Category 1');
+      expect(categorySlider).toHaveTextContent('Category 1: 5');
+
+      fireEvent.click(categorySlider);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('slider-Category 1')).toHaveTextContent('Category 1: 8');
+      });
     });
   });
 });
