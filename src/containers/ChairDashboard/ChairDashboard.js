@@ -52,12 +52,10 @@ const chairDashboard = () => {
 							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
 						)
 					);
-					setIsLoading(false);
 				} catch (err) {
 					setHasError(true);
-					setIsLoading(false);
 					notification.error({
-						message: 'Sorry! There was an error retrieving the vacancies.',
+						message: 'Sorry! There was an error retrieving vacancies.',
 						description: (
 							<>
 								<p>
@@ -77,6 +75,8 @@ const chairDashboard = () => {
 							alignItems: 'center',
 						},
 					});
+				} finally {
+					setIsLoading(false);
 				}
 			})();
 		} else {

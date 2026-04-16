@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
-import { Table, ConfigProvider, Empty, message } from 'antd';
+import { Table, ConfigProvider, Empty, message, notification } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
@@ -15,6 +15,12 @@ import {
 	validateRoleForCurrentTenant,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
+import { validateVacancyData } from '../ChairDashboard/Utils/validateVacancyData.js';
+import {
+	normalizeStatus,
+	compareStatus,
+	formatStatusDisplay,
+} from '../ChairDashboard/Utils/statusHelper.js';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
@@ -29,6 +35,7 @@ const committeeDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [readOnly, setreadOnly] = useState(false);
+	const [hasError, setHasError] = useState(false);
 	const {
 		auth: { user, tenants },
 		currentTenant,
@@ -53,21 +60,49 @@ const committeeDashboard = () => {
 			isExecSec(currentTenant, tenants)
 		) {
 			(async () => {
-				setIsLoading(true);
 				try {
 					setreadOnly(user.isReadOnlyUser);
 					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
 					const currentData = await axios.get(url);
 
+					const jsonData = currentData.data.result;
+
+					if (!jsonData?.list || typeof jsonData.list !== 'object') {
+						throw new Error('Invalid vacancy data');
+					}
+
+					const validatedData = validateVacancyData(jsonData);
+
 					const committeeMemberData =
 						location.pathname === EXE_SEC_DASHBOARD
-							? currentData.data.result.filter(
+							? validatedData?.list.filter(
 									(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
 								)
-							: currentData.data.result;
+							: validatedData?.list;
 					setData(committeeMemberData);
 				} catch (err) {
-					message.error('Sorry!  An error occurred.');
+					setHasError(true);
+					notification.error({
+						message: 'Sorry! There was an error retrieving vacancies.',
+						description: (
+							<>
+								<p>
+									Please refresh the page and try again or try logging out and
+									logging back in. If the issue persists, contact the Help Desk
+									by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '225px',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
 				} finally {
 					setIsLoading(false);
 				}
@@ -151,29 +186,13 @@ const committeeColumns = [
 		dataIndex: 'status',
 		key: 'status',
 		sorter: {
-			compare: (a, b) => a.status.localeCompare(b.status),
+			compare: (a, b) => compareStatus(a.status, b.status),
 			multiple: 2,
 		},
 		defaultSortOrder: 'ascend',
 		render: (status) => {
-			if (status) {
-				if (status.includes('owm')) {
-					status = status.split('_')[0].toUpperCase() + status.substring(3);
-				}
-				if (status.includes('_')) {
-					status = status
-						.split('_')
-						.map((word) => word[0].toUpperCase() + word.substring(1))
-						.join(' ');
-					return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
-				} else {
-					return (
-						<span style={{ color: 'rgb(86,86,86)' }}>
-							{status.charAt(0).toUpperCase() + status.slice(1)}
-						</span>
-					);
-				}
-			}
+			const normalizedStatus = normalizeStatus(status);
+			return formatStatusDisplay(normalizedStatus);
 		},
 	},
 	{
