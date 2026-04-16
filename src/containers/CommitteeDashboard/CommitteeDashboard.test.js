@@ -1,6 +1,6 @@
 import CommitteeDashboard from './CommitteeDashboard';
 import { rtRender } from '../test-utils';
-import { waitFor, screen } from '@testing-library/react';
+import { waitFor, screen, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import {
@@ -17,6 +17,9 @@ jest.mock('antd', () => {
 		message: {
 			error: jest.fn(),
 			destroy: jest.fn(),
+		},
+		notification: {
+			error: jest.fn(),
 		},
 	};
 });
@@ -82,6 +85,7 @@ describe('CommitteeDashboard component tests', () => {
 		const antd = jest.requireMock('antd');
 		antd.message.error = jest.fn();
 		antd.message.destroy = jest.fn();
+		antd.notification.error = jest.fn();
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -251,6 +255,60 @@ describe('CommitteeDashboard component tests', () => {
 
 		expect(screen.getAllByText('Pending').length).toBeGreaterThan(0);
 		expect(screen.getByText('Approved')).toBeInTheDocument();
+	});
+
+	test('<CommitteeDashboard /> should show notification error when API returns invalid data', async () => {
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					status: 200,
+				},
+			},
+		});
+
+		rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		});
+
+		expect(screen.queryByText('Senior Dev')).not.toBeInTheDocument();
+	});
+
+	test('<CommitteeDashboard /> should sort vacancies by vacancy title', async () => {
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					status: 200,
+					list: [
+						{
+							vacancy_id: 41,
+							vacancy_title: 'Zeta Role',
+							applicants: 1,
+							status: 'open',
+						},
+						{
+							vacancy_id: 42,
+							vacancy_title: 'Alpha Role',
+							applicants: 2,
+							status: 'open',
+						},
+					],
+				},
+			},
+		});
+
+		rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(screen.getByText('Zeta Role')).toBeInTheDocument();
+			expect(screen.getByText('Alpha Role')).toBeInTheDocument();
+		});
+
+		fireEvent.click(screen.getByText('Vacancy Title'));
+
+		expect(screen.getByText('Zeta Role')).toBeInTheDocument();
+		expect(screen.getByText('Alpha Role')).toBeInTheDocument();
 	});
 
 	test('<CommitteeDashboard /> should filter vacancies for exec sec dashboard route', async () => {

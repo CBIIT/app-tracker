@@ -164,7 +164,10 @@ describe('ChairDashboard component tests', () => {
 		await waitFor(
 			() => {
 				expect(
-					screen.getByText(/Sorry! There was an error retrieving the vacancies/)
+					screen.getByText(
+						(content, node) =>
+							node?.tagName === 'H2' && /Unable to load vacancies/i.test(content)
+					)
 				).toBeInTheDocument();
 			},
 			{ timeout: 3000 }
