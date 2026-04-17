@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { Table, message, notification } from 'antd';
+import { Table, message, notification, Tooltip } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { validateVacancyData } from './Utils/validateVacancyData.js';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
@@ -14,6 +15,9 @@ import {
 	normalizeStatus,
 	compareStatus,
 	formatStatusDisplay,
+	isInvalidVacancyStatus,
+	getInvalidStatusMessage,
+	isVacancyRowInteractive,
 } from './Utils/statusHelper.js';
 
 const chairDashboard = () => {
@@ -112,6 +116,9 @@ const chairDashboard = () => {
 					rowKey={(record) => record.vacancy_id}
 					dataSource={data}
 					columns={chairColumns}
+					rowClassName={(record) =>
+						isInvalidVacancyStatus(record.status) ? 'display-vacancy-row' : ''
+					}
 					scroll={{ x: 'true' }}
 					loading={
 						isLoading
@@ -135,19 +142,44 @@ const chairColumns = [
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
-		render: (title, record) => (
-			<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
-		),
+		render: (title, record) => {
+			const isInteractive = isVacancyRowInteractive(record.status);
+			return isInteractive ? (
+				<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
+			) : (
+				<span style={{ cursor: 'not-allowed', color: 'rgba(0,0,0,0.65)' }}>
+					{title}
+				</span>
+			);
+		},
 	},
 	{
 		title: 'Applicants',
 		dataIndex: 'applicants',
 		key: 'applicants',
-		render: (number, record) => (
-			<Link to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}>
-				{number} {number == 1 ? 'applicant' : 'applicants'}
-			</Link>
-		),
+		render: (number, record) => {
+			const isInteractive = isVacancyRowInteractive(record.status);
+			const applicantText =
+				number == 1
+					? 'applicant'
+					: number == undefined
+						? '0 applicants'
+						: 'applicants';
+			const displayText = `${number} ${applicantText}`;
+
+			return isInteractive ? (
+				<Link
+					key={record.vacancy_id}
+					to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}
+				>
+					{displayText}
+				</Link>
+			) : (
+				<span style={{ cursor: 'not-allowed', color: 'rgba(0,0,0,0.65)' }}>
+					{displayText}
+				</span>
+			);
+		},
 	},
 	{
 		title: 'Status',
@@ -159,8 +191,33 @@ const chairColumns = [
 		},
 		defaultSortOrder: 'ascend',
 		render: (status) => {
+			const isInvalid = isInvalidVacancyStatus(status);
 			const normalizedStatus = normalizeStatus(status);
-			return formatStatusDisplay(normalizedStatus);
+			const displayStatus = formatStatusDisplay(normalizedStatus);
+
+			if (isInvalid) {
+				return (
+					<span
+						style={{
+							display: 'inline-flex',
+							alignItems: 'center',
+							gap: '6px',
+						}}
+					>
+						{displayStatus}
+						<Tooltip
+							title={getInvalidStatusMessage()}
+							trigger={['hover', 'focus', 'click']}
+						>
+							<ExclamationCircleOutlined
+								style={{ color: '#d46b08', cursor: 'pointer' }}
+								aria-label='Vacancy status issue'
+							/>
+						</Tooltip>
+					</span>
+				);
+			}
+			return displayStatus;
 		},
 	},
 ];
