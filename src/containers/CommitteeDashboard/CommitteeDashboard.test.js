@@ -275,6 +275,34 @@ describe('CommitteeDashboard component tests', () => {
 		expect(screen.queryByText('Senior Dev')).not.toBeInTheDocument();
 	});
 
+	test('<CommitteeDashboard /> should render invalid status indicator for empty status', async () => {
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					status: 200,
+					list: [
+						{
+							vacancy_id: 51,
+							vacancy_title: 'Invalid Status Vacancy',
+							applicants: 4,
+							status: '',
+							your_scoring: 'Pending',
+						},
+					],
+				},
+			},
+		});
+
+		rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(screen.getByText('Invalid Status Vacancy')).toBeInTheDocument();
+		});
+
+		expect(screen.getByText('N/A')).toBeInTheDocument();
+		expect(screen.getByLabelText('Vacancy status issue')).toBeInTheDocument();
+	});
+
 	test('<CommitteeDashboard /> should sort vacancies by vacancy title', async () => {
 		axios.get.mockResolvedValueOnce({
 			data: {

@@ -1,4 +1,4 @@
-import { normalizeStatus, compareStatus, formatStatusDisplay } from "./statusHelper";
+import { normalizeStatus, compareStatus, formatStatusDisplay, isInvalidVacancyStatus, getInvalidStatusMessage, isVacancyRowInteractive } from "./statusHelper";
 
 describe('statusHelpers utilities', () => {
 
@@ -54,7 +54,7 @@ describe('statusHelpers utilities', () => {
         })
     });
 
-    describe('formayStatusDisplay', () => {
+    describe('formatStatusDisplay', () => {
         test('should display "N/A" for empty string', () => {
             const result = formatStatusDisplay('');
             expect(result.props.children).toBe('N/A');
@@ -65,20 +65,77 @@ describe('statusHelpers utilities', () => {
             expect(result.props.children).toBe('Open');
         });
 
-        test('should format underscore-seperated status', () => {
+        test('should format underscore-separated status', () => {
             const result = formatStatusDisplay('under_review');
             expect(result.props.children).toBe('Under Review');
         });
 
-        test('should handle owm-prefix status', () => {
+        test('should handle owm_prefix status', () => {
             const result = formatStatusDisplay('owm_pending');
             expect(result.props.children).toBe('Owm Pending');
         });
 
-        test('should always return styled span', () => {
+        test('should always return styled span with correct color', () => {
             const result = formatStatusDisplay('open');
             expect(result.type).toBe('span');
             expect(result.props.style.color).toBe('rgb(86,86,86)');
+        });
+    });
+
+    describe('isInvalidVacancyStatus', () => {
+        test('should return true for empty string', () => {
+            expect(isInvalidVacancyStatus('')).toBe(true);
+        });
+
+        test('should return true for null', () => {
+            expect(isInvalidVacancyStatus(null)).toBe(true);
+        });
+
+        test('should return true for undefined', () => {
+            expect(isInvalidVacancyStatus(undefined)).toBe(true);
+        });
+
+        test('should return false for valid status strings', () => {
+            expect(isVacancyRowInteractive('open')).toBe(true);
+            expect(isVacancyRowInteractive('under_review')).toBe(true);
+            expect(isVacancyRowInteractive('owm_pending')).toBe(true);
+        });
+    });
+
+    describe('getInvalidStatusMessage', () => {
+        test('should return the correct error message', () => {
+            const message = getInvalidStatusMessage();
+            expect(message).toBe('Something went wrong with this vacancy status. Please contact the Help Desk at NCIAppSupport@mail.nih.gov.');
+        });
+
+        test('should always return a string', () => {
+            const message = getInvalidStatusMessage();
+            expect(typeof message).toBe('string');
+        });
+
+        test('should include Help Desk email in message', () => {
+            const message = getInvalidStatusMessage();
+            expect(message).toContain('NCIAppSupport@mail.nih.gov');
+        });
+    });
+
+    describe('isVacancyRowInteractive', () => {
+        test('should return false for empty string', () => {
+            expect(isVacancyRowInteractive('')).toBe(false);
+        });
+
+        test('should return false for null', () => {
+            expect(isVacancyRowInteractive(null)).toBe(false);
+        });
+
+        test('should return false for undefined', () => {
+            expect(isVacancyRowInteractive(undefined)).toBe(false);
+        });
+
+        test('should return true for valid status strings', () => {
+            expect(isVacancyRowInteractive('open')).toBe(true);
+            expect(isVacancyRowInteractive('under_review')).toBe(true);
+            expect(isVacancyRowInteractive('owm_pending')).toBe(true);
         });
     });
 });
