@@ -31,3 +31,15 @@ export const formatStatusDisplay = (normalizedStatus) => {
 
 	return <span style={{ color: 'rgb(86,86,86)' }}>{displayStatus}</span>;
 };
+
+export const isInvalidVacancyStatus = (status) => {
+	return status === '' || status === null || status === undefined;
+};
+
+export const getInvalidStatusMessage = () => {
+	return 'Something went wrong with this vacancy status. Please contact the Help Desk at NCIAppSupport@mail.nih.gov.';
+};
+
+export const isVacancyRowInteractive = (status) => {
+	return !isInvalidVacancyStatus(status);
+};

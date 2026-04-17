@@ -3,7 +3,15 @@ import { Link, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
-import { Table, ConfigProvider, Empty, message, notification } from 'antd';
+import {
+	Table,
+	ConfigProvider,
+	Empty,
+	message,
+	notification,
+	Tooltip,
+} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth';
 import './CommitteeDashboard.css';
 import axios from 'axios';
@@ -20,11 +28,14 @@ import {
 	normalizeStatus,
 	compareStatus,
 	formatStatusDisplay,
+	isInvalidVacancyStatus,
+	getInvalidStatusMessage,
+	isVacancyRowInteractive,
 } from '../ChairDashboard/Utils/statusHelper.js';
 
 const renderDecision = (text) =>
 	text == 'Pending' ? (
-		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
+		<span style={{ color: 'rgba(0,0,0,0.65)', textTransform: 'capitalize' }}>
 			{text}
 		</span>
 	) : (
@@ -119,7 +130,18 @@ const committeeDashboard = () => {
 		}
 	}, [currentTenant]);
 
-	return (
+	return hasError ? (
+		<div className='Content'>
+			<h2>Unable to load vacancies</h2>
+			<p>
+				Please refresh the page and try again. If the issue persists, contact
+				the Help Desk by emailing{' '}
+				<a href='mailto:NCIAppSupport@mail.nih.gov'>
+					NCIAppSupport@mail.nih.gov
+				</a>
+			</p>
+		</div>
+	) : (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
@@ -132,6 +154,11 @@ const committeeDashboard = () => {
 						rowKey={(record) => record.vacancy_id}
 						dataSource={data}
 						columns={readOnly ? committeeColumns.slice(0, 3) : committeeColumns}
+						rowClassName={(record) =>
+							isInvalidVacancyStatus(record.status)
+								? 'disabled-vacancy-row'
+								: ''
+						}
 						scroll={{ x: 'true' }}
 						key='CommitteeVacancies'
 						style={{
@@ -159,27 +186,44 @@ const committeeColumns = [
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
-		render: (title, record) => (
-			<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
-		),
+		render: (title, record) => {
+			const isInteractive = isVacancyRowInteractive(record.status);
+			return isInteractive ? (
+				<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
+			) : (
+				<span style={{ cursor: 'not-allowed', color: 'rgba(0,0,0,0.65)' }}>
+					{title}
+				</span>
+			);
+		},
 	},
 	{
 		title: 'Applicants',
 		dataIndex: 'applicants',
 		key: 'applicants',
-		render: (number, record) => (
-			<Link
-				key={record.vacancy_id}
-				to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}
-			>
-				{number}{' '}
-				{number == 1
+		render: (number, record) => {
+			const isInteractive = isVacancyRowInteractive(record.status);
+			const applicantText =
+				number == 1
 					? 'applicant'
 					: number == undefined
 						? '0 applicants'
-						: 'applicants'}
-			</Link>
-		),
+						: 'applicants';
+			const displayText = `${number} ${applicantText}`;
+
+			return isInteractive ? (
+				<Link
+					key={record.vacancy_id}
+					to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}
+				>
+					{displayText}
+				</Link>
+			) : (
+				<span style={{ cursor: 'not-allowed', color: 'rgba(0,0,0,0.65)' }}>
+					{displayText}
+				</span>
+			);
+		},
 	},
 	{
 		title: 'Status',
@@ -191,8 +235,33 @@ const committeeColumns = [
 		},
 		defaultSortOrder: 'ascend',
 		render: (status) => {
+			const isInvalid = isInvalidVacancyStatus(status);
 			const normalizedStatus = normalizeStatus(status);
-			return formatStatusDisplay(normalizedStatus);
+			const displayStatus = formatStatusDisplay(normalizedStatus);
+
+			if (isInvalid) {
+				return (
+					<span
+						style={{
+							display: 'inline-flex',
+							alignItems: 'center',
+							gap: '6px',
+						}}
+					>
+						{displayStatus}
+						<Tooltip
+							title={getInvalidStatusMessage()}
+							trigger={['hover', 'focus', 'click']}
+						>
+							<ExclamationCircleOutlined
+								style={{ color: '#d46b08', cursor: 'pointer' }}
+								aria-label='Vacancy status issue'
+							/>
+						</Tooltip>
+					</span>
+				);
+			}
+			return displayStatus;
 		},
 	},
 	{
