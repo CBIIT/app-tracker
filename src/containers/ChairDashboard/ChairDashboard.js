@@ -1,46 +1,112 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
-import { Table, message } from 'antd';
+import { Table, message, notification, Tooltip } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { validateVacancyData } from './Utils/validateVacancyData.js';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
-import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js'
+import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js';
 import useAuth from '../../hooks/useAuth';
+import {
+	normalizeStatus,
+	compareStatus,
+	formatStatusDisplay,
+	isInvalidVacancyStatus,
+	getInvalidStatusMessage,
+	isVacancyRowInteractive,
+} from './Utils/statusHelper.js';
 
 const chairDashboard = () => {
-	const { auth: { tenants }, currentTenant } = useAuth();
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasError, setHasError] = useState(false);
 	const history = useHistory();
 
 	useEffect(() => {
-		if (validateRoleForCurrentTenant(COMMITTEE_MEMBER_ROLE, currentTenant, tenants)) {
+		if (
+			validateRoleForCurrentTenant(
+				COMMITTEE_MEMBER_ROLE,
+				currentTenant,
+				tenants
+			)
+		) {
 			(async () => {
-				setIsLoading(true);
 				try {
-					const currentData = await axios.get(GET_COMMITTEE_CHAIR_VACANCIES  + currentTenant);
+					const currentData = await axios.get(
+						GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
+					);
+					const jsonData = currentData.data.result;
+
+					if (!jsonData?.list || typeof jsonData.list !== 'object') {
+						throw new Error('Invalid vacancy data');
+					}
+
+					const validateData = validateVacancyData(jsonData);
+
 					setData(
-						currentData.data.result.filter(
+						validateData?.list.filter(
 							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
 						)
 					);
 				} catch (err) {
-					console.warn(err);
+					setHasError(true);
+					notification.error({
+						message: 'Sorry! There was an error retrieving vacancies.',
+						description: (
+							<>
+								<p>
+									Please refresh the page and try again or try logging out and
+									logging back in. If the issue persists, contact the Help Desk
+									by emailing{' '}
+									<a href='mailto:NCIAppSupport@mail.nih.gov'>
+										NCIAppSupport@mail.nih.gov
+									</a>
+								</p>
+							</>
+						),
+						duration: 30,
+						style: {
+							height: '225px',
+							display: 'flex',
+							alignItems: 'center',
+						},
+					});
+				} finally {
+					setIsLoading(false);
 				}
-				setIsLoading(false);
 			})();
 		} else {
 			message.destroy();
-			message.error({ duration: 3, content: 'Sorry! You do not have committee member access in the selected tenant.'});
+			message.error({
+				duration: 3,
+				content:
+					'Sorry! You do not have committee member access in the selected tenant.',
+			});
 			setIsLoading(false);
 			history.push('/');
 		}
 	}, [currentTenant]);
 
-	return (
+	return hasError ? (
+		<div className='Content'>
+			<h2>Unable to load vacancies</h2>
+			<p>
+				Please refresh the page and try again. If the issue persists, contact
+				the Help Desk by emailing{' '}
+				<a href='mailto:NCIAppSupport@mail.nih.gov'>
+					NCIAppSupport@mail.nih.gov
+				</a>
+			</p>
+		</div>
+	) : (
 		<>
 			<div className='HeaderTitle'>
 				<h1>Vacancies Assigned To You</h1>
@@ -50,6 +116,9 @@ const chairDashboard = () => {
 					rowKey={(record) => record.vacancy_id}
 					dataSource={data}
 					columns={chairColumns}
+					rowClassName={(record) =>
+						isInvalidVacancyStatus(record.status) ? 'display-vacancy-row' : ''
+					}
 					scroll={{ x: 'true' }}
 					loading={
 						isLoading
@@ -73,46 +142,82 @@ const chairColumns = [
 			multiple: 1,
 		},
 		defaultSortOrder: 'ascend',
-		render: (title, record) => (
-			<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
-		),
+		render: (title, record) => {
+			const isInteractive = isVacancyRowInteractive(record.status);
+			return isInteractive ? (
+				<Link to={MANAGE_VACANCY + record.vacancy_id}>{title}</Link>
+			) : (
+				<span style={{ cursor: 'not-allowed', color: 'rgba(0,0,0,0.65)' }}>
+					{title}
+				</span>
+			);
+		},
 	},
 	{
 		title: 'Applicants',
 		dataIndex: 'applicants',
 		key: 'applicants',
-		render: (number, record) => (
-			<Link to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}>
-				{number} {number == 1 ? 'applicant' : 'applicants'}
-			</Link>
-		),
+		render: (number, record) => {
+			const isInteractive = isVacancyRowInteractive(record.status);
+			const applicantText =
+				number == 1
+					? 'applicant'
+					: number == undefined
+						? '0 applicants'
+						: 'applicants';
+			const displayText = `${number} ${applicantText}`;
+
+			return isInteractive ? (
+				<Link
+					key={record.vacancy_id}
+					to={MANAGE_VACANCY + record.vacancy_id + '/applicants'}
+				>
+					{displayText}
+				</Link>
+			) : (
+				<span style={{ cursor: 'not-allowed', color: 'rgba(0,0,0,0.65)' }}>
+					{displayText}
+				</span>
+			);
+		},
 	},
 	{
 		title: 'Status',
 		dataIndex: 'status',
 		key: 'status',
 		sorter: {
-			compare: (a, b) => a.status.localeCompare(b.status),
+			compare: (a, b) => compareStatus(a.status, b.status),
 			multiple: 2,
 		},
 		defaultSortOrder: 'ascend',
 		render: (status) => {
-			if (status.includes('owm')) {
-				status = status.split('_')[0].toUpperCase() + status.substring(3);
-			}
-			if (status.includes('_')) {
-				status = status
-					.split('_')
-					.map((word) => word[0].toUpperCase() + word.substring(1))
-					.join(' ');
-				return <span style={{ color: 'rgb(86,86,86)' }}>{status}</span>;
-			} else {
+			const isInvalid = isInvalidVacancyStatus(status);
+			const normalizedStatus = normalizeStatus(status);
+			const displayStatus = formatStatusDisplay(normalizedStatus);
+
+			if (isInvalid) {
 				return (
-					<span style={{ color: 'rgb(86,86,86)' }}>
-						{status.charAt(0).toUpperCase() + status.slice(1)}
+					<span
+						style={{
+							display: 'inline-flex',
+							alignItems: 'center',
+							gap: '6px',
+						}}
+					>
+						{displayStatus}
+						<Tooltip
+							title={getInvalidStatusMessage()}
+							trigger={['hover', 'focus', 'click']}
+						>
+							<ExclamationCircleOutlined
+								style={{ color: '#d46b08', cursor: 'pointer' }}
+								aria-label='Vacancy status issue'
+							/>
+						</Tooltip>
 					</span>
 				);
 			}
+			return displayStatus;
 		},
 	},
 ];
