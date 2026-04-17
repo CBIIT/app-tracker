@@ -331,4 +331,45 @@ describe('ChairDashboard component tests', () => {
 
 		localeCompareSpy.mockRestore();
 	});
+
+	test('<ChairDashboard /> should render invalid status rows as disabled with warning icon', async () => {
+		const vacanciesWithInvalidStatus = {
+			status: 200,
+			list: [
+				{
+					vacancy_id: 22,
+					vacancy_title: 'Status Missing Role',
+					applicants: 2,
+					status: undefined,
+				},
+			],
+		};
+
+		axios.get.mockResolvedValue({ data: { result: vacanciesWithInvalidStatus } });
+		const { container } = rtRender(<ChairDashboard />);
+
+		expect(await screen.findByText('Status Missing Role')).toBeInTheDocument();
+		expect(screen.getByLabelText('Vacancy status issue')).toBeInTheDocument();
+		expect(container.querySelector('.display-vacancy-row')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should render fallback applicant text when applicants is undefined', async () => {
+		const vacanciesWithMissingApplicants = {
+			status: 200,
+			list: [
+				{
+					vacancy_id: 33,
+					vacancy_title: 'No Applicant Count Job',
+					applicants: undefined,
+					status: 'open',
+				},
+			],
+		};
+
+		axios.get.mockResolvedValue({ data: { result: vacanciesWithMissingApplicants } });
+		rtRender(<ChairDashboard />);
+
+		expect(await screen.findByText('No Applicant Count Job')).toBeInTheDocument();
+		expect(await screen.findByText('undefined 0 applicants')).toBeInTheDocument();
+	});
 });
