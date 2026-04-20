@@ -16,9 +16,10 @@ const handleSearch = (
 	setSearchedColumn(dataIndex);
 };
 
-const handleReset = (clearFilters, setSearchText) => {
+const handleReset = (clearFilters, setSearchText, setSearchedColumn) => {
 	clearFilters();
 	setSearchText('');
+	setSearchedColumn('');
 };
 
 export const getColumnSearchProps = (
@@ -86,7 +87,7 @@ export const getColumnSearchProps = (
 				</Button>
 				<Button
 					onClick={() =>
-						clearFilters && handleReset(clearFilters, setSearchText)
+						clearFilters && handleReset(clearFilters, setSearchText, setSearchedColumn)
 					}
 					size='small'
 					style={{
@@ -127,8 +128,6 @@ export const getColumnSearchProps = (
 			}}
 		/>
 	),
-	onFilter: (value, record) =>
-		record[dataIndex].toLowerCase().includes(value.toLowerCase()),
 	onFilterDropdownOpenChange: (visible) => {
 		if (visible) {
 			setTimeout(() => searchInput.current?.select(), 100);

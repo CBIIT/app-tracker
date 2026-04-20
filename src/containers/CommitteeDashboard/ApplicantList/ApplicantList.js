@@ -64,17 +64,7 @@ const applicantList = (props) => {
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
 			key: 'name',
-			sorter: (a, b) => {
-				if (a.applicant_name < b.applicant_name) {
-					return -1;
-				}
-				if (a.applicant_name > b.applicant_name) {
-					return 1;
-				}
-				return 0;
-			},
 			width: 250,
-			defaultSortOrder: 'ascend',
 			...getColumnSearchProps(
 				'applicant_name',
 				'name',
