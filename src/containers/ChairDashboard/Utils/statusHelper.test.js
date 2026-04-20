@@ -96,9 +96,9 @@ describe('statusHelpers utilities', () => {
         });
 
         test('should return false for valid status strings', () => {
-            expect(isVacancyRowInteractive('open')).toBe(true);
-            expect(isVacancyRowInteractive('under_review')).toBe(true);
-            expect(isVacancyRowInteractive('owm_pending')).toBe(true);
+            expect(isInvalidVacancyStatus('open')).toBe(false);
+            expect(isInvalidVacancyStatus('under_review')).toBe(false);
+            expect(isInvalidVacancyStatus('owm_pending')).toBe(false);
         });
     });
 
