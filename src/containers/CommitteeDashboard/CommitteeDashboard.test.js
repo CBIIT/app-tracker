@@ -1,6 +1,7 @@
 import CommitteeDashboard from './CommitteeDashboard';
 import { rtRender } from '../test-utils';
 import { waitFor, screen, fireEvent } from '@testing-library/react';
+import { notification } from 'antd';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import {
@@ -85,7 +86,6 @@ describe('CommitteeDashboard component tests', () => {
 		const antd = jest.requireMock('antd');
 		antd.message.error = jest.fn();
 		antd.message.destroy = jest.fn();
-		antd.notification.error = jest.fn();
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -146,6 +146,27 @@ describe('CommitteeDashboard component tests', () => {
 			).toBeInTheDocument();
 			expect(mockPush).toHaveBeenCalledWith('/');
 		});
+	});
+
+	test('<CommitteeDashboard /> should display error when invalid list shape is provided', async () => {
+		// Test that invalid list shape throws and triggers error UI
+		const invalidData = {
+			status: 200,
+			list: null, // Invalid: not an array
+		};
+
+		axios.get.mockResolvedValue({ data: { result: invalidData } });
+
+		const { container } = rtRender(<CommitteeDashboard />);
+
+		await waitFor(
+			() => {
+				expect(axios.get).toHaveBeenCalled();
+				// Error UI should be displayed when validator throws
+				expect(screen.getByText('Unable to load vacancies')).toBeInTheDocument();
+			},
+			{ timeout: 3000 }
+		);
 	});
 
 	test('<CommitteeDashboard /> should call validateRoleForCurrentTenant on load', async () => {
@@ -251,7 +272,7 @@ describe('CommitteeDashboard component tests', () => {
 
 		expect(screen.getByText('Under Review')).toBeInTheDocument();
 		expect(screen.getByText('Open')).toBeInTheDocument();
-		expect(screen.getByText('Owm Review')).toBeInTheDocument();
+		expect(screen.getByText('OWM Review')).toBeInTheDocument();
 
 		expect(screen.getAllByText('Pending').length).toBeGreaterThan(0);
 		expect(screen.getByText('Approved')).toBeInTheDocument();
@@ -265,12 +286,17 @@ describe('CommitteeDashboard component tests', () => {
 				},
 			},
 		});
+		const notificationErrorSpy = jest.spyOn(notification, 'error');
 
 		rtRender(<CommitteeDashboard />);
 
 		await waitFor(() => {
 			expect(axios.get).toHaveBeenCalled();
+			expect(notificationErrorSpy).toHaveBeenCalledTimes(1);
+			expect(screen.getByText('Unable to load vacancies')).toBeInTheDocument();
 		});
+
+		notificationErrorSpy.mockRestore();
 
 		expect(screen.queryByText('Senior Dev')).not.toBeInTheDocument();
 	});

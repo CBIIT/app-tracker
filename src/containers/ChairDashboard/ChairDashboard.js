@@ -39,15 +39,13 @@ const chairDashboard = () => {
 			)
 		) {
 			(async () => {
+				setHasError(false);
+				setIsLoading(true);
 				try {
 					const currentData = await axios.get(
 						GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
 					);
 					const jsonData = currentData.data.result;
-
-					if (!jsonData?.list || typeof jsonData.list !== 'object') {
-						throw new Error('Invalid vacancy data');
-					}
 
 					const validateData = validateVacancyData(jsonData);
 
@@ -117,7 +115,7 @@ const chairDashboard = () => {
 					dataSource={data}
 					columns={chairColumns}
 					rowClassName={(record) =>
-						isInvalidVacancyStatus(record.status) ? 'display-vacancy-row' : ''
+						isInvalidVacancyStatus(record.status) ? 'disabled-vacancy-row' : ''
 					}
 					scroll={{ x: 'true' }}
 					loading={
@@ -159,13 +157,9 @@ const chairColumns = [
 		key: 'applicants',
 		render: (number, record) => {
 			const isInteractive = isVacancyRowInteractive(record.status);
-			const applicantText =
-				number == 1
-					? 'applicant'
-					: number == undefined
-						? '0 applicants'
-						: 'applicants';
-			const displayText = `${number} ${applicantText}`;
+			const count = number ?? 0;
+			const applicantText = count == 1 ? 'applicant' : 'applicants';
+			const displayText = `${count} ${applicantText}`;
 
 			return isInteractive ? (
 				<Link

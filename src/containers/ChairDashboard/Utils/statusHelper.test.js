@@ -72,7 +72,7 @@ describe('statusHelpers utilities', () => {
 
         test('should handle owm_prefix status', () => {
             const result = formatStatusDisplay('owm_pending');
-            expect(result.props.children).toBe('Owm Pending');
+            expect(result.props.children).toBe('OWM Pending');
         });
 
         test('should always return styled span with correct color', () => {

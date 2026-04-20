@@ -1,6 +1,6 @@
 import ChairDashboard from './ChairDashboard';
 import { rtRender } from '../test-utils';
-import { message as antdMessage } from 'antd';
+import { notification } from 'antd';
 import axios from 'axios';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
@@ -16,6 +16,9 @@ jest.mock('antd', () => {
 		message: {
 			error: jest.fn(),
 			destroy: jest.fn(),
+		},
+		notification: {
+			error: jest.fn(),
 		},
 	};
 });
@@ -62,6 +65,9 @@ describe('ChairDashboard component tests', () => {
 		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
 			push: mockPush,
 		});
+		const antd = jest.requireMock('antd');
+		antd.message.error = jest.fn();
+		antd.message.destroy = jest.fn();
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -160,6 +166,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should display error message when API fails', async () => {
 		axios.get.mockRejectedValue(new Error('API Error'));
+		const notificationErrorSpy = jest.spyOn(notification, 'error');
 		rtRender(<ChairDashboard />);
 		await waitFor(
 			() => {
@@ -169,9 +176,11 @@ describe('ChairDashboard component tests', () => {
 							node?.tagName === 'H2' && /Unable to load vacancies/i.test(content)
 					)
 				).toBeInTheDocument();
+				expect(notificationErrorSpy).toHaveBeenCalledTimes(1);
 			},
 			{ timeout: 3000 }
 		);
+		notificationErrorSpy.mockRestore();
 	});
 
 	test('<ChairDashboard /> should display help desk email in error message', async () => {
@@ -291,10 +300,13 @@ describe('ChairDashboard component tests', () => {
 				},
 			},
 		});
+		const notificationErrorSpy = jest.spyOn(notification, 'error');
 
 		rtRender(<ChairDashboard />);
 
 		expect(await screen.findByText('Unable to load vacancies')).toBeInTheDocument();
+		expect(notificationErrorSpy).toHaveBeenCalledTimes(1);
+		notificationErrorSpy.mockRestore();
 	});
 
 	test('<ChairDashboard /> should sort vacancies by title when title header is clicked', async () => {
@@ -350,7 +362,7 @@ describe('ChairDashboard component tests', () => {
 
 		expect(await screen.findByText('Status Missing Role')).toBeInTheDocument();
 		expect(screen.getByLabelText('Vacancy status issue')).toBeInTheDocument();
-		expect(container.querySelector('.display-vacancy-row')).toBeInTheDocument();
+		expect(container.querySelector('.disabled-vacancy-row')).toBeInTheDocument();
 	});
 
 	test('<ChairDashboard /> should render fallback applicant text when applicants is undefined', async () => {
@@ -370,6 +382,6 @@ describe('ChairDashboard component tests', () => {
 		rtRender(<ChairDashboard />);
 
 		expect(await screen.findByText('No Applicant Count Job')).toBeInTheDocument();
-		expect(await screen.findByText('undefined 0 applicants')).toBeInTheDocument();
+		expect(await screen.findByText('0 applicants')).toBeInTheDocument();
 	});
 });

@@ -19,6 +19,10 @@ export const formatStatusDisplay = (normalizedStatus) => {
 
 	let displayStatus = normalizedStatus;
 
+	if (displayStatus.includes('owm')) {
+		displayStatus = displayStatus.split('_')[0].toUpperCase() + displayStatus.substring(3);
+	}
+
 	if (displayStatus.includes('_')) {
 		displayStatus = displayStatus
 			.split('_')

@@ -24,17 +24,24 @@ describe('validateVacancyData', () => {
 		expect(result).toEqual({ list: mockVacancyData.list });
     });
 
-    test('should fall back to an empty array if vacancy data list is not an array', () => {
+    test('should throw error if vacancy data list is not an array', () => {
         const nullVacancyList = {
             list: null,
         };
 
-        const result = validateVacancyData(nullVacancyList);
-        expect(result).toEqual({ list: [] });
+        expect(() => validateVacancyData(nullVacancyList)).toThrow('Invalid vacancy data: list must be an array');
     });
 
-    test('should handle undefined input safely', () => {
-        const result = validateVacancyData(undefined);
-        expect(result).toEqual({ list: [] });
-    })
+    test('should throw error if input is undefined', () => {
+        expect(() => validateVacancyData(undefined)).toThrow('Invalid vacancy data: payload must be an object');
+    });
+
+    test('should throw error if input is null', () => {
+        expect(() => validateVacancyData(null)).toThrow('Invalid vacancy data: payload must be an object');
+    });
+
+    test('should throw error if list property is missing', () => {
+        const missingList = { status: 200 };
+        expect(() => validateVacancyData(missingList)).toThrow('Invalid vacancy data: list must be an array');
+    });
 });

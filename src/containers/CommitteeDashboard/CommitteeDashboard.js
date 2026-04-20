@@ -71,6 +71,8 @@ const committeeDashboard = () => {
 			isExecSec(currentTenant, tenants)
 		) {
 			(async () => {
+				setHasError(false);
+				setIsLoading(true);
 				try {
 					setreadOnly(user.isReadOnlyUser);
 					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
@@ -78,11 +80,7 @@ const committeeDashboard = () => {
 
 					const jsonData = currentData.data.result;
 
-					if (!jsonData?.list || typeof jsonData.list !== 'object') {
-						throw new Error('Invalid vacancy data');
-					}
-
-					const validatedData = validateVacancyData(jsonData);
+				const validatedData = validateVacancyData(jsonData);
 
 					const committeeMemberData =
 						location.pathname === EXE_SEC_DASHBOARD
@@ -203,13 +201,9 @@ const committeeColumns = [
 		key: 'applicants',
 		render: (number, record) => {
 			const isInteractive = isVacancyRowInteractive(record.status);
-			const applicantText =
-				number == 1
-					? 'applicant'
-					: number == undefined
-						? '0 applicants'
-						: 'applicants';
-			const displayText = `${number} ${applicantText}`;
+			const count = number ?? 0;
+			const applicantText = count == 1 ? 'applicant' : 'applicants';
+			const displayText = `${count} ${applicantText}`;
 
 			return isInteractive ? (
 				<Link
