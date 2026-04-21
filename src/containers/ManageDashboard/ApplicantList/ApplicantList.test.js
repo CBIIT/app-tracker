@@ -1,10 +1,4 @@
-jest.mock('axios');
-jest.mock('../../../hooks/useAuth');
-jest.mock('react-router-dom', () => ({
-	...jest.requireActual('react-router-dom'),
-	useParams: jest.fn(),
-}));
-
+import React, { useRef, useState } from 'react';
 import ApplicantList from './ApplicantList';
 import VacancyStatus from '../../../components/UI/VacancyStatus/VacancyStatus';
 import {
@@ -13,6 +7,7 @@ import {
 	waitFor,
 	fireEvent,
 	userEvent,
+	act,
 } from '@testing-library/react';
 import { useParams, HashRouter, MemoryRouter, Route } from 'react-router-dom';
 import SearchContext from '../Util/SearchContext';
@@ -34,6 +29,13 @@ import {
 	mockStadtmanAuth,
 	mockNonStadtmanAuth,
 } from './ApplicantListMockData';
+
+jest.mock('axios');
+jest.mock('../../../hooks/useAuth');
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: jest.fn(),
+}));
 
 describe('ApplicantList', () => {
 	let mockLoadLatestVacancyInfo;
@@ -69,6 +71,54 @@ describe('ApplicantList', () => {
 		jest.clearAllMocks();
 	});
 
+	/**
+	 * Helper function to render ApplicantList with a live SearchContext provider.
+	 * Captures and returns state setters for controlled testing of search behavior.
+	 * @returns {Object} { setSearchText, setSearchedColumn }
+	 */
+	const renderApplicantListWithLiveSearchContext = () => {
+		let capturedSetSearchText;
+		let capturedSetSearchedColumn;
+
+		const TestWrapper = () => {
+			const [searchText, setSearchText] = useState('');
+			const [searchedColumn, setSearchedColumn] = useState('');
+			const searchInput = useRef(null);
+
+			capturedSetSearchText = setSearchText;
+			capturedSetSearchedColumn = setSearchedColumn;
+
+			return (
+				<SearchContext.Provider
+					value={{
+						searchText,
+						setSearchText,
+						searchedColumn,
+						setSearchedColumn,
+						searchInput,
+					}}
+				>
+					<HashRouter>
+						<ApplicantList
+							vacancyState={'triage'}
+							vacancyTenant={'NCI'}
+							referenceCollection={false}
+							userRoles={mockUser.roles}
+							userCommitteeRole={mockUser.roles}
+							reloadVacancy={jest.fn()}
+						/>
+					</HashRouter>
+				</SearchContext.Provider>
+			);
+		};
+
+		render(<TestWrapper />);
+		return {
+			setSearchText: capturedSetSearchText,
+			setSearchedColumn: capturedSetSearchedColumn,
+		};
+	};
+
 	test('should render ApplicantList component for Rolling Close Vacancy', async () => {
 		mockApi = GET_ROLLING_APPLICANT_LIST;
 		useParams.mockReturnValue({ id: mockRCVacancy.sysId });
@@ -102,7 +152,9 @@ describe('ApplicantList', () => {
 		expect(screen.getByText('Applicant')).toBeInTheDocument();
 		expect(screen.getByText('Email')).toBeInTheDocument();
 		expect(screen.getByText('Submitted')).toBeInTheDocument();
-		expect(screen.getByText('Vacancy Manager Triage Decision')).toBeInTheDocument();
+		expect(
+			screen.getByText('Vacancy Manager Triage Decision')
+		).toBeInTheDocument();
 		expect(screen.getByText('Chair Triage Decision')).toBeInTheDocument();
 		expect(screen.getByText('Reference Status')).toBeInTheDocument();
 
@@ -133,7 +185,7 @@ describe('ApplicantList', () => {
 					reloadVacancy={mockLoadLatestVacancyInfo}
 				/>
 			</HashRouter>
-		)
+		);
 
 		await waitFor(() => {
 			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
@@ -141,9 +193,12 @@ describe('ApplicantList', () => {
 
 		expect(screen.getByText('Email')).toBeInTheDocument();
 		expect(screen.getByText('Submitted')).toBeInTheDocument();
-		expect(screen.getByText('Vacancy Manager Triage Decision')).toBeInTheDocument();
+		expect(
+			screen.getByText('Vacancy Manager Triage Decision')
+		).toBeInTheDocument();
 		expect(screen.getByText('Chair Triage Decision')).toBeInTheDocument();
 		expect(screen.getByText('Reference Status')).toBeInTheDocument();
+
 
 		waitFor(() => {
 			expect(screen.getByText(/Doe, John/i)).toBeInTheDocument();
@@ -183,7 +238,6 @@ describe('ApplicantList', () => {
 		});
 
 		expect(screen.getByText('Complete')).toBeInTheDocument();
-
 	});
 
 	test('should render PATS reminder text for set close date vacancies in the Voting Complete state', async () => {
@@ -368,6 +422,129 @@ describe('ApplicantList', () => {
 			const rowsDesc = screen.getAllByRole('row');
 			expect(rowsDesc[1]).toHaveTextContent(/Zoe/i);
 		});
+	});
+
+	test('reset clears both searchText and searchedColumn', async () => {
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockResolvedValueOnce({
+				data: {
+					result: {
+						applicants: mockApplicants.data.result.applicants,
+						totalCount: mockApplicants.data.result.applicants.length,
+						pageSize: 50,
+					},
+				},
+			});
+		useParams.mockReturnValue({ sysId: 'test-sysid' });
+		useAuth.mockReturnValue(mockNonStadtmanAuth);
+
+		const { setSearchText, setSearchedColumn } = mockSearchContextValue;
+
+		render(
+			<SearchContext.Provider value={mockSearchContextValue}>
+				<HashRouter>
+					<ApplicantList
+						vacancyState={'triage'}
+						vacancyTenant={'NCI'}
+						referenceCollection={false}
+						userRoles={mockUser.roles}
+						userCommitteeRole={mockUser.roles}
+						reloadVacancy={jest.fn()}
+					/>
+				</HashRouter>
+			</SearchContext.Provider>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		const [nameSearchIcon] = screen.getAllByLabelText('search');
+		fireEvent.click(nameSearchIcon);
+
+		const input = screen.getByPlaceholderText(/search name/i);
+		fireEvent.change(input, { target: { value: 'Alice' } });
+		const searchSubmitIcon = screen
+			.getAllByLabelText('search')
+			.find((icon) => icon.closest('button.ant-btn-primary'));
+		expect(searchSubmitIcon).toBeInTheDocument();
+		fireEvent.click(searchSubmitIcon);
+
+		fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+
+		expect(setSearchText).toHaveBeenCalledWith('');
+		expect(setSearchedColumn).toHaveBeenCalledWith('');
+	});
+
+	test('discards a stale API response when a newer request has already resolved', async () => {
+		let resolveSlowRequest;
+		const slowFirstRequest = new Promise((resolve) => {
+			resolveSlowRequest = resolve;
+		});
+
+		axios.get
+			.mockResolvedValueOnce(mockApplicantFocusArea)
+			.mockReturnValueOnce(slowFirstRequest)
+			.mockResolvedValueOnce({
+				data: {
+					result: {
+						applicants: [
+							{
+								sys_id: '99',
+								applicant_name: 'Fresh Result',
+								applicant_email: 'fresh@test.com',
+								state: 'triage',
+								scoring_status: 'Pending',
+								interview_recommendation: { Yes: 0, No: 0, Maybe: 0 },
+							},
+						],
+						totalCount: 1,
+						pageSize: 50,
+					},
+				},
+			});
+
+		useParams.mockReturnValue({ sysId: 'test-sysid' });
+		useAuth.mockReturnValue(mockNonStadtmanAuth);
+
+		const { setSearchText } = renderApplicantListWithLiveSearchContext();
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		act(() => {
+			setSearchText('alice');
+		});
+
+		await waitFor(() => {
+			expect(screen.getByText('Fresh Result')).toBeInTheDocument();
+		}, { timeout: 5000 });
+
+		resolveSlowRequest({
+			data: {
+				result: {
+					applicants: [
+						{
+							sys_id: '1',
+							applicant_name: 'Stale Result',
+							applicant_email: 'stale@test.com',
+							state: 'triage',
+							scoring_status: 'Pending',
+							interview_recommendation: { Yes: 0, No: 0, Maybe: 0 },
+						},
+					],
+					totalCount: 1,
+					pageSize: 50,
+				},
+			},
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByText('Stale Result')).not.toBeInTheDocument();
+			expect(screen.getByText('Fresh Result')).toBeInTheDocument();
+		}, { timeout: 5000 });
 	});
 
 	test('downloads all Excel data successfully', async () => {
