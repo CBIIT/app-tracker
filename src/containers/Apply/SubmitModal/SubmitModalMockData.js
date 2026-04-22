@@ -5,6 +5,7 @@ export const mockUseAuth = {
 		user: { uid: '123' },
 		oktaLoginAndRedirectUrl: 'http://example.com/login',
 	},
+	setAuth: jest.fn(),
 };
 
 // Mocks a successful response from the SAVE_APP_DRAFT endpoint

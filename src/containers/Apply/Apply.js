@@ -84,6 +84,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const formContext = { formData, currentFormInstance, setCurrentFormInstance };
 
 	const { modalTimeout } = useTimeout();
+	const {
+		auth: { user },
+		setAuth,
+	} = useAuth();
 
 	useEffect(() => {
 		(async () => {
@@ -118,9 +122,11 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		);
 
 		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
-			focusAreaOptions.push({ label: focusArea, value: focusArea });
-		});
+		if (response.data.result.focus_area) {
+			response.data.result.focus_area.forEach((focusArea) => {
+				focusAreaOptions.push({ label: focusArea, value: focusArea });
+			});
+		}
 		setFocusArea(focusAreaOptions);
 		
 		const profileResponse = await axios
@@ -156,17 +162,19 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		const { basicInfo } = profileData;
 		const address = basicInfo?.address;
 
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
+		setVacancyTitle(response.data.result.basic_info?.vacancy_title?.value);
+		setVacancyTenantType(response.data.result.basic_info?.tenant?.label);
 		if (!editSubmitted) setDraftId(appSysId);
 
 		let applicantDocuments = {};
 
-		response.data.result.vacancy_documents.forEach((document) => {
-			applicantDocuments[document.title.value] = document.file
-				? document
-				: { ...document, file: { fileList: [] } };
-		});
+		if (response.data.result.vacancy_documents) {
+			response.data.result.vacancy_documents.forEach((document) => {
+				applicantDocuments[document.title.value] = document.file
+					? document
+					: { ...document, file: { fileList: [] } };
+			});
+		}
 
 		if (
 			editSubmitted &&
@@ -229,20 +237,17 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		setFormData(formData);
 	};
 
-	const {
-		auth: { user },
-		setAuth,
-	} = useAuth();
-
 	const instantiateNewApplication = async () => {
 		const response = await axios.get(
 			VACANCY_DETAILS_FOR_APPLICANTS + vacancySysId
 		);
 
 		var focusAreaOptions = [];
-		response.data.result.focus_area.forEach((focusArea) => {
-			focusAreaOptions.push({ label: focusArea, value: focusArea });
-		});
+		if (response.data.result.focus_area) {
+			response.data.result.focus_area.forEach((focusArea) => {
+				focusAreaOptions.push({ label: focusArea, value: focusArea });
+			});
+		}
 		setFocusArea(focusAreaOptions);
 		
 
@@ -307,16 +312,16 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		};
 		const address = basicInfo?.address;
 
-		setVacancyTitle(response.data.result.basic_info.vacancy_title.value);
-		setVacancyTenantType(response.data.result.basic_info.tenant.label);
-		vacancyDocuments.push(response.data.result.vacancy_documents);
+		setVacancyTitle(response.data.result.basic_info?.vacancy_title?.value);
+		setVacancyTenantType(response.data.result.basic_info?.tenant?.label);
+		vacancyDocuments.push(response.data.result.vacancy_documents || []);
 
 		const references = [];
 
+		const numRecommendations = parseInt(response.data.result.basic_info?.number_of_recommendation?.value) || 0;
 		for (
 			let i = 0;
-			i <
-			parseInt(response.data.result.basic_info.number_of_recommendation.value);
+			i < numRecommendations;
 			i++
 		) {
 			references.push({});
@@ -466,6 +471,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	const prev = async () => {
 		try {
+			if (!currentFormInstance) {
+				currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
+				return;
+			}
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
 			currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
@@ -487,6 +496,10 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	);
 
 	const save = async () => {
+		if (!currentFormInstance) {
+			message.error('Form is not ready. Please try again.');
+			return;
+		}
 		const fieldsValues = currentFormInstance.getFieldsValue();
 		const updatedFormData = await saveCurrentForm(fieldsValues);
 
