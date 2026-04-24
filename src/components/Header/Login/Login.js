@@ -33,10 +33,18 @@ const login = () => {
 	const locationX = useLocation();
 
 	useEffect(() => {
-		if (tenants.length === 1 && (currentTenant == '' || currentTenant == undefined)) {
+		const tenantsExists = tenants.some((tenant) => tenant.value === currentTenant);
+		const isMissingTenant = currentTenant === '' || currentTenant === null || currentTenant === undefined;
+		const isValidTenant = !isMissingTenant && tenantsExists;
+
+		if (tenants.length === 0) {
+			setCurrentTenant(undefined);
+		} else if (tenants.length === 1 && (currentTenant == '' || currentTenant == undefined)) {
 			setCurrentTenant(tenants[0].value);
-		};
-	}, [tenants])
+		} else if (!isValidTenant) {
+			setCurrentTenant(undefined);
+		}
+	}, [tenants]);
 
 	const nihClicked = () => {
 		location.href = iTrustUrl + iTrustGlideSsoId;

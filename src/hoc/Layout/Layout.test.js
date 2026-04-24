@@ -21,8 +21,12 @@ describe('Layout', () => {
                     isChair: false,
                     roles: [],
                     hasApplications: true
-                }
-            }
+                },
+                tenants: [],
+            },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         });
 
         const { getAllByText } = render(
@@ -45,6 +49,8 @@ describe('Layout', () => {
     it('renders Header, NavBar, ContentTitle, Footer and children correctly when a manager is logged in', () => {
         useAuth.mockReturnValue({
             currentTenant: 'tenant 1',
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
             auth: {
                 isUserLoggedIn: true,
                 user: {
@@ -122,6 +128,8 @@ describe('Layout', () => {
 
             },
             currentTenant: 'tenant 1',
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         });
 
         const { getAllByText } = render(
@@ -168,6 +176,8 @@ describe('Layout', () => {
                 ],
             },
             currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         });
 
         const { getAllByText } = render(
@@ -191,8 +201,12 @@ describe('Layout', () => {
         useAuth.mockReturnValue({
             auth: {
                 isUserLoggedIn: false,
-                user: {}
-            }
+                user: {},
+                tenants: [],
+            },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         });
 
         const { getAllByText, getByText } = render(
@@ -215,7 +229,11 @@ describe('Layout', () => {
             auth: {
                 bannerMessage: 'System maintenance planned',
                 bannerDescription: 'The site will be down <strong>tonight</strong> from 11pm-1am.',
+                tenants: [],
             },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         });
 
         render(
@@ -233,7 +251,11 @@ describe('Layout', () => {
         useAuth.mockReturnValue({
             auth: {
                 // no bannerMessage or bannerDescription provided
-            }
+                tenants: [],
+            },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         });
 
         render(
