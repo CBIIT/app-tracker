@@ -27,7 +27,11 @@ describe('Login Component', () => {
                 isUserLoggedIn: false,
                 user: { firstName: 'John', lastInitial: 'D' },
                 oktaLoginAndRedirectUrl: 'https://test.okta.com',
+                tenants: [],
             },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         };
         useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
@@ -118,8 +122,12 @@ describe('Login Component', () => {
                     lastInitial: 'D',
                     isManager: true,
                  },
-                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',
+                tenants: [],
             },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         };
         useAuth.mockReturnValue(mockUseAuthVM);
         render(<Login />);
@@ -137,8 +145,12 @@ describe('Login Component', () => {
                     lastInitial: 'D',
                     isCommitteeMember: true,
                  },
-                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',
+                tenants: [],
             },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         };
         useAuth.mockReturnValue(mockUseAuthCommMember);
         render(<Login />);
@@ -156,8 +168,12 @@ describe('Login Component', () => {
                     lastInitial: 'D',
                     isCommitteeMember: true,
                  },
-                oktaLoginAndRedirectUrl: 'https://test.okta.com',            
+                oktaLoginAndRedirectUrl: 'https://test.okta.com',
+                tenants: [],
             },
+            currentTenant: undefined,
+            setCurrentTenant: jest.fn(),
+            previousTenant: undefined,
         };
         useAuth.mockReturnValue(mockUseAuthCommMember);
         render(<Login />);

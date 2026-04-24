@@ -1,10 +1,15 @@
+import { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
 
-import { PROFILE, REGISTER_OKTA, TENANT_CHECK_ROUTES } from '../../../constants/Routes';
+import {
+	PROFILE,
+	REGISTER_OKTA,
+	TENANT_CHECK_ROUTES,
+} from '../../../constants/Routes';
 
 import './Login.css';
 
@@ -27,6 +32,20 @@ const login = () => {
 	const history = useHistory();
 	const locationX = useLocation();
 
+	useEffect(() => {
+		const tenantsExists = tenants.some((tenant) => tenant.value === currentTenant);
+		const isMissingTenant = currentTenant === '' || currentTenant === null || currentTenant === undefined;
+		const isValidTenant = !isMissingTenant && tenantsExists;
+
+		if (tenants.length === 0) {
+			setCurrentTenant(undefined);
+		} else if (tenants.length === 1 && (currentTenant == '' || currentTenant == undefined)) {
+			setCurrentTenant(tenants[0].value);
+		} else if (!isValidTenant) {
+			setCurrentTenant(undefined);
+		}
+	}, [tenants]);
+
 	const nihClicked = () => {
 		location.href = iTrustUrl + iTrustGlideSsoId;
 	};
@@ -41,7 +60,7 @@ const login = () => {
 
 	const userProfile = () => {
 		history.push(PROFILE + user.uid);
-	}
+	};
 
 	const handleMenuClick = (e) => {
 		switch (e.key) {
@@ -60,7 +79,12 @@ const login = () => {
 					<div className='login-text-header'>FOR NIH EMPLOYEES</div>
 					<div className='login-text' onClick={nihClicked}>
 						<span className='MenuTextSpan'>Employee/ Contractor only</span>
-						<Menu.Item data-testid='nih-login-item' key='itrust' icon={<img className='CustomIcon' src={iTrustIcon} />} style={{ width: '170px' }}>
+						<Menu.Item
+							data-testid='nih-login-item'
+							key='itrust'
+							icon={<img className='CustomIcon' src={iTrustIcon} />}
+							style={{ width: '170px' }}
+						>
 							NIH Login
 						</Menu.Item>
 					</div>
@@ -73,7 +97,11 @@ const login = () => {
 						<div onClick={alreadyRegisteredClicked}>
 							<span className='MenuTextSpan'>Already registered ?</span>
 
-							<Menu.Item data-testid='nih-already-item' key='okta' style={{ width: '100px' }}>
+							<Menu.Item
+								data-testid='nih-already-item'
+								key='okta'
+								style={{ width: '100px' }}
+							>
 								Click here
 							</Menu.Item>
 						</div>
@@ -81,7 +109,11 @@ const login = () => {
 						<Divider />
 						<div onClick={notRegistered}>
 							<span className='MenuTextSpan'>Not registered ?</span>
-							<Menu.Item data-testid='nih-register-item' key='register-okta' style={{ width: '120px' }}>
+							<Menu.Item
+								data-testid='nih-register-item'
+								key='register-okta'
+								style={{ width: '120px' }}
+							>
 								Register here
 							</Menu.Item>
 						</div>
@@ -94,7 +126,9 @@ const login = () => {
 	const logoutMenu = (
 		<div className='LoginMenu'>
 			<Menu data-testid='nih-logout' onClick={handleMenuClick}>
-				<Menu.Item key='your-profile' onClick={userProfile}>User Profile</Menu.Item>
+				<Menu.Item key='your-profile' onClick={userProfile}>
+					User Profile
+				</Menu.Item>
 				<Menu.Item key='logout'>Logout</Menu.Item>
 			</Menu>
 		</div>
@@ -104,27 +138,40 @@ const login = () => {
 		<div className='LoginRightContainer'>
 			{user.isManager || user.isCommitteeMember ? (
 				<div className='RightContainerSub'>
-					<Select
-						data-testid='tenant-select-item'
-						style={{ width: '100%', border: '2px solid #015ea2' }}
-						placeholder='Select a tenant'
-						filterOption={(input, option) =>
-							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-						}
-						options={tenants}
-						onChange={(value) => {
-							const routeToCheck = locationX.pathname.match(regex)
-								? locationX.pathname.split(regex)[0]
-								: locationX.pathname;
-							previousTenant.current = TENANT_CHECK_ROUTES.includes(
-								routeToCheck
-							)
-								? currentTenant
-								: '';
-							setCurrentTenant(value);
-						}}
-						value={currentTenant}
-					/>
+					{tenants.length === 1 ? (
+						<div
+							data-testid='tenant-item'
+							className='tenant-display'
+							aria-label={`Current institute: ${tenants[0].label}`}
+						>
+							{tenants[0].label}
+						</div>
+					) : (
+						<Select
+							data-testid='tenant-select-item'
+							aria-label='Select an institute'
+							style={{ width: '100%', border: '2px solid #015ea2' }}
+							placeholder='Select a tenant'
+							filterOption={(input, option) =>
+								(option?.label ?? '')
+									.toLowerCase()
+									.includes(input.toLowerCase())
+							}
+							options={tenants}
+							onChange={(value) => {
+								const routeToCheck = locationX.pathname.match(regex)
+									? locationX.pathname.split(regex)[0]
+									: locationX.pathname;
+								previousTenant.current = TENANT_CHECK_ROUTES.includes(
+									routeToCheck
+								)
+									? currentTenant
+									: '';
+								setCurrentTenant(value);
+							}}
+							value={currentTenant}
+						/>
+					)}
 				</div>
 			) : (
 				<div className='LeftContainerSub'>{''}</div>
