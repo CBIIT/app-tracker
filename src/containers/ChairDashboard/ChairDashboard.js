@@ -31,62 +31,73 @@ const chairDashboard = () => {
 	const history = useHistory();
 
 	useEffect(() => {
-		if (
-			validateRoleForCurrentTenant(
-				COMMITTEE_MEMBER_ROLE,
-				currentTenant,
-				tenants
-			)
-		) {
-			(async () => {
-				setHasError(false);
-				setIsLoading(true);
-				try {
-					const currentData = await axios.get(
-						GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
-					);
-					const jsonData = currentData.data.result;
+		if (currentTenant) {
+			if (
+				validateRoleForCurrentTenant(
+					COMMITTEE_MEMBER_ROLE,
+					currentTenant,
+					tenants
+				)
+			) {
+				(async () => {
+					setHasError(false);
+					setIsLoading(true);
+					try {
+						const currentData = await axios.get(
+							GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
+						);
+						const jsonData = currentData.data.result;
 
-					const validateData = validateVacancyData(jsonData);
+						const validateData = validateVacancyData(jsonData);
 
-					setData(
-						validateData?.list.filter(
-							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
-						)
-					);
-				} catch (err) {
-					setHasError(true);
-					notification.error({
-						message: 'Sorry! There was an error retrieving vacancies.',
-						description: (
-							<>
-								<p>
-									Please refresh the page and try again or try logging out and
-									logging back in. If the issue persists, contact the Help Desk
-									by emailing{' '}
-									<a href='mailto:NCIAppSupport@mail.nih.gov'>
-										NCIAppSupport@mail.nih.gov
-									</a>
-								</p>
-							</>
-						),
-						duration: 30,
-						style: {
-							height: '225px',
-							display: 'flex',
-							alignItems: 'center',
-						},
-					});
-				} finally {
-					setIsLoading(false);
-				}
-			})();
+						setData(
+							validateData?.list.filter(
+								(vacancy) =>
+									vacancy.status != 'live' && vacancy.status != 'final'
+							)
+						);
+					} catch (err) {
+						setHasError(true);
+						notification.error({
+							message: 'Sorry! There was an error retrieving vacancies.',
+							description: (
+								<>
+									<p>
+										Please refresh the page and try again or try logging out and
+										logging back in. If the issue persists, contact the Help
+										Desk by emailing{' '}
+										<a href='mailto:NCIAppSupport@mail.nih.gov'>
+											NCIAppSupport@mail.nih.gov
+										</a>
+									</p>
+								</>
+							),
+							duration: 30,
+							style: {
+								height: '225px',
+								display: 'flex',
+								alignItems: 'center',
+							},
+						});
+					} finally {
+						setIsLoading(false);
+					}
+				})();
+			} else {
+				message.destroy();
+				message.error({
+					duration: 3,
+					content:
+						'Sorry! You do not have committee member access in the selected tenant.',
+				});
+				setIsLoading(false);
+				history.push('/');
+			}
 		} else {
 			message.destroy();
 			message.error({
 				duration: 3,
-				content:
-					'Sorry! You do not have committee member access in the selected tenant.',
+				content: 'Sorry! Please reselect your tenant and try again.',
 			});
 			setIsLoading(false);
 			history.push('/');

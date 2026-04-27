@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Button, Menu, Dropdown, Divider, Select } from 'antd';
+import { Button, Menu, Dropdown, Divider, Select, message } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
 import useAuth from '../../../hooks/useAuth';
@@ -32,18 +32,34 @@ const login = () => {
 	const history = useHistory();
 	const locationX = useLocation();
 
+	if (tenants.length === 0 && (user.isManager || user.isCommitteeMember)) {
+		message.warning(
+			'No tenants assigned to your account. Please contact your administrator.'
+		);
+	}
+
 	useEffect(() => {
-		const tenantsExists = tenants.some((tenant) => tenant.value === currentTenant);
-		const isMissingTenant = currentTenant === '' || currentTenant === null || currentTenant === undefined;
+		console.log('Login 42 currentTenant: ', currentTenant);
+		const tenantsExists = tenants.some(
+			(tenant) => tenant.value === currentTenant
+		);
+		const isMissingTenant =
+			currentTenant === '' ||
+			currentTenant === null ||
+			currentTenant === undefined;
 		const isValidTenant = !isMissingTenant && tenantsExists;
 
 		if (tenants.length === 0) {
 			setCurrentTenant(undefined);
-		} else if (tenants.length === 1 && (currentTenant == '' || currentTenant == undefined)) {
+		} else if (
+			tenants.length === 1 &&
+			(currentTenant == '' || currentTenant == undefined)
+		) {
 			setCurrentTenant(tenants[0].value);
 		} else if (!isValidTenant) {
 			setCurrentTenant(undefined);
 		}
+		console.log('Login 62 currentTenant: ', currentTenant);
 	}, [tenants]);
 
 	const nihClicked = () => {

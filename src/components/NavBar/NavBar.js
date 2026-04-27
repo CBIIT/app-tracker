@@ -10,27 +10,35 @@ import {
 } from '../../constants/Routes';
 
 import useAuth from '../../hooks/useAuth';
-import { isExecSec, isChair, isCommitteMember, isHrSpecialist } from '../../components/Util/RoleValidator/RoleValidator';
+import {
+	isExecSec,
+	isChair,
+	isCommitteMember,
+	isHrSpecialist,
+} from '../../components/Util/RoleValidator/RoleValidator';
 import './NavBar.css';
 
 const navBar = () => {
-	
 	const { auth, currentTenant } = useAuth();
 	const { isUserLoggedIn, user, tenants } = auth;
 	const [validExecSecRole, setValidExecSecRole] = useState(
-		tenants ? isExecSec(currentTenant, tenants) : false);
+		tenants ? isExecSec(currentTenant, tenants) : false
+	);
 	const [validChairRole, setValidChairRole] = useState(
-		tenants ?  isChair(currentTenant, tenants) : false);
+		tenants ? isChair(currentTenant, tenants) : false
+	);
 	const [validCommitteMember, setValidCommitteMember] = useState(
-			tenants ?  isCommitteMember(currentTenant, tenants) : false);
+		tenants ? isCommitteMember(currentTenant, tenants) : false
+	);
 	const [validHrSpecialist, setValidHrSpecialist] = useState(
-		tenants ? isHrSpecialist(currentTenant, tenants) : false);
+		tenants ? isHrSpecialist(currentTenant, tenants) : false
+	);
 
 	useEffect(() => {
 		if (tenants) {
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
-			setValidCommitteMember(isCommitteMember(currentTenant, tenants))
+			setValidCommitteMember(isCommitteMember(currentTenant, tenants));
 			setValidHrSpecialist(isHrSpecialist(currentTenant, tenants));
 		}
 	}, [currentTenant]);
@@ -45,28 +53,38 @@ const navBar = () => {
 	const emptyClickYourVacancies = () => {
 		if (!currentTenant) {
 			message.destroy();
-			message.error({ duration: 3, content: 'Please select a tenant to see Your Vacancies.' });
+			message.error({
+				duration: 3,
+				content: 'Please select a tenant to see Your Vacancies.',
+			});
 		}
-	}
+	};
 	const emptyClickVacancyDashboard = () => {
 		if (!currentTenant) {
 			message.destroy();
-			message.error({ duration: 3, content: 'Please select a tenant to see Vacancy Dashboard.'});
+			message.error({
+				duration: 3,
+				content: 'Please select a tenant to see Vacancy Dashboard.',
+			});
 		}
-	}
+	};
 
 	if (isUserLoggedIn === true) {
 		var includedReports = false;
 		if (user.isManager === true) {
-			menuItems.push(
-				<Menu.Item
-					key='vacancy-dashboard'
-					onClick={emptyClickVacancyDashboard}
-				>
-						{currentTenant && <Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>}
+			if (currentTenant && validExecSecRole) {
+				menuItems.push(
+					<Menu.Item
+						key='vacancy-dashboard'
+						onClick={emptyClickVacancyDashboard}
+					>
+						{currentTenant && (
+							<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
+						)}
 						{!currentTenant && <Link to={null}>Vacancy Dashboard</Link>}
-				</Menu.Item>
-			);
+					</Menu.Item>
+				);
+			}
 
 			if (currentTenant && validExecSecRole) {
 				myVacanciesItems.push(
@@ -86,14 +104,20 @@ const navBar = () => {
 		}
 		if (currentTenant && validCommitteMember) {
 			myVacanciesItems.push(
-				<Menu.Item key='your-vacancies-committee-member' className='VacanciesSubMenu'>
+				<Menu.Item
+					key='your-vacancies-committee-member'
+					className='VacanciesSubMenu'
+				>
 					<Link to={COMMITTEE_DASHBOARD}>Committee Member</Link>
 				</Menu.Item>
 			);
 		}
 		if (currentTenant && validHrSpecialist) {
 			myVacanciesItems.push(
-				<Menu.Item key='your-vacancies-hr-specialist' className='VacanciesSubMenu'>
+				<Menu.Item
+					key='your-vacancies-hr-specialist'
+					className='VacanciesSubMenu'
+				>
 					<Link to={COMMITTEE_DASHBOARD}>HR Specialist</Link>
 				</Menu.Item>
 			);
@@ -106,13 +130,13 @@ const navBar = () => {
 					onClick={emptyClickYourVacancies}
 					role='menu'
 				>
-					<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
+					<Menu.SubMenu className='VacanciesSubMenu' title='Your Vacancies'>
 						{myVacanciesItems}
 					</Menu.SubMenu>
 				</Menu.Item>
 			);
 		}
-		
+
 		if (user.hasApplications === true) {
 			menuItems.push(
 				<Menu.Item key='your-applications'>
@@ -120,7 +144,10 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-		if (includedReports || user.roles.includes('x_g_nci_app_tracke.demographics_user')) {
+		if (
+			includedReports ||
+			user.roles.includes('x_g_nci_app_tracke.demographics_user')
+		) {
 			menuItems.push(
 				<Menu.Item key='reports'>
 					<a href='/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D326711461bf2a910e541631ee54bcbec'>
@@ -129,21 +156,12 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-		// menuItems.push(
-		// 	<Menu.Item key='your-profile'>
-		// 		<Link to={PROFILE + user.uid}>Profile</Link>
-		// 	</Menu.Item>
-		// )
+
 	} else {
 		menuItems.push(
 			<Menu.Item
 				key='hiring'
-				onClick={() =>
-					window.open(
-						'https://hr.nih.gov/jobs',
-						'_blank'
-					)
-				}
+				onClick={() => window.open('https://hr.nih.gov/jobs', '_blank')}
 				// role='menuitem'
 			>
 				The NIH Hiring Experience
@@ -154,7 +172,9 @@ const navBar = () => {
 	return (
 		<div className='OuterDiv'>
 			<div className='NavBar'>
-				<Menu mode='horizontal' role='menubar'>{menuItems}</Menu>
+				<Menu mode='horizontal' role='menubar'>
+					{menuItems}
+				</Menu>
 			</div>
 		</div>
 	);
