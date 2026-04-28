@@ -2,10 +2,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Layout from './Layout';
-import Header from '../../components/Header/Header';
-import NavBar from '../../components/NavBar/NavBar';
-import ContentTitle from './ContentTitle/ContentTitle';
-import Footer from '../../components/Footer/Footer';
 import useAuth from '../../hooks/useAuth';
 
 jest.mock('../../hooks/useAuth');
@@ -48,7 +44,7 @@ describe('Layout', () => {
 
     it('renders Header, NavBar, ContentTitle, Footer and children correctly when a manager is logged in', () => {
         useAuth.mockReturnValue({
-            currentTenant: 'tenant 1',
+            currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
             setCurrentTenant: jest.fn(),
             previousTenant: undefined,
             auth: {
@@ -90,7 +86,6 @@ describe('Layout', () => {
 
         const vacancyDashboardLinks = getAllByText('Vacancy Dashboard');
         expect(vacancyDashboardLinks.length).toBeGreaterThan(0);
-        console.log(vacancyDashboardLinks);
         const vacancyDashboardLink = vacancyDashboardLinks.find(link => link.getAttribute('href') === '/vacancy-dashboard');
         expect(vacancyDashboardLink).toBeInTheDocument();
 
@@ -227,6 +222,8 @@ describe('Layout', () => {
     test('renders banner Alert when auth contains bannerMessage and description', () => {
         useAuth.mockReturnValue({
             auth: {
+                isUserLoggedIn: false,
+                user: {},
                 bannerMessage: 'System maintenance planned',
                 bannerDescription: 'The site will be down <strong>tonight</strong> from 11pm-1am.',
                 tenants: [],
@@ -250,6 +247,8 @@ describe('Layout', () => {
     test('does not render banner Alert when auth has no bannerMessage', () => {
         useAuth.mockReturnValue({
             auth: {
+                isUserLoggedIn: false,
+                user: {},
                 // no bannerMessage or bannerDescription provided
                 tenants: [],
             },
