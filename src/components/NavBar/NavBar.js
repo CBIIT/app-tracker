@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { isValidElement, useEffect, useState } from 'react';
 import { Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
 import {
@@ -11,6 +11,7 @@ import {
 
 import useAuth from '../../hooks/useAuth';
 import {
+	isVacancyManager,
 	isExecSec,
 	isChair,
 	isCommitteMember,
@@ -21,6 +22,9 @@ import './NavBar.css';
 const navBar = () => {
 	const { auth, currentTenant } = useAuth();
 	const { isUserLoggedIn, user, tenants } = auth;
+	const [validVacancyManager, setValidVacancyManager] = useState(
+		tenants ? isVacancyManager(currentTenant, tenants) : false
+	);
 	const [validExecSecRole, setValidExecSecRole] = useState(
 		tenants ? isExecSec(currentTenant, tenants) : false
 	);
@@ -36,6 +40,7 @@ const navBar = () => {
 
 	useEffect(() => {
 		if (tenants) {
+			setValidVacancyManager(isVacancyManager(currentTenant, tenants));
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
 			setValidCommitteMember(isCommitteMember(currentTenant, tenants));
@@ -59,29 +64,16 @@ const navBar = () => {
 			});
 		}
 	};
-	const emptyClickVacancyDashboard = () => {
-		if (!currentTenant) {
-			message.destroy();
-			message.error({
-				duration: 3,
-				content: 'Please select a tenant to see Vacancy Dashboard.',
-			});
-		}
-	};
 
 	if (isUserLoggedIn === true) {
 		var includedReports = false;
 		if (user.isManager === true) {
-			if (currentTenant && validExecSecRole) {
+			if (currentTenant && validVacancyManager) {
 				menuItems.push(
-					<Menu.Item
-						key='vacancy-dashboard'
-						onClick={emptyClickVacancyDashboard}
-					>
+					<Menu.Item key='vacancy-dashboard'>
 						{currentTenant && (
 							<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
 						)}
-						{!currentTenant && <Link to={null}>Vacancy Dashboard</Link>}
 					</Menu.Item>
 				);
 			}
@@ -156,7 +148,6 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-
 	} else {
 		menuItems.push(
 			<Menu.Item
