@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import NavBar from './NavBar';
 import useAuth from '../../hooks/useAuth';
@@ -7,6 +7,10 @@ import useAuth from '../../hooks/useAuth';
 jest.mock('../../hooks/useAuth');
 
 describe('NavBar', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('renders Home link', () => {
         useAuth.mockReturnValue({
             auth: {
@@ -249,6 +253,28 @@ describe('NavBar', () => {
         );
 
         expect(screen.getByText('The NIH Hiring Experience')).toBeInTheDocument();
+    });
+
+    it('opens NIH jobs page when The NIH Hiring Experience is clicked', () => {
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: false,
+                user: {}
+            }
+        });
+
+        const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+
+        render(
+            <MemoryRouter>
+                <NavBar />
+            </MemoryRouter>
+        );
+
+        fireEvent.click(screen.getByText('The NIH Hiring Experience'));
+
+        expect(windowOpenSpy).toHaveBeenCalledWith('https://hr.nih.gov/jobs', '_blank');
+        windowOpenSpy.mockRestore();
     });
 
     it('does not render Vacancy Dashboard when manager has no selected tenant', () => {
