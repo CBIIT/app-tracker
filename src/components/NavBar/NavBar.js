@@ -55,15 +55,6 @@ const navBar = () => {
 	];
 
 	const myVacanciesItems = [];
-	const emptyClickYourVacancies = () => {
-		if (!currentTenant) {
-			message.destroy();
-			message.error({
-				duration: 3,
-				content: 'Please select a tenant to see Your Vacancies.',
-			});
-		}
-	};
 
 	if (isUserLoggedIn === true) {
 		var includedReports = false;
@@ -119,7 +110,6 @@ const navBar = () => {
 			menuItems.push(
 				<Menu.Item
 					key='your-vacancies'
-					onClick={emptyClickYourVacancies}
 					role='menu'
 				>
 					<Menu.SubMenu className='VacanciesSubMenu' title='Your Vacancies'>
