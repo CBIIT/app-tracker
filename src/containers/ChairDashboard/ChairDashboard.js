@@ -8,6 +8,7 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
+import { isChair } from '../../components/Util/RoleValidator/RoleValidator';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js';
 import useAuth from '../../hooks/useAuth';
@@ -21,6 +22,10 @@ import {
 } from './Utils/statusHelper.js';
 
 const chairDashboard = () => {
+	const noAssignedVacanciesMessage =
+		'Sorry! You do not have any vacancies assigned to you in the selected tenant.';
+	const liveOrFinalVacanciesMessage =
+		"Sorry! Your assigned vacancy is still in 'Live' or 'Final' status and cannot be accessed from this dashboard yet.";
 	const {
 		auth: { tenants },
 		currentTenant,
@@ -32,13 +37,15 @@ const chairDashboard = () => {
 
 	useEffect(() => {
 		if (currentTenant) {
-			if (
+			const hasChairAccess =
+				isChair(currentTenant, tenants) ||
 				validateRoleForCurrentTenant(
 					COMMITTEE_MEMBER_ROLE,
 					currentTenant,
 					tenants
-				)
-			) {
+				);
+
+			if (hasChairAccess) {
 				(async () => {
 					setHasError(false);
 					setIsLoading(true);
@@ -49,13 +56,32 @@ const chairDashboard = () => {
 						const jsonData = currentData.data.result;
 
 						const validateData = validateVacancyData(jsonData);
-
-						setData(
-							validateData?.list.filter(
-								(vacancy) =>
-									vacancy.status != 'live' && vacancy.status != 'final'
-							)
+						const vacancyList = validateData?.list || [];
+						const filteredVacancies = vacancyList.filter(
+							(vacancy) =>
+								vacancy.status != 'live' && vacancy.status != 'final'
 						);
+
+						if (filteredVacancies.length === 0) {
+							const hasOnlyLiveOrFinalVacancies =
+								vacancyList.length > 0 &&
+								vacancyList.every(
+									(vacancy) =>
+										vacancy.status == 'live' || vacancy.status == 'final'
+								);
+							message.destroy();
+							message.error({
+								duration: 3,
+								content: hasOnlyLiveOrFinalVacancies
+									? liveOrFinalVacanciesMessage
+									: noAssignedVacanciesMessage,
+							});
+							setData([]);
+							history.push('/');
+							return;
+						}
+
+						setData(filteredVacancies);
 					} catch (err) {
 						setHasError(true);
 						notification.error({
@@ -87,8 +113,7 @@ const chairDashboard = () => {
 				message.destroy();
 				message.error({
 					duration: 3,
-					content:
-						'Sorry! You do not have committee member access in the selected tenant.',
+					content: noAssignedVacanciesMessage,
 				});
 				setIsLoading(false);
 				history.push('/');

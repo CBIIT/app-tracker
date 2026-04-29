@@ -1,6 +1,7 @@
 import { isValidElement, useEffect, useState } from 'react';
 import { Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import {
 	COMMITTEE_DASHBOARD,
 	VACANCY_DASHBOARD,
@@ -8,6 +9,7 @@ import {
 	APPLICANT_DASHBOARD,
 	EXE_SEC_DASHBOARD,
 } from '../../constants/Routes';
+import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 
 import useAuth from '../../hooks/useAuth';
 import {
@@ -37,16 +39,49 @@ const navBar = () => {
 	const [validHrSpecialist, setValidHrSpecialist] = useState(
 		tenants ? isHrSpecialist(currentTenant, tenants) : false
 	);
+	const [hasChairAssignableVacancies, setHasChairAssignableVacancies] =
+		useState(false);
 
 	useEffect(() => {
+		let isMounted = true;
+
 		if (tenants) {
 			setValidVacancyManager(isVacancyManager(currentTenant, tenants));
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
 			setValidCommitteMember(isCommitteMember(currentTenant, tenants));
 			setValidHrSpecialist(isHrSpecialist(currentTenant, tenants));
+
+			if (currentTenant && isChair(currentTenant, tenants)) {
+				axios
+					.get(GET_COMMITTEE_CHAIR_VACANCIES + currentTenant)
+					.then((response) => {
+						if (!isMounted) {
+							return;
+						}
+						const vacancyList = response?.data?.result?.list;
+						const hasAssignableVacancies = Array.isArray(vacancyList)
+							? vacancyList.some(
+									(vacancy) =>
+										vacancy.status !== 'live' && vacancy.status !== 'final'
+							  )
+							: false;
+						setHasChairAssignableVacancies(hasAssignableVacancies);
+					})
+					.catch(() => {
+						if (isMounted) {
+							setHasChairAssignableVacancies(false);
+						}
+					});
+			} else {
+				setHasChairAssignableVacancies(false);
+			}
 		}
-	}, [currentTenant]);
+
+		return () => {
+			isMounted = false;
+		};
+	}, [currentTenant, tenants]);
 
 	const menuItems = [
 		<Menu.Item key='home'>
@@ -78,7 +113,7 @@ const navBar = () => {
 			}
 			includedReports = true;
 		}
-		if (currentTenant && validChairRole) {
+		if (currentTenant && validChairRole && hasChairAssignableVacancies) {
 			myVacanciesItems.push(
 				<Menu.Item key='your-vacancies-chair' className='VacanciesSubMenu'>
 					<Link to={CHAIR_DASHBOARD}>Chair</Link>

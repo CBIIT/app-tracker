@@ -1,14 +1,23 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import NavBar from './NavBar';
 import useAuth from '../../hooks/useAuth';
+import axios from 'axios';
 
 jest.mock('../../hooks/useAuth');
+jest.mock('axios');
 
 describe('NavBar', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        axios.get.mockResolvedValue({
+            data: {
+                result: {
+                    list: [{ status: 'open' }],
+                },
+            },
+        });
     });
 
     it('renders Home link', () => {
@@ -103,7 +112,7 @@ describe('NavBar', () => {
         expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
     });
 
-    it('renders Your Vacancies link for chair', () => {
+    it('renders Your Vacancies link for chair', async () => {
         useAuth.mockReturnValue({
             auth: {
                 isUserLoggedIn: true,
@@ -137,7 +146,104 @@ describe('NavBar', () => {
             </MemoryRouter>
         );
 
-        expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
+        });
+    });
+
+    it('does not render Chair in Your Vacancies when all chair vacancies are live or final', async () => {
+        axios.get.mockResolvedValueOnce({
+            data: {
+                result: {
+                    list: [{ status: 'live' }, { status: 'final' }],
+                },
+            },
+        });
+
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                user: {
+                    isManager: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants: [
+                    {
+                        value: 'f24965fc1b9c11106daea681f54bcb04',
+                        label: 'tenant 1',
+                        roles: [
+                            'x_g_nci_app_tracke.vacancy_manager',
+                            'x_g_nci_app_tracke.committee_member'
+                        ],
+                        is_exec_sec: false,
+                        is_read_only_user: false,
+                        is_chair: true,
+                        is_hr: false,
+                    }
+                ],
+            },
+            currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+        });
+
+        render(
+            <MemoryRouter>
+                <NavBar />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.queryByText('Your Vacancies')).not.toBeInTheDocument();
+            expect(screen.queryByText('Chair')).not.toBeInTheDocument();
+        });
+    });
+
+    it('renders Chair in Your Vacancies when at least one vacancy is not live or final', async () => {
+        axios.get.mockResolvedValueOnce({
+            data: {
+                result: {
+                    list: [{ status: 'live' }, { status: 'open' }],
+                },
+            },
+        });
+
+        useAuth.mockReturnValue({
+            auth: {
+                isUserLoggedIn: true,
+                user: {
+                    isManager: false,
+                    roles: [],
+                    hasApplications: false,
+                    uid: '123'
+                },
+                tenants: [
+                    {
+                        value: 'f24965fc1b9c11106daea681f54bcb04',
+                        label: 'tenant 1',
+                        roles: [
+                            'x_g_nci_app_tracke.vacancy_manager',
+                            'x_g_nci_app_tracke.committee_member'
+                        ],
+                        is_exec_sec: false,
+                        is_read_only_user: false,
+                        is_chair: true,
+                        is_hr: false,
+                    }
+                ],
+            },
+            currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+        });
+
+        render(
+            <MemoryRouter>
+                <NavBar />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Your Vacancies')).toBeInTheDocument();
+        });
     });
 
     it('renders Vacancy dashboard and Your Vacancies link for manager as well as chair', () => {
