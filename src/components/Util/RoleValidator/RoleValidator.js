@@ -13,7 +13,6 @@ export const isVacancyManager = (currentTenant, tenants) => {
 					element.roles[0] === 'x_g_nci_app_tracke.vacancy_manager'
 			)
 		: null;
-	console.log('foundTenants: ', foundTenant);
 	const isVacancyManager = foundTenant ? foundTenant.roles : false;
 	return isVacancyManager;
 };
