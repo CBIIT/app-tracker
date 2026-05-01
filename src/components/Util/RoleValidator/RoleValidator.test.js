@@ -97,17 +97,17 @@ describe('RoleValidator utilities', () => {
 			expect(isVacancyManager('tenant-1', undefined)).toBe(false);
 		});
 
-		it('returns roles array when matching tenant has vacancy manager role at index 0', () => {
+		it('returns true when matching tenant has vacancy manager role', () => {
 			const roles = [
 				'x_g_nci_app_tracke.vacancy_manager',
 				'x_g_nci_app_tracke.committee_member',
 			];
 			const tenants = [{ value: 'tenant-1', roles }];
 
-			expect(isVacancyManager('tenant-1', tenants)).toEqual(roles);
+			expect(isVacancyManager('tenant-1', tenants)).toBe(true);
 		});
 
-		it('returns false when role exists but not at index 0', () => {
+		it('returns true when role exists outside index 0', () => {
 			const tenants = [
 				{
 					value: 'tenant-1',
@@ -117,6 +117,12 @@ describe('RoleValidator utilities', () => {
 					],
 				},
 			];
+
+			expect(isVacancyManager('tenant-1', tenants)).toBe(true);
+		});
+
+		it('returns false when matching tenant roles is not an array', () => {
+			const tenants = [{ value: 'tenant-1', roles: null }];
 
 			expect(isVacancyManager('tenant-1', tenants)).toBe(false);
 		});
