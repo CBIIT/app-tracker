@@ -39,7 +39,6 @@ const login = () => {
 	}
 
 	useEffect(() => {
-		console.log('Login 42 currentTenant: ', currentTenant);
 		const tenantsExists = tenants.some(
 			(tenant) => tenant.value === currentTenant
 		);
@@ -53,14 +52,13 @@ const login = () => {
 			setCurrentTenant(undefined);
 		} else if (
 			tenants.length === 1 &&
-			(currentTenant == '' || currentTenant == undefined)
+			(currentTenant === '' || currentTenant === undefined)
 		) {
 			setCurrentTenant(tenants[0].value);
 		} else if (!isValidTenant) {
 			setCurrentTenant(undefined);
 		}
-		console.log('Login 62 currentTenant: ', currentTenant);
-	}, [tenants]);
+	}, [tenants, currentTenant, setCurrentTenant]);
 
 	const nihClicked = () => {
 		location.href = iTrustUrl + iTrustGlideSsoId;
