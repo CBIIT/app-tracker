@@ -154,7 +154,6 @@ describe('CommitteeDashboard component tests', () => {
 			push: mockPush,
 		});
 
-		const antd = jest.requireMock('antd');
 		useAuth.mockReturnValue({
 			auth: {
 				tenants: mockTenants,
