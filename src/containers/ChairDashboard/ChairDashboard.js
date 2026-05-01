@@ -8,6 +8,7 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
+import { isChair } from '../../components/Util/RoleValidator/RoleValidator';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { COMMITTEE_MEMBER_ROLE } from '../../constants/Roles.js';
 import useAuth from '../../hooks/useAuth';
@@ -21,6 +22,10 @@ import {
 } from './Utils/statusHelper.js';
 
 const chairDashboard = () => {
+	const noAssignedVacanciesMessage =
+		'Sorry! You do not have any vacancies assigned to you in the selected tenant.';
+	const liveOrFinalVacanciesMessage =
+		"Sorry! Your assigned vacancy is still in 'Live' or 'Final' status and cannot be accessed from this dashboard yet.";
 	const {
 		auth: { tenants },
 		currentTenant,
@@ -31,62 +36,93 @@ const chairDashboard = () => {
 	const history = useHistory();
 
 	useEffect(() => {
-		if (
-			validateRoleForCurrentTenant(
-				COMMITTEE_MEMBER_ROLE,
-				currentTenant,
-				tenants
-			)
-		) {
-			(async () => {
-				setHasError(false);
-				setIsLoading(true);
-				try {
-					const currentData = await axios.get(
-						GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
-					);
-					const jsonData = currentData.data.result;
+		if (currentTenant) {
+			const hasChairAccess =
+				isChair(currentTenant, tenants) ||
+				validateRoleForCurrentTenant(
+					COMMITTEE_MEMBER_ROLE,
+					currentTenant,
+					tenants
+				);
 
-					const validateData = validateVacancyData(jsonData);
+			if (hasChairAccess) {
+				(async () => {
+					setHasError(false);
+					setIsLoading(true);
+					try {
+						const currentData = await axios.get(
+							GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
+						);
+						const jsonData = currentData.data.result;
 
-					setData(
-						validateData?.list.filter(
-							(vacancy) => vacancy.status != 'live' && vacancy.status != 'final'
-						)
-					);
-				} catch (err) {
-					setHasError(true);
-					notification.error({
-						message: 'Sorry! There was an error retrieving vacancies.',
-						description: (
-							<>
-								<p>
-									Please refresh the page and try again or try logging out and
-									logging back in. If the issue persists, contact the Help Desk
-									by emailing{' '}
-									<a href='mailto:NCIAppSupport@mail.nih.gov'>
-										NCIAppSupport@mail.nih.gov
-									</a>
-								</p>
-							</>
-						),
-						duration: 30,
-						style: {
-							height: '225px',
-							display: 'flex',
-							alignItems: 'center',
-						},
-					});
-				} finally {
-					setIsLoading(false);
-				}
-			})();
+						const validateData = validateVacancyData(jsonData);
+						const vacancyList = validateData?.list || [];
+						const filteredVacancies = vacancyList.filter(
+							(vacancy) =>
+								vacancy.status != 'live' && vacancy.status != 'final'
+						);
+
+						if (filteredVacancies.length === 0) {
+							const hasOnlyLiveOrFinalVacancies =
+								vacancyList.length > 0 &&
+								vacancyList.every(
+									(vacancy) =>
+										vacancy.status == 'live' || vacancy.status == 'final'
+								);
+							message.destroy();
+							message.error({
+								duration: 3,
+								content: hasOnlyLiveOrFinalVacancies
+									? liveOrFinalVacanciesMessage
+									: noAssignedVacanciesMessage,
+							});
+							setData([]);
+							history.push('/');
+							return;
+						}
+
+						setData(filteredVacancies);
+					} catch (err) {
+						setHasError(true);
+						notification.error({
+							message: 'Sorry! There was an error retrieving vacancies.',
+							description: (
+								<>
+									<p>
+										Please refresh the page and try again or try logging out and
+										logging back in. If the issue persists, contact the Help
+										Desk by emailing{' '}
+										<a href='mailto:NCIAppSupport@mail.nih.gov'>
+											NCIAppSupport@mail.nih.gov
+										</a>
+									</p>
+								</>
+							),
+							duration: 30,
+							style: {
+								height: '225px',
+								display: 'flex',
+								alignItems: 'center',
+							},
+						});
+					} finally {
+						setIsLoading(false);
+					}
+				})();
+			} else {
+				message.destroy();
+				message.error({
+					duration: 3,
+					content: noAssignedVacanciesMessage,
+				});
+				setIsLoading(false);
+				history.push('/');
+			}
 		} else {
 			message.destroy();
 			message.error({
 				duration: 3,
-				content:
-					'Sorry! You do not have committee member access in the selected tenant.',
+				content: 'Sorry! Please reselect your tenant and try again.',
 			});
 			setIsLoading(false);
 			history.push('/');

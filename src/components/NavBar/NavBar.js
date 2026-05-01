@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Menu, message } from 'antd';
+import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import {
 	COMMITTEE_DASHBOARD,
 	VACANCY_DASHBOARD,
@@ -8,32 +9,79 @@ import {
 	APPLICANT_DASHBOARD,
 	EXE_SEC_DASHBOARD,
 } from '../../constants/Routes';
+import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 
 import useAuth from '../../hooks/useAuth';
-import { isExecSec, isChair, isCommitteMember, isHrSpecialist } from '../../components/Util/RoleValidator/RoleValidator';
+import {
+	isVacancyManager,
+	isExecSec,
+	isChair,
+	isCommitteMember,
+	isHrSpecialist,
+} from '../../components/Util/RoleValidator/RoleValidator';
 import './NavBar.css';
 
 const navBar = () => {
-	
 	const { auth, currentTenant } = useAuth();
 	const { isUserLoggedIn, user, tenants } = auth;
+	const [validVacancyManager, setValidVacancyManager] = useState(
+		tenants ? isVacancyManager(currentTenant, tenants) : false
+	);
 	const [validExecSecRole, setValidExecSecRole] = useState(
-		tenants ? isExecSec(currentTenant, tenants) : false);
+		tenants ? isExecSec(currentTenant, tenants) : false
+	);
 	const [validChairRole, setValidChairRole] = useState(
-		tenants ?  isChair(currentTenant, tenants) : false);
+		tenants ? isChair(currentTenant, tenants) : false
+	);
 	const [validCommitteMember, setValidCommitteMember] = useState(
-			tenants ?  isCommitteMember(currentTenant, tenants) : false);
+		tenants ? isCommitteMember(currentTenant, tenants) : false
+	);
 	const [validHrSpecialist, setValidHrSpecialist] = useState(
-		tenants ? isHrSpecialist(currentTenant, tenants) : false);
+		tenants ? isHrSpecialist(currentTenant, tenants) : false
+	);
+	const [hasChairAssignableVacancies, setHasChairAssignableVacancies] =
+		useState(false);
 
 	useEffect(() => {
+		let isMounted = true;
+
 		if (tenants) {
+			setValidVacancyManager(isVacancyManager(currentTenant, tenants));
 			setValidExecSecRole(isExecSec(currentTenant, tenants));
 			setValidChairRole(isChair(currentTenant, tenants));
-			setValidCommitteMember(isCommitteMember(currentTenant, tenants))
+			setValidCommitteMember(isCommitteMember(currentTenant, tenants));
 			setValidHrSpecialist(isHrSpecialist(currentTenant, tenants));
+
+			if (currentTenant && isChair(currentTenant, tenants)) {
+				axios
+					.get(GET_COMMITTEE_CHAIR_VACANCIES + currentTenant)
+					.then((response) => {
+						if (!isMounted) {
+							return;
+						}
+						const vacancyList = response?.data?.result?.list;
+						const hasAssignableVacancies = Array.isArray(vacancyList)
+							? vacancyList.some(
+									(vacancy) =>
+										vacancy.status !== 'live' && vacancy.status !== 'final'
+							  )
+							: false;
+						setHasChairAssignableVacancies(hasAssignableVacancies);
+					})
+					.catch(() => {
+						if (isMounted) {
+							setHasChairAssignableVacancies(false);
+						}
+					});
+			} else {
+				setHasChairAssignableVacancies(false);
+			}
 		}
-	}, [currentTenant]);
+
+		return () => {
+			isMounted = false;
+		};
+	}, [currentTenant, tenants]);
 
 	const menuItems = [
 		<Menu.Item key='home'>
@@ -42,31 +90,19 @@ const navBar = () => {
 	];
 
 	const myVacanciesItems = [];
-	const emptyClickYourVacancies = () => {
-		if (!currentTenant) {
-			message.destroy();
-			message.error({ duration: 3, content: 'Please select a tenant to see Your Vacancies.' });
-		}
-	}
-	const emptyClickVacancyDashboard = () => {
-		if (!currentTenant) {
-			message.destroy();
-			message.error({ duration: 3, content: 'Please select a tenant to see Vacancy Dashboard.'});
-		}
-	}
 
 	if (isUserLoggedIn === true) {
 		var includedReports = false;
 		if (user.isManager === true) {
-			menuItems.push(
-				<Menu.Item
-					key='vacancy-dashboard'
-					onClick={emptyClickVacancyDashboard}
-				>
-						{currentTenant && <Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>}
-						{!currentTenant && <Link to={null}>Vacancy Dashboard</Link>}
-				</Menu.Item>
-			);
+			if (currentTenant && validVacancyManager) {
+				menuItems.push(
+					<Menu.Item key='vacancy-dashboard'>
+						{currentTenant && (
+							<Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>
+						)}
+					</Menu.Item>
+				);
+			}
 
 			if (currentTenant && validExecSecRole) {
 				myVacanciesItems.push(
@@ -77,7 +113,7 @@ const navBar = () => {
 			}
 			includedReports = true;
 		}
-		if (currentTenant && validChairRole) {
+		if (currentTenant && validChairRole && hasChairAssignableVacancies) {
 			myVacanciesItems.push(
 				<Menu.Item key='your-vacancies-chair' className='VacanciesSubMenu'>
 					<Link to={CHAIR_DASHBOARD}>Chair</Link>
@@ -86,14 +122,20 @@ const navBar = () => {
 		}
 		if (currentTenant && validCommitteMember) {
 			myVacanciesItems.push(
-				<Menu.Item key='your-vacancies-committee-member' className='VacanciesSubMenu'>
+				<Menu.Item
+					key='your-vacancies-committee-member'
+					className='VacanciesSubMenu'
+				>
 					<Link to={COMMITTEE_DASHBOARD}>Committee Member</Link>
 				</Menu.Item>
 			);
 		}
 		if (currentTenant && validHrSpecialist) {
 			myVacanciesItems.push(
-				<Menu.Item key='your-vacancies-hr-specialist' className='VacanciesSubMenu'>
+				<Menu.Item
+					key='your-vacancies-hr-specialist'
+					className='VacanciesSubMenu'
+				>
 					<Link to={COMMITTEE_DASHBOARD}>HR Specialist</Link>
 				</Menu.Item>
 			);
@@ -103,16 +145,15 @@ const navBar = () => {
 			menuItems.push(
 				<Menu.Item
 					key='your-vacancies'
-					onClick={emptyClickYourVacancies}
 					role='menu'
 				>
-					<Menu.SubMenu className='VacanciesSubMenu' title="Your Vacancies">
+					<Menu.SubMenu className='VacanciesSubMenu' title='Your Vacancies'>
 						{myVacanciesItems}
 					</Menu.SubMenu>
 				</Menu.Item>
 			);
 		}
-		
+
 		if (user.hasApplications === true) {
 			menuItems.push(
 				<Menu.Item key='your-applications'>
@@ -120,7 +161,10 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-		if (includedReports || user.roles.includes('x_g_nci_app_tracke.demographics_user')) {
+		if (
+			includedReports ||
+			user.roles.includes('x_g_nci_app_tracke.demographics_user')
+		) {
 			menuItems.push(
 				<Menu.Item key='reports'>
 					<a href='/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D326711461bf2a910e541631ee54bcbec'>
@@ -129,21 +173,11 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-		// menuItems.push(
-		// 	<Menu.Item key='your-profile'>
-		// 		<Link to={PROFILE + user.uid}>Profile</Link>
-		// 	</Menu.Item>
-		// )
 	} else {
 		menuItems.push(
 			<Menu.Item
 				key='hiring'
-				onClick={() =>
-					window.open(
-						'https://hr.nih.gov/jobs',
-						'_blank'
-					)
-				}
+				onClick={() => window.open('https://hr.nih.gov/jobs', '_blank')}
 				// role='menuitem'
 			>
 				The NIH Hiring Experience
@@ -154,7 +188,9 @@ const navBar = () => {
 	return (
 		<div className='OuterDiv'>
 			<div className='NavBar'>
-				<Menu mode='horizontal' role='menubar'>{menuItems}</Menu>
+				<Menu mode='horizontal' role='menubar'>
+					{menuItems}
+				</Menu>
 			</div>
 		</div>
 	);
