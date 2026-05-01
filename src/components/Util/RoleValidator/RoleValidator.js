@@ -10,11 +10,11 @@ export const isVacancyManager = (currentTenant, tenants) => {
 		? tenants.find(
 				(element) =>
 					element.value === currentTenant &&
-					element.roles[0] === 'x_g_nci_app_tracke.vacancy_manager'
+					Array.isArray(element.roles) &&
+					element.roles.includes('x_g_nci_app_tracke.vacancy_manager')
 			)
 		: null;
-	const isVacancyManager = foundTenant ? foundTenant.roles : false;
-	return isVacancyManager;
+	return !!foundTenant;
 };
 
 export const isExecSec = (currentTenant, tenants) => {
