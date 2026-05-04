@@ -32,11 +32,12 @@ const login = () => {
 	const history = useHistory();
 	const locationX = useLocation();
 
-	if (tenants.length === 0 && (user.isManager || user.isCommitteeMember)) {
-		message.warning(
-			'No tenants assigned to your account. Please contact your administrator.'
-		);
-	}
+	// Commenting this out for future use. This is for a very small edge case that might or might not happen
+	// if (tenants.length === 0 && (user.isManager || user.isCommitteeMember)) {
+	// 	message.warning(
+	// 		'No tenants assigned to your account. Please contact your administrator.'
+	// 	);
+	// }
 
 	useEffect(() => {
 		const tenantsExists = tenants.some(
