@@ -1,3 +1,7 @@
 .CommitteeTable {
 	display: block;
 }
+
+.disabled-vacancy-row {
+	background-color: rgba(255, 231, 179, 0.1);
+}
