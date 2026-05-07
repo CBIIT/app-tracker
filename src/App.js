@@ -1,5 +1,4 @@
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
+import { Navigate, Routes, Route } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import './App.less';
@@ -65,56 +64,77 @@ const app = () => {
 
 	if (isUserLoggedIn) {
 		if (atleastOneChair(tenants)) {
-			routes.push(
-				<ProtectedRoute
-					key='chair-dashboard'
-					path={CHAIR_DASHBOARD}
-					component={ChairDashboard}
-				/>
-			);
+			routes.push({
+				key: 'chair-dashboard',
+				path: CHAIR_DASHBOARD,
+				element: (
+					<ProtectedRoute>
+						<ChairDashboard />
+					</ProtectedRoute>
+				),
+			});
 		}
 
 		if (user.isManager) {
 			routes.push(
-				<ProtectedRoute
-					key='vacancy-dashboard'
-					path={VACANCY_DASHBOARD + '/:tab?'}
-					exact
-					component={VacancyDashboard}
-				/>,
-				<ProtectedRoute
-					key='exe-sec-dashboard'
-					path={EXE_SEC_DASHBOARD}
-					component={CommitteeDashboard}
-				/>,
-				<ProtectedRoute
-					key='create-vacancy'
-					path={CREATE_VACANCY}
-					component={CreateVacancy}
-				/>,
-				<ProtectedRoute
-					key='edit-vacancy'
-					path={EDIT_VACANCY + ':sysId'}
-					component={EditVacancy}
-					exact
-				/>,
-
-				<ProtectedRoute
-					key='edit-draft'
-					path={EDIT_DRAFT + ':sysId'}
-					component={EditDraft}
-				/>
+				{
+					key: 'vacancy-dashboard',
+					path: VACANCY_DASHBOARD,
+					element: (
+						<ProtectedRoute>
+							<VacancyDashboard />
+						</ProtectedRoute>
+					),
+				},
+				{
+					key: 'exe-sec-dashboard',
+					path: EXE_SEC_DASHBOARD,
+					element: (
+						<ProtectedRoute>
+							<CommitteeDashboard />
+						</ProtectedRoute>
+					),
+				},
+				{
+					key: 'create-vacancy',
+					path: CREATE_VACANCY,
+					element: (
+						<ProtectedRoute>
+							<CreateVacancy />
+						</ProtectedRoute>
+					),
+				},
+				{
+					key: 'edit-vacancy',
+					path: EDIT_VACANCY + ':sysId',
+					element: (
+						<ProtectedRoute>
+							<EditVacancy />
+						</ProtectedRoute>
+					),
+				},
+				{
+					key: 'edit-draft',
+					path: EDIT_DRAFT + ':sysId',
+					element: (
+						<ProtectedRoute>
+							<EditDraft />
+						</ProtectedRoute>
+					),
+				}
 			);
 		}
 
 		if (user.roles.includes(COMMITTEE_MEMBER_ROLE))
-			routes.push(
-				<ProtectedRoute
-					key='committee-dashboard'
-					path={COMMITTEE_DASHBOARD}
-					component={CommitteeDashboard}
-				/>
-			);
+			routes.push({
+				key: 'committee-dashboard',
+				path: COMMITTEE_DASHBOARD,
+				element: (
+					<ProtectedRoute>
+						<CommitteeDashboard />
+					</ProtectedRoute>
+				),
+			});
 
 		if (
 			atleastOneChair(tenants) ||
@@ -122,132 +142,207 @@ const app = () => {
 			user.roles.includes(COMMITTEE_MEMBER_ROLE)
 		) {
 			routes.push(
-				<ProtectedRoute
-					key='manage-application'
-					path={MANAGE_APPLICATION + ':sysId'}
-					component={Application}
-				/>,
-				<ProtectedRoute
-					key='manage-vacancy'
-					path={MANAGE_VACANCY + ':sysId/:tab?'}
-					component={ManageDashboard}
-					exact
-				/>
+				{
+					key: 'manage-application',
+					path: MANAGE_APPLICATION + ':sysId',
+					element: (
+						<ProtectedRoute>
+							<Application />
+						</ProtectedRoute>
+					),
+				},
+				{
+					key: 'manage-vacancy',
+					path: MANAGE_VACANCY + ':sysId/*',
+					element: (
+						<ProtectedRoute>
+							<ManageDashboard />
+						</ProtectedRoute>
+					),
+				}
 			);
 		}
 
 		routes.push(
-			<ProtectedRoute
-				key='applicant-dashboard'
-				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-			/>,
-			<ProtectedRoute
-				key='edit-application'
-				path={EDIT_APPLICATION + ':draft?/:appSysId'}
-				component={EditApplication}
-			/>,
-			<ProtectedRoute
-				key='view-application'
-				path={VIEW_APPLICATION + ':appSysId'}
-				component={ApplicantApplicationView}
-			/>,
-			<ProtectedRoute
-				key='applicant-profile'
-				path={PROFILE + ':sysId'}
-				component={ApplicantProfile}
-			/>
+			{
+				key: 'applicant-dashboard',
+				path: APPLICANT_DASHBOARD,
+				element: (
+					<ProtectedRoute>
+						<ApplicantDashboard />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'edit-application',
+				path: EDIT_APPLICATION + ':draft?/:appSysId',
+				element: (
+					<ProtectedRoute>
+						<EditApplication />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'view-application',
+				path: VIEW_APPLICATION + ':appSysId',
+				element: (
+					<ProtectedRoute>
+						<ApplicantApplicationView />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'applicant-profile',
+				path: PROFILE + ':sysId',
+				element: (
+					<ProtectedRoute>
+						<ApplicantProfile />
+					</ProtectedRoute>
+				),
+			}
 		);
 	} else {
 		routes.push(
-			<ProtectedRoute
-				key='manage-application'
-				path={MANAGE_APPLICATION + ':sysId'}
-				component={Application}
-			/>,
-			<ProtectedRoute
-				key='vacancy-dashboard'
-				path={VACANCY_DASHBOARD + '/:tab?'}
-				exact
-				component={VacancyDashboard}
-			/>,
-			<ProtectedRoute
-				key='edit-application'
-				path={EDIT_APPLICATION + ':draft?/:appSysId'}
-				component={EditApplication}
-			/>,
-			<ProtectedRoute
-				key='chair-dashboard'
-				path={CHAIR_DASHBOARD}
-				component={ChairDashboard}
-			/>,
-			<ProtectedRoute
-				key='create-vacancy'
-				path={CREATE_VACANCY}
-				component={CreateVacancy}
-			/>,
-			<ProtectedRoute
-				key='edit-vacancy'
-				path={EDIT_VACANCY + ':sysId'}
-				component={EditVacancy}
-				exact
-			/>,
-			<ProtectedRoute
-				key='manage-vacancy'
-				path={MANAGE_VACANCY + ':sysId/:tab?'}
-				component={ManageDashboard}
-				exact
-			/>,
-			<ProtectedRoute
-				key='edit-draft'
-				path={EDIT_DRAFT + ':sysId'}
-				component={EditDraft}
-			/>,
-			<ProtectedRoute
-				key='committee-dashboard'
-				path={COMMITTEE_DASHBOARD}
-				component={CommitteeDashboard}
-			/>,
-			<ProtectedRoute
-				key='applicant-dashboard'
-				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-				useOktaAuth={true}
-			/>
+			{
+				key: 'manage-application',
+				path: MANAGE_APPLICATION + ':sysId',
+				element: (
+					<ProtectedRoute>
+						<Application />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'vacancy-dashboard',
+				path: VACANCY_DASHBOARD,
+				element: (
+					<ProtectedRoute>
+						<VacancyDashboard />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'edit-application',
+				path: EDIT_APPLICATION + ':draft?/:appSysId',
+				element: (
+					<ProtectedRoute>
+						<EditApplication />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'chair-dashboard',
+				path: CHAIR_DASHBOARD,
+				element: (
+					<ProtectedRoute>
+						<ChairDashboard />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'create-vacancy',
+				path: CREATE_VACANCY,
+				element: (
+					<ProtectedRoute>
+						<CreateVacancy />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'edit-vacancy',
+				path: EDIT_VACANCY + ':sysId',
+				element: (
+					<ProtectedRoute>
+						<EditVacancy />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'manage-vacancy',
+				path: MANAGE_VACANCY + ':sysId/*',
+				element: (
+					<ProtectedRoute>
+						<ManageDashboard />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'edit-draft',
+				path: EDIT_DRAFT + ':sysId',
+				element: (
+					<ProtectedRoute>
+						<EditDraft />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'committee-dashboard',
+				path: COMMITTEE_DASHBOARD,
+				element: (
+					<ProtectedRoute>
+						<CommitteeDashboard />
+					</ProtectedRoute>
+				),
+			},
+			{
+				key: 'applicant-dashboard',
+				path: APPLICANT_DASHBOARD,
+				element: (
+					<ProtectedRoute useOktaAuth={true}>
+						<ApplicantDashboard />
+					</ProtectedRoute>
+				),
+			}
 		);
 	}
 
 	routes.push(
-		<ProtectedRoute
-				key='applicant-dashboard'
-				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-				useOktaAuth={true}
-			/>,
-		<ProtectedRoute
-			key='apply'
-			path={APPLY + ':vacancySysId'}
-			component={Apply}
-			useOktaAuth={true}
-		/>,
-		<Route
-			key='view-vacancy'
-			path={VIEW_VACANCY + ':sysId'}
-			component={ViewVacancyDetails}
-		/>,
-		<Route key='register-okta' path={REGISTER_OKTA} component={RegisterOkta} />,
-		<Route key='home' path='/' exact component={Home} />,
-		<Route key='404'>
-			<Redirect to='/' />
-		</Route>
+		{
+			key: 'applicant-dashboard-alt',
+			path: APPLICANT_DASHBOARD,
+			element: (
+				<ProtectedRoute useOktaAuth={true}>
+					<ApplicantDashboard />
+				</ProtectedRoute>
+			),
+		},
+		{
+			key: 'apply',
+			path: APPLY + ':vacancySysId',
+			element: (
+				<ProtectedRoute useOktaAuth={true}>
+					<Apply />
+				</ProtectedRoute>
+			),
+		},
+		{
+			key: 'view-vacancy',
+			path: VIEW_VACANCY + ':sysId',
+			element: <ViewVacancyDetails />,
+		},
+		{
+			key: 'register-okta',
+			path: REGISTER_OKTA,
+			element: <RegisterOkta />,
+		},
+		{
+			key: 'home',
+			path: '/',
+			element: <Home />,
+		}
 	);
 
 	return !isLoading ? (
 		<Layout>
 			{isUserLoggedIn && <TimeoutModal />}
-			<Switch>{routes}</Switch>
+			<Routes>
+				{routes.map((route) => (
+					<Route key={route.key} path={route.path} element={route.element} />
+				))}
+				<Route path='*' element={<Navigate to='/' replace />} />
+			</Routes>
 		</Layout>
 	) : null;
 };
 
-export default hot(module)(app);
+export default app;

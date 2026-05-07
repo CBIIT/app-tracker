@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table, message, notification, Tooltip } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -28,7 +28,7 @@ const chairDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasError, setHasError] = useState(false);
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (
@@ -89,7 +89,7 @@ const chairDashboard = () => {
 					'Sorry! You do not have committee member access in the selected tenant.',
 			});
 			setIsLoading(false);
-			history.push('/');
+			navigate('/');
 		}
 	}, [currentTenant]);
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { Steps, Button, Form, message, Tooltip , Modal} from 'antd';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
@@ -33,7 +33,7 @@ const createVacancy = (props) => {
 		currentTenant: currentTenant,
 	};
 	const { Step } = Steps;
-	const history = useHistory();
+	const navigate = useNavigate();
 	const location = useLocation();
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(

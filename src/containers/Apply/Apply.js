@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
 	Steps,
 	Button,
@@ -76,7 +76,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [hasError, setHasError] = useState(false);
 	const [focusArea, setFocusArea] = useState([]);
 
-	const history = useHistory();
+	const navigate = useNavigate();
 	const { vacancySysId, appSysId } = useParams();
 	const vacancyId = initialValues?.sysId || vacancySysId;
 
@@ -345,6 +345,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	let steps = [];
 
+
 	if (formData.applicantDocuments?.length > 0)
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
@@ -432,7 +433,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
-			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
+			currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
@@ -444,7 +445,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			key='saveLink'
 			type='link'
 			style={{ paddingLeft: '150px', paddingRight: '10px' }}
-			onClick={() => history.push(APPLICANT_DASHBOARD)}
+			onClick={() => navigate(APPLICANT_DASHBOARD)}
 		>
 			Back to Applications Home?
 		</Button>

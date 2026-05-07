@@ -5,7 +5,7 @@ import axios from 'axios';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { waitFor, screen, fireEvent } from '@testing-library/react';
 
 const { message } = jest.requireMock('antd');
@@ -28,7 +28,7 @@ jest.mock('../../hooks/useAuth');
 jest.mock('../../components/Util/RoleValidator/RoleValidator');
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 }));
 
 window.matchMedia =
@@ -61,10 +61,10 @@ describe('ChairDashboard component tests', () => {
 	};
 
 	beforeEach(() => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 		const antd = jest.requireMock('antd');
 		antd.message.error = jest.fn();
 		antd.message.destroy = jest.fn();
@@ -142,10 +142,10 @@ describe('ChairDashboard component tests', () => {
 	});
 
 	test('<ChairDashboard /> should show error when user is not a committee member', async () => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 
 		validateRoleForCurrentTenant.mockReturnValueOnce(false);
 
@@ -161,7 +161,7 @@ describe('ChairDashboard component tests', () => {
 			},
 			{ timeout: 2000 }
 		);
-		expect(mockPush).toHaveBeenCalledWith('/');
+		expect(mockNavigate).toHaveBeenCalledWith('/');
 	});
 
 	test('<ChairDashboard /> should display error message when API fails', async () => {

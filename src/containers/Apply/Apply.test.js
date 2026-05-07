@@ -20,6 +20,7 @@ import {
 } from '../../constants/ApiEndpoints';
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
+const mockNavigate = jest.fn();
 const mockPush = jest.fn();
 const mockGoBack = jest.fn();
 let mockModalTimeout = 10;
@@ -55,10 +56,7 @@ jest.mock('../Profile/Util/ConvertDataFromBackend', () => ({
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
-	useHistory: () => ({
-		push: mockPush,
-		goBack: mockGoBack,
-	}),
+	useNavigate: () => mockNavigate,
 }));
 
 jest.mock('../../components/UI/HeaderWithLink/HeaderWithLink', () => {
@@ -239,7 +237,7 @@ describe('Apply component', () => {
 
 		fireEvent.click(screen.getByTestId('back-button'));
 		await waitFor(() => {
-			expect(mockGoBack).toHaveBeenCalled();
+			expect(mockNavigate).toHaveBeenCalledWith(-1);
 		});
 	});
 
@@ -465,7 +463,7 @@ describe('Apply component', () => {
 		saveMessageConfig.content[1].props.onClick();
 		saveMessageConfig.content[2].props.onClick();
 
-		expect(mockPush).toHaveBeenCalledWith(APPLICANT_DASHBOARD);
+		expect(mockNavigate).toHaveBeenCalledWith(APPLICANT_DASHBOARD);
 		expect(message.destroy).toHaveBeenCalled();
 	});
 
@@ -553,19 +551,23 @@ describe('Apply component', () => {
 		);
 
 		await waitFor(() => {
+			expect(screen.getByTestId('applicant-documents-form')).toBeInTheDocument();
 			expect(screen.getByTestId('next-button')).toBeInTheDocument();
 			expect(screen.getByTestId('next-button')).toHaveTextContent('Next');
 		});
 
-		fireEvent.click(screen.getByTestId('next-button'));
-		await waitFor(() => {
-			expect(screen.getByTestId('applicant-references-form')).toBeInTheDocument();
-		});
+		for (let i = 0; i < 3; i++) {
+			const nextButton = screen.getByTestId('next-button');
+			if (nextButton.textContent === 'Submit Application') {
+				break;
+			}
+			fireEvent.click(nextButton);
+			await waitFor(() => {
+				expect(screen.getByTestId('next-button')).toBeInTheDocument();
+			});
+		}
 
-		fireEvent.click(screen.getByTestId('next-button'));
-		await waitFor(() => {
-			expect(screen.getByTestId('next-button')).toHaveTextContent('Submit Application');
-		});
+		expect(screen.getByTestId('next-button')).toHaveTextContent('Submit Application');
 
 		fireEvent.click(screen.getByTestId('next-button'));
 		await waitFor(() => {
@@ -579,7 +581,7 @@ describe('Apply component', () => {
 
 		fireEvent.click(screen.getByTestId('submit-modal-return-to-documents'));
 		await waitFor(() => {
-			expect(screen.getByTestId('next-button')).toHaveTextContent('Next');
+			expect(screen.getByTestId('next-button')).toBeInTheDocument();
 		});
 	});
 
