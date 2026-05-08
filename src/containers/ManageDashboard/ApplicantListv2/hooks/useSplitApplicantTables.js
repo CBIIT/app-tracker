@@ -8,7 +8,7 @@ import {
 
 // Defines what query changes are possible
 const QUERY_ACTIONS = {
-	PAGE_CHANGED: 'PAGE-CHANGED',
+	PAGE_CHANGED: 'PAGE_CHANGED',
 	PAGE_SIZE_CHANGED: 'PAGE_SIZE_CHANGED',
 	SEARCH_CHANGED: 'SEARCH_CHANGED',
 	SORT_CHANGED: 'SORT_CHANGED',
@@ -44,8 +44,8 @@ const queryReducer = (state, action) => {
 		case QUERY_ACTIONS.SORT_CHANGED:
 			return {
 				...state,
-				orderBy: action.payload,
-				orderColumn: action.payload,
+				orderBy: action.payload.orderBy,
+				orderColumn: action.payload.orderColumn,
 				page: 1,
 			};
 
@@ -180,41 +180,41 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 		}
 	}, [buildApplicantUrl]);
 
-	const handleTableChange = useCallback((changePayload) => {
-		if (changePayload.page !== undefined) {
+	const handleTableChange = useCallback((payload) => {
+		if (payload.page !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.PAGE_CHANGED,
-				payload: changePayload.page,
+				payload: payload.page,
 			});
 		}
-		if (changePayload.pageSize !== undefined) {
+		if (payload.pageSize !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.PAGE_SIZE_CHANGED,
-				payload: changePayload.pageSize,
+				payload: payload.pageSize,
 			});
 		}
-		if (changePayload.searchText !== undefined) {
+		if (payload.searchText !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.SEARCH_CHANGED,
-				payload: changePayload.searchText,
+				payload: payload.searchText,
 			});
 		}
 		if (
-			changePayload.orderBy !== undefined ||
-			changePayload.orderColumn !== undefined
+			payload.orderBy !== undefined ||
+			payload.orderColumn !== undefined
 		) {
 			dispatch({
 				type: QUERY_ACTIONS.SORT_CHANGED,
 				payload: {
-					orderBy: changePayload.orderBy,
-					orderColumn: changePayload.orderColumn,
+					orderBy: payload.orderBy,
+					orderColumn: payload.orderColumn,
 				},
 			});
 		}
-		if (changePayload.focusArea !== undefined) {
+		if (payload.focusArea !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.FOCUS_AREA_CHANGED,
-				payload: changePayload.focusArea,
+				payload: payload.focusArea,
 			});
 		}
 	}, []);
