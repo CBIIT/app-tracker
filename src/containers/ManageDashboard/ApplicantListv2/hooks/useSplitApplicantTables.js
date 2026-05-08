@@ -126,7 +126,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 			const recRequestId = ++recommendedRequestIdRef.current;
 			const nonRecRequestId = ++nonRecommendedRequestIdRef.current;
 
-            // build URLs from same query state for consistency
+			// build URLs from same query state for consistency
 			const recUrl = buildApplicantUrl('yes');
 			const nonRecUrl = buildApplicantUrl('no');
 
@@ -136,7 +136,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 				query,
 			});
 
-            // fires both requests in parallel (not sequential)
+			// fires both requests in parallel (not sequential)
 			const [recResponse, nonRecResponse] = await Promise.all([
 				axios.get(recUrl),
 				axios.get(nonRecUrl),
