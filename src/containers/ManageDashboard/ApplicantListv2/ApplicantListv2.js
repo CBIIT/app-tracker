@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getWorkflowComponent } from './workflowRouter';
+import { getWorkflowView } from './workflowRouter';
 import { getRoleCapabilities } from './adapters/roleCapabilities';
 import { getTenantCapabilities } from './adapters/tenantWorkflowCapabilities';
 import { useSplitApplicantTables } from './hooks/useSplitApplicantTables';

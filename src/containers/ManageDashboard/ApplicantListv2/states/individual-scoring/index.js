@@ -1,4 +1,4 @@
-import individualScoringTable from '../../tables/IndividualScoringTable';
+import IndividualScoringTable from '../../tables/IndividualScoringTable';
 import SplitApplicantTables from '../../tables/SplitApplicantTables';
 import mapIndividualScoringChanges from './mapPayloadToQuery';
 
@@ -30,23 +30,30 @@ const IndividualScoringView = (props) => {
 	}
 
 	return (
-		<individualScoringTable
-			applicants={props.applicants}
-			loading={props.loading}
-			pagination={props.pagination}
-			focusAreaFilter={props.query.focusArea}
+		<IndividualScoringTable
+			applicants={props.dataApi.applicants}
+			loading={props.dataApi.loading}
+			pagination={{
+				current: props.dataApi.query.page,
+				pageSize: props.dataApi.query.pageSize,
+				total: props.dataApi.totalCount,
+				pageSizeOptions: [10, 25, 50],
+				showSizeChanger: true,
+				hideOnSinglePage: true,
+			}}
+			focusAreaFilter={props.dataApi.query.focusArea}
 			onTableChange={(pagination, filters, sorter) => {
-				props.onTableChange(
-					mapIndividualScoringChange({
+				props.dataApi.handleTableChange(
+					mapIndividualScoringChanges({
 						pagination,
 						sorter,
-						searchText: props.query.searchText,
-						focusArea: props.query.focusArea,
+						searchText: props.dataApi.query.searchText,
+						focusArea: props.dataApi.query.focusArea,
 					})
 				);
 			}}
 			onFocusAreaFilterChange={(focusArea) =>
-				props.onTableChange({ focusArea, page: 1 })
+				props.dataApi.handleTableChange({ focusArea, page: 1 })
 			}
 		/>
 	);

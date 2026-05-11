@@ -2,7 +2,7 @@ const mapIndividualScoringChanges = ({ pagination, sorter, searchText, focusArea
     return {
         page: pagination?.current,
         pageSize: pagination?.pageSize,
-        orderBy: sorter?.orderBy,
+        orderBy: sorter?.order,
         orderColumn: sorter?.field,
         searchText,
         focusArea,

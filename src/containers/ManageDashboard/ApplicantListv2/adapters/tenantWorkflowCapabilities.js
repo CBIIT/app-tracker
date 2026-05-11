@@ -10,7 +10,6 @@ export const getTenantCapabilities = (
 
 	return {
 		vacancyTenant,
-		maxProgressState,
 		showCompleteColumn: vacancyTenant === 'Stadtman',
 		enableFocusArea:
 			getTenantPropertyValue(tenantProperties, 'enableFocusArea') === 'true',

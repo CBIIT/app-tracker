@@ -17,10 +17,11 @@ import {
 	ROLLING_CLOSE,
 } from '../../../constants/VacancyStates';
 
-export function getWorkflowComponent({
+export function getWorkflowView({
 	vacancyState,
 	isRollingClose,
 	tenantCaps,
+	filter
 }) {
 	if (isRollingClose || vacancyState === ROLLING_CLOSE) {
 		if (filter === APP_TRIAGE) {
