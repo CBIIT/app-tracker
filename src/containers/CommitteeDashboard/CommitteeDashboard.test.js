@@ -148,6 +148,32 @@ describe('CommitteeDashboard component tests', () => {
 		});
 	});
 
+	test('<CommitteeDashboard /> should redirect when current tenant is missing', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+			push: mockPush,
+		});
+
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: mockTenants,
+				user: { isReadOnlyUser: false },
+			},
+			currentTenant: null,
+		});
+
+		rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText('Sorry! Please reselect your tenant and try again.')
+			).toBeInTheDocument();
+			expect(mockPush).toHaveBeenCalledWith('/');
+		});
+
+		expect(axios.get).not.toHaveBeenCalled();
+	});
+
 	test('<CommitteeDashboard /> should display error when invalid list shape is provided', async () => {
 		// Test that invalid list shape throws and triggers error UI
 		const invalidData = {
@@ -167,6 +193,19 @@ describe('CommitteeDashboard component tests', () => {
 			},
 			{ timeout: 3000 }
 		);
+
+		expect(
+			screen.getByText(/Please refresh the page and try again\./i)
+		).toBeInTheDocument();
+		const helpDeskLinks = screen.getAllByRole('link', {
+			name: 'NCIAppSupport@mail.nih.gov',
+		});
+		expect(
+			helpDeskLinks.some(
+				(link) =>
+					link.getAttribute('href') === 'mailto:NCIAppSupport@mail.nih.gov'
+			)
+		).toBe(true);
 	});
 
 	test('<CommitteeDashboard /> should call validateRoleForCurrentTenant on load', async () => {

@@ -15,9 +15,19 @@ jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
             iTrustGlideSsoId: 'mockId',
             iTrustUrl: 'mockUrl',
             isUserLoggedIn: true,
-            user: { name: 'Mock User' },
+            user: {
+                name: 'Mock User',
+                firstName: 'Mock',
+                isManager: false,
+                isCommitteeMember: false,
+                uid: 'mock-user',
+            },
             oktaLoginAndRedirectUrl: 'mockRedirectUrl',
+            tenants: [],
         },
+        currentTenant: undefined,
+        setCurrentTenant: jest.fn(),
+        previousTenant: { current: '' },
     };
 }));
 // Functionality of Imported Components will be tested in their respective test files

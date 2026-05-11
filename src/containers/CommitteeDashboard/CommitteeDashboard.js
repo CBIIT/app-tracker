@@ -62,66 +62,77 @@ const committeeDashboard = () => {
 	);
 
 	useEffect(() => {
-		if (
-			validateRoleForCurrentTenant(
-				COMMITTEE_MEMBER_ROLE,
-				currentTenant,
-				tenants
-			) ||
-			isExecSec(currentTenant, tenants)
-		) {
-			(async () => {
-				setHasError(false);
-				setIsLoading(true);
-				try {
-					setreadOnly(user.isReadOnlyUser);
-					const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
-					const currentData = await axios.get(url);
+		if (currentTenant) {
+			if (
+				validateRoleForCurrentTenant(
+					COMMITTEE_MEMBER_ROLE,
+					currentTenant,
+					tenants
+				) ||
+				isExecSec(currentTenant, tenants)
+			) {
+				(async () => {
+					setHasError(false);
+					setIsLoading(true);
+					try {
+						setreadOnly(user.isReadOnlyUser);
+						const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
+						const currentData = await axios.get(url);
 
-					const jsonData = currentData.data.result;
+						const jsonData = currentData.data.result;
 
-				const validatedData = validateVacancyData(jsonData);
+						const validatedData = validateVacancyData(jsonData);
 
-					const committeeMemberData =
-						location.pathname === EXE_SEC_DASHBOARD
-							? validatedData?.list.filter(
-									(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
-								)
-							: validatedData?.list;
-					setData(committeeMemberData);
-				} catch (err) {
-					setHasError(true);
-					notification.error({
-						message: 'Sorry! There was an error retrieving vacancies.',
-						description: (
-							<>
-								<p>
-									Please refresh the page and try again or try logging out and
-									logging back in. If the issue persists, contact the Help Desk
-									by emailing{' '}
-									<a href='mailto:NCIAppSupport@mail.nih.gov'>
-										NCIAppSupport@mail.nih.gov
-									</a>
-								</p>
-							</>
-						),
-						duration: 30,
-						style: {
-							height: '225px',
-							display: 'flex',
-							alignItems: 'center',
-						},
-					});
-				} finally {
-					setIsLoading(false);
-				}
-			})();
+						const committeeMemberData =
+							location.pathname === EXE_SEC_DASHBOARD
+								? validatedData?.list.filter(
+										(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
+									)
+								: validatedData?.list;
+						setData(committeeMemberData);
+					} catch (err) {
+						setHasError(true);
+						notification.error({
+							message: 'Sorry! There was an error retrieving vacancies.',
+							description: (
+								<>
+									<p>
+										Please refresh the page and try again or try logging out and
+										logging back in. If the issue persists, contact the Help
+										Desk by emailing{' '}
+										<a href='mailto:NCIAppSupport@mail.nih.gov'>
+											NCIAppSupport@mail.nih.gov
+										</a>
+									</p>
+								</>
+							),
+							duration: 30,
+							style: {
+								height: '225px',
+								display: 'flex',
+								alignItems: 'center',
+							},
+						});
+					} finally {
+						setIsLoading(false);
+					}
+				})();
+			} else {
+				message.destroy();
+				message.error({
+					duration: 3,
+					content:
+						'Sorry! You do not have committee member access in the selected tenant.',
+				});
+				setIsLoading(false);
+				history.push('/');
+			}
 		} else {
 			message.destroy();
 			message.error({
 				duration: 3,
 				content:
-					'Sorry! You do not have committee member access in the selected tenant.',
+					'Sorry! Please reselect your tenant and try again.'
 			});
 			setIsLoading(false);
 			history.push('/');

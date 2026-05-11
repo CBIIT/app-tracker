@@ -99,7 +99,27 @@ hr.solid {
 	width: 50%;
 }
 
+.tenant-display {
+	width: 100%;
+	height: 32px;
+	border: 2px solid #015ea2;
+	border-radius: 2px;
+	padding: 0 11px;
+	line-height: 28px;
+	font-size: 14px;
+	color: #000000;
+	background-color: #ffffff;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .ant-select-selection-placeholder {
 	opacity: 1;
 	color: rgb(0, 0, 0);
+}
+
+.ant-select-selection-item {
+	background-color: white;
+	color:rgb(0, 0, 0);
 }
