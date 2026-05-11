@@ -36,10 +36,10 @@ const TriageView = (props) => {
 					}}
 					items={
 						[
-							// { key: 'triage', label: 'Triage' }
-							// { key: 'scoring', label: 'Scoring' }
-							// { key: 'in_review', label: 'In Review' }
-							// { key: 'voting', label: 'Voting Complete' }
+							{ key: 'triage', label: 'Triage' },
+							{ key: 'scoring', label: 'Scoring' },
+							{ key: 'in_review', label: 'In Review' },
+							{ key: 'review_complete', label: 'Voting Complete' }
 						]
 					}
 				/>
