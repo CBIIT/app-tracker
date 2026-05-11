@@ -101,20 +101,23 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		})();
 	}, []);
 
-	setTimeout(async () => {
-		// checking to see if user is about to get logged out
-		// NB: this drops right to zero
-		if (
-			lastModalTimeout > 0.01 &&
-			Math.abs(lastModalTimeout - modalTimeout) > 0.1
-		) {
-			console.log('Saving ...');
-			// it changed, since it only changes when time runs out, save now
+	useEffect(() => {
+		const timerId = setTimeout(async () => {
+			// checking to see if user is about to get logged out
+			// NB: this drops right to zero
+			if (
+				lastModalTimeout > 0.01 &&
+				Math.abs(lastModalTimeout - modalTimeout) > 0.1
+			) {
+				console.log('Saving ...');
+				// it changed, since it only changes when time runs out, save now
+				setLastModalTimeout(modalTimeout);
+				save();
+			}
 			setLastModalTimeout(modalTimeout);
-			save();
-		}
-		setLastModalTimeout(modalTimeout);
-	}, checkTimeDuration);
+		}, checkTimeDuration);
+		return () => clearTimeout(timerId);
+	});
 
 	const loadExistingApplication = async () => {
 		try {

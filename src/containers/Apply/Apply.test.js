@@ -145,8 +145,6 @@ describe('Apply component', () => {
 	});
 
 	beforeEach(() => {
-		jest.useFakeTimers();
-
 		useAuth.mockReturnValue(mockUseAuth);
 		useTimeout.mockImplementation(() => ({ modalTimeout: mockModalTimeout }));
 		convertDataFromBackend.mockReturnValue(mockProfileData);
@@ -179,7 +177,6 @@ describe('Apply component', () => {
 
 	afterEach(() => {
 		jest.clearAllMocks();
-		jest.clearAllTimers()
 	});
 
 	test('Should render new application form', async () => {
