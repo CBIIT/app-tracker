@@ -145,8 +145,7 @@ describe('Apply component', () => {
 	});
 
 	beforeEach(() => {
-		axios.get.mockReset();
-		axios.post.mockReset();
+		jest.useFakeTimers();
 
 		useAuth.mockReturnValue(mockUseAuth);
 		useTimeout.mockImplementation(() => ({ modalTimeout: mockModalTimeout }));
@@ -180,6 +179,7 @@ describe('Apply component', () => {
 
 	afterEach(() => {
 		jest.clearAllMocks();
+		jest.clearAllTimers()
 	});
 
 	test('Should render new application form', async () => {
