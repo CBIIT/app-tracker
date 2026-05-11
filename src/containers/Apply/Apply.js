@@ -452,6 +452,8 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	);
 
 	const save = async () => {
+		if (!currentFormInstance) return;
+		
 		const fieldsValues = currentFormInstance.getFieldsValue();
 		const updatedFormData = await saveCurrentForm(fieldsValues);
 
