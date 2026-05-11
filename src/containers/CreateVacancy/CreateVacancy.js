@@ -331,7 +331,7 @@ const createVacancy = (props) => {
 	};
 
 	const prev = async () => {
-		if (currentStep === 0) history.goBack();
+		if (currentStep === 0) navigate(-1);
 		else {
 			const data = saveFormData(currentStep);
 			if ((await save(data)) === true) {
@@ -388,10 +388,10 @@ const createVacancy = (props) => {
 		previousTenant.current = currentTenant;
 		setCommitteeMemberOptions([]);
 		if (step < 0) {
-			history.go(step);
+			navigate(step);
 			setStep(0);
 		} else {
-			history.goBack();
+			navigate(-1);
 		}
 	}
 
