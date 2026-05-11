@@ -145,6 +145,9 @@ describe('Apply component', () => {
 	});
 
 	beforeEach(() => {
+		axios.get.mockReset();
+		axios.post.mockReset();
+
 		useAuth.mockReturnValue(mockUseAuth);
 		useTimeout.mockImplementation(() => ({ modalTimeout: mockModalTimeout }));
 		convertDataFromBackend.mockReturnValue(mockProfileData);
