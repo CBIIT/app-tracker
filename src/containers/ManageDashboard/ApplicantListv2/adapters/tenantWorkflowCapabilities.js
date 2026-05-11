@@ -7,10 +7,6 @@ export const getTenantCapabilities = (
 	vacancyTenant,
 	tenantProperties = []
 ) => {
-	const maxProgressState = getTenantPropertyValue(
-		tenantProperties,
-		'maxProgressState'
-	);
 
 	return {
 		vacancyTenant,
