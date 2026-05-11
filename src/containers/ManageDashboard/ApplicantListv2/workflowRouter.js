@@ -1,52 +1,55 @@
 import TriageView from './states/triage';
 import IndividualScoringView from './states/individual-scoring';
 import CommitteeReviewView from './states/committee-review';
-import VotingComplete from './states/voting-complete';
+import VotingCompleteView from './states/voting-complete';
 
-import RcTriageView from './rolling-close/triage';
-import RcIndividualScoringView from './rolling-close/individual-scoring';
-import RcCommitteeReviewView from './rolling-close/committee-review';
-import RcVotingCompleteView from './rolling-close/voting-complete';
+import {
+	APP_TRIAGE,
+	SCORING,
+	IN_REVIEW,
+	REVIEW_COMPLETE,
+} from '../../../constants/ApplicationStates';
+import {
+	TRIAGE,
+	INDIVIDUAL_SCORING_IN_PROGRESS,
+	COMMITTEE_REVIEW_IN_PROGRESS,
+	VOTING_COMPLETE,
+	ROLLING_CLOSE,
+} from '../../../constants/VacancyStates';
 
 export function getWorkflowComponent({
 	vacancyState,
 	isRollingClose,
 	tenantCaps,
 }) {
-	if (tenantCaps.maxProgressState === 'individual_scoring') {
-		if (isRollingClose) {
-			if (vacancyState === 'rolling_close_triage') {
-				return RcTriageView;
-			}
-			return RcIndividualScoringView;
-		}
-		if (vacancyState === 'triage') {
+	if (isRollingClose || vacancyState === ROLLING_CLOSE) {
+		if (filter === APP_TRIAGE) {
 			return TriageView;
 		}
-		return IndividualScoringView;
-	}
-
-	if (isRollingClose) {
-		if (vacancyState === 'rolling_close_triage') {
-			return RcTriageView;
+		if (filter === SCORING) {
+			return IndividualScoringView;
 		}
-		if (vacancyState === 'rolling_close_scoring') {
-			return RcIndividualScoringView;
+		if (filter === IN_REVIEW) {
+			return CommitteeReviewView;
 		}
-		if (vacancyState === 'rolling_close_in_review') {
-			return RcCommitteeReviewView;
+		if (filter === REVIEW_COMPLETE) {
+			return VotingCompleteView;
 		}
-		return RcVotingCompleteView;
-	}
-
-	if (vacancyState === 'triage') {
 		return TriageView;
 	}
-	if (vacancyState === 'individual_scoring_in_progress') {
+
+	if (vacancyState === TRIAGE) {
+		return TriageView;
+	}
+	if (vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS) {
 		return IndividualScoringView;
 	}
-	if (vacancyState === 'committee_review_in_progress') {
+	if (vacancyState === COMMITTEE_REVIEW_IN_PROGRESS) {
 		return CommitteeReviewView;
 	}
-	return VotingCompleteView;
-}
+	if (vacancyState === VOTING_COMPLETE) {
+		return VotingCompleteView;
+	}
+
+	return () => null;
+};

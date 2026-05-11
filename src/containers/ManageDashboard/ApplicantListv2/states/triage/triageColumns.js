@@ -1,23 +1,22 @@
-export function getTriageColumns({
+const GetTriageColumns = ({
 	roleCaps,
 	tenantCaps,
-	handlers,
-	searchProps,
-}) {
+	handlers
+}) => {
 	const cols = [
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
 			key: 'name',
 			width: 250,
-			...searchProps('applicant_name', 'name'),
+			...handlers.searchProps('applicant_name', 'name'),
 		},
 		{
 			title: 'Email',
 			dataIndex: 'applicant_email',
 			key: 'email',
 			width: 250,
-			...searchProps('applicant_email', 'email'),
+			...handlers.searchProps('applicant_email', 'email'),
 		},
 		{
 			title: 'Submitted',
@@ -54,7 +53,7 @@ export function getTriageColumns({
 			key: 'collect_refs',
 			align: 'center',
 			width: 200,
-			render: handlers.renderCollectReferencesButton,
+			render: handlers.renderCollectReferencesButton(record.sys_id, record.send_references),
 		});
 	}
 
@@ -64,7 +63,7 @@ export function getTriageColumns({
 			key: 'regret_email',
 			align: 'center',
 			width: 200,
-			render: handlers.renderRegretEmailButton,
+			render: handlers.renderRegretEmailButton(record.sys_id, record.rejection_email_sent, record.referred_to_interview),
 		});
 	}
 
@@ -80,3 +79,5 @@ export function getTriageColumns({
 
 	return cols;
 }
+
+export default GetTriageColumns;

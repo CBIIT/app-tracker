@@ -72,7 +72,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 	const [recommendedTotalCount, setRecommendedTotalCount] = useState(0);
 	const [nonRecommendedTotalCount, setNonRecommendedTotalCount] = useState(0);
 
-	const [recommendedLoading, setRecommendedLoading] = usestate(false);
+	const [recommendedLoading, setRecommendedLoading] = useState(false);
 	const [nonRecommendedLoading, setNonRecommendedLoading] = useState(false);
 
 	// Stale response prevention
@@ -219,7 +219,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 		}
 	}, []);
 
-	useeffect(() => {
+	useEffect(() => {
 		loadSplitApplicants();
 	}, [query, loadSplitApplicants]);
 
