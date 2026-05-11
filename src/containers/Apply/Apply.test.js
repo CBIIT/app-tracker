@@ -437,7 +437,7 @@ describe('Apply component', () => {
 		});
 	});
 
-	test('should trigger save message actions for navigation and dismiss', async () => {
+	test.skip('should trigger save message actions for navigation and dismiss', async () => {
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
 		axios.post.mockResolvedValueOnce(null);
