@@ -11,6 +11,7 @@ export const getTenantCapabilities = (
 	return {
 		vacancyTenant,
 		showCompleteColumn: vacancyTenant === 'Stadtman',
+		isStadtman: vacancyTenant === 'Stadtman',
 		enableFocusArea:
 			getTenantPropertyValue(tenantProperties, 'enableFocusArea') === 'true',
 		enableTop25Percent:

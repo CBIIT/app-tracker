@@ -1,7 +1,7 @@
-import TriageView from './states/triage';
-import IndividualScoringView from './states/individual-scoring';
-import CommitteeReviewView from './states/committee-review';
-import VotingCompleteView from './states/voting-complete';
+import TriageView from './states/triage/triageView';
+import IndividualScoringView from './states/individual-scoring/indivdualScoringView';
+import CommitteeReviewView from './states/committee-review/committeeReviewView';
+import VotingCompleteView from './states/voting-complete/votingCompleteView';
 
 import {
 	APP_TRIAGE,
@@ -21,7 +21,7 @@ export function getWorkflowView({
 	vacancyState,
 	isRollingClose,
 	tenantCaps,
-	filter
+	filter,
 }) {
 	if (isRollingClose || vacancyState === ROLLING_CLOSE) {
 		if (filter === APP_TRIAGE) {
@@ -37,20 +37,20 @@ export function getWorkflowView({
 			return VotingCompleteView;
 		}
 		return TriageView;
-	}
-
-	if (vacancyState === TRIAGE) {
-		return TriageView;
-	}
-	if (vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS) {
-		return IndividualScoringView;
-	}
-	if (vacancyState === COMMITTEE_REVIEW_IN_PROGRESS) {
-		return CommitteeReviewView;
-	}
-	if (vacancyState === VOTING_COMPLETE) {
-		return VotingCompleteView;
+	} else {
+		if (vacancyState === TRIAGE) {
+			return TriageView;
+		}
+		if (vacancyState === INDIVIDUAL_SCORING_IN_PROGRESS) {
+			return IndividualScoringView;
+		}
+		if (vacancyState === COMMITTEE_REVIEW_IN_PROGRESS) {
+			return CommitteeReviewView;
+		}
+		if (vacancyState === VOTING_COMPLETE) {
+			return VotingCompleteView;
+		}
 	}
 
 	return () => null;
-};
+}

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import {
 	GET_APPLICANT_LIST,
+	GET_APPLICANT_FOCUS_AREA,
 	GET_ROLLING_APPLICANT_LIST,
 } from '../../../../constants/ApiEndpoints';
 
@@ -55,7 +56,7 @@ const queryReducer = (state, action) => {
 
 		// Vacancy changed or switched filter tab, this will reset back to initial state
 		case QUERY_ACTIONS.RESET_FOR_NEW_VACANCY:
-			return initialQuery;
+			return { ...initialQuery };
 
 		default:
 			return state;
@@ -69,6 +70,7 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 	const [applicants, setApplicants] = useState([]);
 	const [totalCount, setTotalCount] = useState(0);
 	const [loading, setLoading] = useState(false);
+	const [focusAreaOptions, setFocusAreaOptions] = useState([]);
 
 	// Stale response prevention
 	// If user clicks next and then quickly clicks previous, don't want old response to overwrite
@@ -127,6 +129,23 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 		}
 	}, [buildApplicantUrl]);
 
+	const loadFocusAreaOptions = useCallback(async () => {
+		try {
+			const response = await axios.get(`${GET_APPLICANT_FOCUS_AREA}${sysId}`);
+			const rawFocusAreas = response?.data?.result?.focusAreaFilter;
+			const safeFocusAreas = Array.isArray(rawFocusAreas) ? rawFocusAreas : [];
+
+			setFocusAreaOptions(
+				safeFocusAreas.map((focusArea) => ({
+					text: focusArea,
+					value: focusArea,
+				}))
+			);
+		} catch (_error) {
+			setFocusAreaOptions([]);
+		}
+	}, [sysId]);
+
 	const handleTableChange = useCallback((payload) => {
 		if (payload.page !== undefined) {
 			dispatch({
@@ -170,6 +189,10 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 		loadApplicants();
 	}, [query, loadApplicants]);
 
+	useEffect(() => {
+		loadFocusAreaOptions();
+	}, [loadFocusAreaOptions]);
+
 	// clears table and resets query
 	const initializeForVacancy = useCallback(() => {
 		dispatch({ type: QUERY_ACTIONS.RESET_FOR_NEW_VACANCY });
@@ -190,6 +213,7 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 		applicants,
 		totalCount,
 		loading,
+		focusAreaOptions,
 
 		// Main event handler (single entry point)
 		// Pass this to Table.onChange handlers
