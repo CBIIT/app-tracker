@@ -178,6 +178,7 @@ describe('Apply component', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
 		jest.clearAllTimers();
+		jest.useRealTimers();
 	});
 
 	test('Should render new application form', async () => {
