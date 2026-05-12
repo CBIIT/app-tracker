@@ -93,7 +93,6 @@ describe('FileUploadAndDisplay Component', () => {
     });
 
     it('handles file upload error', async () => {
-        jest.useFakeTimers(); // ADD THIS
         message.error = jest.fn();
         axios.post.mockRejectedValueOnce(new Error('Upload failed'));
         const file = new File(['test'], 'test-file.txt', { type: 'text/plain' });
@@ -109,7 +108,6 @@ describe('FileUploadAndDisplay Component', () => {
         expect(message.error).toHaveBeenCalledWith(
             'Sorry, an error occurred while uploading.  Try reloading the page and uploading again.'
         );
-        jest.useRealTimers();
     });
 
     it('confirm modal should display after delete button is clicked', async () => {
