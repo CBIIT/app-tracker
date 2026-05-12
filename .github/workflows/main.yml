@@ -22,4 +22,4 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Run Jest tests
-        run: npm test
+        run: npm test -- --runInBand
