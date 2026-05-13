@@ -1,14 +1,14 @@
-const GetTriageColumns = ({
-	roleCaps,
-	tenantCaps,
-	handlers
-}) => {
+const GetTriageColumns = ({ roleCaps, tenantCaps, handlers }) => {
+	const safeRoleCaps = roleCaps || {};
+	const safeTenantCaps = tenantCaps || {};
 	const safeHandlers = handlers || {};
 	const getSearchProps = safeHandlers.searchProps || (() => ({}));
 	const renderDate = safeHandlers.renderDate || ((value) => value);
 	const renderDecision = safeHandlers.renderDecision || ((value) => value);
-	const renderCompleteIcon = safeHandlers.renderCompleteIcon || ((value) => value);
-	const renderReferenceCount = safeHandlers.renderReferenceCount || ((value) => value);
+	const renderCompleteIcon =
+		safeHandlers.renderCompleteIcon || ((value) => value);
+	const renderReferenceCount =
+		safeHandlers.renderReferenceCount || ((value) => value);
 	const renderCollectReferencesButton =
 		safeHandlers.renderCollectReferencesButton || (() => null);
 	const renderRegretEmailButton =
@@ -49,7 +49,7 @@ const GetTriageColumns = ({
 		},
 	];
 
-	if (tenantCaps.showCompleteColumn) {
+	if (safeTenantCaps.showCompleteColumn) {
 		cols.push({
 			title: 'Complete',
 			dataIndex: 'is_app_complete',
@@ -58,7 +58,7 @@ const GetTriageColumns = ({
 		});
 	}
 
-	if (roleCaps.canCollectReferences) {
+	if (safeRoleCaps.canCollectReferences) {
 		cols.push({
 			title: '',
 			key: 'collect_refs',
@@ -69,7 +69,7 @@ const GetTriageColumns = ({
 		});
 	}
 
-	if (roleCaps.canSendRegretEmail && !tenantCaps.showTop25) {
+	if (safeRoleCaps.canSendRegretEmail && !safeTenantCaps.showTop25) {
 		cols.push({
 			title: '',
 			key: 'regret_email',
@@ -84,17 +84,15 @@ const GetTriageColumns = ({
 		});
 	}
 
-	if (roleCaps.canViewReferenceStatus) {
-		cols.push({
-			title: 'Reference Status',
-			dataIndex: 'total_received_references',
-			key: 'reference_status',
-			align: 'center',
-			render: renderReferenceCount,
-		});
-	}
+	cols.push({
+		title: 'Reference Status',
+		dataIndex: 'total_received_references',
+		key: 'reference_status',
+		align: 'center',
+		render: renderReferenceCount,
+	});
 
 	return cols;
-}
+};
 
 export default GetTriageColumns;

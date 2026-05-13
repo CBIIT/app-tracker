@@ -1,11 +1,9 @@
 import { useReducer, useRef, useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
-import { message } from 'antd';
 import {
-	GET_APPLICANT_LIST,
-	GET_APPLICANT_FOCUS_AREA,
-	GET_ROLLING_APPLICANT_LIST,
-} from '../../../../constants/ApiEndpoints';
+	getFocusAreaOptions,
+	buildApplicantListUrl,
+	fetchApplicantList,
+} from '../services/applicantListService';
 
 // Defines what query changes are possible
 const QUERY_ACTIONS = {
@@ -77,33 +75,20 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 
 	const buildApplicantUrl = useCallback(() => {
 		// Build URL from a single query snapshot so API requests are predictable.
+		// Delegates URL construction to service for consistency with split hook.
 		const { page, pageSize, orderBy, orderColumn, searchText, focusArea } =
 			query;
 
-		const offset = page;
-		const limit = pageSize;
-
-		const api =
-			vacancyState === 'rolling_close'
-				? GET_ROLLING_APPLICANT_LIST
-				: GET_APPLICANT_LIST;
-
-		let url = `${api}${sysId}?offset=${offset}&limit=${limit}`;
-
-		if (orderBy && orderColumn) {
-			url += `&orderBy=${orderBy}&orderColumn=${orderColumn}`;
-		}
-
-		if (searchText && searchText.trim()) {
-			url += `&search=${encodeURIComponent(searchText.toLowerCase())}`;
-		}
-
-		const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
-		if (safeFocusArea.length > 0) {
-			url += `&focusArea=${safeFocusArea.join(',')}`;
-		}
-
-		return url;
+		return buildApplicantListUrl({
+			vacancySysId: sysId,
+			vacancyState,
+			page,
+			pageSize,
+			orderBy,
+			orderColumn,
+			searchText,
+			focusArea,
+		});
 	}, [query, sysId, vacancyState]);
 
 	const loadApplicants = useCallback(async () => {
@@ -117,17 +102,16 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			const requestId = ++requestIdRef.current;
 			const url = buildApplicantUrl();
 
-			const response = await axios.get(url);
+			// Delegate to service for fetching single applicant list.
+			const response = await fetchApplicantList(url);
 
 			if (requestId === requestIdRef.current) {
-				setApplicants(response.data?.result?.applicants || []);
-				setTotalCount(response.data?.result?.totalCount || 0);
+				setApplicants(response.applicants);
+				setTotalCount(response.totalCount);
 			}
 		} catch (error) {
+			// Error handling done by service; just ensure loading state is cleared.
 			console.error('Error loading applicants:', error);
-			message.error(
-				'Sorry! An error occurred while loading applicants. Try reloading.'
-			);
 		} finally {
 			setLoading(false);
 		}
@@ -139,20 +123,9 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			return;
 		}
 
-		try {
-			const response = await axios.get(`${GET_APPLICANT_FOCUS_AREA}${sysId}`);
-			const rawFocusAreas = response?.data?.result?.focusAreaFilter;
-			const safeFocusAreas = Array.isArray(rawFocusAreas) ? rawFocusAreas : [];
-
-			setFocusAreaOptions(
-				safeFocusAreas.map((focusArea) => ({
-					text: focusArea,
-					value: focusArea,
-				}))
-			);
-		} catch (_error) {
-			setFocusAreaOptions([]);
-		}
+		// Delegate to service for fetching focus area options.
+		const options = await getFocusAreaOptions(sysId);
+		setFocusAreaOptions(options);
 	}, [enabled, sysId]);
 
 	const handleTableChange = useCallback((payload) => {
@@ -243,17 +216,14 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	return {
 		// query state for debugging
 		query,
-
 		// table data
 		applicants,
 		totalCount,
 		loading,
 		focusAreaOptions,
-
 		// Main event handler (single entry point)
 		// Pass this to Table.onChange handlers
 		handleTableChange,
-
 		// Life cycle handlers
 		initializeForVacancy, // Call when vacancy changes
 		refresh, // Call from modals/actions

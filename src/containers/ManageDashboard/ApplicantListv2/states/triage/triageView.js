@@ -1,6 +1,5 @@
 import { useMemo, useCallback, useContext, useEffect, useState } from 'react';
 import { Table, Radio, Button, message } from 'antd';
-import axios from 'axios';
 import { ROLLING_CLOSE } from '../../../../../constants/VacancyStates';
 import GetTriageColumns from './triageColumns';
 import MapTriageTableChange from './mapTriageTableChange';
@@ -13,9 +12,9 @@ import {
 	REVIEW_COMPLETE,
 } from '../../../../../constants/ApplicationStates';
 import {
-	SEND_REGRET_EMAIL,
-	COLLECT_REFERENCES,
-} from '../../../../../constants/ApiEndpoints';
+	collectReferences as collectReferencesApi,
+	sendRejectionEmail as sendRejectionEmailApi,
+} from '../../services/notificationService';
 import { transformDateTimeToDisplay } from '../../../../../components/Util/Date/Date';
 import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
@@ -135,13 +134,10 @@ const TriageView = (props) => {
 		async (sysId) => {
 			// Executes only after ReferenceModal confirmation.
 			try {
-				const response = await axios.get(COLLECT_REFERENCES + sysId);
-				message.success(response?.data?.result?.message || 'Reference collection initiated.');
+				await collectReferencesApi(sysId);
 				props.dataApi.refresh?.();
 			} catch (_error) {
-				message.error(
-					'Sorry, there was an error sending the notifications to the references. Try refreshing the browser.'
-				);
+				// Error handling done by service.
 			}
 		},
 		[props.dataApi]
@@ -151,15 +147,10 @@ const TriageView = (props) => {
 		async (sysId) => {
 			// Executes only after RejectionEmailModal confirmation.
 			try {
-				const response = await axios.get(SEND_REGRET_EMAIL + sysId);
-				message.success(
-					response?.data?.result?.response?.message || 'Regret email sent.'
-				);
+				await sendRejectionEmailApi(sysId);
 				props.dataApi.refresh?.();
 			} catch (_error) {
-				message.error(
-					'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
-				);
+				// Error handling done by service.
 			}
 		},
 		[props.dataApi]

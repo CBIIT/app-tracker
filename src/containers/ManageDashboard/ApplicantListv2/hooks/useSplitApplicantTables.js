@@ -1,11 +1,10 @@
 import { useReducer, useRef, useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
 import { message } from 'antd';
 import {
-	GET_APPLICANT_LIST,
-	GET_APPLICANT_FOCUS_AREA,
-	GET_ROLLING_APPLICANT_LIST,
-} from '../../../../constants/ApiEndpoints';
+	getFocusAreaOptions,
+	buildApplicantListUrl,
+	fetchSplitApplicantLists,
+} from '../services/applicantListService';
 
 // Defines what query changes are possible
 const QUERY_ACTIONS = {
@@ -84,47 +83,20 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	// Gate used so we can load focus-area options first, then the applicant lists.
 	const hasBootstrappedRef = useRef(false);
 
+	// URL building delegated to service for consistency and testability.
 	const buildApplicantUrl = useCallback(
 		(recommended, queryState) => {
-			// Query state is passed explicitly to keep URL generation deterministic
-			// for each request batch.
-			const {
-				page,
-				pageSize,
-				orderBy,
-				orderColumn,
-				searchText,
-				focusArea,
-			} = queryState;
-
-			const offset = page;
-			const limit = pageSize;
-
-			const api =
-				vacancyState === 'rolling_close'
-					? GET_ROLLING_APPLICANT_LIST
-					: GET_APPLICANT_LIST;
-
-			let url = `${api}${sysId}?offset=${offset}&limit=${limit}`;
-
-			if (orderBy && orderColumn) {
-				url += `&orderBy=${orderBy}&orderColumn=${orderColumn}`;
-			}
-
-			if (recommended) {
-				url += `&recommended=${recommended}`;
-			}
-
-			if (searchText && searchText.trim()) {
-				url += `&search=${encodeURIComponent(searchText.toLowerCase())}`;
-			}
-
-			const safeFocusArea = Array.isArray(focusArea) ? focusArea : [];
-			if (safeFocusArea.length > 0) {
-				url += `&focusArea=${safeFocusArea.join(',')}`;
-			}
-
-			return url;
+			return buildApplicantListUrl({
+				vacancySysId: sysId,
+				vacancyState,
+				page: queryState.page,
+				pageSize: queryState.pageSize,
+				orderBy: queryState.orderBy,
+				orderColumn: queryState.orderColumn,
+				searchText: queryState.searchText,
+				focusArea: queryState.focusArea,
+				recommended,
+			});
 		},
 		[sysId, vacancyState]
 	);
@@ -152,18 +124,15 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 				query: queryState,
 			});
 
-			// Fetch both lists in parallel for faster table updates.
-			const [recResponse, nonRecResponse] = await Promise.all([
-				axios.get(recUrl),
-				axios.get(nonRecUrl),
-			]);
+			// Delegate to service for fetching both lists in parallel.
+			const response = await fetchSplitApplicantLists(recUrl, nonRecUrl);
 
 			if (recRequestId === recommendedRequestIdRef.current) {
-				setRecommendedApplicants(recResponse.data.result.applicants || []);
-				setRecommendedTotalCount(recResponse.data.result.totalCount || 0);
+				setRecommendedApplicants(response.recommended.applicants);
+				setRecommendedTotalCount(response.recommended.totalCount);
 				console.debug(
 					'✅ Recommended applicants updated:',
-					recResponse.data.result.totalCount
+					response.recommended.totalCount
 				);
 			} else {
 				console.debug(
@@ -172,13 +141,11 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 			}
 
 			if (nonRecRequestId === nonRecommendedRequestIdRef.current) {
-				setNonRecommendedApplicants(
-					nonRecResponse.data.result.applicants || []
-				);
-				setNonRecommendedTotalCount(nonRecResponse.data.result.totalCount || 0);
+				setNonRecommendedApplicants(response.nonRecommended.applicants);
+				setNonRecommendedTotalCount(response.nonRecommended.totalCount);
 				console.debug(
 					'✅ non-Recommended applicants updated:',
-					nonRecResponse.data.result.totalCount
+					response.nonRecommended.totalCount
 				);
 			} else {
 				console.debug(
@@ -186,10 +153,8 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 				);
 			}
 		} catch (error) {
+			// Error handling done by service; just ensure loading states are cleared.
 			console.error('❌ Error loading split applicants:', error);
-			message.error(
-				'Sorry! An error occured while loading applicants. Try reloading.'
-			);
 		} finally {
 			setRecommendedLoading(false);
 			setNonRecommendedLoading(false);
@@ -202,20 +167,9 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 			return;
 		}
 
-		try {
-			const response = await axios.get(`${GET_APPLICANT_FOCUS_AREA}${sysId}`);
-			const rawFocusAreas = response?.data?.result?.focusAreaFilter;
-			const safeFocusAreas = Array.isArray(rawFocusAreas) ? rawFocusAreas : [];
-
-			setFocusAreaOptions(
-				safeFocusAreas.map((focusArea) => ({
-					text: focusArea,
-					value: focusArea,
-				}))
-			);
-		} catch (_error) {
-			setFocusAreaOptions([]);
-		}
+		// Delegate to service for fetching focus area options.
+		const options = await getFocusAreaOptions(sysId);
+		setFocusAreaOptions(options);
 	}, [enabled, sysId]);
 
 	const handleTableChange = useCallback((payload) => {

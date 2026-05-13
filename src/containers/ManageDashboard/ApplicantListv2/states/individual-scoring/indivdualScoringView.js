@@ -2,7 +2,6 @@ import { useMemo, useCallback, useContext, useEffect, useState } from 'react';
 import getIndividualScoringColumns from './individualScoringColumns';
 import mapIndividualScoringChanges from './mapIndividualScoringTableChange';
 import { Table, Radio, Button, message } from 'antd';
-import axios from 'axios';
 import SearchContext from '../../../Util/SearchContext';
 import { getColumnSearchProps } from '../../../Util/ColumnSearchProps';
 import { ROLLING_CLOSE } from '../../../../../constants/VacancyStates';
@@ -12,11 +11,11 @@ import {
 	IN_REVIEW,
 	REVIEW_COMPLETE,
 } from '../../../../../constants/ApplicationStates';
+import { updateTop25Percent } from '../../services/top25Service';
 import {
-	COLLECT_REFERENCES,
-	SEND_REGRET_EMAIL,
-	TOP25PERCENT,
-} from '../../../../../constants/ApiEndpoints';
+	collectReferences as collectReferencesApi,
+	sendRejectionEmail as sendRejectionEmailApi,
+} from '../../services/notificationService';
 import SplitApplicantTables from '../../tables/SplitApplicantTables';
 import InnerScoresTable from '../../components/InnerScoresTable';
 import ReferenceModal from '../../modals/ReferenceModal';
@@ -79,16 +78,10 @@ const IndividualScoringView = (props) => {
 				onChange={async (event) => {
 					// Top 25 writes immediately (same behavior as legacy columnChangeHandler).
 					try {
-						await axios.put(TOP25PERCENT, {
-							appSysId: sysId,
-							top25Percent: event.target.checked ? true : '',
-						});
+						await updateTop25Percent(sysId, event.target.checked);
 						props.dataApi.refresh?.();
-						message.success('Decision saved.');
 					} catch (_error) {
-						message.error(
-							'Sorry, an error occurred while attempting to save. Please try reloading the page and selecting again.'
-						);
+						// Error handling done by service.
 					}
 				}}
 			/>
@@ -175,13 +168,10 @@ const IndividualScoringView = (props) => {
 		async (sysId) => {
 			// Executes only after ReferenceModal confirmation.
 			try {
-				const response = await axios.get(COLLECT_REFERENCES + sysId);
-				message.success(response?.data?.result?.message || 'Reference collection initiated.');
+				await collectReferencesApi(sysId);
 				props.dataApi.refresh?.();
 			} catch (_error) {
-				message.error(
-					'Sorry, there was an error sending the notifications to the references. Try refreshing the browser.'
-				);
+				// Error handling done by service.
 			}
 		},
 		[props.dataApi]
@@ -191,15 +181,10 @@ const IndividualScoringView = (props) => {
 		async (sysId) => {
 			// Executes only after RejectionEmailModal confirmation.
 			try {
-				const response = await axios.get(SEND_REGRET_EMAIL + sysId);
-				message.success(
-					response?.data?.result?.response?.message || 'Regret email sent.'
-				);
+				await sendRejectionEmailApi(sysId);
 				props.dataApi.refresh?.();
 			} catch (_error) {
-				message.error(
-					'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
-				);
+				// Error handling done by service.
 			}
 		},
 		[props.dataApi]

@@ -8,6 +8,8 @@ const getIndividualScoringColumns = ({
 	focusAreaOptions,
 	focusAreaFilter,
 }) => {
+	const safeRoleCaps = roleCaps || {};
+	const safeTenantCaps = tenantCaps || {};
 	const safeHandlers = handlers || {};
 	const getSearchProps =
 		searchProps || safeHandlers.searchProps || (() => ({}));
@@ -24,8 +26,10 @@ const getIndividualScoringColumns = ({
 	const renderTop25Select = safeHandlers.renderTop25Select || (() => null);
 	const renderCollectReferencesButton =
 		safeHandlers.renderCollectReferencesButton || (() => null);
-	const renderRegretEmailButton = safeHandlers.renderRegretEmailButton || (() => null);
-	const renderReferenceCount = safeHandlers.renderReferenceCount || ((text) => text || '-');
+	const renderRegretEmailButton =
+		safeHandlers.renderRegretEmailButton || (() => null);
+	const renderReferenceCount =
+		safeHandlers.renderReferenceCount || ((text) => text || '-');
 	const getFocusAreaFilterOptions =
 		safeHandlers.getFocusAreaFilterOptions ||
 		(() => (Array.isArray(focusAreaOptions) ? focusAreaOptions : []));
@@ -51,7 +55,11 @@ const getIndividualScoringColumns = ({
 	];
 
 	// Top 25 column requires manager role and tenat opt-in (statdman)
-	if (roleCaps.isVacancyManager && tenantCaps.showTop25 && tenantCaps.isStadtman) {
+	if (
+		safeRoleCaps.isVacancyManager &&
+		safeTenantCaps.showTop25 &&
+		safeTenantCaps.isStadtman
+	) {
 		cols.unshift({
 			title: 'Top 25',
 			dataIndex: 'top_25',
@@ -66,7 +74,7 @@ const getIndividualScoringColumns = ({
 	}
 
 	// column is visual aid filter. Tenant based as not all tenants use
-	if (tenantCaps.enableFocusArea && tenantCaps.isStadtman) {
+	if (safeTenantCaps.enableFocusArea && safeTenantCaps.isStadtman) {
 		cols.push({
 			title: 'Focus Area',
 			dataIndex: 'focus_area',
@@ -91,7 +99,7 @@ const getIndividualScoringColumns = ({
 		});
 	}
 
-	if (!tenantCaps.showTop25) {
+	if (!safeTenantCaps.showTop25) {
 		cols.push({
 			title: 'Average Score',
 			dataIndex: 'average_member_score',
@@ -103,35 +111,50 @@ const getIndividualScoringColumns = ({
 					(a.average_member_score || 0) - (b.average_member_score || 0),
 			},
 		});
+
+		cols.push(
+			{
+				title: 'Scoring Status',
+				dataIndex: 'socring_status',
+				width: 125,
+			},
+			{
+				title: 'Interview Recommendation',
+				dataIndex: 'interview_recommendation',
+				width: 100,
+				render: (value) =>
+					value.Yes + ' Yes • ' + value.No + ' No • ' + value.Maybe + ' Maybe',
+			}
+		);
 	}
 
-	if (roleCaps.canCollectReferences) {
-		cols.push({
-			title: '',
-			key: 'collect_references',
-			align: 'center',
-			width: 180,
-			render: (_text, record) =>
-				renderCollectReferencesButton(record.sys_id, record.references_sent),
-		});
-	}
+	if (safeRoleCaps.isVacancyManager) {
+		if (safeRoleCaps.canCollectReferences) {
+			cols.push({
+				title: '',
+				key: 'collect_references',
+				align: 'center',
+				width: 180,
+				render: (_text, record) =>
+					renderCollectReferencesButton(record.sys_id, record.references_sent),
+			});
+		}
 
-	if (roleCaps.canSendRegretEmail && !tenantCaps.showTop25) {
-		cols.push({
-			title: '',
-			key: 'regret_email',
-			align: 'center',
-			width: 180,
-			render: (_text, record) =>
-				renderRegretEmailButton(
-					record.sys_id,
-					record.rejection_email_sent,
-					record.referred_to_interview
-				),
-		});
-	}
+		if (safeRoleCaps.canSendRegretEmail && !safeTenantCaps.showTop25) {
+			cols.push({
+				title: '',
+				key: 'regret_email',
+				align: 'center',
+				width: 180,
+				render: (_text, record) =>
+					renderRegretEmailButton(
+						record.sys_id,
+						record.rejection_email_sent,
+						record.referred_to_interview
+					),
+			});
+		}
 
-	if (roleCaps.canViewReferenceStatus) {
 		cols.push({
 			title: 'Reference Status',
 			dataIndex: 'total_received_references',
