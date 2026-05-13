@@ -64,7 +64,7 @@ const queryReducer = (state, action) => {
 };
 
 export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) => {
-	// single immutable query object
+	// Single immutable query object for one-table flows (triage/chair/committee).
 	const [query, dispatch] = useReducer(queryReducer, initialQuery);
 
 	const [applicants, setApplicants] = useState([]);
@@ -72,11 +72,11 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	const [loading, setLoading] = useState(false);
 	const [focusAreaOptions, setFocusAreaOptions] = useState([]);
 
-	// Stale response prevention
-	// If user clicks next and then quickly clicks previous, don't want old response to overwrite
+	// Stale response prevention for fast pagination/filter changes.
 	const requestIdRef = useRef(0);
 
 	const buildApplicantUrl = useCallback(() => {
+		// Build URL from a single query snapshot so API requests are predictable.
 		const { page, pageSize, orderBy, orderColumn, searchText, focusArea } =
 			query;
 
@@ -160,6 +160,9 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			return;
 		}
 
+		// Payload supports partial updates so table/search/filter handlers can
+		// update just what changed.
+
 		if (payload.page !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.PAGE_CHANGED,
@@ -199,6 +202,8 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	}, [enabled]);
 
 	useEffect(() => {
+		// When this hook is not active for the current workflow, clear local state
+		// so stale data is not accidentally rendered.
 		if (!enabled) {
 			setApplicants([]);
 			setTotalCount(0);
@@ -211,6 +216,7 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	}, [query, loadApplicants, enabled]);
 
 	useEffect(() => {
+		// Focus-area filter options are loaded independently of applicant rows.
 		if (!enabled) {
 			return;
 		}
@@ -218,14 +224,14 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		loadFocusAreaOptions();
 	}, [loadFocusAreaOptions, enabled]);
 
-	// clears table and resets query
+	// Clears table/query state when vacancy/slice context changes.
 	const initializeForVacancy = useCallback(() => {
 		dispatch({ type: QUERY_ACTIONS.RESET_FOR_NEW_VACANCY });
 		setApplicants([]);
 		setTotalCount(0);
 	}, []);
 
-	// called from modals/actions that change data
+	// Called after mutating actions to re-fetch current query results.
 	const refresh = useCallback(() => {
 		if (!enabled) {
 			return;

@@ -22,6 +22,7 @@ import RejectionEmailModal from '../../modals/RejectionEmailModal';
 import './index.css';
 
 const TriageView = (props) => {
+	// Modal state used by legacy-aligned Collect References / Regret Email flows.
 	const [applicantSysId, setApplicantSysId] = useState('');
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [showRejectionEmailModal, setShowRejectionEmailModal] = useState(false);
@@ -53,6 +54,8 @@ const TriageView = (props) => {
 	);
 
 	useEffect(() => {
+		// SearchContext is shared across ManageDashboard views. Keep the active
+		// data hook query state synchronized so API requests include search text.
 		if (searchText === (props.dataApi?.query?.searchText || '')) {
 			return;
 		}
@@ -90,6 +93,7 @@ const TriageView = (props) => {
 	// Handler for collect references button
 	const renderCollectReferencesButton = useCallback(
 		(sysId, referencesSent) => {
+			// Open confirmation modal first (legacy parity), API call happens on confirm.
 			return (
 				<Button
 					onClick={() => {
@@ -109,6 +113,7 @@ const TriageView = (props) => {
 	// Handler for regret email button
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
+			// Modal content varies based on interview/rejection status.
 			return (
 				<Button
 					onClick={() => {
@@ -128,6 +133,7 @@ const TriageView = (props) => {
 
 	const sendReferences = useCallback(
 		async (sysId) => {
+			// Executes only after ReferenceModal confirmation.
 			try {
 				const response = await axios.get(COLLECT_REFERENCES + sysId);
 				message.success(response?.data?.result?.message || 'Reference collection initiated.');
@@ -143,6 +149,7 @@ const TriageView = (props) => {
 
 	const sendRejectionEmail = useCallback(
 		async (sysId) => {
+			// Executes only after RejectionEmailModal confirmation.
 			try {
 				const response = await axios.get(SEND_REGRET_EMAIL + sysId);
 				message.success(
@@ -226,6 +233,7 @@ const TriageView = (props) => {
 						hideOnSinglePage: true,
 					}}
 					onChange={(pagination, _filters, sorter) => {
+						// Triage currently uses search + sort + pagination (no focus-area filter).
 						props.dataApi.handleTableChange(
 							MapTriageTableChange({
 								pagination,

@@ -5,13 +5,16 @@ const { Panel } = Collapse;
 const pageSizeOptions = [10, 25, 50];
 
 const SplitApplicantTables = (props) => {
+	// Shared columns are rendered in both recommended and non-recommended tables.
 	const columns = Array.isArray(props.columns) ? props.columns : [];
+	// Optional expandable row config used by scoring views (inner committee scores).
 	const expandable =
 		typeof props.expandedRowRender === 'function'
 			? { expandedRowRender: props.expandedRowRender }
 			: undefined;
 
 	const buildPayloadFromTableChange = (pagination, filters, sorter) => {
+		// Focus-area filter is emitted by antd as an array under filters.focus_area.
 		const focusArea = Array.isArray(filters?.focus_area)
 			? filters.focus_area
 			: [];
@@ -27,6 +30,7 @@ const SplitApplicantTables = (props) => {
 		return payload;
 	};
 
+	// Both panels dispatch into the same dataApi.handleTableChange entry point.
 	const handleRecommendedChange = (pagination, filters, sorter) => {
 		props.onTableChange(buildPayloadFromTableChange(pagination, filters, sorter));
 	};

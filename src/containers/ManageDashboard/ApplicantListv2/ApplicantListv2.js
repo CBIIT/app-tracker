@@ -9,7 +9,9 @@ import { ROLLING_CLOSE, TRIAGE } from '../../../constants/VacancyStates';
 import './ApplicantListv2.css';
 
 const ApplicantListv2 = (props) => {
+	// The vacancy sys_id comes from the route and is used by all data hooks.
 	const { sysId } = useParams();
+	// Rolling close vacancies use the tab/slice state to switch views in place.
 	const [activeSlice, setActiveSlice] = useState(props.filter || TRIAGE);
 
 	// User roles tied to the Vacancy. Can be found in adapters > roleCapabilities.js
@@ -27,12 +29,16 @@ const ApplicantListv2 = (props) => {
 
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
 	const currentSlice = props.filter || activeSlice;
+	// Triage always uses a single applicant list, even in rolling close mode.
 	const isTriageStage =
 		props.vacancyState === TRIAGE ||
 		(isRollingClose && currentSlice === TRIAGE);
 
+	// Split mode is for manager-style flows where recommended/non-recommended
+	// tables are shown side-by-side.
 	const canUseSplit =
 		roleCaps.canUseRecommendationSplit || roleCaps.isVacancyManager;
+	// Only one hook should be actively fetching at a time to avoid duplicate API calls.
 	const splitEnabled = !isTriageStage && canUseSplit;
 	const nonSplitEnabled = isTriageStage || !canUseSplit;
 
@@ -50,6 +56,8 @@ const ApplicantListv2 = (props) => {
 		enabled: nonSplitEnabled,
 	});
 
+	// Unified API shape consumed by view components. Views should not care
+	// whether data comes from split or non-split hooks.
 	const dataApi = isTriageStage || !canUseSplit ? nonSplitApplicants : splitTables;
 
 	// Filter applicants by their state property for Rolling Close
@@ -80,6 +88,7 @@ const ApplicantListv2 = (props) => {
 
 	// Create a filtered data API object for rolling close
 	const filteredDataApi = useMemo(() => {
+		// Non-rolling vacancies do not need client-side state slice filtering.
 		if (!isRollingClose) {
 			return dataApi;
 		}
@@ -106,12 +115,13 @@ const ApplicantListv2 = (props) => {
 	// This handles the filter change on Rolling Close Vacancies
 	const handleSliceChange = (slice) => {
 		setActiveSlice(slice);
-		// Reset both data sources when switching tabs
+		// Reset both hooks so stale query state (page/search/focus area) does not
+		// leak between rolling close slices.
 		nonSplitApplicants.initializeForVacancy();
 		splitTables.initializeForVacancy();
 	};
 
-	// View is dynamic based on Vacancy State or filter for Rolling Close, This is done in workFlowRouter.js file
+	// Router returns the concrete view component for the current state/slice.
 	const View = useMemo(
 		() =>
 			getWorkflowView({

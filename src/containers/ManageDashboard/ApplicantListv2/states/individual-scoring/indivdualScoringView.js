@@ -23,6 +23,7 @@ import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
 
 const IndividualScoringView = (props) => {
+	// Modal state for legacy-aligned reference/regret confirmation flows.
 	const [applicantSysId, setApplicantSysId] = useState('');
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [showRejectionEmailModal, setShowRejectionEmailModal] = useState(false);
@@ -33,6 +34,8 @@ const IndividualScoringView = (props) => {
 	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
 		useContext(SearchContext);
 
+	// Source of truth for selected focus area filters is the data hook query state.
+	// This ensures filter pills/checkmarks stay in sync across refreshes.
 	const focusAreaFilter = Array.isArray(props.dataApi?.query?.focusArea)
 		? props.dataApi.query.focusArea
 		: [];
@@ -60,6 +63,7 @@ const IndividualScoringView = (props) => {
 	// Handler for rendering Top 25 select checkbox
 	const renderTop25Select = useCallback(
 		(sysId, isTop25) => {
+			// API may return string/number/boolean; normalize for stable checkbox behavior.
 			const normalizedValue =
 				typeof isTop25 === 'string' ? isTop25.toLowerCase() : isTop25;
 			const checked =
@@ -73,6 +77,7 @@ const IndividualScoringView = (props) => {
 				type='checkbox'
 				checked={checked}
 				onChange={async (event) => {
+					// Top 25 writes immediately (same behavior as legacy columnChangeHandler).
 					try {
 						await axios.put(TOP25PERCENT, {
 							appSysId: sysId,
@@ -95,6 +100,7 @@ const IndividualScoringView = (props) => {
 	// Handler for rendering regret email button
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
+			// Open modal first; send action happens on confirmation.
 			return (
 				<Button
 					onClick={() => {
@@ -113,6 +119,7 @@ const IndividualScoringView = (props) => {
 	);
 
 	const renderCollectReferencesButton = useCallback((sysId, referencesSent) => {
+		// Open modal first; send action happens on confirmation.
 		return (
 			<Button
 				onClick={() => {
@@ -144,6 +151,7 @@ const IndividualScoringView = (props) => {
 
 	const handlers = useMemo(
 		() => ({
+			// searchProps injects ant-table search dropdown UI into Applicant/Email columns.
 			searchProps,
 			renderTop25Select,
 			renderCollectReferencesButton,
@@ -165,6 +173,7 @@ const IndividualScoringView = (props) => {
 
 	const sendReferences = useCallback(
 		async (sysId) => {
+			// Executes only after ReferenceModal confirmation.
 			try {
 				const response = await axios.get(COLLECT_REFERENCES + sysId);
 				message.success(response?.data?.result?.message || 'Reference collection initiated.');
@@ -180,6 +189,7 @@ const IndividualScoringView = (props) => {
 
 	const sendRejectionEmail = useCallback(
 		async (sysId) => {
+			// Executes only after RejectionEmailModal confirmation.
 			try {
 				const response = await axios.get(SEND_REGRET_EMAIL + sysId);
 				message.success(
@@ -196,6 +206,7 @@ const IndividualScoringView = (props) => {
 	);
 
 	useEffect(() => {
+		// Keep shared SearchContext in sync with the active data hook query.
 		if (searchText === (props.dataApi?.query?.searchText || '')) {
 			return;
 		}
@@ -224,11 +235,13 @@ const IndividualScoringView = (props) => {
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
 	const canViewTriage = props.roleCaps?.canViewTriageFilter;
 	const renderExpandedScores = useCallback(
+		// Legacy parity: expandable rows render committee scores for each applicant.
 		(record) => <InnerScoresTable applicationSysId={record.sys_id} />,
 		[]
 	);
 
 	const handleNonSplitChange = (pagination, filters, sorter) => {
+		// Ant Table emits focus area filters under filters.focus_area.
 		const focusArea =
 			filters && filters.focus_area ? filters.focus_area : [];
 
@@ -269,6 +282,7 @@ const IndividualScoringView = (props) => {
 			<div className='applicant-table'>
 				{/* Split Table View (recommended and non-recommended) for Vacancy Managers */}
 				{props.roleCaps.isVacancyManager ? (
+					// Managers get split recommended/non-recommended tables.
 					<SplitApplicantTables
 						recommendedApplicants={props.dataApi.recommendedApplicants}
 						nonRecommendedApplicants={props.dataApi.nonRecommendedApplicants}

@@ -64,7 +64,7 @@ const queryReducer = (state, action) => {
 };
 
 export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true }) => {
-	// single immutable query object
+	// Single immutable query object for both split tables.
 	const [query, dispatch] = useReducer(queryReducer, initialQuery);
 
 	const [recommendedApplicants, setRecommendedApplicants] = useState([]);
@@ -77,14 +77,17 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	const [nonRecommendedLoading, setNonRecommendedLoading] = useState(false);
 	const [focusAreaOptions, setFocusAreaOptions] = useState([]);
 
-	// Stale response prevention
-	// If user clicks next and then quickly clicks previous, don't want old "next page" response to overwrite
+	// Stale response prevention: if users change paging/filter quickly, older
+	// responses should not overwrite newer state.
 	const recommendedRequestIdRef = useRef(0);
 	const nonRecommendedRequestIdRef = useRef(0);
+	// Gate used so we can load focus-area options first, then the applicant lists.
 	const hasBootstrappedRef = useRef(false);
 
 	const buildApplicantUrl = useCallback(
 		(recommended, queryState) => {
+			// Query state is passed explicitly to keep URL generation deterministic
+			// for each request batch.
 			const {
 				page,
 				pageSize,
@@ -126,7 +129,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		[sysId, vacancyState]
 	);
 
-	// fires exactly 2 coordinated api calls for recommended and non-recommended
+	// Fires exactly 2 coordinated API calls for recommended and non-recommended.
 	const loadSplitApplicants = useCallback(async (queryState) => {
 		if (!enabled) {
 			return;
@@ -139,7 +142,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 			const recRequestId = ++recommendedRequestIdRef.current;
 			const nonRecRequestId = ++nonRecommendedRequestIdRef.current;
 
-			// build URLs from same query state for consistency
+			// Build URLs from the same query snapshot so both tables stay in sync.
 			const recUrl = buildApplicantUrl('yes', queryState);
 			const nonRecUrl = buildApplicantUrl('no', queryState);
 
@@ -149,7 +152,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 				query: queryState,
 			});
 
-			// fires both requests in parallel (not sequential)
+			// Fetch both lists in parallel for faster table updates.
 			const [recResponse, nonRecResponse] = await Promise.all([
 				axios.get(recUrl),
 				axios.get(nonRecUrl),
@@ -220,6 +223,9 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 			return;
 		}
 
+		// Apply only the fields included in the payload so callers can make
+		// partial updates (e.g. just page, just search, etc.).
+
 		if (payload.page !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.PAGE_CHANGED,
@@ -259,6 +265,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	}, [enabled]);
 
 	useEffect(() => {
+		// Avoid fetching applicants until bootstrap loads focus-area options first.
 		if (!enabled || !hasBootstrappedRef.current) {
 			return;
 		}
@@ -267,6 +274,9 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	}, [query, loadSplitApplicants, enabled]);
 
 	useEffect(() => {
+		// Bootstrap sequence per vacancy context:
+		// 1) load focus area options for filter dropdowns
+		// 2) load recommended/non-recommended tables
 		if (!enabled) {
 			hasBootstrappedRef.current = false;
 			setFocusAreaOptions([]);
@@ -293,7 +303,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		};
 	}, [enabled, loadFocusAreaOptions, loadSplitApplicants, sysId, vacancyState]);
 
-	// clears all tables and resets queries
+	// Clears all table data and query state when vacancy/slice changes.
 	const initializeForVacancy = useCallback(() => {
 		hasBootstrappedRef.current = false;
 		dispatch({ type: QUERY_ACTIONS.RESET_FOR_NEW_VACANCY });
@@ -303,7 +313,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		setNonRecommendedTotalCount(0);
 	}, []);
 
-	// called from modals/actions that change data
+	// Called after mutating actions (e.g. top-25 toggle, reference/regret actions).
 	const refresh = useCallback(() => {
 		if (!enabled) {
 			return;

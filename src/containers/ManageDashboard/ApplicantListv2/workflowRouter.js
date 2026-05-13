@@ -23,6 +23,8 @@ export function getWorkflowView({
 	tenantCaps,
 	filter,
 }) {
+	// Rolling close behaves like a tabbed workflow. The active slice drives
+	// which view component renders, regardless of the base vacancy state.
 	if (isRollingClose || vacancyState === ROLLING_CLOSE) {
 		if (filter === APP_TRIAGE) {
 			return TriageView;
@@ -36,8 +38,10 @@ export function getWorkflowView({
 		if (filter === REVIEW_COMPLETE) {
 			return VotingCompleteView;
 		}
+		// Safe default if no slice is set yet.
 		return TriageView;
 	} else {
+		// Standard (non-rolling) vacancies map directly from vacancy state.
 		if (vacancyState === TRIAGE) {
 			return TriageView;
 		}
@@ -52,5 +56,6 @@ export function getWorkflowView({
 		}
 	}
 
+	// Keeps render path safe during transient data-loading states.
 	return () => null;
 }
