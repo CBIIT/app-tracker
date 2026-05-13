@@ -101,23 +101,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		})();
 	}, []);
 
-	useEffect(() => {
-		const timerId = setTimeout(async () => {
-			// checking to see if user is about to get logged out
-			// NB: this drops right to zero
-			if (
-				lastModalTimeout > 0.01 &&
-				Math.abs(lastModalTimeout - modalTimeout) > 0.1
-			) {
-				console.log('Saving ...');
-				// it changed, since it only changes when time runs out, save now
-				setLastModalTimeout(modalTimeout);
-				save();
-			}
+	setTimeout(async () => {
+		// checking to see if user is about to get logged out
+		// NB: this drops right to zero
+		if (
+			lastModalTimeout > 0.01 &&
+			Math.abs(lastModalTimeout - modalTimeout) > 0.1
+		) {
+			console.log('Saving ...');
+			// it changed, since it only changes when time runs out, save now
 			setLastModalTimeout(modalTimeout);
-		}, checkTimeDuration);
-		return () => clearTimeout(timerId);
-	});
+			save();
+		}
+		setLastModalTimeout(modalTimeout);
+	}, checkTimeDuration);
 
 	const loadExistingApplication = async () => {
 		try {
@@ -348,7 +345,6 @@ const Apply = ({ initialValues, editSubmitted }) => {
 
 	let steps = [];
 
-
 	if (formData.applicantDocuments?.length > 0)
 		steps.splice(2, 0, {
 			key: 'applicantDocuments',
@@ -436,7 +432,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
-			currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
+			currentStep === 0 ? navigate.goBack() : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
@@ -448,14 +444,13 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			key='saveLink'
 			type='link'
 			style={{ paddingLeft: '150px', paddingRight: '10px' }}
-			onClick={() => navigate(APPLICANT_DASHBOARD)}
+			onClick={() => navigate.push(APPLICANT_DASHBOARD)}
 		>
 			Back to Applications Home?
 		</Button>
 	);
 
 	const save = async () => {
-
 		const fieldsValues = currentFormInstance.getFieldsValue();
 		const updatedFormData = await saveCurrentForm(fieldsValues);
 
