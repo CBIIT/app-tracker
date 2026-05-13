@@ -4,6 +4,7 @@ import { notification } from 'antd';
 import axios from 'axios';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
+import { isChair } from '../../components/Util/RoleValidator/RoleValidator';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { useNavigate } from 'react-router-dom';
 import { waitFor, screen, fireEvent } from '@testing-library/react';
@@ -85,6 +86,7 @@ describe('ChairDashboard component tests', () => {
 			},
 			currentTenant: 'f24965fc1b9c11106daea681f54bcb04', // Match the tenant value
 		});
+		isChair.mockReturnValue(true);
 		validateRoleForCurrentTenant.mockReturnValue(true);
 		axios.get.mockResolvedValue({ data: { result: mockVacancies } });
 	});
@@ -147,6 +149,7 @@ describe('ChairDashboard component tests', () => {
 			mockNavigate
 		);
 
+		isChair.mockReturnValueOnce(false);
 		validateRoleForCurrentTenant.mockReturnValueOnce(false);
 
 		rtRender(<ChairDashboard />);
@@ -155,7 +158,7 @@ describe('ChairDashboard component tests', () => {
 			() => {
 				expect(
 					screen.getByText(
-						'Sorry! You do not have committee member access in the selected tenant.'
+						'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
 					)
 				).toBeInTheDocument();
 			},
@@ -250,14 +253,25 @@ describe('ChairDashboard component tests', () => {
 		expect(applicantsLink).toHaveAttribute('href', '#/manage/vacancy/1/applicants');
 	});
 
-	test('<ChairDashboard /> should render empty state when no vacancies', async () => {
+	test('<ChairDashboard /> should redirect when API returns no assigned vacancies', async () => {
 		const emptyVacancies = {
 			status: 200,
 			list: [],
 		};
 		axios.get.mockResolvedValue({ data: { result: emptyVacancies } });
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+			push: mockPush,
+		});
 		rtRender(<ChairDashboard />);
-		expect(await screen.findByText('Vacancies Assigned To You')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
+				)
+			).toBeInTheDocument();
+		});
+		expect(mockPush).toHaveBeenCalledWith('/');
 	});
 
 	test('<ChairDashboard /> should display all vacancies when no filter matches', async () => {
@@ -383,5 +397,38 @@ describe('ChairDashboard component tests', () => {
 
 		expect(await screen.findByText('No Applicant Count Job')).toBeInTheDocument();
 		expect(await screen.findByText('0 applicants')).toBeInTheDocument();
+	});
+
+	test('<ChairDashboard /> should handle validateVacancyData returning object without list', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+			push: mockPush,
+		});
+
+		isChair.mockReturnValueOnce(true);
+		
+		// Mock validateVacancyData to return object without list property
+		const validateVacancyDataModule = require('./Utils/validateVacancyData');
+		jest.spyOn(validateVacancyDataModule, 'validateVacancyData').mockReturnValueOnce({});
+		
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					status: 200,
+					list: [{ vacancy_id: 1, vacancy_title: 'Test', status: 'open' }],
+				},
+			},
+		});
+
+		rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
+				)
+			).toBeInTheDocument();
+		});
+		expect(mockPush).toHaveBeenCalledWith('/');
 	});
 });
