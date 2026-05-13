@@ -26,25 +26,28 @@ const ApplicantListv2 = (props) => {
 
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
 	const currentSlice = props.filter || activeSlice;
+	const isTriageStage =
+		props.vacancyState === TRIAGE ||
+		(isRollingClose && currentSlice === TRIAGE);
+
+	const canUseSplit =
+		roleCaps.canUseRecommendationSplit || roleCaps.isVacancyManager;
+	const splitEnabled = !isTriageStage && canUseSplit;
+	const nonSplitEnabled = isTriageStage || !canUseSplit;
 
 	// Hook that makes recommended and non-recommended api calls
 	const splitTables = useSplitApplicantTables({
 		sysId,
 		vacancyState: props.vacancyState,
+		enabled: splitEnabled,
 	});
 
 	// Hook that calls recommended applicants for Committee Members (Chairs?)
 	const nonSplitApplicants = useNonSplitApplicants({
 		sysId,
 		vacancyState: props.vacancyState,
+		enabled: nonSplitEnabled,
 	});
-	const isTriageStage =
-		props.vacancyState === TRIAGE ||
-		(isRollingClose && currentSlice === TRIAGE);
-	
-	// This is calling duplicates call atm
-	const canUseSplit =
-		roleCaps.canUseRecommendationSplit || roleCaps.isVacancyManager;
 
 	const dataApi = isTriageStage || !canUseSplit ? nonSplitApplicants : splitTables;
 

@@ -63,7 +63,7 @@ const queryReducer = (state, action) => {
 	}
 };
 
-export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
+export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true }) => {
 	// single immutable query object
 	const [query, dispatch] = useReducer(queryReducer, initialQuery);
 
@@ -81,11 +81,18 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 	// If user clicks next and then quickly clicks previous, don't want old "next page" response to overwrite
 	const recommendedRequestIdRef = useRef(0);
 	const nonRecommendedRequestIdRef = useRef(0);
+	const hasBootstrappedRef = useRef(false);
 
 	const buildApplicantUrl = useCallback(
-		(recommended) => {
-			const { page, pageSize, orderBy, orderColumn, searchText, focusArea } =
-				query;
+		(recommended, queryState) => {
+			const {
+				page,
+				pageSize,
+				orderBy,
+				orderColumn,
+				searchText,
+				focusArea,
+			} = queryState;
 
 			const offset = page;
 			const limit = pageSize;
@@ -116,11 +123,15 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 
 			return url;
 		},
-		[query, sysId, vacancyState]
+		[sysId, vacancyState]
 	);
 
 	// fires exactly 2 coordinated api calls for recommended and non-recommended
-	const loadSplitApplicants = useCallback(async () => {
+	const loadSplitApplicants = useCallback(async (queryState) => {
+		if (!enabled) {
+			return;
+		}
+
 		setRecommendedLoading(true);
 		setNonRecommendedLoading(true);
 
@@ -129,13 +140,13 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 			const nonRecRequestId = ++nonRecommendedRequestIdRef.current;
 
 			// build URLs from same query state for consistency
-			const recUrl = buildApplicantUrl('yes');
-			const nonRecUrl = buildApplicantUrl('no');
+			const recUrl = buildApplicantUrl('yes', queryState);
+			const nonRecUrl = buildApplicantUrl('no', queryState);
 
 			console.debug('🔵 Split table fetch started:', {
 				recUrl,
 				nonRecUrl,
-				query,
+				query: queryState,
 			});
 
 			// fires both requests in parallel (not sequential)
@@ -180,9 +191,14 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 			setRecommendedLoading(false);
 			setNonRecommendedLoading(false);
 		}
-	}, [buildApplicantUrl]);
+	}, [buildApplicantUrl, enabled]);
 
 	const loadFocusAreaOptions = useCallback(async () => {
+		if (!enabled) {
+			setFocusAreaOptions([]);
+			return;
+		}
+
 		try {
 			const response = await axios.get(`${GET_APPLICANT_FOCUS_AREA}${sysId}`);
 			const rawFocusAreas = response?.data?.result?.focusAreaFilter;
@@ -197,9 +213,13 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 		} catch (_error) {
 			setFocusAreaOptions([]);
 		}
-	}, [sysId]);
+	}, [enabled, sysId]);
 
 	const handleTableChange = useCallback((payload) => {
+		if (!enabled) {
+			return;
+		}
+
 		if (payload.page !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.PAGE_CHANGED,
@@ -236,18 +256,46 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 				payload: payload.focusArea,
 			});
 		}
-	}, []);
+	}, [enabled]);
 
 	useEffect(() => {
-		loadSplitApplicants();
-	}, [query, loadSplitApplicants]);
+		if (!enabled || !hasBootstrappedRef.current) {
+			return;
+		}
+
+		loadSplitApplicants(query);
+	}, [query, loadSplitApplicants, enabled]);
 
 	useEffect(() => {
-		loadFocusAreaOptions();
-	}, [loadFocusAreaOptions]);
+		if (!enabled) {
+			hasBootstrappedRef.current = false;
+			setFocusAreaOptions([]);
+			return;
+		}
+
+		let isCancelled = false;
+
+		const bootstrapSplitTable = async () => {
+			hasBootstrappedRef.current = false;
+			await loadFocusAreaOptions();
+			if (isCancelled) {
+				return;
+			}
+
+			hasBootstrappedRef.current = true;
+			await loadSplitApplicants(initialQuery);
+		};
+
+		bootstrapSplitTable();
+
+		return () => {
+			isCancelled = true;
+		};
+	}, [enabled, loadFocusAreaOptions, loadSplitApplicants, sysId, vacancyState]);
 
 	// clears all tables and resets queries
 	const initializeForVacancy = useCallback(() => {
+		hasBootstrappedRef.current = false;
 		dispatch({ type: QUERY_ACTIONS.RESET_FOR_NEW_VACANCY });
 		setRecommendedApplicants([]);
 		setNonRecommendedApplicants([]);
@@ -257,8 +305,12 @@ export const useSplitApplicantTables = ({ sysId, vacancyState }) => {
 
 	// called from modals/actions that change data
 	const refresh = useCallback(() => {
-		loadSplitApplicants();
-	}, [loadSplitApplicants]);
+		if (!enabled) {
+			return;
+		}
+
+		loadSplitApplicants(query);
+	}, [enabled, loadSplitApplicants, query]);
 
 	return {
 		// query state for debugging

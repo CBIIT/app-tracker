@@ -24,8 +24,12 @@ const getIndividualScoringColumns = ({
 	const renderTop25Select = safeHandlers.renderTop25Select || (() => null);
 	const renderRegretEmailButton = safeHandlers.renderRegretEmailButton || (() => null);
 	const renderReferenceCount = safeHandlers.renderReferenceCount || ((text) => text || '-');
-	const getFocusAreaFilterOptions = safeHandlers.getFocusAreaFilterOptions || (() => []);
-	const getFocusAreaFilterValue = safeHandlers.getFocusAreaFilterValue || (() => []);
+	const getFocusAreaFilterOptions =
+		safeHandlers.getFocusAreaFilterOptions ||
+		(() => (Array.isArray(focusAreaOptions) ? focusAreaOptions : []));
+	const getFocusAreaFilterValue =
+		safeHandlers.getFocusAreaFilterValue ||
+		(() => (Array.isArray(focusAreaFilter) ? focusAreaFilter : []));
 
 	const cols = [
 		{
@@ -47,12 +51,15 @@ const getIndividualScoringColumns = ({
 	// Top 25 column requires manager role and tenat opt-in (statdman)
 	if (roleCaps.isVacancyManager && tenantCaps.showTop25 && tenantCaps.isStadtman) {
 		cols.unshift({
-			title: 'Top 25%',
+			title: 'Top 25',
 			dataIndex: 'top_25',
 			key: 'top_25',
 			align: 'center',
 			render: (_text, record) =>
-				renderTop25Select(record.sys_id, record.top_25_percent),
+				renderTop25Select(
+					record.sys_id,
+					record.top_25 ?? record.top_25_percent
+				),
 		});
 	}
 
@@ -62,7 +69,20 @@ const getIndividualScoringColumns = ({
 			title: 'Focus Area',
 			dataIndex: 'focus_area',
 			key: 'focus_area',
-			render: (focusArea) => focusArea,
+			render: (focusArea, record) => {
+				if (focusArea) {
+					return focusArea;
+				}
+
+				const primaryFocusArea = record?.primary_focus_area;
+				const secondaryFocusArea = record?.secondary_focus_area;
+
+				if (primaryFocusArea && secondaryFocusArea) {
+					return `${primaryFocusArea}, ${secondaryFocusArea}`;
+				}
+
+				return primaryFocusArea || secondaryFocusArea || '-';
+			},
 			filters: getFocusAreaFilterOptions(),
 			filteredValue: getFocusAreaFilterValue(),
 			width: 250,

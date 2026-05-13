@@ -1,10 +1,10 @@
-const MapTriageTableChange = ({ pagination, sorter }) => {
+const MapTriageTableChange = ({ pagination, sorter, searchText }) => {
     return {
         page: pagination?.current,
         pageSize: pagination?.pageSize,
         orderBy: sorter?.order || undefined,
         orderColumn: sorter?.field || undefined,
-        /* seachText and focusArea come from seperate controls and not antd onChange arguments */
+        searchText: searchText ?? '',
     };
 }
 

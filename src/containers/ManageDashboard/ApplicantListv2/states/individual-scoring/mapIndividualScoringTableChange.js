@@ -15,7 +15,7 @@ const mapIndividualScoringChanges = ({
         orderBy: sorter?.order,
         orderColumn: sorter?.field,
         searchText: searchText ?? '',
-        focusArea: Array.isArray(focusArea) ? focusArea : [],
+        focusArea: Array.isArray(nextFocusArea) ? nextFocusArea : [],
     };
 };
 

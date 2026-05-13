@@ -1,8 +1,10 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useCallback, useContext, useEffect } from 'react';
 import getIndividualScoringColumns from './individualScoringColumns';
 import mapIndividualScoringChanges from './mapIndividualScoringTableChange';
 import { Table, Radio, Button, message } from 'antd';
 import axios from 'axios';
+import SearchContext from '../../../Util/SearchContext';
+import { getColumnSearchProps } from '../../../Util/ColumnSearchProps';
 import { ROLLING_CLOSE } from '../../../../../constants/VacancyStates';
 import {
 	APP_TRIAGE,
@@ -12,25 +14,71 @@ import {
 } from '../../../../../constants/ApplicationStates';
 import {
 	SEND_REGRET_EMAIL,
-	COLLECT_REFERENCES,
+	TOP25PERCENT,
 } from '../../../../../constants/ApiEndpoints';
 import SplitApplicantTables from '../../tables/SplitApplicantTables';
 
 const IndividualScoringView = (props) => {
-	const [focusAreaFilter, setFocusAreaFilter] = useState([]);
+	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
+		useContext(SearchContext);
+
+	const focusAreaFilter = Array.isArray(props.dataApi?.query?.focusArea)
+		? props.dataApi.query.focusArea
+		: [];
+
+	const searchProps = useCallback(
+		(dataIndex, key) =>
+			getColumnSearchProps(
+				dataIndex,
+				key,
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
+		[
+			searchInput,
+			searchText,
+			searchedColumn,
+			setSearchText,
+			setSearchedColumn,
+		]
+	);
 
 	// Handler for rendering Top 25 select checkbox
 	const renderTop25Select = useCallback(
-		(sysId, isTop25) => (
+		(sysId, isTop25) => {
+			const normalizedValue =
+				typeof isTop25 === 'string' ? isTop25.toLowerCase() : isTop25;
+			const checked =
+				normalizedValue === '1' ||
+				normalizedValue === 1 ||
+				normalizedValue === true ||
+				normalizedValue === 'true';
+
+			return (
 			<input
 				type='checkbox'
-				checked={isTop25 === '1' ? true : false}
-				onChange={() => {
-					// This would need to call an API to update
+				checked={checked}
+				onChange={async (event) => {
+					try {
+						await axios.put(TOP25PERCENT, {
+							appSysId: sysId,
+							top25Percent: event.target.checked ? true : '',
+						});
+						props.dataApi.refresh?.();
+						message.success('Decision saved.');
+					} catch (_error) {
+						message.error(
+							'Sorry, an error occurred while attempting to save. Please try reloading the page and selecting again.'
+						);
+					}
 				}}
 			/>
-		),
-		[]
+			);
+		},
+		[props.dataApi]
 	);
 
 	// Handler for rendering regret email button
@@ -72,6 +120,7 @@ const IndividualScoringView = (props) => {
 
 	const handlers = useMemo(
 		() => ({
+			searchProps,
 			renderTop25Select,
 			renderRegretEmailButton,
 			renderReferenceCount,
@@ -79,6 +128,7 @@ const IndividualScoringView = (props) => {
 			getFocusAreaFilterValue,
 		}),
 		[
+			searchProps,
 			renderTop25Select,
 			renderRegretEmailButton,
 			renderReferenceCount,
@@ -87,15 +137,30 @@ const IndividualScoringView = (props) => {
 		]
 	);
 
+	useEffect(() => {
+		if (searchText === (props.dataApi?.query?.searchText || '')) {
+			return;
+		}
+
+		props.dataApi.handleTableChange({ searchText, page: 1 });
+	}, [searchText, props.dataApi]);
+
 	const columns = useMemo(
 		() =>
 			getIndividualScoringColumns({
 				roleCaps: props.roleCaps,
 				tenantCaps: props.tenantCaps,
 				handlers,
+				focusAreaOptions: props.dataApi.focusAreaOptions,
 				focusAreaFilter,
 			}),
-		[props.roleCaps, props.tenantCaps, handlers, focusAreaFilter]
+		[
+			props.roleCaps,
+			props.tenantCaps,
+			handlers,
+			props.dataApi.focusAreaOptions,
+			focusAreaFilter,
+		]
 	);
 
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
@@ -104,20 +169,18 @@ const IndividualScoringView = (props) => {
 	const handleNonSplitChange = (pagination, filters, sorter) => {
 		const focusArea =
 			filters && filters.focus_area ? filters.focus_area : [];
-		setFocusAreaFilter(focusArea);
 
 		props.dataApi.handleTableChange(
 			mapIndividualScoringChanges({
 				pagination,
 				sorter,
-				searchText: props.dataApi.query.searchText,
+				searchText,
 				focusArea,
 			})
 		);
 	};
 
 	const handleFocusAreaFilterChange = (focusArea) => {
-		setFocusAreaFilter(focusArea);
 		props.dataApi.handleTableChange({ focusArea, page: 1 });
 	};
 

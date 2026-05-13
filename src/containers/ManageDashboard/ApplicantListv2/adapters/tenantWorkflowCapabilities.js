@@ -13,12 +13,7 @@ export const getTenantCapabilities = (
 		showCompleteColumn: vacancyTenant === 'Stadtman',
 		isStadtman: vacancyTenant === 'Stadtman',
 		enableFocusArea:
-			getTenantPropertyValue(tenantProperties, 'enableFocusArea') === 'true',
-		enableTop25Percent:
-			getTenantPropertyValue(tenantProperties, 'enableTop25Percent') ===
-			'true',
-		forceSingleScoringTable:
-			getTenantPropertyValue(tenantProperties, 'forceSingleScoringTable') ===
-			'true',
+			getTenantPropertyValue(tenantProperties, 'enableFocusArea') === 'true' || vacancyTenant === 'Stadtman',
+		showTop25: vacancyTenant === 'Stadtman',
 	};
 };

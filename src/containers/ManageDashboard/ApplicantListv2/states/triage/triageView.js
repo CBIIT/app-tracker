@@ -1,9 +1,11 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useContext, useEffect } from 'react';
 import { Table, Radio, Button, message } from 'antd';
 import axios from 'axios';
 import { ROLLING_CLOSE } from '../../../../../constants/VacancyStates';
 import GetTriageColumns from './triageColumns';
 import MapTriageTableChange from './mapTriageTableChange';
+import SearchContext from '../../../Util/SearchContext';
+import { getColumnSearchProps } from '../../../Util/ColumnSearchProps';
 import {
 	APP_TRIAGE,
 	SCORING,
@@ -18,6 +20,37 @@ import { transformDateTimeToDisplay } from '../../../../../components/Util/Date/
 import './index.css';
 
 const TriageView = (props) => {
+	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
+		useContext(SearchContext);
+
+	const searchProps = useCallback(
+		(dataIndex, key) =>
+			getColumnSearchProps(
+				dataIndex,
+				key,
+				searchText,
+				setSearchText,
+				searchedColumn,
+				setSearchedColumn,
+				searchInput
+			),
+		[
+			searchInput,
+			searchText,
+			searchedColumn,
+			setSearchText,
+			setSearchedColumn,
+		]
+	);
+
+	useEffect(() => {
+		if (searchText === (props.dataApi?.query?.searchText || '')) {
+			return;
+		}
+
+		props.dataApi.handleTableChange({ searchText, page: 1 });
+	}, [searchText, props.dataApi]);
+
 	// Handler for rendering date
 	const renderDate = useCallback((date) => {
 		return transformDateTimeToDisplay(date);
@@ -91,6 +124,7 @@ const TriageView = (props) => {
 
 	const handlers = useMemo(
 		() => ({
+			searchProps,
 			renderDate,
 			renderDecision,
 			renderCompleteIcon,
@@ -99,6 +133,7 @@ const TriageView = (props) => {
 			renderRegretEmailButton,
 		}),
 		[
+			searchProps,
 			renderDate,
 			renderDecision,
 			renderCompleteIcon,
@@ -155,7 +190,11 @@ const TriageView = (props) => {
 				}}
 				onChange={(pagination, _filters, sorter) => {
 					props.dataApi.handleTableChange(
-						MapTriageTableChange(pagination, sorter)
+						MapTriageTableChange({
+							pagination,
+							sorter,
+							searchText,
+						})
 					);
 				}}
 				scroll={{ x: true }}

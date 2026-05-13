@@ -8,16 +8,17 @@ const SplitApplicantTables = (props) => {
 	const columns = Array.isArray(props.columns) ? props.columns : [];
 
 	const buildPayloadFromTableChange = (pagination, filters, sorter) => {
+		const focusArea = Array.isArray(filters?.focus_area)
+			? filters.focus_area
+			: [];
+
 		const payload = {
 			page: pagination?.current,
 			pageSize: pagination?.pageSize,
 			orderBy: sorter?.order,
 			orderColumn: sorter?.field,
+			focusArea,
 		};
-
-		if (Array.isArray(filters?.focus_area)) {
-			payload.focusArea = filters.focus_area;
-		}
 
 		return payload;
 	};

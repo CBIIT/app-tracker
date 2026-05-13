@@ -63,7 +63,7 @@ const queryReducer = (state, action) => {
 	}
 };
 
-export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
+export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) => {
 	// single immutable query object
 	const [query, dispatch] = useReducer(queryReducer, initialQuery);
 
@@ -107,6 +107,10 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 	}, [query, sysId, vacancyState]);
 
 	const loadApplicants = useCallback(async () => {
+		if (!enabled) {
+			return;
+		}
+
 		setLoading(true);
 
 		try {
@@ -127,9 +131,14 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 		} finally {
 			setLoading(false);
 		}
-	}, [buildApplicantUrl]);
+	}, [buildApplicantUrl, enabled]);
 
 	const loadFocusAreaOptions = useCallback(async () => {
+		if (!enabled) {
+			setFocusAreaOptions([]);
+			return;
+		}
+
 		try {
 			const response = await axios.get(`${GET_APPLICANT_FOCUS_AREA}${sysId}`);
 			const rawFocusAreas = response?.data?.result?.focusAreaFilter;
@@ -144,9 +153,13 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 		} catch (_error) {
 			setFocusAreaOptions([]);
 		}
-	}, [sysId]);
+	}, [enabled, sysId]);
 
 	const handleTableChange = useCallback((payload) => {
+		if (!enabled) {
+			return;
+		}
+
 		if (payload.page !== undefined) {
 			dispatch({
 				type: QUERY_ACTIONS.PAGE_CHANGED,
@@ -183,15 +196,27 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 				payload: payload.focusArea,
 			});
 		}
-	}, []);
+	}, [enabled]);
 
 	useEffect(() => {
+		if (!enabled) {
+			setApplicants([]);
+			setTotalCount(0);
+			setFocusAreaOptions([]);
+			setLoading(false);
+			return;
+		}
+
 		loadApplicants();
-	}, [query, loadApplicants]);
+	}, [query, loadApplicants, enabled]);
 
 	useEffect(() => {
+		if (!enabled) {
+			return;
+		}
+
 		loadFocusAreaOptions();
-	}, [loadFocusAreaOptions]);
+	}, [loadFocusAreaOptions, enabled]);
 
 	// clears table and resets query
 	const initializeForVacancy = useCallback(() => {
@@ -202,8 +227,12 @@ export const useNonSplitApplicants = ({ sysId, vacancyState }) => {
 
 	// called from modals/actions that change data
 	const refresh = useCallback(() => {
+		if (!enabled) {
+			return;
+		}
+
 		loadApplicants();
-	}, [loadApplicants]);
+	}, [enabled, loadApplicants]);
 
 	return {
 		// query state for debugging
