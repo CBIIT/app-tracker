@@ -22,6 +22,8 @@ const getIndividualScoringColumns = ({
 			return parseFloat(text).toFixed(2);
 		});
 	const renderTop25Select = safeHandlers.renderTop25Select || (() => null);
+	const renderCollectReferencesButton =
+		safeHandlers.renderCollectReferencesButton || (() => null);
 	const renderRegretEmailButton = safeHandlers.renderRegretEmailButton || (() => null);
 	const renderReferenceCount = safeHandlers.renderReferenceCount || ((text) => text || '-');
 	const getFocusAreaFilterOptions =
@@ -103,7 +105,18 @@ const getIndividualScoringColumns = ({
 		});
 	}
 
-	if (roleCaps.canSendRegretEmail) {
+	if (roleCaps.canCollectReferences) {
+		cols.push({
+			title: '',
+			key: 'collect_references',
+			align: 'center',
+			width: 180,
+			render: (_text, record) =>
+				renderCollectReferencesButton(record.sys_id, record.references_sent),
+		});
+	}
+
+	if (roleCaps.canSendRegretEmail && !tenantCaps.showTop25) {
 		cols.push({
 			title: '',
 			key: 'regret_email',

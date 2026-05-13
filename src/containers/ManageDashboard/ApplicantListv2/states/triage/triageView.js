@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useContext, useEffect } from 'react';
+import { useMemo, useCallback, useContext, useEffect, useState } from 'react';
 import { Table, Radio, Button, message } from 'antd';
 import axios from 'axios';
 import { ROLLING_CLOSE } from '../../../../../constants/VacancyStates';
@@ -17,9 +17,18 @@ import {
 	COLLECT_REFERENCES,
 } from '../../../../../constants/ApiEndpoints';
 import { transformDateTimeToDisplay } from '../../../../../components/Util/Date/Date';
+import ReferenceModal from '../../modals/ReferenceModal';
+import RejectionEmailModal from '../../modals/RejectionEmailModal';
 import './index.css';
 
 const TriageView = (props) => {
+	const [applicantSysId, setApplicantSysId] = useState('');
+	const [showReferenceModal, setShowReferenceModal] = useState(false);
+	const [showRejectionEmailModal, setShowRejectionEmailModal] = useState(false);
+	const [referencesSent, setReferencesSent] = useState('0');
+	const [rejectionEmailSent, setRejectionEmailSent] = useState('0');
+	const [referredToInterview, setReferredToInterview] = useState('no');
+
 	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
 		useContext(SearchContext);
 
@@ -81,43 +90,70 @@ const TriageView = (props) => {
 	// Handler for collect references button
 	const renderCollectReferencesButton = useCallback(
 		(sysId, referencesSent) => {
-			const handleCollectReferences = async () => {
-				try {
-					await axios.get(COLLECT_REFERENCES + sysId);
-					message.success('Reference collection initiated.');
-					props.dataApi.refresh?.();
-				} catch (error) {
-					message.error('Error collecting references.');
-				}
-			};
-
 			return (
-				<Button onClick={handleCollectReferences} size='small'>
+				<Button
+					onClick={() => {
+						setApplicantSysId(sysId);
+						setReferencesSent(referencesSent);
+						setShowReferenceModal(true);
+					}}
+					size='small'
+				>
 					Collect References
 				</Button>
 			);
 		},
-		[props.dataApi]
+		[]
 	);
 
 	// Handler for regret email button
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
-			const handleSendRegretEmail = async () => {
-				try {
-					await axios.get(SEND_REGRET_EMAIL + sysId);
-					message.success('Regret email sent.');
-					props.dataApi.refresh?.();
-				} catch (error) {
-					message.error('Error sending regret email.');
-				}
-			};
-
 			return (
-				<Button onClick={handleSendRegretEmail} size='small'>
+				<Button
+					onClick={() => {
+						setApplicantSysId(sysId);
+						setRejectionEmailSent(rejectionEmailSent);
+						setReferredToInterview(referredToInterview);
+						setShowRejectionEmailModal(true);
+					}}
+					size='small'
+				>
 					Send Regret Email
 				</Button>
 			);
+		},
+		[]
+	);
+
+	const sendReferences = useCallback(
+		async (sysId) => {
+			try {
+				const response = await axios.get(COLLECT_REFERENCES + sysId);
+				message.success(response?.data?.result?.message || 'Reference collection initiated.');
+				props.dataApi.refresh?.();
+			} catch (_error) {
+				message.error(
+					'Sorry, there was an error sending the notifications to the references. Try refreshing the browser.'
+				);
+			}
+		},
+		[props.dataApi]
+	);
+
+	const sendRejectionEmail = useCallback(
+		async (sysId) => {
+			try {
+				const response = await axios.get(SEND_REGRET_EMAIL + sysId);
+				message.success(
+					response?.data?.result?.response?.message || 'Regret email sent.'
+				);
+				props.dataApi.refresh?.();
+			} catch (_error) {
+				message.error(
+					'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
+				);
+			}
 		},
 		[props.dataApi]
 	);
@@ -175,29 +211,46 @@ const TriageView = (props) => {
 					</Radio.Group>
 				</div>
 			)}
-			<Table
-				rowKey='sys_id'
-				dataSource={props.dataApi.applicants}
-				columns={columns}
-				loading={props.dataApi.loading}
-				pagination={{
-					current: props.dataApi.query.page,
-					pageSize: props.dataApi.query.pageSize,
-					total: props.dataApi.totalCount,
-					pageSizeOptions: [10, 25, 50],
-					showSizeChanger: true,
-					hideOnSinglePage: true,
-				}}
-				onChange={(pagination, _filters, sorter) => {
-					props.dataApi.handleTableChange(
-						MapTriageTableChange({
-							pagination,
-							sorter,
-							searchText,
-						})
-					);
-				}}
-				scroll={{ x: true }}
+			<div className='applicant-table'>
+				<Table
+					rowKey='sys_id'
+					dataSource={props.dataApi.applicants}
+					columns={columns}
+					loading={props.dataApi.loading}
+					pagination={{
+						current: props.dataApi.query.page,
+						pageSize: props.dataApi.query.pageSize,
+						total: props.dataApi.totalCount,
+						pageSizeOptions: [10, 25, 50],
+						showSizeChanger: true,
+						hideOnSinglePage: true,
+					}}
+					onChange={(pagination, _filters, sorter) => {
+						props.dataApi.handleTableChange(
+							MapTriageTableChange({
+								pagination,
+								sorter,
+								searchText,
+							})
+						);
+					}}
+					scroll={{ x: true }}
+				/>
+			</div>
+			<ReferenceModal
+				appSysId={applicantSysId}
+				referenceModal={showReferenceModal}
+				setReferenceModal={setShowReferenceModal}
+				sendReferences={sendReferences}
+				referencesSent={referencesSent}
+			/>
+			<RejectionEmailModal
+				appSysId={applicantSysId}
+				rejectionEmailModal={showRejectionEmailModal}
+				setRejectionEmailModal={setShowRejectionEmailModal}
+				sendRejectionEmail={sendRejectionEmail}
+				rejectionEmailSent={rejectionEmailSent}
+				referredToInterview={referredToInterview}
 			/>
 		</>
 	);

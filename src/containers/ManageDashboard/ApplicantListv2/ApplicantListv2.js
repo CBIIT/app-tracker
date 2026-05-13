@@ -6,6 +6,7 @@ import { getTenantCapabilities } from './adapters/tenantWorkflowCapabilities';
 import { useSplitApplicantTables } from './hooks/useSplitApplicantTables';
 import { useNonSplitApplicants } from './hooks/useNonSplitApplicants';
 import { ROLLING_CLOSE, TRIAGE } from '../../../constants/VacancyStates';
+import './ApplicantListv2.css';
 
 const ApplicantListv2 = (props) => {
 	const { sysId } = useParams();

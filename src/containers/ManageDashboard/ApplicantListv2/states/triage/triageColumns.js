@@ -69,7 +69,7 @@ const GetTriageColumns = ({
 		});
 	}
 
-	if (roleCaps.canSendRegretEmail) {
+	if (roleCaps.canSendRegretEmail && !tenantCaps.showTop25) {
 		cols.push({
 			title: '',
 			key: 'regret_email',

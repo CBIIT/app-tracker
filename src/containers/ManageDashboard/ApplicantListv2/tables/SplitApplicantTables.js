@@ -6,6 +6,10 @@ const pageSizeOptions = [10, 25, 50];
 
 const SplitApplicantTables = (props) => {
 	const columns = Array.isArray(props.columns) ? props.columns : [];
+	const expandable =
+		typeof props.expandedRowRender === 'function'
+			? { expandedRowRender: props.expandedRowRender }
+			: undefined;
 
 	const buildPayloadFromTableChange = (pagination, filters, sorter) => {
 		const focusArea = Array.isArray(filters?.focus_area)
@@ -47,6 +51,7 @@ const SplitApplicantTables = (props) => {
 					dataSource={props.recommendedApplicants || []}
 					columns={columns}
 					loading={props.recommendedLoading}
+					expandable={expandable}
 					pagination={{
 						...commonPagination,
 						total: props.recommendedTotalCount || 0,
@@ -62,6 +67,7 @@ const SplitApplicantTables = (props) => {
 					dataSource={props.nonRecommendedApplicants || []}
 					columns={columns}
 					loading={props.nonRecommendedLoading}
+					expandable={expandable}
 					pagination={{
 						...commonPagination,
 						total: props.nonRecommendedTotalCount || 0,

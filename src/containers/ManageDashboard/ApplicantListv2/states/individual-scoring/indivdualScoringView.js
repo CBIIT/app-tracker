@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useContext, useEffect } from 'react';
+import { useMemo, useCallback, useContext, useEffect, useState } from 'react';
 import getIndividualScoringColumns from './individualScoringColumns';
 import mapIndividualScoringChanges from './mapIndividualScoringTableChange';
 import { Table, Radio, Button, message } from 'antd';
@@ -13,12 +13,23 @@ import {
 	REVIEW_COMPLETE,
 } from '../../../../../constants/ApplicationStates';
 import {
+	COLLECT_REFERENCES,
 	SEND_REGRET_EMAIL,
 	TOP25PERCENT,
 } from '../../../../../constants/ApiEndpoints';
 import SplitApplicantTables from '../../tables/SplitApplicantTables';
+import InnerScoresTable from '../../components/InnerScoresTable';
+import ReferenceModal from '../../modals/ReferenceModal';
+import RejectionEmailModal from '../../modals/RejectionEmailModal';
 
 const IndividualScoringView = (props) => {
+	const [applicantSysId, setApplicantSysId] = useState('');
+	const [showReferenceModal, setShowReferenceModal] = useState(false);
+	const [showRejectionEmailModal, setShowRejectionEmailModal] = useState(false);
+	const [referencesSent, setReferencesSent] = useState('0');
+	const [rejectionEmailSent, setRejectionEmailSent] = useState('0');
+	const [referredToInterview, setReferredToInterview] = useState('no');
+
 	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
 		useContext(SearchContext);
 
@@ -84,24 +95,37 @@ const IndividualScoringView = (props) => {
 	// Handler for rendering regret email button
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
-			const handleSendRegretEmail = async () => {
-				try {
-					await axios.get(SEND_REGRET_EMAIL + sysId);
-					message.success('Regret email sent.');
-					props.dataApi.refresh?.();
-				} catch (error) {
-					message.error('Error sending regret email.');
-				}
-			};
-
 			return (
-				<Button onClick={handleSendRegretEmail} size='small'>
+				<Button
+					onClick={() => {
+						setApplicantSysId(sysId);
+						setRejectionEmailSent(rejectionEmailSent);
+						setReferredToInterview(referredToInterview);
+						setShowRejectionEmailModal(true);
+					}}
+					size='small'
+				>
 					Send Regret Email
 				</Button>
 			);
 		},
-		[props.dataApi]
+		[]
 	);
+
+	const renderCollectReferencesButton = useCallback((sysId, referencesSent) => {
+		return (
+			<Button
+				onClick={() => {
+					setApplicantSysId(sysId);
+					setReferencesSent(referencesSent);
+					setShowReferenceModal(true);
+				}}
+				size='small'
+			>
+				Collect References
+			</Button>
+		);
+	}, []);
 
 	// Handler for rendering reference count
 	const renderReferenceCount = useCallback((text) => {
@@ -122,6 +146,7 @@ const IndividualScoringView = (props) => {
 		() => ({
 			searchProps,
 			renderTop25Select,
+			renderCollectReferencesButton,
 			renderRegretEmailButton,
 			renderReferenceCount,
 			getFocusAreaFilterOptions,
@@ -130,11 +155,44 @@ const IndividualScoringView = (props) => {
 		[
 			searchProps,
 			renderTop25Select,
+			renderCollectReferencesButton,
 			renderRegretEmailButton,
 			renderReferenceCount,
 			getFocusAreaFilterOptions,
 			getFocusAreaFilterValue,
 		]
+	);
+
+	const sendReferences = useCallback(
+		async (sysId) => {
+			try {
+				const response = await axios.get(COLLECT_REFERENCES + sysId);
+				message.success(response?.data?.result?.message || 'Reference collection initiated.');
+				props.dataApi.refresh?.();
+			} catch (_error) {
+				message.error(
+					'Sorry, there was an error sending the notifications to the references. Try refreshing the browser.'
+				);
+			}
+		},
+		[props.dataApi]
+	);
+
+	const sendRejectionEmail = useCallback(
+		async (sysId) => {
+			try {
+				const response = await axios.get(SEND_REGRET_EMAIL + sysId);
+				message.success(
+					response?.data?.result?.response?.message || 'Regret email sent.'
+				);
+				props.dataApi.refresh?.();
+			} catch (_error) {
+				message.error(
+					'Sorry, there was an error sending the rejection email. Try refreshing the browser.'
+				);
+			}
+		},
+		[props.dataApi]
 	);
 
 	useEffect(() => {
@@ -165,6 +223,10 @@ const IndividualScoringView = (props) => {
 
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
 	const canViewTriage = props.roleCaps?.canViewTriageFilter;
+	const renderExpandedScores = useCallback(
+		(record) => <InnerScoresTable applicationSysId={record.sys_id} />,
+		[]
+	);
 
 	const handleNonSplitChange = (pagination, filters, sorter) => {
 		const focusArea =
@@ -204,39 +266,60 @@ const IndividualScoringView = (props) => {
 				</div>
 			)}
 
-			{/* Split Table View (recommended and non-recommended) for Vacancy Managers */}
-			{props.roleCaps.isVacancyManager ? (
-				<SplitApplicantTables
-					recommendedApplicants={props.dataApi.recommendedApplicants}
-					nonRecommendedApplicants={props.dataApi.nonRecommendedApplicants}
-					recommendedTotalCount={props.dataApi.recommendedTotalCount}
-					nonRecommendedTotalCount={props.dataApi.nonRecommendedTotalCount}
-					recommendedLoading={props.dataApi.recommendedLoading}
-					nonRecommendedLoading={props.dataApi.nonRecommendedLoading}
-					pageSize={props.dataApi.query.pageSize}
-					columns={columns}
-					onTableChange={props.dataApi.handleTableChange}
-					onFocusAreaFilterChange={handleFocusAreaFilterChange}
-				/>
-			) : (
-				// Single Table View (recommended) for other roles
-				<Table
-					rowKey='sys_id'
-					dataSource={props.dataApi.applicants}
-					loading={props.dataApi.loading}
-					columns={columns}
-					scroll={{ x: true }}
-					pagination={{
-						current: props.dataApi.query.page,
-						pageSize: props.dataApi.query.pageSize,
-						total: props.dataApi.totalCount,
-						pageSizeOptions: [10, 25, 50],
-						showSizeChanger: true,
-						hideOnSinglePage: true,
-					}}
-					onChange={handleNonSplitChange}
-				/>
-			)}
+			<div className='applicant-table'>
+				{/* Split Table View (recommended and non-recommended) for Vacancy Managers */}
+				{props.roleCaps.isVacancyManager ? (
+					<SplitApplicantTables
+						recommendedApplicants={props.dataApi.recommendedApplicants}
+						nonRecommendedApplicants={props.dataApi.nonRecommendedApplicants}
+						recommendedTotalCount={props.dataApi.recommendedTotalCount}
+						nonRecommendedTotalCount={props.dataApi.nonRecommendedTotalCount}
+						recommendedLoading={props.dataApi.recommendedLoading}
+						nonRecommendedLoading={props.dataApi.nonRecommendedLoading}
+						pageSize={props.dataApi.query.pageSize}
+						columns={columns}
+						expandedRowRender={renderExpandedScores}
+						onTableChange={props.dataApi.handleTableChange}
+						onFocusAreaFilterChange={handleFocusAreaFilterChange}
+					/>
+				) : (
+					// Single Table View (recommended) for other roles
+					<Table
+						rowKey='sys_id'
+						dataSource={props.dataApi.applicants}
+						loading={props.dataApi.loading}
+						columns={columns}
+						expandable={{
+							expandedRowRender: renderExpandedScores,
+						}}
+						scroll={{ x: true }}
+						pagination={{
+							current: props.dataApi.query.page,
+							pageSize: props.dataApi.query.pageSize,
+							total: props.dataApi.totalCount,
+							pageSizeOptions: [10, 25, 50],
+							showSizeChanger: true,
+							hideOnSinglePage: true,
+						}}
+						onChange={handleNonSplitChange}
+					/>
+				)}
+			</div>
+			<ReferenceModal
+				appSysId={applicantSysId}
+				referenceModal={showReferenceModal}
+				setReferenceModal={setShowReferenceModal}
+				sendReferences={sendReferences}
+				referencesSent={referencesSent}
+			/>
+			<RejectionEmailModal
+				appSysId={applicantSysId}
+				rejectionEmailModal={showRejectionEmailModal}
+				setRejectionEmailModal={setShowRejectionEmailModal}
+				sendRejectionEmail={sendRejectionEmail}
+				rejectionEmailSent={rejectionEmailSent}
+				referredToInterview={referredToInterview}
+			/>
 		</>
 	);
 };
