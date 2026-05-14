@@ -1,4 +1,4 @@
-import { render, waitFor, screen, fireEvent } from '@testing-library/react';
+import { render, waitFor, screen, fireEvent, act } from '@testing-library/react';
 import { message, notification } from 'antd';
 import Apply from './Apply';
 import axios from 'axios';
@@ -147,6 +147,9 @@ describe('Apply component', () => {
 	});
 
 	beforeEach(() => {
+		axios.get.mockReset();
+		axios.post.mockReset();
+
 		useAuth.mockReturnValue(mockUseAuth);
 		useTimeout.mockImplementation(() => ({ modalTimeout: mockModalTimeout }));
 		convertDataFromBackend.mockReturnValue(mockProfileData);
@@ -347,8 +350,10 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
+		// Wait for the initial profile fetch + draft creation so formData.basicInfo
+		// is populated before clicking save.
 		await waitFor(() => {
-			expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+			expect(axios.post).toHaveBeenCalledTimes(1);
 		});
 
 		fireEvent.click(screen.getByTestId('save-application-button'));
@@ -374,15 +379,29 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
-		await waitFor(() => {
-			expect(notification.error).toHaveBeenCalledWith(
-				expect.objectContaining({
-					message: 'Sorry! There was an error loading your application.',
-				})
-			);
-			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
-			expect(screen.getByText(/Verify that the vacancy you are applying to has not closed/)).toBeInTheDocument();
-		});
+		// Wait until the rejected axios.post call has been made before asserting
+		// on the resulting notification/UI. Helps avoid CI flakiness on slower runners.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(1);
+			},
+			{ timeout: 5000 }
+		);
+
+		await waitFor(
+			() => {
+				expect(notification.error).toHaveBeenCalledWith(
+					expect.objectContaining({
+						message: 'Sorry! There was an error loading your application.',
+					})
+				);
+				expect(screen.getByText('Unable to load application')).toBeInTheDocument();
+				expect(
+					screen.getByText(/Verify that the vacancy you are applying to has not closed/)
+				).toBeInTheDocument();
+			},
+			{ timeout: 5000 }
+		);
 	});
 
 	// test('should include sys_id when saving an existing draft', async () => {
