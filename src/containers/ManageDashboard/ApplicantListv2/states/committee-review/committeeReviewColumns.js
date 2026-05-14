@@ -1,19 +1,21 @@
-import { CommentOutlined } from '@ant-design/icons';
-import { Button, Select, Tag } from 'antd';
+import {
+	CommentOutlined,
+	CheckCircleTwoTone,
+	ExclamationCircleOutlined,
+} from '@ant-design/icons';
+import { Button, Select, Tooltip } from 'antd';
 
 const getCommitteeReviewColumns = ({
 	roleCaps,
-	tenantCaps,
 	handlers,
 	searchProps,
 }) => {
 	const safeRoleCaps = roleCaps || {};
-	const safeTenantCaps = tenantCaps || {};
 	const safeHandlers = handlers || {};
 	const getSearchProps =
 		searchProps || safeHandlers.searchProps || (() => ({}));
-	const renderDecision = safeHandlers.renderDecision || ((value) => value);
 	const columnChangeHandler = safeHandlers.columnChangeHandler || (() => {});
+	const onCommentButtonClick = safeHandlers.onCommentButtonClick || (() => {});
 	const renderAverageScore =
 		safeHandlers.renderAverageScore ||
 		((text) => {
@@ -31,35 +33,23 @@ const getCommitteeReviewColumns = ({
 					placeholder='--'
 					value={value}
 					allowClear
-					onChange={(val) =>
-						columnChangeHandler(
-							'referredToInterview',
-							val,
-							record.sys_id,
-							handlers && handlers.postChangeHandler
-								? handlers.postChangeHandler
-								: undefined
-						)
-					}
+					onChange={(val) => columnChangeHandler(val, record.sys_id)}
 				>
 					<Select.Option value='yes'>Yes</Select.Option>
 					<Select.Option value='no'>No</Select.Option>
 				</Select>
 			</>
 		));
-    const renderCommitteeComments =
-        safeHandlers.renderCommitteeComments ||
-        ((comment, record) => (
-            <>
-                <Button
-                    type='text'
-                    shape='cicrle'
-                    onClick={() => onCommentButtonClick(comment, record.sys_id)}
-                >
-                    <CommentOutlined />
-                </Button>
-            </>
-        ));
+	const renderCommitteeComments = safeHandlers.renderCommitteeComments ||
+		((comment, record) => (
+			<Button
+				type='text'
+				shape='circle'
+				onClick={() => onCommentButtonClick(comment, record.sys_id)}
+			>
+				<CommentOutlined />
+			</Button>
+		));
 	const renderCollectReferencesButton =
 		safeHandlers.renderCollectReferencesButton || (() => null);
 	const renderRegretEmailButton =
@@ -67,7 +57,7 @@ const getCommitteeReviewColumns = ({
 	const renderReferenceCount =
 		safeHandlers.renderReferenceCount || ((text) => text || '-');
 
-	const cols = [
+	const basicApplicantColumns = [
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
@@ -84,6 +74,56 @@ const getCommitteeReviewColumns = ({
 		},
 	];
 
+	if (safeRoleCaps.isCommitteeReadOnly) {
+		return basicApplicantColumns;
+	}
+
+	if (safeRoleCaps.isCommitteeMember || safeRoleCaps.isCommitteeNonVoting) {
+		return [
+			{
+				key: 'score_status',
+				render: (_text, record) => {
+					if (record.recused == 1) {
+						return (
+							<Tooltip title='Recused'>
+								<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+							</Tooltip>
+						);
+					}
+
+					return record.average_score !== undefined ? (
+						<Tooltip title='Scoring Completed'>
+							<CheckCircleTwoTone twoToneColor='#60E241' />
+						</Tooltip>
+					) : null;
+				},
+			},
+			...basicApplicantColumns,
+			{
+				title: 'Raw Score',
+				dataIndex: 'raw_score',
+				key: 'raw_score',
+				width: 130,
+				render: (text, record) => (record.recused == 1 ? 'n/a' : text),
+			},
+			{
+				title: 'Average Score',
+				dataIndex: 'average_score',
+				key: 'average_score',
+				render: (text, record) =>
+					record.recused == 1 ? 'n/a' : text || 'Pending',
+			},
+			{
+				title: 'Recommend Interview?',
+				dataIndex: 'recommend',
+				key: 'recommend',
+				render: (text, record) => (record.recused == 1 ? 'n/a' : text),
+			},
+		];
+	}
+
+	const cols = [...basicApplicantColumns];
+
 	cols.push(
 		{
 			title: 'Average Score',
@@ -96,21 +136,29 @@ const getCommitteeReviewColumns = ({
 					(a.average_member_score || 0) - (b.average_member_score || 0),
 			},
 		},
-		{
-			title: 'Referred to Interview',
-			dataIndex: 'referred_to_interview',
-			render: renderReferredToInterview,
-		},
-		{
-			title: 'Committee Comments',
-			dataIndex: 'committee_comments',
-			key: 'committee_comments',
-			align: 'center',
-            render: renderCommitteeComments
-		}
+		...(safeRoleCaps.canReviewInterviewDecision
+			? [
+					{
+						title: 'Referred to Interview',
+						dataIndex: 'referred_to_interview',
+						render: renderReferredToInterview,
+					},
+			  ]
+			: []),
+		...(safeRoleCaps.canViewCommitteeComments
+			? [
+					{
+						title: 'Committee Comments',
+						dataIndex: 'committee_comments',
+						key: 'committee_comments',
+						align: 'center',
+						render: renderCommitteeComments,
+					},
+			  ]
+			: [])
 	);
 
-    if (safeRoleCaps.isVacancyManager) {
+	if (safeRoleCaps.isVacancyManager) {
 		if (safeRoleCaps.canCollectReferences) {
 			cols.push({
 				title: '',
@@ -145,6 +193,8 @@ const getCommitteeReviewColumns = ({
 			render: renderReferenceCount,
 		});
 	}
+
+	return cols;
 };
 
 export default getCommitteeReviewColumns;

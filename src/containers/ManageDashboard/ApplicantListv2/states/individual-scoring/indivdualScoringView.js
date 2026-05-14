@@ -76,7 +76,7 @@ const IndividualScoringView = (props) => {
 				type='checkbox'
 				checked={checked}
 				onChange={async (event) => {
-					// Top 25 writes immediately (same behavior as legacy columnChangeHandler).
+					// Top 25 writes immediately.
 					try {
 						await updateTop25Percent(sysId, event.target.checked);
 						props.dataApi.refresh?.();
@@ -219,6 +219,10 @@ const IndividualScoringView = (props) => {
 
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
 	const canViewTriage = props.roleCaps?.canViewTriageFilter;
+	const canExpandScores =
+		!props.roleCaps?.isCommitteeMember &&
+		!props.roleCaps?.isCommitteeNonVoting &&
+		!props.roleCaps?.isCommitteeReadOnly;
 	const renderExpandedScores = useCallback(
 		// Legacy parity: expandable rows render committee scores for each applicant.
 		(record) => <InnerScoresTable applicationSysId={record.sys_id} />,
@@ -277,7 +281,7 @@ const IndividualScoringView = (props) => {
 						nonRecommendedLoading={props.dataApi.nonRecommendedLoading}
 						pageSize={props.dataApi.query.pageSize}
 						columns={columns}
-						expandedRowRender={renderExpandedScores}
+						expandedRowRender={canExpandScores ? renderExpandedScores : undefined}
 						onTableChange={props.dataApi.handleTableChange}
 						onFocusAreaFilterChange={handleFocusAreaFilterChange}
 					/>
@@ -288,9 +292,13 @@ const IndividualScoringView = (props) => {
 						dataSource={props.dataApi.applicants}
 						loading={props.dataApi.loading}
 						columns={columns}
-						expandable={{
-							expandedRowRender: renderExpandedScores,
-						}}
+						expandable={
+							canExpandScores
+								? {
+									expandedRowRender: renderExpandedScores,
+								}
+								: undefined
+						}
 						scroll={{ x: true }}
 						pagination={{
 							current: props.dataApi.query.page,

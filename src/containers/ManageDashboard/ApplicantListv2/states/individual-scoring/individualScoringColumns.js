@@ -1,4 +1,5 @@
-import { Checkbox, Select, Tag } from 'antd';
+import { CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 
 const getIndividualScoringColumns = ({
 	roleCaps,
@@ -14,7 +15,6 @@ const getIndividualScoringColumns = ({
 	const getSearchProps =
 		searchProps || safeHandlers.searchProps || (() => ({}));
 	const renderDecision = safeHandlers.renderDecision || ((value) => value);
-	const columnChangeHandler = safeHandlers.columnChangeHandler || (() => {});
 	const renderAverageScore =
 		safeHandlers.renderAverageScore ||
 		((text) => {
@@ -37,7 +37,7 @@ const getIndividualScoringColumns = ({
 		safeHandlers.getFocusAreaFilterValue ||
 		(() => (Array.isArray(focusAreaFilter) ? focusAreaFilter : []));
 
-	const cols = [
+	const basicApplicantColumns = [
 		{
 			title: 'Applicant',
 			dataIndex: 'applicant_name',
@@ -54,11 +54,87 @@ const getIndividualScoringColumns = ({
 		},
 	];
 
-	// Top 25 column requires manager role and tenat opt-in (statdman)
+	if (safeRoleCaps.isCommitteeReadOnly) {
+		return basicApplicantColumns;
+	}
+
+	if (safeRoleCaps.isCommitteeMember || safeRoleCaps.isCommitteeNonVoting) {
+		const committeeMemberColumns = [
+			{
+				key: 'score_status',
+				render: (_text, record) => {
+					if (record.recused == 1) {
+						return (
+							<Tooltip title='Recused'>
+								<ExclamationCircleOutlined style={{ color: '#faad14' }} />
+							</Tooltip>
+						);
+					}
+
+					return record.average_score !== undefined ? (
+						<Tooltip title='Scoring Completed'>
+							<CheckCircleTwoTone twoToneColor='#60E241' />
+						</Tooltip>
+					) : null;
+				},
+			},
+			...basicApplicantColumns,
+			{
+				title: 'Raw Score',
+				dataIndex: 'raw_score',
+				key: 'raw_score',
+				width: 130,
+				render: (text, record) => (record.recused == 1 ? 'n/a' : text),
+			},
+			{
+				title: 'Average Score',
+				dataIndex: 'average_score',
+				key: 'average_score',
+				render: (text, record) =>
+					record.recused == 1 ? 'n/a' : renderDecision(text),
+			},
+			{
+				title: 'Recommend Interview?',
+				dataIndex: 'recommend',
+				key: 'recommend',
+				render: (text, record) => (record.recused == 1 ? 'n/a' : text),
+			},
+		];
+
+		if (safeTenantCaps.enableFocusArea) {
+			committeeMemberColumns.splice(3, 0, {
+				title: 'Focus Area',
+				dataIndex: 'focus_area',
+				key: 'focus_area',
+				render: (focusArea, record) => {
+					if (focusArea) {
+						return focusArea;
+					}
+
+					const primaryFocusArea = record?.primary_focus_area;
+					const secondaryFocusArea = record?.secondary_focus_area;
+
+					if (primaryFocusArea && secondaryFocusArea) {
+						return `${primaryFocusArea}, ${secondaryFocusArea}`;
+					}
+
+					return primaryFocusArea || secondaryFocusArea || '-';
+				},
+				filters: getFocusAreaFilterOptions(),
+				filteredValue: getFocusAreaFilterValue(),
+				width: 250,
+			});
+		}
+
+		return committeeMemberColumns;
+	}
+
+	const cols = [...basicApplicantColumns];
+
+	// Top 25 column requires manager role and tenant opt-in.
 	if (
 		safeRoleCaps.isVacancyManager &&
-		safeTenantCaps.showTop25 &&
-		safeTenantCaps.isStadtman
+		safeTenantCaps.showTop25
 	) {
 		cols.unshift({
 			title: 'Top 25',
@@ -74,7 +150,7 @@ const getIndividualScoringColumns = ({
 	}
 
 	// column is visual aid filter. Tenant based as not all tenants use
-	if (safeTenantCaps.enableFocusArea && safeTenantCaps.isStadtman) {
+	if (safeTenantCaps.enableFocusArea) {
 		cols.push({
 			title: 'Focus Area',
 			dataIndex: 'focus_area',
@@ -115,15 +191,20 @@ const getIndividualScoringColumns = ({
 		cols.push(
 			{
 				title: 'Scoring Status',
-				dataIndex: 'socring_status',
+				dataIndex: 'scoring_status',
 				width: 125,
 			},
 			{
 				title: 'Interview Recommendation',
 				dataIndex: 'interview_recommendation',
 				width: 100,
-				render: (value) =>
-					value.Yes + ' Yes • ' + value.No + ' No • ' + value.Maybe + ' Maybe',
+				render: (value = {}) =>
+					(value.Yes || 0) +
+					' Yes • ' +
+					(value.No || 0) +
+					' No • ' +
+					(value.Maybe || 0) +
+					' Maybe',
 			}
 		);
 	}

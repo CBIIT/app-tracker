@@ -84,13 +84,15 @@ const GetTriageColumns = ({ roleCaps, tenantCaps, handlers }) => {
 		});
 	}
 
-	cols.push({
-		title: 'Reference Status',
-		dataIndex: 'total_received_references',
-		key: 'reference_status',
-		align: 'center',
-		render: renderReferenceCount,
-	});
+	if (safeRoleCaps.canViewReferenceStatus) {
+		cols.push({
+			title: 'Reference Status',
+			dataIndex: 'total_received_references',
+			key: 'reference_status',
+			align: 'center',
+			render: renderReferenceCount,
+		});
+	}
 
 	return cols;
 };

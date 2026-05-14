@@ -44,6 +44,7 @@ import { getTenantCapabilities } from './adapters/tenantWorkflowCapabilities';
 import { useSplitApplicantTables } from './hooks/useSplitApplicantTables';
 import { useNonSplitApplicants } from './hooks/useNonSplitApplicants';
 import { ROLLING_CLOSE, TRIAGE } from '../../../constants/VacancyStates';
+import useAuth from '../../../hooks/useAuth';
 import './ApplicantListv2.css';
 
 const ApplicantListv2 = (props) => {
@@ -54,6 +55,10 @@ const ApplicantListv2 = (props) => {
 	 * Sourced from React Router route parameters (e.g., /vacancy/:sysId).
 	 */
 	const { sysId } = useParams();
+	const {
+		auth: { tenants },
+		currentTenant,
+	} = useAuth();
 	/**
 	 * ROLLING CLOSE STATE
 	 * For Rolling Close vacancies, users can navigate between Triage, Scoring, Review, and Voting
@@ -77,6 +82,20 @@ const ApplicantListv2 = (props) => {
 		[props.userRoles, props.userCommitteeRole]
 	);
 
+	const resolvedTenantProperties = useMemo(() => {
+		if (Array.isArray(props.tenantProperties) && props.tenantProperties.length > 0) {
+			return props.tenantProperties;
+		}
+
+		const activeTenant = Array.isArray(tenants)
+			? tenants.find((tenant) => tenant.value === currentTenant)
+			: undefined;
+
+		return Array.isArray(activeTenant?.properties)
+			? activeTenant.properties
+			: [];
+	}, [props.tenantProperties, tenants, currentTenant]);
+
 	/**
 	 * ORGANIZATION (TENANT) CAPABILITIES
 	 * Org-level settings that control workflow behavior and feature availability.
@@ -87,9 +106,8 @@ const ApplicantListv2 = (props) => {
 	 * Memoized to prevent expensive recalculations on every parent re-render.
 	 */
 	const tenantCaps = useMemo(
-		() =>
-			getTenantCapabilities(props.vacancyTenant, props.tenantProperties || []),
-		[props.vacancyTenant, props.tenantProperties]
+		() => getTenantCapabilities(props.vacancyTenant, resolvedTenantProperties),
+		[props.vacancyTenant, resolvedTenantProperties]
 	);
 
 	/**

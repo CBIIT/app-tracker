@@ -7,13 +7,16 @@ export const getTenantCapabilities = (
 	vacancyTenant,
 	tenantProperties = []
 ) => {
+	const enableFocusArea =
+		getTenantPropertyValue(tenantProperties, 'enableFocusArea') === 'true';
+	const enableTop25Percent =
+		getTenantPropertyValue(tenantProperties, 'enableTop25Percent') === 'true';
 
 	return {
 		vacancyTenant,
 		showCompleteColumn: vacancyTenant === 'Stadtman',
 		isStadtman: vacancyTenant === 'Stadtman',
-		enableFocusArea:
-			getTenantPropertyValue(tenantProperties, 'enableFocusArea') === 'true' || vacancyTenant === 'Stadtman',
-		showTop25: vacancyTenant === 'Stadtman',
+		enableFocusArea,
+		showTop25: enableTop25Percent,
 	};
 };
