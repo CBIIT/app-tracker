@@ -6,14 +6,7 @@ import {
 	SUBMIT_COMMITTEE_COMMENTS,
 } from '../../../../constants/ApiEndpoints';
 
-/**
- * Requests reference collection for an applicant.
- * Notifies references to submit their evaluations.
- *
- * @param {string} applicantSysId - The applicant system ID
- * @returns {Promise<Object>} API response data
- * @throws {Error} On network/API error
- */
+// Requests reference collection notifications for an applicant.
 export const collectReferences = async (applicantSysId) => {
 	try {
 		const response = await axios.get(COLLECT_REFERENCES + applicantSysId);
@@ -29,14 +22,7 @@ export const collectReferences = async (applicantSysId) => {
 	}
 };
 
-/**
- * Sends a regret (rejection) email to an applicant.
- * Called from triage or individual scoring workflows after confirmation.
- *
- * @param {string} applicantSysId - The applicant system ID
- * @returns {Promise<Object>} API response data
- * @throws {Error} On network/API error
- */
+// Sends a regret email to an applicant after confirmation.
 export const sendRejectionEmail = async (applicantSysId) => {
 	try {
 		const response = await axios.get(SEND_REGRET_EMAIL + applicantSysId);
@@ -52,14 +38,7 @@ export const sendRejectionEmail = async (applicantSysId) => {
 	}
 };
 
-/**
- * Saves committee comments for an applicant.
- *
- * @param {string} applicantSysId - The applicant system ID
- * @param {string} committeeComment - The free text committee comment
- * @returns {Promise<Object>} API response data
- * @throws {Error} On network/API error
- */
+// Saves committee comments for an applicant.
 export const submitCommitteeComments = async (
 	applicantSysId,
 	committeeComment

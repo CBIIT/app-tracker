@@ -59,7 +59,7 @@ const IndividualScoringView = (props) => {
 		]
 	);
 
-	// Handler for rendering Top 25 select checkbox
+	// Renders the Top 25 checkbox and persists changes immediately.
 	const renderTop25Select = useCallback(
 		(sysId, isTop25) => {
 			// API may return string/number/boolean; normalize for stable checkbox behavior.
@@ -90,7 +90,7 @@ const IndividualScoringView = (props) => {
 		[props.dataApi]
 	);
 
-	// Handler for rendering regret email button
+	// Opens the regret email confirmation modal.
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
 			// Open modal first; send action happens on confirmation.
@@ -112,7 +112,7 @@ const IndividualScoringView = (props) => {
 	);
 
 	const renderCollectReferencesButton = useCallback((sysId, referencesSent) => {
-		// Open modal first; send action happens on confirmation.
+		// Opens the collect references confirmation modal.
 		return (
 			<Button
 				onClick={() => {
@@ -127,24 +127,24 @@ const IndividualScoringView = (props) => {
 		);
 	}, []);
 
-	// Handler for rendering reference count
+	// Renders the reference count with a fallback value.
 	const renderReferenceCount = useCallback((text) => {
 		return text || '-';
 	}, []);
 
-	// Get focus area filter options
+	// Returns focus-area filter options from the active data hook.
 	const getFocusAreaFilterOptions = useCallback(() => {
 		return props.dataApi.focusAreaOptions || [];
 	}, [props.dataApi.focusAreaOptions]);
 
-	// Get focus area filter value
+	// Returns the currently selected focus-area filters.
 	const getFocusAreaFilterValue = useCallback(() => {
 		return focusAreaFilter;
 	}, [focusAreaFilter]);
 
 	const handlers = useMemo(
 		() => ({
-			// searchProps injects ant-table search dropdown UI into Applicant/Email columns.
+			// Injects Ant Table search dropdown behavior into Applicant and Email columns.
 			searchProps,
 			renderTop25Select,
 			renderCollectReferencesButton,
@@ -224,7 +224,6 @@ const IndividualScoringView = (props) => {
 		!props.roleCaps?.isCommitteeNonVoting &&
 		!props.roleCaps?.isCommitteeReadOnly;
 	const renderExpandedScores = useCallback(
-		// Legacy parity: expandable rows render committee scores for each applicant.
 		(record) => <InnerScoresTable applicationSysId={record.sys_id} />,
 		[]
 	);
@@ -269,9 +268,9 @@ const IndividualScoringView = (props) => {
 			)}
 
 			<div className='applicant-table'>
-				{/* Split Table View (recommended and non-recommended) for Vacancy Managers */}
+				{/* Shows split recommended and non-recommended tables for vacancy managers. */}
 				{props.roleCaps.isVacancyManager ? (
-					// Managers get split recommended/non-recommended tables.
+					// Managers use split tables.
 					<SplitApplicantTables
 						recommendedApplicants={props.dataApi.recommendedApplicants}
 						nonRecommendedApplicants={props.dataApi.nonRecommendedApplicants}
@@ -286,7 +285,7 @@ const IndividualScoringView = (props) => {
 						onFocusAreaFilterChange={handleFocusAreaFilterChange}
 					/>
 				) : (
-					// Single Table View (recommended) for other roles
+					// Other roles use a single recommended table.
 					<Table
 						rowKey='sys_id'
 						dataSource={props.dataApi.applicants}

@@ -2,14 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import { INTERVIEW } from '../../../../constants/ApiEndpoints';
 
-/**
- * Persists committee review interview recommendation.
- *
- * @param {string} applicationSysId - The application system ID
- * @param {string | undefined} referredToInterview - yes/no value from Select
- * @returns {Promise<Object>} API response data
- * @throws {Error} On network/API error
- */
+// Persists committee review interview recommendation values.
 export const updateReferredToInterview = async (
 	applicationSysId,
 	referredToInterview

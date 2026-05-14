@@ -25,6 +25,7 @@ import RejectionEmailModal from '../../modals/RejectionEmailModal';
 const { TextArea } = Input;
 
 const CommitteeReviewView = (props) => {
+	// Modal state for legacy-aligned reference, regret email, and voting comments flows.
 	const [applicantSysId, setApplicantSysId] = useState('');
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [showRejectionEmailModal, setShowRejectionEmailModal] = useState(false);
@@ -58,6 +59,7 @@ const CommitteeReviewView = (props) => {
 
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
+			// Opens the regret email confirmation modal.
 			return (
 				<Button
 					onClick={() => {
@@ -76,6 +78,7 @@ const CommitteeReviewView = (props) => {
 	);
 
 	const renderCollectReferencesButton = useCallback((sysId, referencesSent) => {
+		// Opens the collect references confirmation modal.
 		return (
 			<Button
 				onClick={() => {
@@ -91,11 +94,13 @@ const CommitteeReviewView = (props) => {
 	}, []);
 
 	const renderReferenceCount = useCallback((text) => {
+		// Renders the reference count with a fallback value.
 		return text || '-';
 	}, []);
 
 	const columnChangeHandler = useCallback(
 		async (value, sysId) => {
+			// Persists referred-to-interview changes from the committee decision dropdown.
 			try {
 				await updateReferredToInterview(sysId, value);
 				props.dataApi.refresh?.();
@@ -107,17 +112,20 @@ const CommitteeReviewView = (props) => {
 	);
 
 	const onCommentButtonClick = useCallback((comment, sysId) => {
+		// Opens the voting comments modal and seeds the current comment text.
 		setApplicantSysId(sysId);
 		setCommitteeComment(comment || '');
 		setShowCommentModal(true);
 	}, []);
 
 	const handleCommentCancel = useCallback(() => {
+		// Resets modal state without saving.
 		setShowCommentModal(false);
 		setCommitteeComment('');
 	}, []);
 
 	const handleCommentSave = useCallback(async () => {
+		// Saves voting comments and refreshes the active table data.
 		if (!applicantSysId) {
 			return;
 		}
@@ -151,13 +159,13 @@ const CommitteeReviewView = (props) => {
 	);
 
 	const sendReferences = useCallback(
-		// Executes only after ReferenceModal confirmation
+		// Executes only after ReferenceModal confirmation.
 		async (sysId) => {
 			try {
 				await collectReferencesApi(sysId);
 				props.dataApi.refresh?.();
 			} catch (_error) {
-				// Will add custom error message
+				// Error handling is done by notificationService.
 			}
 		},
 		[props.dataApi]
@@ -170,7 +178,7 @@ const CommitteeReviewView = (props) => {
 				await sendRejectionEmailApi(sysId);
 				props.dataApi.refresh?.();
 			} catch (_error) {
-				// Will add custom error message
+				// Error handling is done by notificationService.
 			}
 		},
 		[props.dataApi]
@@ -201,9 +209,8 @@ const CommitteeReviewView = (props) => {
 		!props.roleCaps?.isCommitteeMember &&
 		!props.roleCaps?.isCommitteeNonVoting &&
 		!props.roleCaps?.isCommitteeReadOnly;
-	// Might need to reference legacy code to ensure who can see this.
 	const renderExpandedScores = useCallback(
-		// expandable rows render committee scores for each applicant.
+		// Expandable rows render committee scores for each applicant.
 		(record) => <InnerScoresTable applicationSysId={record.sys_id} />,
 		[]
 	);
@@ -239,7 +246,7 @@ const CommitteeReviewView = (props) => {
 			)}
 
 			<div className='applicant-table'>
-				{/* Split Table View (recommended and non-recommended) for Vacancy Managers */}
+				{/* Shows split recommended and non-recommended tables for vacancy managers. */}
 				{props.roleCaps.isVacancyManager ? (
 					<SplitApplicantTables
 						recommendedApplicants={props.dataApi.recommendedApplicants}
@@ -254,7 +261,7 @@ const CommitteeReviewView = (props) => {
 						onTableChange={props.dataApi.handleTableChange}
 					/>
 				) : (
-					// Single Table View (recommended) for other roles
+					// Other roles use a single recommended table.
 					<Table
 						rowKey='sys_id'
 						dataSource={props.dataApi.applicants}

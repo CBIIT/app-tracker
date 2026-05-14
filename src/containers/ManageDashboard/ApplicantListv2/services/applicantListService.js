@@ -6,13 +6,7 @@ import {
 	GET_ROLLING_APPLICANT_LIST,
 } from '../../../../constants/ApiEndpoints';
 
-/**
- * Fetches focus area filter options for a vacancy.
- * Used by both split and non-split applicant tables to populate focus-area dropdown.
- *
- * @param {string} vacancySysId - The vacancy system ID
- * @returns {Promise<Array>} Array of focus area options with { text, value } shape
- */
+// Fetches focus-area filter options for a vacancy.
 export const getFocusAreaOptions = async (vacancySysId) => {
 	try {
 		const response = await axios.get(
@@ -30,22 +24,7 @@ export const getFocusAreaOptions = async (vacancySysId) => {
 	}
 };
 
-/**
- * Constructs the applicant list API URL based on query parameters.
- * Handles both regular and rolling close vacancy states.
- *
- * @param {Object} params - Query parameters
- * @param {string} params.vacancySysId - The vacancy system ID
- * @param {string} params.vacancyState - The vacancy state (e.g., 'rolling_close')
- * @param {number} params.page - Current page number
- * @param {number} params.pageSize - Items per page
- * @param {string} [params.orderBy] - Sort order (ascending/descending)
- * @param {string} [params.orderColumn] - Column name to sort by
- * @param {string} [params.searchText] - Search filter text
- * @param {Array} [params.focusArea] - Array of selected focus areas
- * @param {string} [params.recommended] - Filter by recommendation (yes/no)
- * @returns {string} The constructed API URL
- */
+// Builds applicant list API URLs for both rolling-close and regular vacancies.
 export const buildApplicantListUrl = ({
 	vacancySysId,
 	vacancyState,
@@ -87,14 +66,7 @@ export const buildApplicantListUrl = ({
 	return url;
 };
 
-/**
- * Fetches a single applicant list (non-split view).
- * Used by committee, chair, and other non-manager roles.
- *
- * @param {string} url - The full API URL to fetch
- * @returns {Promise<Object>} Response data with applicants and totalCount
- * @throws {Error} On network/API error
- */
+// Fetches one applicant list for non-split table flows.
 export const fetchApplicantList = async (url) => {
 	try {
 		const response = await axios.get(url);
@@ -111,15 +83,7 @@ export const fetchApplicantList = async (url) => {
 	}
 };
 
-/**
- * Fetches split applicant lists (recommended and non-recommended) in parallel.
- * Used by vacancy managers to show side-by-side applicant tables.
- *
- * @param {string} recUrl - The URL for recommended applicants
- * @param {string} nonRecUrl - The URL for non-recommended applicants
- * @returns {Promise<Object>} Object with recommended and nonRecommended applicant data
- * @throws {Error} On network/API error
- */
+// Fetches recommended and non-recommended applicant lists in parallel.
 export const fetchSplitApplicantLists = async (recUrl, nonRecUrl) => {
 	try {
 		console.debug('🔵 Split table fetch started:', {

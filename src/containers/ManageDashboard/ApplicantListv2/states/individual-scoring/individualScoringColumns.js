@@ -149,7 +149,7 @@ const getIndividualScoringColumns = ({
 		});
 	}
 
-	// column is visual aid filter. Tenant based as not all tenants use
+	// Focus-area column is tenant-driven because not all tenants use this filter.
 	if (safeTenantCaps.enableFocusArea) {
 		cols.push({
 			title: 'Focus Area',

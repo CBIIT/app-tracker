@@ -14,7 +14,7 @@ const SplitApplicantTables = (props) => {
 			: undefined;
 
 	const buildPayloadFromTableChange = (pagination, filters, sorter) => {
-		// Focus-area filter is emitted by antd as an array under filters.focus_area.
+		// Focus-area filter is emitted by Ant Table as an array under filters.focus_area.
 		const focusArea = Array.isArray(filters?.focus_area)
 			? filters.focus_area
 			: [];

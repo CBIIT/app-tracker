@@ -62,12 +62,12 @@ const TriageView = (props) => {
 		props.dataApi.handleTableChange({ searchText, page: 1 });
 	}, [searchText, props.dataApi]);
 
-	// Handler for rendering date
+	// Renders API date values using the shared display formatter.
 	const renderDate = useCallback((date) => {
 		return transformDateTimeToDisplay(date);
 	}, []);
 
-	// Handler for rendering decision
+	// Renders decision text with legacy styling for pending values.
 	const renderDecision = useCallback((text) => {
 		if (text === 'Pending') {
 			return (
@@ -79,17 +79,17 @@ const TriageView = (props) => {
 		return <span style={{ textTransform: 'capitalize' }}>{text}</span>;
 	}, []);
 
-	// Handler for rendering complete icon
+	// Renders the completion icon used in Stadtman workflows.
 	const renderCompleteIcon = useCallback((value) => {
 		return value === '1' ? '✓' : '';
 	}, []);
 
-	// Handler for rendering reference count
+	// Renders the reference count with a fallback value.
 	const renderReferenceCount = useCallback((text) => {
 		return text || '-';
 	}, []);
 
-	// Handler for collect references button
+	// Opens the collect references confirmation modal.
 	const renderCollectReferencesButton = useCallback(
 		(sysId, referencesSent) => {
 			// Open confirmation modal first (legacy parity), API call happens on confirm.
@@ -109,7 +109,7 @@ const TriageView = (props) => {
 		[]
 	);
 
-	// Handler for regret email button
+	// Opens the regret email confirmation modal.
 	const renderRegretEmailButton = useCallback(
 		(sysId, rejectionEmailSent, referredToInterview) => {
 			// Modal content varies based on interview/rejection status.
