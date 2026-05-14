@@ -436,7 +436,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
-			currentStep === 0 ? navigate.goBack() : setCurrentStep(currentStep - 1);
+			currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
@@ -448,7 +448,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			key='saveLink'
 			type='link'
 			style={{ paddingLeft: '150px', paddingRight: '10px' }}
-			onClick={() => navigate.push(APPLICANT_DASHBOARD)}
+			onClick={() => navigate(APPLICANT_DASHBOARD)}
 		>
 			Back to Applications Home?
 		</Button>

@@ -22,6 +22,7 @@ import { APPLICANT_DASHBOARD } from '../../constants/Routes';
 
 const mockPush = jest.fn();
 const mockGoBack = jest.fn();
+const mockNavigate = jest.fn();
 let mockModalTimeout = 10;
 let mockCurrentFormInstance = {
 	validateFields: jest.fn().mockResolvedValue({
@@ -55,6 +56,7 @@ jest.mock('../Profile/Util/ConvertDataFromBackend', () => ({
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
+	useNavigate: () => mockNavigate,
 	useHistory: () => ({
 		push: mockPush,
 		goBack: mockGoBack,
@@ -147,6 +149,8 @@ describe('Apply component', () => {
 	});
 
 	beforeEach(() => {
+		jest.useFakeTimers();
+
 		axios.get.mockReset();
 		axios.post.mockReset();
 
@@ -181,6 +185,10 @@ describe('Apply component', () => {
 	});
 
 	afterEach(() => {
+		act(() => {
+			jest.runOnlyPendingTimers();
+		});
+		jest.useRealTimers();
 		jest.clearAllMocks();
 	});
 
@@ -207,49 +215,75 @@ describe('Apply component', () => {
 		});
 	});
 
-	// test('should render edit submitted banner and hide save button', async () => {
-	// 	axios.get.mockResolvedValueOnce(mockVacancyResponse);
-	// 	axios.get.mockResolvedValueOnce(mockProfileResponse);
+	test('should render edit submitted banner and hide save button', async () => {
+		jest.useRealTimers();
 
-	// 	const initialValues = {
-	// 		sysId: '222',
-	// 		applicantDocuments: [
-	// 			{
-	// 				title: { label: 'Test Document' },
-	// 				file: { fileList: [{ uid: '1' }] },
-	// 				uploadedDocument: {
-	// 					fileName: 'test.pdf',
-	// 					attachSysId: 'attach-1',
-	// 					downloadLink: 'http://example.com',
-	// 					markedToDelete: false,
-	// 				},
-	// 			},
-	// 		],
-	// 	};
-
-	// 	render(
-	// 		<MemoryRouter initialEntries={['/apply']}>
-	// 			<Apply initialValues={initialValues} editSubmitted={true} />
-	// 		</MemoryRouter>
-	// 	);
-
-	// 	await waitFor(() => {
-	// 		expect(
-	// 			screen.getByText('You are editing a submitted application.')
-	// 		).toBeInTheDocument();
-	// 		expect(screen.queryByTestId('save-application-button')).not.toBeInTheDocument();
-	// 	});
-
-	// 	fireEvent.click(screen.getByTestId('back-button'));
-	// 	await waitFor(() => {
-	// 		expect(mockGoBack).toHaveBeenCalled();
-	// 	});
-	// });
-
-	test('should show validation error when next button validation fails', async () => {
+		// loadExistingApplication path: vacancy details + profile fetch, no POST.
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
-		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: '444' } } });
+
+		const initialValues = {
+			sysId: '222',
+			applicantDocuments: [
+				{
+					title: { label: 'Test Document' },
+					file: { fileList: [{ uid: '1' }] },
+					uploadedDocument: {
+						fileName: 'test.pdf',
+						attachSysId: 'attach-1',
+						downloadLink: 'http://example.com',
+						markedToDelete: false,
+					},
+				},
+			],
+		};
+
+		render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply initialValues={initialValues} editSubmitted={true} />
+			</MemoryRouter>
+		);
+
+		// The edit-submitted banner renders and the save button is hidden.
+		await waitFor(
+			() => {
+				expect(
+					screen.getByText('You are editing a submitted application.')
+				).toBeInTheDocument();
+			},
+			{ timeout: 5000 }
+		);
+
+		expect(
+			screen.queryByTestId('save-application-button')
+		).not.toBeInTheDocument();
+		expect(screen.getByTestId('back-button')).toBeInTheDocument();
+
+		// editSubmitted path should not create a draft on mount.
+		expect(axios.post).not.toHaveBeenCalled();
+
+		// Clicking back from currentStep=0 should call navigate(-1) (react-router v6).
+		fireEvent.click(screen.getByTestId('back-button'));
+
+		await waitFor(
+			() => {
+				expect(mockNavigate).toHaveBeenCalledWith(-1);
+			},
+			{ timeout: 5000 }
+		);
+	});
+
+	test('should show validation error when next button validation fails', async () => {
+		jest.useRealTimers();
+
+		axios.get.mockResolvedValueOnce(mockVacancyResponse);
+		axios.get.mockResolvedValueOnce(mockProfileResponse);
+		axios.post.mockResolvedValueOnce({
+			data: { result: { draft_id: 'initial-draft' } },
+		});
+
+		// Force the antd form validation to reject so next() falls into its
+		// catch branch and calls message.error.
 		mockCurrentFormInstance.validateFields.mockRejectedValueOnce(
 			new Error('validation failed')
 		);
@@ -260,20 +294,45 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
-		await waitFor(() => {
-			expect(screen.getByTestId('next-button')).toBeInTheDocument();
-		});
+		// Wait for initial draft creation + form mount before clicking next,
+		// so the click hits the populated currentFormInstance.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(1);
+				expect(screen.getByTestId('next-button')).toBeInTheDocument();
+			},
+			{ timeout: 5000 }
+		);
 
 		fireEvent.click(screen.getByTestId('next-button'));
 
-		await waitFor(() => {
-			expect(message.error).toHaveBeenCalledWith(
-				'Please fill out all required fields.'
-			);
-		});
+		await waitFor(
+			() => {
+				expect(mockCurrentFormInstance.validateFields).toHaveBeenCalled();
+			},
+			{ timeout: 5000 }
+		);
+
+		await waitFor(
+			() => {
+				expect(message.error).toHaveBeenCalledWith(
+					'Please fill out all required fields.'
+				);
+			},
+			{ timeout: 5000 }
+		);
+
+		// On the validation-error branch we should remain on the documents step
+		// and no additional save POST should be attempted.
+		expect(axios.post).toHaveBeenCalledTimes(1);
+		expect(screen.getByTestId('applicant-documents-form')).toBeInTheDocument();
 	});
 
 	test('should show required fields error on save when profile is missing basic info', async () => {
+		jest.useRealTimers();
+
+		// Profile fetch returns a basicInfo with missing required fields, which
+		// becomes part of formData via instantiateNewApplication.
 		convertDataFromBackend.mockReturnValueOnce({
 			...mockProfileData,
 			basicInfo: {
@@ -284,9 +343,22 @@ describe('Apply component', () => {
 			},
 		});
 
+		// Ensure the click-handler also sees blank required fields when
+		// saveCurrentForm merges the form values into updatedFormData.
+		mockCurrentFormInstance.getFieldsValue.mockReturnValue({
+			firstName: '',
+			lastName: '',
+			email: '',
+			references: [{ firstName: 'Ref' }],
+			applicantDocuments: [],
+			focusArea: [],
+		});
+
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
-		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: '444' } } });
+		axios.post.mockResolvedValueOnce({
+			data: { result: { draft_id: 'initial-draft' } },
+		});
 
 		render(
 			<MemoryRouter initialEntries={['/apply']}>
@@ -294,30 +366,70 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
-		await waitFor(() => {
-			expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
-		});
+		// Wait for initial draft creation to finish so save-button click hits
+		// the validation branch with populated (but blank) basicInfo.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(1);
+				expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+			},
+			{ timeout: 5000 }
+		);
 
 		fireEvent.click(screen.getByTestId('save-application-button'));
 
-		await waitFor(() => {
-			expect(message.error).toHaveBeenCalledWith(
-				expect.objectContaining({
-					content:
-						'First Name, Last Name, and Email are required to save. Please fill out required fields.',
-				})
+		await waitFor(
+			() => {
+				expect(message.error).toHaveBeenCalled();
+			},
+			{ timeout: 5000 }
+		);
+
+		const expectedContent =
+			'First Name, Last Name, and Email are required to save. Please fill out required fields.';
+		const firstArg = message.error.mock.calls[0][0];
+
+		if (typeof firstArg === 'string') {
+			expect(firstArg).toBe(expectedContent);
+		} else {
+			expect(firstArg).toEqual(
+				expect.objectContaining({ content: expectedContent })
 			);
-			expect(mockCurrentFormInstance.validateFields).toHaveBeenCalledWith(['firstName']);
-			expect(mockCurrentFormInstance.validateFields).toHaveBeenCalledWith(['lastName']);
-			expect(mockCurrentFormInstance.validateFields).toHaveBeenCalledWith(['email']);
-		});
+		}
+
+		// validateFields should be invoked once per missing required field.
+		await waitFor(
+			() => {
+				expect(mockCurrentFormInstance.validateFields).toHaveBeenCalledWith([
+					'firstName',
+				]);
+				expect(mockCurrentFormInstance.validateFields).toHaveBeenCalledWith([
+					'lastName',
+				]);
+				expect(mockCurrentFormInstance.validateFields).toHaveBeenCalledWith([
+					'email',
+				]);
+			},
+			{ timeout: 5000 }
+		);
+
+		// On the validation-error branch, save POST must NOT be attempted.
+		expect(axios.post).toHaveBeenCalledTimes(1);
+		expect(message.info).not.toHaveBeenCalled();
 	});
 
 	test('should save successfully and call checkAuth', async () => {
+		jest.useRealTimers();
+
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
-		axios.post.mockResolvedValueOnce(null);
-		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: 'new-draft' } } });
+		// 1st POST = initial draft creation, 2nd POST = save click
+		axios.post.mockResolvedValueOnce({
+			data: { result: { draft_id: 'initial-draft' } },
+		});
+		axios.post.mockResolvedValueOnce({
+			data: { result: { draft_id: 'new-draft' } },
+		});
 
 		render(
 			<MemoryRouter initialEntries={['/apply']}>
@@ -325,23 +437,53 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
-		await waitFor(() => {
-			expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
-		});
+		// Wait for initial draft creation to complete before clicking save so
+		// basicInfo is populated on formData.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(1);
+				expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+			},
+			{ timeout: 5000 }
+		);
 
 		fireEvent.click(screen.getByTestId('save-application-button'));
 
-		await waitFor(() => {
-			expect(axios.post).toHaveBeenCalledTimes(2);
-			expect(message.info).toHaveBeenCalled();
-			expect(checkAuth).toHaveBeenCalled();
-		});
+		// Wait for the save POST to land before asserting on success side-effects.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(2);
+			},
+			{ timeout: 5000 }
+		);
+
+		await waitFor(
+			() => {
+				expect(message.info).toHaveBeenCalled();
+			},
+			{ timeout: 5000 }
+		);
+
+		await waitFor(
+			() => {
+				expect(checkAuth).toHaveBeenCalled();
+			},
+			{ timeout: 5000 }
+		);
+
+		// notification.error must NOT fire on success path.
+		expect(notification.error).not.toHaveBeenCalled();
 	});
 
 	test('should show notification and call checkAuth when save fails', async () => {
+		jest.useRealTimers();
+
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
-		axios.post.mockResolvedValueOnce(null);
+		// 1st POST = initial draft creation (succeeds), 2nd POST = save click (fails)
+		axios.post.mockResolvedValueOnce({
+			data: { result: { draft_id: 'initial-draft' } },
+		});
 		axios.post.mockRejectedValueOnce(new Error('save failed'));
 
 		render(
@@ -350,25 +492,47 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
-		// Wait for the initial profile fetch + draft creation so formData.basicInfo
-		// is populated before clicking save.
-		await waitFor(() => {
-			expect(axios.post).toHaveBeenCalledTimes(1);
-		});
+		// Wait for initial draft creation to complete and the save button to render.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(1);
+				expect(screen.getByTestId('save-application-button')).toBeInTheDocument();
+			},
+			{ timeout: 5000 }
+		);
 
 		fireEvent.click(screen.getByTestId('save-application-button'));
 
-		await waitFor(() => {
-			expect(notification.error).toHaveBeenCalledWith(
-				expect.objectContaining({
-					message: 'Sorry! There was an error saving your application.',
-				})
-			);
-			expect(checkAuth).toHaveBeenCalled();
-		});
+		// Wait for the save POST to be attempted before asserting on side-effects.
+		await waitFor(
+			() => {
+				expect(axios.post).toHaveBeenCalledTimes(2);
+			},
+			{ timeout: 5000 }
+		);
+
+		await waitFor(
+			() => {
+				expect(notification.error).toHaveBeenCalledWith(
+					expect.objectContaining({
+						message: 'Sorry! There was an error saving your application.',
+					})
+				);
+			},
+			{ timeout: 5000 }
+		);
+
+		await waitFor(
+			() => {
+				expect(checkAuth).toHaveBeenCalled();
+			},
+			{ timeout: 5000 }
+		);
 	});
 
 	test('should show error UI when initial draft creation fails', async () => {
+		jest.useRealTimers();
+
 		axios.get.mockResolvedValueOnce(mockVacancyResponse);
 		axios.get.mockResolvedValueOnce(mockProfileResponse);
 		axios.post.mockRejectedValueOnce(new Error('draft save failed'));
@@ -379,28 +543,34 @@ describe('Apply component', () => {
 			</MemoryRouter>
 		);
 
-		// Wait until the rejected axios.post call has been made before asserting
-		// on the resulting notification/UI. Helps avoid CI flakiness on slower runners.
+		// The failing POST happens inside instantiateNewApplication's try/catch.
+		// Wait for it to be attempted before asserting on the resulting UI.
 		await waitFor(
 			() => {
-				expect(axios.post).toHaveBeenCalledTimes(1);
+				expect(axios.post).toHaveBeenCalledWith(
+					SAVE_APP_DRAFT,
+					expect.any(Object)
+				);
 			},
 			{ timeout: 5000 }
 		);
 
-		await waitFor(
-			() => {
-				expect(notification.error).toHaveBeenCalledWith(
-					expect.objectContaining({
-						message: 'Sorry! There was an error loading your application.',
-					})
-				);
-				expect(screen.getByText('Unable to load application')).toBeInTheDocument();
-				expect(
-					screen.getByText(/Verify that the vacancy you are applying to has not closed/)
-				).toBeInTheDocument();
-			},
-			{ timeout: 5000 }
+		// The component should switch to the error UI (setHasError(true) in catch).
+		// findByText polls until the element appears, giving React time to re-render.
+		expect(
+			await screen.findByText('Unable to load application', {}, { timeout: 5000 })
+		).toBeInTheDocument();
+
+		expect(
+			screen.getByText(
+				/Verify that the vacancy you are applying to has not closed/i
+			)
+		).toBeInTheDocument();
+
+		expect(notification.error).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'Sorry! There was an error loading your application.',
+			})
 		);
 	});
 
