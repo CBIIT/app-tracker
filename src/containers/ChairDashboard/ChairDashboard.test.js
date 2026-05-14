@@ -26,7 +26,16 @@ jest.mock('antd', () => {
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth');
-jest.mock('../../components/Util/RoleValidator/RoleValidator');
+jest.mock('../../components/Util/RoleValidator/RoleValidator', () => ({
+	__esModule: true,
+	validateRoleForCurrentTenant: jest.fn(),
+	isVacancyManager: jest.fn(),
+	isExecSec: jest.fn(),
+	isChair: jest.fn(),
+	isCommitteMember: jest.fn(),
+	isHrSpecialist: jest.fn(),
+	atleastOneChair: jest.fn(),
+}));
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useNavigate: jest.fn(),
@@ -259,10 +268,10 @@ describe('ChairDashboard component tests', () => {
 			list: [],
 		};
 		axios.get.mockResolvedValue({ data: { result: emptyVacancies } });
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 		rtRender(<ChairDashboard />);
 		await waitFor(() => {
 			expect(
@@ -271,7 +280,7 @@ describe('ChairDashboard component tests', () => {
 				)
 			).toBeInTheDocument();
 		});
-		expect(mockPush).toHaveBeenCalledWith('/');
+	expect(mockNavigate).toHaveBeenCalledWith('/');
 	});
 
 	test('<ChairDashboard /> should display all vacancies when no filter matches', async () => {
@@ -400,13 +409,13 @@ describe('ChairDashboard component tests', () => {
 	});
 
 	test('<ChairDashboard /> should handle validateVacancyData returning object without list', async () => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 
 		isChair.mockReturnValueOnce(true);
-		
+
 		// Mock validateVacancyData to return object without list property
 		const validateVacancyDataModule = require('./Utils/validateVacancyData');
 		jest.spyOn(validateVacancyDataModule, 'validateVacancyData').mockReturnValueOnce({});
@@ -429,6 +438,6 @@ describe('ChairDashboard component tests', () => {
 				)
 			).toBeInTheDocument();
 		});
-		expect(mockPush).toHaveBeenCalledWith('/');
+		expect(mockNavigate).toHaveBeenCalledWith('/');
 	});
 });

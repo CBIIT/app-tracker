@@ -27,7 +27,16 @@ jest.mock('antd', () => {
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth');
-jest.mock('../../components/Util/RoleValidator/RoleValidator');
+jest.mock('../../components/Util/RoleValidator/RoleValidator', () => ({
+	__esModule: true,
+	validateRoleForCurrentTenant: jest.fn(),
+	isVacancyManager: jest.fn(),
+	isExecSec: jest.fn(),
+	isChair: jest.fn(),
+	isCommitteMember: jest.fn(),
+	isHrSpecialist: jest.fn(),
+	atleastOneChair: jest.fn(),
+}));
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useNavigate: jest.fn(),
@@ -149,10 +158,10 @@ describe('CommitteeDashboard component tests', () => {
 	});
 
 	test('<CommitteeDashboard /> should redirect when current tenant is missing', async () => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -168,7 +177,7 @@ describe('CommitteeDashboard component tests', () => {
 			expect(
 				screen.getByText('Sorry! Please reselect your tenant and try again.')
 			).toBeInTheDocument();
-			expect(mockPush).toHaveBeenCalledWith('/');
+			expect(mockNavigate).toHaveBeenCalledWith('/');
 		});
 
 		expect(axios.get).not.toHaveBeenCalled();

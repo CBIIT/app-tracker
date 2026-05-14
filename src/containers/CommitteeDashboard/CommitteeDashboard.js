@@ -125,7 +125,7 @@ const committeeDashboard = () => {
 						'Sorry! You do not have committee member access in the selected tenant.',
 				});
 				setIsLoading(false);
-				history.push('/');
+				navigate('/');
 			}
 		} else {
 			message.destroy();

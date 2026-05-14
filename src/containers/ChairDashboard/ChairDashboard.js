@@ -77,7 +77,7 @@ const chairDashboard = () => {
 									: noAssignedVacanciesMessage,
 							});
 							setData([]);
-							history.push('/');
+							navigate('/');
 							return;
 						}
 
@@ -116,7 +116,7 @@ const chairDashboard = () => {
 					content: noAssignedVacanciesMessage,
 				});
 				setIsLoading(false);
-				history.push('/');
+				navigate('/');
 			}
 		} else {
 			message.destroy();
