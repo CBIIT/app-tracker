@@ -25,7 +25,7 @@ import RejectionEmailModal from '../../modals/RejectionEmailModal';
 const { TextArea } = Input;
 
 const CommitteeReviewView = (props) => {
-	// Modal state for legacy-aligned reference, regret email, and voting comments flows.
+	// Modal state for reference, regret email, and voting comments flows.
 	const [applicantSysId, setApplicantSysId] = useState('');
 	const [showReferenceModal, setShowReferenceModal] = useState(false);
 	const [showRejectionEmailModal, setShowRejectionEmailModal] = useState(false);
