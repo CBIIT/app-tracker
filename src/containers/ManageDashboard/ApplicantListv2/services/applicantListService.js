@@ -21,7 +21,9 @@ export const getFocusAreaOptions = async (vacancySysId) => {
 		}));
 	} catch (error) {
 		console.error('❌ Error loading focus areas: ', error);
-		message.error('Sorry! An error occured while loading focus areas. Try reloading.');
+		message.error(
+			'Sorry! An error occured while loading focus areas. Try reloading.'
+		);
 		return [];
 	}
 };
@@ -118,13 +120,48 @@ export const fetchSplitApplicantLists = async (recUrl, nonRecUrl) => {
 	}
 };
 
+// Fetches all applicants for Excel in one-table mode.
 export const fetchAllApplicantsForExcel = async (url) => {
 	try {
 		const response = await axios.get(url);
 		return response?.data?.result?.applicants || [];
 	} catch (error) {
 		console.error('❌ Error loading all applicants for excel export: ', error);
-		message.error('Sorry! An error occurred while loading all applicants for excel export. Try reloading.')
+		message.error(
+			'Sorry! An error occurred while loading all applicants for excel export. Try reloading.'
+		);
 		throw error;
 	}
-}
+};
+
+// Fetches both split datasets for Excel in parallel
+export const fetchSplitApplicantsForExcel = async (
+	recommendedUrl,
+	nonRecommendedUrl
+) => {
+	try {
+		const [recommendedResponse, nonRecommendedResponse] = await Promise.all([
+			axios.get(recommendedUrl),
+			axios.get(nonRecommendedUrl),
+		]);
+
+		const recommendedApplicants =
+			recommendedResponse?.data?.result?.applicants || [];
+		const nonRecommendedApplicants =
+			nonRecommendedResponse?.data?.result?.applicants || [];
+
+		return {
+			recommendedApplicants,
+			nonRecommendedApplicants: [
+				...recommendedApplicants,
+				...nonRecommendedApplicants,
+			],
+		};
+	} catch (error) {
+		console.error('❌ Error loading all applicants for excel export: ', error);
+		message.error(
+			'Sorry! An error occurred while loading all applicants for excel export. Try reloading.'
+		);
+		throw error;
+	}
+};
