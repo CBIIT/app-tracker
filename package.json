@@ -55,7 +55,7 @@
 		"core-js": "3.1.4",
 		"css-loader": "^5.0.2",
 		"directory-tree": "^2.2.9",
-		"dotenv-webpack": "^1.8.0",
+		"dotenv-webpack": "^9.0.0",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^6.15.0",
 		"eslint-import-resolver-webpack": "^0.13.8",
