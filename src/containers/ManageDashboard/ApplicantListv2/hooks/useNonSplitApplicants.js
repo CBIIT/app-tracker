@@ -3,6 +3,7 @@ import {
 	getFocusAreaOptions,
 	buildApplicantListUrl,
 	fetchApplicantList,
+	fetchAllApplicantsForExcel,
 } from '../services/applicantListService';
 
 // Defines what query changes are possible
@@ -61,6 +62,8 @@ const queryReducer = (state, action) => {
 	}
 };
 
+const EXCEL_PAGE_SIZE = 1000;
+
 export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) => {
 	// Single immutable query object for one-table flows (triage/chair/committee).
 	const [query, dispatch] = useReducer(queryReducer, initialQuery);
@@ -70,8 +73,15 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	const [loading, setLoading] = useState(false);
 	const [focusAreaOptions, setFocusAreaOptions] = useState([]);
 
+	// Excel export state variables
+	const [excelApplicants, setExcelApplicants] = useState([]);
+	const [excelLoading, setExcelLoading] = useState(false);
+	const [excelError, setExcelError] = useState(null);
+
 	// Stale response prevention for fast pagination/filter changes.
 	const requestIdRef = useRef(0);
+	// Tracks last successful excel query signature to avoid duplicate loads
+	const lastExcelExportRef = useRef('');
 
 	const buildApplicantUrl = useCallback(() => {
 		// Build URL from a single query snapshot so API requests are predictable.
@@ -90,6 +100,30 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			focusArea,
 		});
 	}, [query, sysId, vacancyState]);
+
+	const buildExcelExport = useCallback(
+		(queryState) =>
+			JSON.stringify({
+				sysId,
+				vacancyState,
+				searchText: queryState.searchText,
+				focusArea: queryState.focusArea,
+				orderBy: queryState.orderBy,
+				orderColumn: queryState.orderColumn,
+			})
+		[sysId, vacancyState]
+	);
+
+	const loadFocusAreaOptions = useCallback(async () => {
+		if (!enabled) {
+			setFocusAreaOptions([]);
+			return;
+		}
+
+		// Delegate to service for fetching focus area options.
+		const options = await getFocusAreaOptions(sysId);
+		setFocusAreaOptions(options);
+	}, [enabled, sysId]);
 
 	const loadApplicants = useCallback(async () => {
 		if (!enabled) {
@@ -117,16 +151,39 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		}
 	}, [buildApplicantUrl, enabled]);
 
-	const loadFocusAreaOptions = useCallback(async () => {
-		if (!enabled) {
-			setFocusAreaOptions([]);
-			return;
-		}
+	const loadAllApplicantsForExcel = useCallback(
+		async(queryState) => {
+			if (!enabled) {
+				return;
+			}
 
-		// Delegate to service for fetching focus area options.
-		const options = await getFocusAreaOptions(sysId);
-		setFocusAreaOptions(options);
-	}, [enabled, sysId]);
+			setExcelLoading(true);
+			setExcelError(null);
+
+			try{
+				const excelUrl = buildApplicantListUrl({
+					vacancySysId: sysId,
+					vacancyState,
+					page: 1,
+					pageSize: EXCEL_PAGE_SIZE,
+					orderBy: queryState.orderBy,
+					orderColumn: queryState.orderColumn,
+					searchText: queryState.searchText,
+					focusArea: queryState.focusArea,
+				});
+
+				const rows = await fetchAllApplicantsForExcel(excelUrl);
+				setExcelApplicants(rows);
+				lastExcelExportRef.current = buildExcelExport(queryState);
+			} catch (error) {
+				setExcelApplicants([]);
+				setExcelError(error);
+			} finally {
+				setExcelLoading(false);
+			}
+		},
+		[enabled, sysId, vacancyState, buildExcelExport]
+	);
 
 	const handleTableChange = useCallback((payload) => {
 		if (!enabled) {
@@ -188,14 +245,29 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		loadApplicants();
 	}, [query, loadApplicants, enabled]);
 
+	// May want to monitor this effect to ensure behavior is correct (excel loading after everything else is complete)
 	useEffect(() => {
 		// Focus-area filter options are loaded independently of applicant rows.
 		if (!enabled) {
+			setExcelApplicants([]);
+			setExcelError(null);
+			setExcelLoading(false);
+			lastExcelExportRef.current = '';
+			return;
+		}
+
+		if (loading) {
+			return;
+		}
+
+		const excelExport = buildExcelExport(query);
+		if (excelExport === lastExcelExportRef.current) {
 			return;
 		}
 
 		loadFocusAreaOptions();
-	}, [loadFocusAreaOptions, enabled]);
+		loadAllApplicantsForExcel(query);
+	}, [loadFocusAreaOptions, enabled, loading, query, buildExcelExport, loadAllApplicantsForExcel]);
 
 	// Clears table/query state when vacancy/slice context changes.
 	const initializeForVacancy = useCallback(() => {
@@ -227,5 +299,9 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		// Life cycle handlers
 		initializeForVacancy, // Call when vacancy changes
 		refresh, // Call from modals/actions
+		excelApplicants,
+		excelLoading,
+		excelError,
+		loadAllApplicantsForExcel,
 	};
 };
