@@ -85,7 +85,7 @@ describe('EmailTemplates', () => {
 				screen.getByText('Candidates Who Did Not Interview')
 			).toBeInTheDocument();
 			expect(
-				screen.getByText('Candidates Who Did Interviewed')
+				screen.getByText('Candidates Who Did Interview')
 			).toBeInTheDocument();
 		});
 	});
