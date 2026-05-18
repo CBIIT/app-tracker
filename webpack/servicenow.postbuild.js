@@ -13,8 +13,16 @@ const PATH_TO_DIST_HTML = 'dist/index.html';
 const renameExtensions = (dir) => {
 	const path = 'dist/' + dir;
 	const files = fs.readdirSync(path);
-	let fileCount = files.length;
-	files.forEach((file) => {
+	const filesToRename = files.filter((f) => !f.endsWith('.js'));
+	if (filesToRename.length === 0) {
+		renameJobs--;
+		if (renameJobs === 0) {
+			outputResults();
+		}
+		return;
+	}
+	let fileCount = filesToRename.length;
+	filesToRename.forEach((file) => {
 		const filename = file;
 		const regex = /.+-(.+)$/;
 		const ext = filename.match(regex)[1];
@@ -121,11 +129,11 @@ function injectHTMLCloseTag(inputHTML) {
 }
 
 function removeHtmlTags(inputHTML) {
-	return inputHTML.replace(/(<html>)|(<html.+>)/, '').replace('</html>', '');
+	return inputHTML.replace(/(<html>)|(<html[^>]*>)/, '').replace('</html>', '');
 }
 
 function removeDocType(inputHTML) {
-	return inputHTML.replace('<!DOCTYPE html>', '');
+	return inputHTML.replace(/<!doctype html>/i, '');
 }
 
 function removeDoubleNewlines(inputHTML) {

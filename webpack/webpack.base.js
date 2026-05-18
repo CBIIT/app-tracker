@@ -9,7 +9,7 @@ const CONFIG = { ...DEFAULTS, ...servicenowConfig };
 
 module.exports = {
 	entry: {
-		[CONFIG.JS_API_PATH + 'app']: ['./src/index.js'],
+		app: ['./src/index.js'],
 	},
 
 	output: {
@@ -98,7 +98,6 @@ module.exports = {
 			return createHtmlPluginInstance({
 				filename: 'index.html',
 				title: '',
-				chunks: 'app',
 				template: 'src/index.html',
 			});
 		},
@@ -106,6 +105,6 @@ module.exports = {
 };
 
 function createHtmlPluginInstance(cfg) {
-	cfg.inject = true;
+	cfg.inject = 'body';
 	return new HtmlWebPackPlugin(cfg);
 }
