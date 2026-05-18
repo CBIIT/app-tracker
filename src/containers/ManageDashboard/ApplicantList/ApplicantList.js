@@ -46,7 +46,7 @@ import SearchContext from '../Util/SearchContext';
 import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
-import ExportToExcel from '../Util/ExportToExcel';
+import ExportToExcel from '../Util/ExportToExcel/ExportToExcel';
 import moment from 'moment';
 
 const { Panel } = Collapse;

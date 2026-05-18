@@ -8,6 +8,9 @@ import { getTenantCapabilities } from './adapters/tenantWorkflowCapabilities';
 import { useSplitApplicantTables } from './hooks/useSplitApplicantTables';
 import { useNonSplitApplicants } from './hooks/useNonSplitApplicants';
 import { ROLLING_CLOSE, TRIAGE } from '../../../constants/VacancyStates';
+import { EXPORT_COLUMNS } from '../Util/ExportToExcel/exportColumns';
+import { getExportState, getVisibleExportColumns, getExportData } from '../Util/ExportToExcel/exportHelpers';
+import ExportToExcel from '../Util/ExportToExcel/ExportToExcel';
 import useAuth from '../../../hooks/useAuth';
 import './ApplicantListv2.css';
 
