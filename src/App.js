@@ -79,7 +79,7 @@ const app = () => {
 			routes.push(
 				{
 					key: 'vacancy-dashboard',
-					path: VACANCY_DASHBOARD,
+					path: VACANCY_DASHBOARD + '/:tab?',
 					element: (
 						<ProtectedRoute>
 							<VacancyDashboard />
@@ -214,7 +214,7 @@ const app = () => {
 			},
 			{
 				key: 'vacancy-dashboard',
-				path: VACANCY_DASHBOARD,
+				path: VACANCY_DASHBOARD + '/:tab?',
 				element: (
 					<ProtectedRoute>
 						<VacancyDashboard />
