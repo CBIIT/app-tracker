@@ -19,7 +19,9 @@ export const getFocusAreaOptions = async (vacancySysId) => {
 			text: focusArea,
 			value: focusArea,
 		}));
-	} catch (_error) {
+	} catch (error) {
+		console.error('❌ Error loading focus areas: ', error);
+		message.error('Sorry! An error occured while loading focus areas. Try reloading.');
 		return [];
 	}
 };
@@ -75,7 +77,7 @@ export const fetchApplicantList = async (url) => {
 			totalCount: response.data?.result?.totalCount || 0,
 		};
 	} catch (error) {
-		console.error('Error loading applicants:', error);
+		console.error('❌ Error loading applicants:', error);
 		message.error(
 			'Sorry! An error occurred while loading applicants. Try reloading.'
 		);
@@ -115,3 +117,14 @@ export const fetchSplitApplicantLists = async (recUrl, nonRecUrl) => {
 		throw error;
 	}
 };
+
+export const fetchAllApplicantsForExcel = async (url) => {
+	try {
+		const response = await axios.get(url);
+		return response?.data?.result?.applicants || [];
+	} catch (error) {
+		console.error('❌ Error loading all applicants for excel export: ', error);
+		message.error('Sorry! An error occurred while loading all applicants for excel export. Try reloading.')
+		throw error;
+	}
+}
