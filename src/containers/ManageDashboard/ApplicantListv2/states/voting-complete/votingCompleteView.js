@@ -228,6 +228,7 @@ const VotingCompleteView = (props) => {
 	return (
 		<>
 			{isRollingClose && (
+				// Might consider moving this section to ApplicantFilters.js file in utils
 				<div>
 					<p style={{ display: 'inline-block' }}>Filter Applications:</p>
 					<Radio.Group

@@ -1,5 +1,4 @@
 // Orchestrates ApplicantListv2 routing, capability resolution, and data hook selection.
-
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getWorkflowView } from './workflowRouter';
