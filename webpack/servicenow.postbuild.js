@@ -140,13 +140,15 @@ function removeDoubleNewlines(inputHTML) {
 }
 
 /**
- * Strip .js extension from script src URLs so ServiceNow's REST router
- * receives the same URL format as the old webpack 4 build (no .js extension).
- * The attachment files on disk keep their .js extension, and the Scripted
- * REST Resource script appends .js to the path param to find them.
+ * Strip .js extension from script src URLs and image extensions from img src
+ * URLs so ServiceNow's REST router receives extension-free path segments.
  */
 function stripScriptJsExtension(inputHTML) {
-	return inputHTML.replace(/(src="\/api\/[^"]+)\.js(")/g, '$1$2');
+	// Strip .js from JS script tags
+	inputHTML = inputHTML.replace(/(src="\/api\/[^"]+container\/js\/[^"]+)\.js(")/g, '$1$2');
+	// Strip image extensions from img src URLs
+	inputHTML = inputHTML.replace(/(src="\/api\/[^"]+container\/img\/[^"]+)\.(jpg|jpeg|png|gif|webp)(")/gi, '$1$3');
+	return inputHTML;
 }
 
 function decorateIndexHTML(pathToHTML) {
