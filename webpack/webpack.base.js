@@ -66,7 +66,7 @@ module.exports = {
 				},
 			},
 			generator: {
-				filename: CONFIG.IMG_API_PATH + '[name]-[hash:6][ext]',
+				filename: CONFIG.IMG_API_PATH + '[name]-[hash:6]',
 			},
 		},
 		assets: {
@@ -106,5 +106,6 @@ module.exports = {
 
 function createHtmlPluginInstance(cfg) {
 	cfg.inject = 'body';
+	cfg.scriptLoading = 'blocking';
 	return new HtmlWebPackPlugin(cfg);
 }

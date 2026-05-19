@@ -39,10 +39,9 @@ const renameExtensions = (dir) => {
 		});
 	});
 };
-let renameJobs = 2;
+let renameJobs = 1;
 decorateIndexHTML(PATH_TO_DIST_HTML);
 renameExtensions(serviceNowConfig.JS_API_PATH);
-renameExtensions(serviceNowConfig.IMG_API_PATH);
 
 function injectJellyWrappers(inputHTML) {
 	const JELLY_WRAPPER_START = `<?xml version="1.0" encoding="utf-8" ?>
@@ -140,6 +139,16 @@ function removeDoubleNewlines(inputHTML) {
 	return inputHTML.replace(/\s{2,}/gm, '\n');
 }
 
+/**
+ * Strip .js extension from script src URLs so ServiceNow's REST router
+ * receives the same URL format as the old webpack 4 build (no .js extension).
+ * The attachment files on disk keep their .js extension, and the Scripted
+ * REST Resource script appends .js to the path param to find them.
+ */
+function stripScriptJsExtension(inputHTML) {
+	return inputHTML.replace(/(src="\/api\/[^"]+)\.js(")/g, '$1$2');
+}
+
 function decorateIndexHTML(pathToHTML) {
 	const indexHTMLContent = fs.readFileSync(pathToHTML, 'utf-8');
 	let decoratedHTML = indexHTMLContent;
@@ -150,7 +159,8 @@ function decorateIndexHTML(pathToHTML) {
 	decoratedHTML = injectJellyDoctype(decoratedHTML);
 	decoratedHTML = injectAuthLogic(decoratedHTML);
 	decoratedHTML = injectHTMLOpenTag(decoratedHTML);
-	decoratedHTML = injectHTMLCloseTag(decoratedHTML)
+	decoratedHTML = injectHTMLCloseTag(decoratedHTML);
+	decoratedHTML = stripScriptJsExtension(decoratedHTML);
 
 	fs.writeFileSync(pathToHTML, decoratedHTML);
 }

@@ -1,5 +1,6 @@
 const baseCfg = require('./webpack.base');
 const servicenowConfig = require('./servicenow.config');
+const TerserPlugin = require('terser-webpack-plugin');
 const DEFAULTS = { ASSET_SIZE_LIMIT: 10000 };
 const CONFIG = { ...DEFAULTS, ...servicenowConfig };
 
@@ -23,6 +24,11 @@ const cfg = {
 	optimization: {
 		moduleIds: 'deterministic',
 		chunkIds: 'deterministic',
+		minimizer: [
+			new TerserPlugin({
+				extractComments: false,
+			}),
+		],
 		splitChunks: {
 			automaticNameDelimiter: '-',
 			cacheGroups: {
