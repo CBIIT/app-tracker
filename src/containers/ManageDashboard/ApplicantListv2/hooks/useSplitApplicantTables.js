@@ -4,6 +4,8 @@ import {
 	getFocusAreaOptions,
 	buildApplicantListUrl,
 	fetchSplitApplicantLists,
+	fetchAllApplicantsForExcel,
+	fetchSplitApplicantsForExcel,
 } from '../services/applicantListService';
 
 // Defines what query changes are possible
@@ -62,6 +64,8 @@ const queryReducer = (state, action) => {
 	}
 };
 
+const EXCEL_PAGE_SIZE = 1000;
+
 export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true }) => {
 	// Single immutable query object for both split tables.
 	const [query, dispatch] = useReducer(queryReducer, initialQuery);
@@ -76,12 +80,21 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	const [nonRecommendedLoading, setNonRecommendedLoading] = useState(false);
 	const [focusAreaOptions, setFocusAreaOptions] = useState([]);
 
+	// Excel export state variables
+	const [excelRecommendedApplicants, setExcelRecommendedApplicants] = useState([]);
+	const [excelNonRecommendedApplicants, setExcelNonRecommendedApplicants] = useState([]);
+	const [excelCombinedApplicants, setExcelCombinedApplicants] = useState([]);
+	const [excelLoading, setExcelLoading] = useState(false);
+	const [excelError, setExcelError] = useState(null);
+
 	// Stale response prevention: if users change paging/filter quickly, older
 	// responses should not overwrite newer state.
 	const recommendedRequestIdRef = useRef(0);
 	const nonRecommendedRequestIdRef = useRef(0);
 	// Gate used so we can load focus-area options first, then the applicant lists.
 	const hasBootstrappedRef = useRef(false);
+	// Tracks last successful excel query signature to avoid duplicate loads
+	const lastExcelExportRef = useRef('');
 
 	// URL building delegated to service for consistency and testability.
 	const buildApplicantUrl = useCallback(
@@ -100,6 +113,17 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		},
 		[sysId, vacancyState]
 	);
+
+	const loadFocusAreaOptions = useCallback(async () => {
+		if (!enabled) {
+			setFocusAreaOptions([]);
+			return;
+		}
+
+		// Delegate to service for fetching focus area options.
+		const options = await getFocusAreaOptions(sysId);
+		setFocusAreaOptions(options);
+	}, [enabled, sysId]);
 
 	// Fires exactly 2 coordinated API calls for recommended and non-recommended.
 	const loadSplitApplicants = useCallback(async (queryState) => {
@@ -161,16 +185,73 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		}
 	}, [buildApplicantUrl, enabled]);
 
-	const loadFocusAreaOptions = useCallback(async () => {
-		if (!enabled) {
-			setFocusAreaOptions([]);
-			return;
-		}
+	const buildExcelExport = useCallback(
+		(queryState) =>
+			JSON.stringify({
+				sysId,
+				vacancyState,
+				searchText: queryState.searchText,
+				focusArea: queryState.focusArea,
+				orderBy: queryState.orderBy,
+				orderColumn: queryState.orderColumn,
+			}),
+		[sysId, vacancyState]
+	);
 
-		// Delegate to service for fetching focus area options.
-		const options = await getFocusAreaOptions(sysId);
-		setFocusAreaOptions(options);
-	}, [enabled, sysId]);
+	const loadAllApplicantsForExcel = useCallback(
+		async (queryState) => {
+			if (!enabled) {
+				return;
+			}
+
+			setExcelLoading(true);
+			setExcelError(null);
+
+			try {
+				const recommendedurl = buildApplicantListUrl({
+					vacancySysId: sysId,
+					vacancyState,
+					page: 1,
+					pageSize: EXCEL_PAGE_SIZE,
+					orderBy: queryState.orderBy,
+					orderColumn: queryState.orderColumn,
+					searchText: queryState.searchText,
+					focusArea: queryState.focusArea,
+					recommended: 'yes',
+				});
+
+				const nonRecommendedUrl = buildApplicantListUrl({
+					vacancySysId: sysId,
+					vacancyState,
+					page: 1,
+					pageSize: EXCEL_PAGE_SIZE,
+					orderBy: queryState.orderBy,
+					orderColumn: queryState.orderColumn,
+					searchText: queryState.searchText,
+					focusArea: queryState.focusArea,
+					recommended: 'no',
+				});
+
+				const excelData = await fetchSplitApplicantsForExcel(
+					recommendedurl,
+					nonRecommendedUrl
+				);
+
+				setExcelRecommendedApplicants(excelData.recommendedApplicants);
+				setExcelNonRecommendedApplicants(excelData.nonRecommendedApplicants);
+				setExcelCombinedApplicants(excelData.combinedApplicants);
+				lastExcelExportRef.current = buildExcelExport(queryState);
+			} catch (error) {
+				setExcelRecommendedApplicants([]);
+				setExcelNonRecommendedApplicants([]);
+				setExcelCombinedApplicants([]);
+				setExcelError(error);
+			} finally {
+				setExcelLoading(false);
+			}
+		},
+		[enabled, sysId, vacancyState, buildExcelExport]
+	);
 
 	const handleTableChange = useCallback((payload) => {
 		if (!enabled) {
@@ -257,6 +338,37 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		};
 	}, [enabled, loadFocusAreaOptions, loadSplitApplicants, sysId, vacancyState]);
 
+	useEffect(() => {
+		if (!enabled) {
+			setExcelRecommendedApplicants([]);
+			setExcelNonRecommendedApplicants([]);
+			setExcelCombinedApplicants([]);
+			setExcelError(null);
+			setExcelLoading(false);
+			lastExcelExportRef.current = '';
+			return;
+		}
+
+		// Key behavior: wait until both tables are done before preloading excel data
+		if (recommendedLoading || nonRecommendedLoading) {
+			return;
+		}
+
+		const excelExport = buildExcelExport(query);
+		if (excelExport === lastExcelExportRef.current) {
+			return;
+		}
+
+		loadAllApplicantsForExcel(query);
+	}, [
+		enabled,
+		recommendedLoading,
+		nonRecommendedLoading,
+		query,
+		buildExcelExport,
+		loadAllApplicantsForExcel,
+	]);
+
 	// Clears all table data and query state when vacancy/slice changes.
 	const initializeForVacancy = useCallback(() => {
 		hasBootstrappedRef.current = false;
@@ -279,24 +391,26 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	return {
 		// query state for debugging
 		query,
-
 		// Split table data
 		recommendedApplicants,
 		nonRecommendedApplicants,
 		recommendedTotalCount,
 		nonRecommendedTotalCount,
-
 		// Loading flags for spinners
 		recommendedLoading,
 		nonRecommendedLoading,
 		focusAreaOptions,
-
 		// Main event handler (single entry point)
 		// Pass this to Table.onChange handlers
 		handleTableChange,
-
 		// Life cycle handlers
 		initializeForVacancy, // Call when vacancy changes
 		refresh, // Call from modals/actions
+		excelRecommendedApplicants,
+		excelNonRecommendedApplicants,
+		excelCombinedApplicants,
+		excelLoading,
+		excelError,
+		loadAllApplicantsForExcel,
 	};
 };

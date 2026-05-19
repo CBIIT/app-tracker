@@ -101,19 +101,6 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		});
 	}, [query, sysId, vacancyState]);
 
-	const buildExcelExport = useCallback(
-		(queryState) =>
-			JSON.stringify({
-				sysId,
-				vacancyState,
-				searchText: queryState.searchText,
-				focusArea: queryState.focusArea,
-				orderBy: queryState.orderBy,
-				orderColumn: queryState.orderColumn,
-			})
-		[sysId, vacancyState]
-	);
-
 	const loadFocusAreaOptions = useCallback(async () => {
 		if (!enabled) {
 			setFocusAreaOptions([]);
@@ -185,6 +172,19 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		[enabled, sysId, vacancyState, buildExcelExport]
 	);
 
+	const buildExcelExport = useCallback(
+		(queryState) =>
+			JSON.stringify({
+				sysId,
+				vacancyState,
+				searchText: queryState.searchText,
+				focusArea: queryState.focusArea,
+				orderBy: queryState.orderBy,
+				orderColumn: queryState.orderColumn,
+			})
+		[sysId, vacancyState]
+	);
+
 	const handleTableChange = useCallback((payload) => {
 		if (!enabled) {
 			return;
@@ -232,6 +232,15 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	}, [enabled]);
 
 	useEffect(() => {
+		// Focus-area filter options are loaded independently of applicant rows.
+		if (!enabled) {
+			return;
+		}
+
+		loadFocusAreaOptions();
+	}, [loadFocusAreaOptions, enabled]);
+
+	useEffect(() => {
 		// When this hook is not active for the current workflow, clear local state
 		// so stale data is not accidentally rendered.
 		if (!enabled) {
@@ -245,9 +254,7 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		loadApplicants();
 	}, [query, loadApplicants, enabled]);
 
-	// May want to monitor this effect to ensure behavior is correct (excel loading after everything else is complete)
 	useEffect(() => {
-		// Focus-area filter options are loaded independently of applicant rows.
 		if (!enabled) {
 			setExcelApplicants([]);
 			setExcelError(null);
@@ -256,6 +263,7 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			return;
 		}
 
+		// Key behavior: only start excel preload after visible table load finishes.
 		if (loading) {
 			return;
 		}
@@ -265,9 +273,15 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			return;
 		}
 
-		loadFocusAreaOptions();
 		loadAllApplicantsForExcel(query);
-	}, [loadFocusAreaOptions, enabled, loading, query, buildExcelExport, loadAllApplicantsForExcel]);
+	}, [
+		enabled,
+		excelLoading,
+		excelError,
+		buildExcelExport,
+		loadAllApplicantsForExcel,
+	])
+
 
 	// Clears table/query state when vacancy/slice context changes.
 	const initializeForVacancy = useCallback(() => {
