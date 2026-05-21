@@ -95,6 +95,8 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 	const hasBootstrappedRef = useRef(false);
 	// Tracks last successful excel query signature to avoid duplicate loads
 	const lastExcelExportRef = useRef('');
+	// Prevents duplicate concurrent excel preloads (including StrictMode double-effect).
+	const excelRequestInFlightRef = useRef(false);
 
 	// URL building delegated to service for consistency and testability.
 	const buildApplicantUrl = useCallback(
@@ -200,10 +202,11 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 
 	const loadAllApplicantsForExcel = useCallback(
 		async (queryState) => {
-			if (!enabled) {
+			if (!enabled || excelRequestInFlightRef.current) {
 				return;
 			}
 
+			excelRequestInFlightRef.current = true;
 			setExcelLoading(true);
 			setExcelError(null);
 
@@ -247,6 +250,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 				setExcelCombinedApplicants([]);
 				setExcelError(error);
 			} finally {
+				excelRequestInFlightRef.current = false;
 				setExcelLoading(false);
 			}
 		},
@@ -345,12 +349,18 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 			setExcelCombinedApplicants([]);
 			setExcelError(null);
 			setExcelLoading(false);
+			excelRequestInFlightRef.current = false;
 			lastExcelExportRef.current = '';
 			return;
 		}
 
 		// Key behavior: wait until both tables are done before preloading excel data
-		if (recommendedLoading || nonRecommendedLoading) {
+		if (
+			recommendedLoading ||
+			nonRecommendedLoading ||
+			excelLoading ||
+			excelRequestInFlightRef.current
+		) {
 			return;
 		}
 
@@ -364,6 +374,7 @@ export const useSplitApplicantTables = ({ sysId, vacancyState, enabled = true })
 		enabled,
 		recommendedLoading,
 		nonRecommendedLoading,
+		excelLoading,
 		query,
 		buildExcelExport,
 		loadAllApplicantsForExcel,

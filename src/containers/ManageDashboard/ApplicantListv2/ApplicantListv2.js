@@ -69,7 +69,7 @@ const ApplicantListv2 = (props) => {
 	const nonSplitEnabled = isTriageStage || !canUseSplit;
 
 	// Split-table hook for recommended and non-recommended applicant lists.
-	const splitTables = useSplitApplicantTables({
+	const splitApplicants = useSplitApplicantTables({
 		sysId,
 		vacancyState: props.vacancyState,
 		enabled: splitEnabled,
@@ -83,7 +83,7 @@ const ApplicantListv2 = (props) => {
 	});
 
 	// Exposes one data API shape regardless of split or non-split mode.
-	const dataApi = isTriageStage || !canUseSplit ? nonSplitApplicants : splitTables;
+	const dataApi = isTriageStage || !canUseSplit ? nonSplitApplicants : splitApplicants;
 
 	// Applies client-side state filtering for rolling-close slices.
 	const getFilteredApplicants = (applicants, filter) => {
@@ -140,7 +140,7 @@ const ApplicantListv2 = (props) => {
 	const handleSliceChange = (slice) => {
 		setActiveSlice(slice);
 		nonSplitApplicants.initializeForVacancy();
-		splitTables.initializeForVacancy();
+		splitApplicants.initializeForVacancy();
 	};
 
 	// Selects the active view component for the current workflow context.
@@ -155,6 +155,43 @@ const ApplicantListv2 = (props) => {
 		[props.vacancyState, props.filter, activeSlice, isRollingClose, tenantCaps]
 	);
 
+	const excelExport = useMemo(() => {
+		const workflowState = getExportState(props.vacancyState, props.filter || activeSlice);
+		const allRows = splitEnabled
+			? splitApplicants.excelCombinedApplicants
+			: nonSplitApplicants.excelApplicants;
+
+		const columns = getVisibleExportColumns(
+			EXPORT_COLUMNS[workflowState],
+			roleCaps,
+			tenantCaps
+		);
+
+		return {
+			workflowState,
+			columns,
+			rows: getExportData(allRows, columns),
+			loading: splitEnabled
+				? splitApplicants.excelLoading
+				: nonSplitApplicants.excelLoading,
+			error: splitEnabled
+				? splitApplicants.excelError
+				: nonSplitApplicants.excelError,
+			onRefresh: splitEnabled
+				? splitApplicants.loadAllApplicantsForExcel
+				: nonSplitApplicants.loadAllApplicantsForExcel,
+		};
+	}, [
+		props.vacancyState,
+		props.filter,
+		activeSlice,
+		splitEnabled,
+		splitApplicants,
+		nonSplitApplicants,
+		roleCaps,
+		tenantCaps,
+	]);
+
 	// Renders the selected workflow view with shared context and data handlers.
 	return (
 		<View
@@ -163,8 +200,9 @@ const ApplicantListv2 = (props) => {
 			roleCaps={roleCaps}
 			tenantCaps={tenantCaps}
 			dataApi={filteredDataApi}
+			excelExport={excelExport}
 			nonSplitApplicants={nonSplitApplicants}
-			splitTables={splitTables}
+			splitApplicants={splitApplicants}
 			activeSlice={activeSlice}
 			onSliceChange={handleSliceChange}
 		/>

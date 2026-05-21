@@ -18,6 +18,7 @@ import {
 import { transformDateTimeToDisplay } from '../../../../../components/Util/Date/Date';
 import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
+import WorkflowExcelExportToolbar from '../../components/WorkflowExcelExportToolbar';
 import './index.css';
 
 const TriageView = (props) => {
@@ -29,8 +30,13 @@ const TriageView = (props) => {
 	const [rejectionEmailSent, setRejectionEmailSent] = useState('0');
 	const [referredToInterview, setReferredToInterview] = useState('no');
 
-	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
-		useContext(SearchContext);
+	const {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput,
+	} = useContext(SearchContext);
 
 	const searchProps = useCallback(
 		(dataIndex, key) =>
@@ -43,13 +49,7 @@ const TriageView = (props) => {
 				setSearchedColumn,
 				searchInput
 			),
-		[
-			searchInput,
-			searchText,
-			searchedColumn,
-			setSearchText,
-			setSearchedColumn,
-		]
+		[searchInput, searchText, searchedColumn, setSearchText, setSearchedColumn]
 	);
 
 	useEffect(() => {
@@ -71,7 +71,9 @@ const TriageView = (props) => {
 	const renderDecision = useCallback((text) => {
 		if (text === 'Pending') {
 			return (
-				<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>
+				<span
+					style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}
+				>
 					{text}
 				</span>
 			);
@@ -90,24 +92,21 @@ const TriageView = (props) => {
 	}, []);
 
 	// Opens the collect references confirmation modal.
-	const renderCollectReferencesButton = useCallback(
-		(sysId, referencesSent) => {
-			// Open confirmation modal first (legacy parity), API call happens on confirm.
-			return (
-				<Button
-					onClick={() => {
-						setApplicantSysId(sysId);
-						setReferencesSent(referencesSent);
-						setShowReferenceModal(true);
-					}}
-					size='small'
-				>
-					Collect References
-				</Button>
-			);
-		},
-		[]
-	);
+	const renderCollectReferencesButton = useCallback((sysId, referencesSent) => {
+		// Open confirmation modal first (legacy parity), API call happens on confirm.
+		return (
+			<Button
+				onClick={() => {
+					setApplicantSysId(sysId);
+					setReferencesSent(referencesSent);
+					setShowReferenceModal(true);
+				}}
+				size='small'
+			>
+				Collect References
+			</Button>
+		);
+	}, []);
 
 	// Opens the regret email confirmation modal.
 	const renderRegretEmailButton = useCallback(
@@ -210,6 +209,12 @@ const TriageView = (props) => {
 					</Radio.Group>
 				</div>
 			)}
+
+			<WorkflowExcelExportToolbar
+				excelExport={props.excelExport}
+				filenamePrefix={props.vacancyTitle || 'ApplicantList'}
+			/>
+
 			<div className='applicant-table'>
 				<Table
 					rowKey='sys_id'

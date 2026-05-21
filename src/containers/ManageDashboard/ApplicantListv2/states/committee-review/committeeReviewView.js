@@ -21,6 +21,7 @@ import SplitApplicantTables from '../../tables/SplitApplicantTables';
 import InnerScoresTable from '../../components/InnerScoresTable';
 import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
+import WorkflowExcelExportToolbar from '../../components/WorkflowExcelExportToolbar';
 
 const { TextArea } = Input;
 
@@ -246,6 +247,11 @@ const CommitteeReviewView = (props) => {
 				</div>
 			)}
 
+			<WorkflowExcelExportToolbar
+				excelExport={props.excelExport}
+				filenamePrefix={props.vacancyTitle || 'ApplicantList'}
+			/>
+
 			<div className='applicant-table'>
 				{/* Shows split recommended and non-recommended tables for vacancy managers. */}
 				{props.roleCaps.isVacancyManager ? (
@@ -258,7 +264,9 @@ const CommitteeReviewView = (props) => {
 						nonRecommendedLoading={props.dataApi.nonRecommendedLoading}
 						pageSize={props.dataApi.query.pageSize}
 						columns={columns}
-						expandedRowRender={canExpandScores ? renderExpandedScores : undefined}
+						expandedRowRender={
+							canExpandScores ? renderExpandedScores : undefined
+						}
 						onTableChange={props.dataApi.handleTableChange}
 					/>
 				) : (
@@ -271,8 +279,8 @@ const CommitteeReviewView = (props) => {
 						expandable={
 							canExpandScores
 								? {
-									expandedRowRender: renderExpandedScores,
-								}
+										expandedRowRender: renderExpandedScores,
+									}
 								: undefined
 						}
 						scroll={{ x: true }}

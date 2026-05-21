@@ -82,6 +82,8 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 	const requestIdRef = useRef(0);
 	// Tracks last successful excel query signature to avoid duplicate loads
 	const lastExcelExportRef = useRef('');
+	// Prevents duplicate concurrent excel preloads (including StrictMode double-effect).
+	const excelRequestInFlightRef = useRef(false);
 
 	const buildApplicantUrl = useCallback(() => {
 		// Build URL from a single query snapshot so API requests are predictable.
@@ -138,16 +140,30 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		}
 	}, [buildApplicantUrl, enabled]);
 
+	const buildExcelExport = useCallback(
+		(queryState) =>
+			JSON.stringify({
+				sysId,
+				vacancyState,
+				searchText: queryState.searchText,
+				focusArea: queryState.focusArea,
+				orderBy: queryState.orderBy,
+				orderColumn: queryState.orderColumn,
+			}),
+		[sysId, vacancyState]
+	);
+
 	const loadAllApplicantsForExcel = useCallback(
-		async(queryState) => {
-			if (!enabled) {
+		async (queryState) => {
+			if (!enabled || excelRequestInFlightRef.current) {
 				return;
 			}
 
+			excelRequestInFlightRef.current = true;
 			setExcelLoading(true);
 			setExcelError(null);
 
-			try{
+			try {
 				const excelUrl = buildApplicantListUrl({
 					vacancySysId: sysId,
 					vacancyState,
@@ -166,23 +182,11 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 				setExcelApplicants([]);
 				setExcelError(error);
 			} finally {
+				excelRequestInFlightRef.current = false;
 				setExcelLoading(false);
 			}
 		},
 		[enabled, sysId, vacancyState, buildExcelExport]
-	);
-
-	const buildExcelExport = useCallback(
-		(queryState) =>
-			JSON.stringify({
-				sysId,
-				vacancyState,
-				searchText: queryState.searchText,
-				focusArea: queryState.focusArea,
-				orderBy: queryState.orderBy,
-				orderColumn: queryState.orderColumn,
-			})
-		[sysId, vacancyState]
 	);
 
 	const handleTableChange = useCallback((payload) => {
@@ -259,12 +263,13 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 			setExcelApplicants([]);
 			setExcelError(null);
 			setExcelLoading(false);
+			excelRequestInFlightRef.current = false;
 			lastExcelExportRef.current = '';
 			return;
 		}
 
 		// Key behavior: only start excel preload after visible table load finishes.
-		if (loading) {
+		if (loading || excelLoading || excelRequestInFlightRef.current) {
 			return;
 		}
 
@@ -276,11 +281,12 @@ export const useNonSplitApplicants = ({ sysId, vacancyState, enabled = true }) =
 		loadAllApplicantsForExcel(query);
 	}, [
 		enabled,
+		loading,
+		query,
 		excelLoading,
-		excelError,
 		buildExcelExport,
 		loadAllApplicantsForExcel,
-	])
+	]);
 
 
 	// Clears table/query state when vacancy/slice context changes.

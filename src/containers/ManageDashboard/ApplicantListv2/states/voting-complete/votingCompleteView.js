@@ -21,6 +21,7 @@ import SplitApplicantTables from '../../tables/SplitApplicantTables';
 import InnerScoresTable from '../../components/InnerScoresTable';
 import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
+import WorkflowExcelExportToolbar from '../../components/WorkflowExcelExportToolbar';
 
 const { TextArea } = Input;
 
@@ -245,6 +246,11 @@ const VotingCompleteView = (props) => {
 					</Radio.Group>
 				</div>
 			)}
+
+			<WorkflowExcelExportToolbar
+				excelExport={props.excelExport}
+				filenamePrefix={props.vacancyTitle || 'ApplicantList'}
+			/>
 
 			<div className='applicant-table'>
 				{/* Shows split recommended and non-recommended tables for vacancy managers. */}

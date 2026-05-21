@@ -20,6 +20,7 @@ import SplitApplicantTables from '../../tables/SplitApplicantTables';
 import InnerScoresTable from '../../components/InnerScoresTable';
 import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
+import WorkflowExcelExportToolbar from '../../components/WorkflowExcelExportToolbar';
 
 const IndividualScoringView = (props) => {
 	// Modal state for legacy-aligned reference/regret confirmation flows.
@@ -30,8 +31,13 @@ const IndividualScoringView = (props) => {
 	const [rejectionEmailSent, setRejectionEmailSent] = useState('0');
 	const [referredToInterview, setReferredToInterview] = useState('no');
 
-	const { searchText, setSearchText, searchedColumn, setSearchedColumn, searchInput } =
-		useContext(SearchContext);
+	const {
+		searchText,
+		setSearchText,
+		searchedColumn,
+		setSearchedColumn,
+		searchInput,
+	} = useContext(SearchContext);
 
 	// Source of truth for selected focus area filters is the data hook query state.
 	// This ensures filter pills/checkmarks stay in sync across refreshes.
@@ -50,13 +56,7 @@ const IndividualScoringView = (props) => {
 				setSearchedColumn,
 				searchInput
 			),
-		[
-			searchInput,
-			searchText,
-			searchedColumn,
-			setSearchText,
-			setSearchedColumn,
-		]
+		[searchInput, searchText, searchedColumn, setSearchText, setSearchedColumn]
 	);
 
 	// Renders the Top 25 checkbox and persists changes immediately.
@@ -72,19 +72,19 @@ const IndividualScoringView = (props) => {
 				normalizedValue === 'true';
 
 			return (
-			<input
-				type='checkbox'
-				checked={checked}
-				onChange={async (event) => {
-					// Top 25 writes immediately.
-					try {
-						await updateTop25Percent(sysId, event.target.checked);
-						props.dataApi.refresh?.();
-					} catch (_error) {
-						// Error handling done by service.
-					}
-				}}
-			/>
+				<input
+					type='checkbox'
+					checked={checked}
+					onChange={async (event) => {
+						// Top 25 writes immediately.
+						try {
+							await updateTop25Percent(sysId, event.target.checked);
+							props.dataApi.refresh?.();
+						} catch (_error) {
+							// Error handling done by service.
+						}
+					}}
+				/>
 			);
 		},
 		[props.dataApi]
@@ -230,8 +230,7 @@ const IndividualScoringView = (props) => {
 
 	const handleNonSplitChange = (pagination, filters, sorter) => {
 		// Ant Table emits focus area filters under filters.focus_area.
-		const focusArea =
-			filters && filters.focus_area ? filters.focus_area : [];
+		const focusArea = filters && filters.focus_area ? filters.focus_area : [];
 
 		props.dataApi.handleTableChange(
 			mapIndividualScoringChanges({
@@ -268,6 +267,11 @@ const IndividualScoringView = (props) => {
 				</div>
 			)}
 
+			<WorkflowExcelExportToolbar
+				excelExport={props.excelExport}
+				filenamePrefix={props.vacancyTitle || 'ApplicantList'}
+			/>
+
 			<div className='applicant-table'>
 				{/* Shows split recommended and non-recommended tables for vacancy managers. */}
 				{props.roleCaps.isVacancyManager ? (
@@ -281,7 +285,9 @@ const IndividualScoringView = (props) => {
 						nonRecommendedLoading={props.dataApi.nonRecommendedLoading}
 						pageSize={props.dataApi.query.pageSize}
 						columns={columns}
-						expandedRowRender={canExpandScores ? renderExpandedScores : undefined}
+						expandedRowRender={
+							canExpandScores ? renderExpandedScores : undefined
+						}
 						onTableChange={props.dataApi.handleTableChange}
 						onFocusAreaFilterChange={handleFocusAreaFilterChange}
 					/>
@@ -295,8 +301,8 @@ const IndividualScoringView = (props) => {
 						expandable={
 							canExpandScores
 								? {
-									expandedRowRender: renderExpandedScores,
-								}
+										expandedRowRender: renderExpandedScores,
+									}
 								: undefined
 						}
 						scroll={{ x: true }}

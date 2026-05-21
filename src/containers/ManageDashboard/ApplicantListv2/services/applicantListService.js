@@ -152,7 +152,8 @@ export const fetchSplitApplicantsForExcel = async (
 
 		return {
 			recommendedApplicants,
-			nonRecommendedApplicants: [
+			nonRecommendedApplicants,
+			combinedApplicants: [
 				...recommendedApplicants,
 				...nonRecommendedApplicants,
 			],

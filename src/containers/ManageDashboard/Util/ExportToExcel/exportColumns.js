@@ -4,11 +4,11 @@ export const EXPORT_COLUMNS = {
 		{ key: 'name', label: 'Name' },
 		{ key: 'email', label: 'Email' },
 		{ key: 'submitted', label: 'Submitted' },
-		{ key: 'triage_status', label: 'Triage Status', roles: ['canViewTriage'] },
+		{ key: 'triage_status', label: 'Triage Status', roles: ['canViewTriageFilter'] },
 		{
 			key: 'chair_triage_status',
 			label: 'Chair Triage Status',
-			roles: ['canViewTriage']
+			roles: ['canViewTriageFilter']
 		},
 		{
 			key: 'total_received_references',
