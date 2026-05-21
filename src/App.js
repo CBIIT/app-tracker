@@ -153,7 +153,7 @@ const app = () => {
 				},
 				{
 					key: 'manage-vacancy',
-					path: MANAGE_VACANCY + ':sysId/*',
+					path: MANAGE_VACANCY + ':sysId/:tab?',
 					element: (
 						<ProtectedRoute>
 							<ManageDashboard />
@@ -259,7 +259,7 @@ const app = () => {
 			},
 			{
 				key: 'manage-vacancy',
-				path: MANAGE_VACANCY + ':sysId/*',
+				path: MANAGE_VACANCY + ':sysId/:tab?',
 				element: (
 					<ProtectedRoute>
 						<ManageDashboard />
@@ -297,15 +297,6 @@ const app = () => {
 	}
 
 	routes.push(
-		{
-			key: 'applicant-dashboard-alt',
-			path: APPLICANT_DASHBOARD,
-			element: (
-				<ProtectedRoute useOktaAuth={true}>
-					<ApplicantDashboard />
-				</ProtectedRoute>
-			),
-		},
 		{
 			key: 'apply',
 			path: APPLY + ':vacancySysId',
