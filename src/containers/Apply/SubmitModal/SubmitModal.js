@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Progress } from 'antd';
-import { useHistory, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import './SubmitModal.css';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
@@ -23,7 +23,7 @@ const submitModal = ({
 	const [submitted, setSubmitted] = useState(false);
 	const [percent, setPercent] = useState(false);
 
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const { setAuth } = useAuth();
 
@@ -38,7 +38,7 @@ const submitModal = ({
 				setSubmitted,
 				setPercent,
 				setAppSysId,
-				history,
+				navigate,
 				checkAuth,
 				setAuth
 			)
@@ -59,7 +59,7 @@ const submitModal = ({
 	};
 
 	const handleClose = () => {
-		history.push('/');
+		navigate('/');
 	};
 
 	return !submitted ? (

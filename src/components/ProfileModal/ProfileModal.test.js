@@ -3,22 +3,22 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ProfileModal from './ProfileModal';
 import useAuth from '../../hooks/useAuth';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 jest.mock('../../hooks/useAuth');
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
 }));
 
 describe('ProfileModal', () => {
     let mockUseAuth;
-    let mockHistoryPush;
+    let mockNavigate;
     let mockHandleClose;
 
     beforeEach(() => {
         mockHandleClose = jest.fn();
-        mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        mockNavigate = jest.fn();
+        useNavigate.mockReturnValue(mockNavigate);
             delete window.location;
             window.location = {
             href: '',
@@ -76,7 +76,7 @@ describe('ProfileModal', () => {
         render(<ProfileModal handleClose={mockHandleClose} />);
 
         fireEvent.click(screen.getByText('Finish Profile'));
-        expect(mockHistoryPush).toHaveBeenCalledWith('/profile/123');
+        expect(mockNavigate).toHaveBeenCalledWith('/profile/123');
     });
 
     it('should call handleLogin when Log in button is clicked', () => {
@@ -110,7 +110,7 @@ describe('ProfileModal', () => {
         render(<ProfileModal handleClose={mockHandleClose} />);
 
         fireEvent.click(screen.getByText('Create an account'));
-        expect(mockHistoryPush).toHaveBeenCalledWith('/register-okta', '_blank');
+        expect(mockNavigate).toHaveBeenCalledWith('/register-okta');
     });
 
     it('should call handleContinue when Go Back button is clicked', () => {
