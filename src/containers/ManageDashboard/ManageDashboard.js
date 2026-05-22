@@ -53,8 +53,9 @@ import {
 	isChair,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
-
 import './ManageDashboard.css';
+
+// TODO: Clean up un-needed functions and code
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {

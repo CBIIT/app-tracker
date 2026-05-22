@@ -17,6 +17,7 @@ import { SCORING } from '../../../constants/ApplicationStates';
 
 import './ApplicantList.css';
 
+// TODO: This file may no longer be needed
 const renderDecision = (text) =>
 	text == 'Pending' ? (
 		<span style={{ color: 'rgba(0,0,0,0.25)', textTransform: 'capitalize' }}>

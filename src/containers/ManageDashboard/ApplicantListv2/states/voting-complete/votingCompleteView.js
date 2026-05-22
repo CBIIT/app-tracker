@@ -252,6 +252,25 @@ const VotingCompleteView = (props) => {
 				filenamePrefix={props.vacancyTitle || 'ApplicantList'}
 			/>
 
+			{props.roleCaps.isVacancyManager && (
+				<div>
+					<p>
+						<b>REMINDER: </b> Once an individual has been marked selected,
+						a New Appointment package will be prompted in the{' '}
+						<a
+							target='_blank'
+							rel='noopener noreferrer'
+							href='https://ess.niaid.nih.gov/livelink/livelink.exe/Open/PATSDashboard'
+						>
+							PATS
+						</a>{' '}
+						system with the Position Classification, Organizational Code,
+						and PATS Initiator identified in the Basic Vacancy Information
+						section.
+					</p>
+				</div>
+			)}
+
 			<div className='applicant-table'>
 				{/* Shows split recommended and non-recommended tables for vacancy managers. */}
 				{props.roleCaps.isVacancyManager ? (

@@ -22,7 +22,7 @@ const WorkflowExcelExportToolbar = ({ excelExport, filenamePrefix }) => {
 					</Tooltip>
 				) : (
 					// May want to look into adding third scenario (No applicants to download)
-					// May want to use this verbiage "No applicant data available for export."
+					// TODO: May want to use this verbiage "No applicant data available for export."
 					<Button
 						type='primary'
 						ghost

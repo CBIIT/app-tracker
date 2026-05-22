@@ -187,6 +187,7 @@ const TriageView = (props) => {
 	return (
 		<>
 			{isRollingClose && (
+				// TODO: Implement in all View files for each state
 				<ApplicantFilter
 					canViewTriage={canViewTriage}
 					onStateChange={props.onStateChange}
