@@ -6,18 +6,13 @@ import MapTriageTableChange from './mapTriageTableChange';
 import SearchContext from '../../../Util/SearchContext';
 import { getColumnSearchProps } from '../../../Util/ColumnSearchProps';
 import {
-	APP_TRIAGE,
-	SCORING,
-	IN_REVIEW,
-	REVIEW_COMPLETE,
-} from '../../../../../constants/ApplicationStates';
-import {
 	collectReferences as collectReferencesApi,
 	sendRejectionEmail as sendRejectionEmailApi,
 } from '../../services/notificationService';
 import { transformDateTimeToDisplay } from '../../../../../components/Util/Date/Date';
 import ReferenceModal from '../../modals/ReferenceModal';
 import RejectionEmailModal from '../../modals/RejectionEmailModal';
+import ApplicantFilter from '../../components/ApplicantFilters';
 import WorkflowExcelExportToolbar from '../../components/WorkflowExcelExportToolbar';
 import './index.css';
 
@@ -192,22 +187,11 @@ const TriageView = (props) => {
 	return (
 		<>
 			{isRollingClose && (
-				// Might consider moving this section to ApplicantFilters.js file in utils
-				<div>
-					<p style={{ display: 'inline-block' }}>Filter Applications: </p>
-					<Radio.Group
-						style={{ display: 'inline-block', paddingLeft: '10px' }}
-						onChange={(e) => props.onSliceChange(e.target.value)}
-						value={props.activeSlice}
-					>
-						{canViewTriage && (
-							<Radio.Button value={APP_TRIAGE}>Triage</Radio.Button>
-						)}
-						<Radio.Button value={SCORING}>Individual Scoring</Radio.Button>
-						<Radio.Button value={IN_REVIEW}>Committee Review</Radio.Button>
-						<Radio.Button value={REVIEW_COMPLETE}>Selected</Radio.Button>
-					</Radio.Group>
-				</div>
+				<ApplicantFilter
+					canViewTriage={canViewTriage}
+					onStateChange={props.onStateChange}
+					activeState={props.activeState}
+				/>
 			)}
 
 			<WorkflowExcelExportToolbar

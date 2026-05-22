@@ -101,7 +101,7 @@ Put this logic near the bottom of the component, just before `return`, so the vi
 import { useMemo } from 'react';
 
 const excelExport = useMemo(() => {
-  const workflowState = getExportState(props.vacancyState, props.filter || activeSlice);
+  const workflowState = getExportState(props.vacancyState, props.filter || activeState);
   const allRows = splitEnabled
     ? splitApplicants.excelCombinedApplicants
     : nonSplitApplicants.excelApplicants;
@@ -129,7 +129,7 @@ const excelExport = useMemo(() => {
 }, [
   props.vacancyState,
   props.filter,
-  activeSlice,
+  activeState,
   splitEnabled,
   splitApplicants,
   nonSplitApplicants,
@@ -147,8 +147,8 @@ return (
     excelExport={excelExport}
     nonSplitApplicants={nonSplitApplicants}
     splitApplicants={splitApplicants}
-    activeSlice={activeSlice}
-    onSliceChange={handleSliceChange}
+    activeState={activeState}
+    onStateChange={handleSliceChange}
   />
 );
 ```

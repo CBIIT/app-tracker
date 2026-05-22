@@ -21,7 +21,7 @@ const ApplicantListv2 = (props) => {
 		currentTenant,
 	} = useAuth();
 	// Tracks the active rolling-close stage selected in the UI.
-	const [activeSlice, setActiveSlice] = useState(props.filter || TRIAGE);
+	const [activeState, setActiveState] = useState(props.filter || TRIAGE);
 
 	// Maps user roles to capability flags used throughout the workflow.
 	const roleCaps = useMemo(
@@ -53,7 +53,7 @@ const ApplicantListv2 = (props) => {
 	const isRollingClose = props.vacancyState === ROLLING_CLOSE;
 	
 	// Resolves the active slice when rolling-close filters are in use.
-	const currentSlice = props.filter || activeSlice;
+	const currentSlice = props.filter || activeState;
 
 	// Triage always uses non-split table mode.
 	const isTriageStage =
@@ -138,7 +138,7 @@ const ApplicantListv2 = (props) => {
 
 	// Handles rolling-close slice changes and resets both query states.
 	const handleSliceChange = (slice) => {
-		setActiveSlice(slice);
+		setActiveState(slice);
 		nonSplitApplicants.initializeForVacancy();
 		splitApplicants.initializeForVacancy();
 	};
@@ -148,15 +148,15 @@ const ApplicantListv2 = (props) => {
 		() =>
 			getWorkflowView({
 				vacancyState: props.vacancyState,
-				filter: props.filter || activeSlice,
+				filter: props.filter || activeState,
 				isRollingClose,
 				tenantCaps,
 			}),
-		[props.vacancyState, props.filter, activeSlice, isRollingClose, tenantCaps]
+		[props.vacancyState, props.filter, activeState, isRollingClose, tenantCaps]
 	);
 
 	const excelExport = useMemo(() => {
-		const workflowState = getExportState(props.vacancyState, props.filter || activeSlice);
+		const workflowState = getExportState(props.vacancyState, props.filter || activeState);
 		const allRows = splitEnabled
 			? splitApplicants.excelCombinedApplicants
 			: nonSplitApplicants.excelApplicants;
@@ -184,7 +184,7 @@ const ApplicantListv2 = (props) => {
 	}, [
 		props.vacancyState,
 		props.filter,
-		activeSlice,
+		activeState,
 		splitEnabled,
 		splitApplicants,
 		nonSplitApplicants,
@@ -203,8 +203,8 @@ const ApplicantListv2 = (props) => {
 			excelExport={excelExport}
 			nonSplitApplicants={nonSplitApplicants}
 			splitApplicants={splitApplicants}
-			activeSlice={activeSlice}
-			onSliceChange={handleSliceChange}
+			activeState={activeState}
+			onStateChange={handleSliceChange}
 		/>
 	);
 };

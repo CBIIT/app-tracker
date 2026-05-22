@@ -254,8 +254,8 @@ const IndividualScoringView = (props) => {
 					<p style={{ display: 'inline-block' }}>Filter Applications: </p>
 					<Radio.Group
 						style={{ display: 'inline-block', paddingLeft: '10px' }}
-						onChange={(e) => props.onSliceChange(e.target.value)}
-						value={props.activeSlice}
+						onChange={(e) => props.onStateChange(e.target.value)}
+						value={props.activeState}
 					>
 						{canViewTriage && (
 							<Radio.Button value={APP_TRIAGE}>Triage</Radio.Button>
