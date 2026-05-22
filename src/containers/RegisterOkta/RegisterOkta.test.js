@@ -3,7 +3,7 @@ import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
 import { REGISTER_OKTA } from '../../constants/Routes';
 import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
-import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { MemoryRouter, useHistory } from 'react-router-dom';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 jest.mock('axios');
@@ -15,12 +15,12 @@ jest.mock('react-router-dom', () => {
 	const actual = jest.requireActual('react-router-dom');
 	return {
 		...actual,
-		useNavigate: jest.fn(),
+		useHistory: jest.fn(),
 	};
 });
 
 describe('RegisterOkta Component', () => {
-	const mockNavigate = jest.fn();
+	const mockGoBack = jest.fn();
 	const originalLocation = window.location;
 
 	const successMessage =
@@ -61,7 +61,9 @@ describe('RegisterOkta Component', () => {
 			},
 		});
 
-		useNavigate.mockReturnValue(mockNavigate);
+		useHistory.mockReturnValue({
+			goBack: mockGoBack,
+		});
 	});
 
 	const renderComponent = () => {
@@ -111,12 +113,12 @@ describe('RegisterOkta Component', () => {
 		expect(window.location.href).toBe('https://redirecturl/');
 	});
 
-	test('Should navigate back when cancel button is clicked', () => {
+	test('Should call history.goBack when cancel button is clicked', () => {
 		renderComponent();
 
 		fireEvent.click(screen.getByRole('button', { name: /cancel and back/i }));
 
-		expect(mockNavigate).toHaveBeenCalledWith(-1);
+		expect(mockGoBack).toHaveBeenCalledTimes(1);
 	});
 
 	test('Should disable create account and show NIH notice for an nih.gov email', () => {
@@ -163,8 +165,7 @@ describe('RegisterOkta Component', () => {
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-		const mismatchMessages = await screen.findAllByText('Emails do not match.');
-		expect(mismatchMessages.length).toBeGreaterThan(0);
+		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
 		expect(axios.post).not.toHaveBeenCalled();
 	});
 
@@ -181,8 +182,7 @@ describe('RegisterOkta Component', () => {
 		});
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
-		const mismatchMessages = await screen.findAllByText('Emails do not match.');
-		expect(mismatchMessages.length).toBeGreaterThan(0);
+		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
 
 		const confirmInput = screen.getAllByPlaceholderText('example@email.com')[1];
 		fireEvent.change(confirmInput, { target: { value: 'jane@example.com' } });

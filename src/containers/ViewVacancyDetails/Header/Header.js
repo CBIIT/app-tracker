@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, message, Tooltip } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -21,7 +21,7 @@ import ProfileModal from '../../../components/ProfileModal/ProfileModal';
 import './Header.css';
 
 const header = (props) => {
-	const navigate = useNavigate();
+	const history = useHistory();
 
 	const [userAlreadyApplied, setUserAlreadyApplied] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -70,9 +70,9 @@ const header = (props) => {
 		if (!hasProfile) {
 			setShowProfileDialog(true);
 		} else if (userAlreadyApplied) {
-			navigate(APPLICANT_DASHBOARD);
+			history.push(APPLICANT_DASHBOARD);
 			message.info('You have already applied for this position.');
-		} else navigate(link);
+		} else history.push(link);
 	};
 
 	const handleProfileDialogClose = () => {

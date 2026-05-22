@@ -1,6 +1,6 @@
+const webpack = require('webpack');
 const baseCfg = require('./webpack.base');
 const servicenowConfig = require('./servicenow.config');
-const TerserPlugin = require('terser-webpack-plugin');
 const DEFAULTS = { ASSET_SIZE_LIMIT: 10000 };
 const CONFIG = { ...DEFAULTS, ...servicenowConfig };
 
@@ -13,22 +13,15 @@ const cfg = {
 	entry: baseCfg.entry,
 	output: {
 		...baseCfg.output,
-		filename: CONFIG.JS_API_PATH + '[name]-[contenthash]-js.js',
-		chunkFilename: CONFIG.JS_API_PATH + '[name]-[contenthash]-js.js',
+		filename: '[name]-[contenthash]-js',
+		chunkFilename: CONFIG.JS_API_PATH + '[name]-[contenthash]-js',
 	},
 	resolve: baseCfg.resolve,
 	stats: 'errors-only',
 	mode: 'production',
-	devtool: false,
+	devtool: 'hidden-source-map',
 
 	optimization: {
-		moduleIds: 'deterministic',
-		chunkIds: 'deterministic',
-		minimizer: [
-			new TerserPlugin({
-				extractComments: false,
-			}),
-		],
 		splitChunks: {
 			automaticNameDelimiter: '-',
 			cacheGroups: {
@@ -58,6 +51,7 @@ const cfg = {
 
 	plugins: [
 		new CleanWebpackPlugin(),
+		new webpack.HashedModuleIdsPlugin(),
 		baseCfg.plugins.createIndexHtml(),
 	],
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import axios from 'axios';
 
@@ -34,5 +34,4 @@ const app = (
 	</HashRouter>
 );
 
-const root = createRoot(document.getElementById('root'));
-root.render(app);
+ReactDOM.render(<>{app}</>, document.getElementById('root'));

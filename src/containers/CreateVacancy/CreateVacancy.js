@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router';
 import useAuth from '../../hooks/useAuth';
 import { Steps, Button, Form, message, Tooltip , Modal} from 'antd';
 import ConfirmSubmitModal from './ConfirmSubmitModal/ConfirmSubmitModal';
@@ -33,7 +33,7 @@ const createVacancy = (props) => {
 		currentTenant: currentTenant,
 	};
 	const { Step } = Steps;
-	const navigate = useNavigate();
+	const history = useHistory();
 	const location = useLocation();
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(
@@ -331,7 +331,7 @@ const createVacancy = (props) => {
 	};
 
 	const prev = async () => {
-		if (currentStep === 0) navigate(-1);
+		if (currentStep === 0) history.goBack();
 		else {
 			const data = saveFormData(currentStep);
 			if ((await save(data)) === true) {
@@ -388,10 +388,10 @@ const createVacancy = (props) => {
 		previousTenant.current = currentTenant;
 		setCommitteeMemberOptions([]);
 		if (step < 0) {
-			navigate(step);
+			history.go(step);
 			setStep(0);
 		} else {
-			navigate(-1);
+			history.goBack();
 		}
 	}
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { PROFILE } from '../../../constants/Routes';
 import Login from './Login';
 import useAuth from '../../../hooks/useAuth';
@@ -58,7 +58,7 @@ jest.mock('antd/es/select', () => ({
 }));
 
 jest.mock('react-router-dom', () => ({
-    useNavigate: jest.fn(),
+    useHistory: jest.fn(),
     useLocation: jest.fn(),
 }));
 
@@ -69,7 +69,7 @@ jest.mock('../../../hooks/useAuth', () => ({
 
 describe('Login Component', () => {
     let mockUseAuth;
-    let mockNavigate;
+    let mockHistoryPush;
 
     beforeEach(() => {
         mockUseAuth = {
@@ -92,8 +92,8 @@ describe('Login Component', () => {
             previousTenant: { current: '' },
         };
         useAuth.mockReturnValue(mockUseAuth);
-        mockNavigate = jest.fn();
-        useNavigate.mockReturnValue(mockNavigate);
+        mockHistoryPush = jest.fn();
+        useHistory.mockReturnValue({ push: mockHistoryPush });
         useLocation.mockReturnValue({ pathname: '/profile' });
         delete window.location;
         window.location = {
@@ -155,7 +155,7 @@ describe('Login Component', () => {
         fireEvent.mouseOver(screen.getByText(/John D./i));
         await waitFor(() => screen.getByRole('menuitem', { name: /User Profile/i }));
         fireEvent.click(screen.getByRole('menuitem', { name: /User Profile/i }));
-        expect(mockNavigate).toHaveBeenCalledWith(PROFILE + mockUseAuth.auth.user.uid);
+        expect(mockHistoryPush).toHaveBeenCalledWith(PROFILE + mockUseAuth.auth.user.uid);
     });
 
     test('redirects to Okta login when already registered is clicked', async () => {
@@ -184,7 +184,7 @@ describe('Login Component', () => {
         fireEvent.mouseOver(screen.getByText(/Login/i));
         await waitFor(() => screen.getByTestId('nih-register-item'));
         fireEvent.click(screen.getByTestId('nih-register-item'));
-        expect(mockNavigate).toHaveBeenCalledWith('/register-okta');
+        expect(mockHistoryPush).toHaveBeenCalledWith('/register-okta');
     });
 
     test('Tenant dropdown shows for vacancy manager', async () => {

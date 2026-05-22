@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
 	GET_USER_APPLICATIONS,
 	REMOVE_USER_APPLICATION_DRAFT,
@@ -33,7 +33,7 @@ import { checkAuth } from '../../constants/checkAuth';
 import './ApplicantDashboard.css';
 
 const applicantDashboard = () => {
-	const navigate = useNavigate();
+	const history = useHistory();
 	const [removeDraftModalVisible, setRemoveDraftModalVisible] = useState(false);
 	const [withdrawAppModalVisible, setWithdrawAppModalVisible] = useState(false);
 	const [currentApplication, setCurrentApplication] = useState([]);
@@ -214,7 +214,7 @@ const applicantDashboard = () => {
 								key='edit'
 								type='text'
 								onClick={() => {
-									navigate(EDIT_APPLICATION + application.app_id);
+									history.push(EDIT_APPLICATION + application.app_id);
 								}}
 							>
 								<EditOutlined /> Edit
@@ -242,7 +242,7 @@ const applicantDashboard = () => {
 						<Button
 							type='text'
 							onClick={() => {
-								navigate('/vacancy/' + application.vacancy_id);
+								history.push('/vacancy/' + application.vacancy_id);
 							}}
 						>
 							<FileTextOutlined />
@@ -274,7 +274,7 @@ const applicantDashboard = () => {
 									<Button
 										type='text'
 										onClick={() => {
-											navigate(
+											history.push(
 												EDIT_APPLICATION + 'draft/' + application.draft_id
 											);
 										}}

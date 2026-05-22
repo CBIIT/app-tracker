@@ -9,7 +9,6 @@ import { GET_VACANCY_MANAGER_VIEW } from '../../../../constants/ApiEndpoints';
 
 const ApplicantDocuments = (props) => {
 	const [formInstance] = Form.useForm();
-	const [focusAreaForm] = Form.useForm();
 	const contextValue = useContext(FormContext);
 	const { formData, setCurrentFormInstance } = contextValue;
 	const [applicantDocuments, setApplicantDocuments] = useState([]);
@@ -67,14 +66,11 @@ const ApplicantDocuments = (props) => {
 	}; */
 
 	const onFocusAreaChange = () => {
-		console.log(focusAreaForm.getFieldValue('focusArea'))
+		console.log(formInstance.getFieldValue('focusArea'))
 	}
 
 	const onChange = () => {
-		const newValue = formInstance.getFieldValue('applicantDocuments');
-		if (newValue && newValue.length > 0) {
-			setApplicantDocuments(newValue);
-		}
+		setApplicantDocuments(formInstance.getFieldValue('applicantDocuments'));
 	};
 
 	const validateFile = async (fileList, isOptional, uploadedDocument) => {
@@ -223,7 +219,7 @@ const ApplicantDocuments = (props) => {
 				</div>
 			</Form>
 			<Form
-				form={focusAreaForm}
+				form={formInstance}
 				initialValues={formData.focusArea} onChange={onFocusAreaChange}
 			>
 				<div>
