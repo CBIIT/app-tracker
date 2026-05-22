@@ -21,10 +21,11 @@ const WorkflowExcelExportToolbar = ({ excelExport, filenamePrefix }) => {
 					</Button>
 					</Tooltip>
 				) : (
+					// May want to look into adding third scenario (No applicants to download)
+					// May want to use this verbiage "No applicant data available for export."
 					<Button
 						type='primary'
 						ghost
-						disabled={!canExport || excelExport?.loading}
 						onClick={() => {
 							// This is the only place that should trigger the file download
 							ExportToExcel(
@@ -36,30 +37,6 @@ const WorkflowExcelExportToolbar = ({ excelExport, filenamePrefix }) => {
 						Export applicant data
 					</Button>
 				)}
-				{/* <Tooltip
-					title={
-						excelExport?.loading
-							? 'Loading applicant data, please wait... Note: This may take a moment for larger applicant pools.'
-							: rows.length === 0
-								? 'No applicant data available for export.'
-								: 'Export the current applicant list to Excel.'
-					}
-				>
-					<Button
-						type='primary'
-						ghost
-						disabled={!canExport || excelExport?.loading}
-						onClick={() => {
-							// This is the only place that should trigger the file download
-							ExportToExcel(
-								rows,
-								`${filenamePrefix || 'ApplicantList'}-${excelExport?.workflowState || 'triage'}.xlsx`
-							);
-						}}
-					>
-						Export to Excel
-					</Button>
-				</Tooltip> */}
 			</div>
 		</>
 	);
