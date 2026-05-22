@@ -57,14 +57,15 @@ describe('ManageDashboard component', () => {
         axios.get.mockResolvedValueOnce(mockStadtmanVacancy);
         transformJsonFromBackend.transformJsonFromBackend.mockReturnValue(mockStadtmanVacancyTransformed);
 
+        render(
+            <MemoryRouter initialEntries={['/manage/application']}>
+                <ManageDashboard />
+            </MemoryRouter>
+        );
+
         await waitFor(() => {
-            render(
-                <MemoryRouter initialEntries={['/manage/application']}>
-                    <ManageDashboard />
-                </MemoryRouter>
-            );
+            expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
         });
-        
     });
 
 });

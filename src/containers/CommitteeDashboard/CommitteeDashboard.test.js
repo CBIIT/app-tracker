@@ -8,7 +8,7 @@ import {
 	validateRoleForCurrentTenant,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 
 jest.mock('antd', () => {
@@ -27,10 +27,19 @@ jest.mock('antd', () => {
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth');
-jest.mock('../../components/Util/RoleValidator/RoleValidator');
+jest.mock('../../components/Util/RoleValidator/RoleValidator', () => ({
+	__esModule: true,
+	validateRoleForCurrentTenant: jest.fn(),
+	isVacancyManager: jest.fn(),
+	isExecSec: jest.fn(),
+	isChair: jest.fn(),
+	isCommitteMember: jest.fn(),
+	isHrSpecialist: jest.fn(),
+	atleastOneChair: jest.fn(),
+}));
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 }));
 jest.mock('react-router', () => ({
 	...jest.requireActual('react-router'),
@@ -78,10 +87,10 @@ describe('CommitteeDashboard component tests', () => {
 	};
 
 	beforeEach(() => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 
 		const antd = jest.requireMock('antd');
 		antd.message.error = jest.fn();
@@ -127,10 +136,10 @@ describe('CommitteeDashboard component tests', () => {
 	});
 
 	test('<CommitteeDashboard /> should show error when user lacks access', async () => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 
 		// Mock to return false for this specific test
 		validateRoleForCurrentTenant.mockImplementation(() => false);
@@ -144,15 +153,15 @@ describe('CommitteeDashboard component tests', () => {
 					'Sorry! You do not have committee member access in the selected tenant.'
 				)
 			).toBeInTheDocument();
-			expect(mockPush).toHaveBeenCalledWith('/');
+			expect(mockNavigate).toHaveBeenCalledWith('/');
 		});
 	});
 
 	test('<CommitteeDashboard /> should redirect when current tenant is missing', async () => {
-		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		const mockNavigate = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
+			mockNavigate
+		);
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -168,7 +177,7 @@ describe('CommitteeDashboard component tests', () => {
 			expect(
 				screen.getByText('Sorry! Please reselect your tenant and try again.')
 			).toBeInTheDocument();
-			expect(mockPush).toHaveBeenCalledWith('/');
+			expect(mockNavigate).toHaveBeenCalledWith('/');
 		});
 
 		expect(axios.get).not.toHaveBeenCalled();

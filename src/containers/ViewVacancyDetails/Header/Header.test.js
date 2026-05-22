@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import { message } from 'antd';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
 import { APPLICANT_DASHBOARD, APPLY, REGISTER_OKTA } from '../../../constants/Routes';
@@ -11,7 +11,7 @@ jest.mock('axios');
 jest.mock('react-router-dom', () => ({
 
     useParams: jest.fn(),
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
 
 }));
 jest.mock('../../../hooks/useAuth', () => ({
@@ -33,7 +33,7 @@ jest.mock('../../../components/ProfileModal/ProfileModal', () => (props) => (
 
 describe('Header', () => {
     let mockUseAuth;
-    let mockHistoryPush;
+    let mockNavigate;
 
     const mockVacancyProps = {
         closeDate: '',
@@ -56,8 +56,8 @@ describe('Header', () => {
         },
 
             useAuth.mockReturnValue(mockUseAuth);
-        mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        mockNavigate = jest.fn();
+        useNavigate.mockReturnValue(mockNavigate);
         axios.get.mockResolvedValue({ data: { result: { exists: false } } });
         delete window.location;
         window.location = {
@@ -336,7 +336,7 @@ describe('Header', () => {
         const applyButton = await screen.findByRole('button', { name: 'Apply' });
         fireEvent.click(applyButton);
 
-        expect(mockHistoryPush).toHaveBeenCalledWith(APPLICANT_DASHBOARD);
+        expect(mockNavigate).toHaveBeenCalledWith(APPLICANT_DASHBOARD);
         expect(messageInfoSpy).toHaveBeenCalledWith('You have already applied for this position.');
 
         messageInfoSpy.mockRestore();
@@ -418,7 +418,7 @@ describe('Header', () => {
         const signInButton = await screen.findByRole('button', { name: 'Sign In and Apply' });
         fireEvent.click(signInButton);
 
-        expect(mockHistoryPush).toHaveBeenCalledWith(REGISTER_OKTA);
+        expect(mockNavigate).toHaveBeenCalledWith(REGISTER_OKTA);
     });
 
     it('does not render action button when vacancy is closed and useCloseDate is true', async () => {

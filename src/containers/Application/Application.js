@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button, message, Modal, Tooltip } from 'antd';
 import {
@@ -174,7 +174,7 @@ const application = () => {
 	const [focusArea, setFocusArea] = useState([]);
 	const [requireFocusArea, setRequireFocusArea] = useState('0');
 
-	const history = useHistory();
+	const navigate = useNavigate();
 	const { sysId } = useParams();
 
 	const { auth: { tenants }, currentTenant } = useAuth();
@@ -382,7 +382,7 @@ const application = () => {
 			cancelText: 'cancel',
 			okText: 'ok',
 			onOk() {
-				history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+				navigate(MANAGE_VACANCY + application.vacancyId + '/applicants');
 			},
 		});
 	};
@@ -401,7 +401,7 @@ const application = () => {
 					};
 
 					await axios.post(SUBMIT_TRIAGE, triage);
-					history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+					navigate(MANAGE_VACANCY + application.vacancyId + '/applicants');
 					message.success('Feedback and notes saved.');
 				}
 			} else {
@@ -460,7 +460,7 @@ const application = () => {
 			}
 
 			await axios.post(SUBMIT_INDIVIDUAL_SCORING, scoresAndNotes);
-			history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+			navigate(MANAGE_VACANCY + application.vacancyId + '/applicants');
 			message.success('Feedback and notes saved.');
 		} catch (error) {
 			message.error(
@@ -496,7 +496,7 @@ const application = () => {
 	};
 
 	const onViewApplicantsListClick = () => {
-		history.push(MANAGE_VACANCY + application.vacancyId + '/applicants');
+		navigate(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
 
 	

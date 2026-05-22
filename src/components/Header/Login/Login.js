@@ -1,5 +1,5 @@
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Menu, Dropdown, Divider, Select } from 'antd';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import iTrustIcon from '../../../assets/images/itrust-login-icon.png';
@@ -29,7 +29,7 @@ const login = () => {
 		setCurrentTenant,
 		previousTenant,
 	} = useAuth();
-	const history = useHistory();
+	const navigate = useNavigate();
 	const locationX = useLocation();
 
 	// Commenting this out for future use. This is for a very small edge case that might or might not happen
@@ -70,12 +70,12 @@ const login = () => {
 	};
 
 	const notRegistered = () => {
-		history.push(REGISTER_OKTA);
+		navigate(REGISTER_OKTA);
 	};
 
 	const userProfile = () => {
-		history.push(PROFILE + user.uid);
-	};
+		navigate(PROFILE + user.uid);
+	}
 
 	const handleMenuClick = (e) => {
 		switch (e.key) {
