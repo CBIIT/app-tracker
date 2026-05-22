@@ -1,6 +1,6 @@
 import { Table, Tooltip } from 'antd';
 import { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
 	CheckCircleTwoTone,
 	ExclamationCircleOutlined,
@@ -27,7 +27,7 @@ const renderDecision = (text) =>
 	);
 
 const applicantList = (props) => {
-	const history = useHistory();
+	const navigate = useNavigate();
 	const contextValue = useContext(SearchContext);
 	const {
 		searchText,
@@ -172,7 +172,7 @@ const applicantList = (props) => {
 				key='applicants'
 				onRow={(record) => ({
 					onClick: () => {
-						history.push(MANAGE_APPLICATION + record.sys_id);
+						navigate(MANAGE_APPLICATION + record.sys_id);
 					},
 				})}
 				onChange={(pagination, filters, _, sorter) => {

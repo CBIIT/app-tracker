@@ -9,7 +9,7 @@ const CONFIG = { ...DEFAULTS, ...servicenowConfig };
 
 module.exports = {
 	entry: {
-		[CONFIG.JS_API_PATH + 'app']: ['./src/index.js'],
+		app: ['./src/index.js'],
 	},
 
 	output: {
@@ -24,10 +24,7 @@ module.exports = {
 	rules: {
 		svg: {
 			test: /\.svg$/,
-			loader: 'svg-url-loader',
-			options: {
-				noquotes: true,
-			},
+			type: 'asset/inline',
 			exclude: /node_modules/,
 		},
 
@@ -62,28 +59,26 @@ module.exports = {
 
 		img: {
 			test: /\.(png|jpg|gif|)$/,
-			loader: 'url-loader',
-			options: {
-				limit: CONFIG.ASSET_SIZE_LIMIT,
-				name: CONFIG.IMG_API_PATH + '[name]-[hash:6]-[ext]',
+			type: 'asset',
+			parser: {
+				dataUrlCondition: {
+					maxSize: CONFIG.ASSET_SIZE_LIMIT,
+				},
+			},
+			generator: {
+				filename: CONFIG.IMG_API_PATH + '[name]-[hash:6]',
 			},
 		},
 		assets: {
 			test: /\.(woff|woff2|ttf|eot)$/,
-			loader: 'url-loader',
-			options: {
-				limit: CONFIG.ASSET_SIZE_LIMIT,
-				name: CONFIG.ASSETS_API_PATH + '[name]-[hash:6]-[ext]',
+			type: 'asset/resource',
+			generator: {
+				filename: CONFIG.ASSETS_API_PATH + '[name]-[hash:6][ext]',
 			},
 		},
 
 		jsx(args) {
 			args = args || {};
-			var emitWarning = false;
-			if (args.withHot) {
-				// report eslint errors as warnings so hot reloads are not prevented
-				emitWarning = true;
-			}
 
 			return {
 				include: [path.join(ROOT_PATH, 'src')],
@@ -92,12 +87,6 @@ module.exports = {
 				use: [
 					{
 						loader: 'babel-loader',
-					},
-					{
-						loader: 'eslint-loader',
-						options: {
-							emitWarning,
-						},
 					},
 				],
 			};
@@ -109,7 +98,6 @@ module.exports = {
 			return createHtmlPluginInstance({
 				filename: 'index.html',
 				title: '',
-				chunks: 'app',
 				template: 'src/index.html',
 			});
 		},
@@ -117,6 +105,7 @@ module.exports = {
 };
 
 function createHtmlPluginInstance(cfg) {
-	cfg.inject = true;
+	cfg.inject = 'body';
+	cfg.scriptLoading = 'blocking';
 	return new HtmlWebPackPlugin(cfg);
 }

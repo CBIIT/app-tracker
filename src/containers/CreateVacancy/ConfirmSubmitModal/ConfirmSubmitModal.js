@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Steps } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { VACANCY_DASHBOARD } from '../../../constants/Routes';
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import { transformJsonToBackend } from '../Util/TransformJsonToBackend';
@@ -16,7 +16,7 @@ const confirmSubmitModal = (props) => {
 
 	const { Step } = Steps;
 	const [currentStep, setCurrentStep] = useState(0);
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const steps = [
 		{
@@ -48,7 +48,7 @@ const confirmSubmitModal = (props) => {
 	};
 
 	const handleClose = () => {
-		history.push(VACANCY_DASHBOARD);
+		navigate(VACANCY_DASHBOARD);
 	};
 
 	const stepper = (
