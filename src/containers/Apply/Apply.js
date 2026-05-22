@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
 	Steps,
 	Button,
@@ -76,7 +76,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [hasError, setHasError] = useState(false);
 	const [focusArea, setFocusArea] = useState([]);
 
-	const navigate = useNavigate();
+	const history = useHistory();
 	const { vacancySysId, appSysId } = useParams();
 	const vacancyId = initialValues?.sysId || vacancySysId;
 
@@ -101,23 +101,20 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		})();
 	}, []);
 
-	useEffect(() => {
-		const timeoutId = setTimeout(async () => {
-			// checking to see if user is about to get logged out
-			// NB: this drops right to zero
-			if (
-				lastModalTimeout > 0.01 &&
-				Math.abs(lastModalTimeout - modalTimeout) > 0.1
-			) {
-				// it changed, since it only changes when time runs out, save now
-				setLastModalTimeout(modalTimeout);
-				save();
-			}
+	setTimeout(async () => {
+		// checking to see if user is about to get logged out
+		// NB: this drops right to zero
+		if (
+			lastModalTimeout > 0.01 &&
+			Math.abs(lastModalTimeout - modalTimeout) > 0.1
+		) {
+			console.log('Saving ...');
+			// it changed, since it only changes when time runs out, save now
 			setLastModalTimeout(modalTimeout);
-		}, checkTimeDuration);
-
-		return () => clearTimeout(timeoutId);
-	}, [modalTimeout, lastModalTimeout]);
+			save();
+		}
+		setLastModalTimeout(modalTimeout);
+	}, checkTimeDuration);
 
 	const loadExistingApplication = async () => {
 		try {
@@ -435,7 +432,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
-			currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
+			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');
@@ -447,7 +444,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			key='saveLink'
 			type='link'
 			style={{ paddingLeft: '150px', paddingRight: '10px' }}
-			onClick={() => navigate(APPLICANT_DASHBOARD)}
+			onClick={() => history.push(APPLICANT_DASHBOARD)}
 		>
 			Back to Applications Home?
 		</Button>

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import useAuth from './useAuth';
 import AuthContext from '../context/AuthContext';
 import React from 'react';

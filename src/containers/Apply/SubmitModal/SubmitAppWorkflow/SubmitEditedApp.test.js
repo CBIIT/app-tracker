@@ -39,7 +39,9 @@ const createCallbacks = () => ({
 	setSubmitted: jest.fn(),
 	setPercent: jest.fn(),
 	setAppSysId: jest.fn(),
-	navigate: jest.fn(),
+	history: {
+		goBack: jest.fn(),
+	},
 	checkAuth: jest.fn(),
 	setAuth: jest.fn(),
 });
@@ -74,7 +76,7 @@ describe('submitEditedApp', () => {
 			callbacks.setSubmitted,
 			callbacks.setPercent,
 			callbacks.setAppSysId,
-			callbacks.navigate,
+			callbacks.history,
 			callbacks.checkAuth,
 			callbacks.setAuth
 		);
@@ -154,7 +156,7 @@ describe('submitEditedApp', () => {
 			callbacks.setSubmitted,
 			callbacks.setPercent,
 			callbacks.setAppSysId,
-			callbacks.navigate,
+			callbacks.history,
 			callbacks.checkAuth,
 			callbacks.setAuth
 		);
@@ -185,7 +187,7 @@ describe('submitEditedApp', () => {
 			callbacks.setSubmitted,
 			callbacks.setPercent,
 			callbacks.setAppSysId,
-			callbacks.navigate,
+			callbacks.history,
 			callbacks.checkAuth,
 			callbacks.setAuth
 		);
@@ -203,7 +205,7 @@ describe('submitEditedApp', () => {
 				},
 			})
 		);
-		expect(callbacks.navigate).toHaveBeenCalledWith(-1);
+		expect(callbacks.history.goBack).toHaveBeenCalled();
 		expect(axios.put).not.toHaveBeenCalled();
 		expect(message.error).not.toHaveBeenCalled();
 	});
@@ -226,7 +228,7 @@ describe('submitEditedApp', () => {
 			callbacks.setSubmitted,
 			callbacks.setPercent,
 			callbacks.setAppSysId,
-			callbacks.navigate,
+			callbacks.history,
 			callbacks.checkAuth,
 			callbacks.setAuth
 		);
@@ -236,7 +238,7 @@ describe('submitEditedApp', () => {
 			'Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.'
 		);
 		expect(notification.error).not.toHaveBeenCalled();
-		expect(callbacks.navigate).not.toHaveBeenCalled();
+		expect(callbacks.history.goBack).not.toHaveBeenCalled();
 	});
 
 	test('shows closed vacancy message when axios rejects with the 400 status text', async () => {
@@ -255,7 +257,7 @@ describe('submitEditedApp', () => {
 			callbacks.setSubmitted,
 			callbacks.setPercent,
 			callbacks.setAppSysId,
-			callbacks.navigate,
+			callbacks.history,
 			callbacks.checkAuth,
 			callbacks.setAuth
 		);
@@ -280,7 +282,7 @@ describe('submitEditedApp', () => {
 			callbacks.setSubmitted,
 			callbacks.setPercent,
 			callbacks.setAppSysId,
-			callbacks.navigate,
+			callbacks.history,
 			callbacks.checkAuth,
 			callbacks.setAuth
 		);
@@ -298,7 +300,7 @@ describe('submitEditedApp', () => {
 			})
 		);
 		expect(message.error).not.toHaveBeenCalled();
-		expect(callbacks.navigate).not.toHaveBeenCalled();
+		expect(callbacks.history.goBack).not.toHaveBeenCalled();
 		expect(callbacks.setConfirmLoading).toHaveBeenCalledWith(false);
 		expect(callbacks.checkAuth).toHaveBeenCalledWith(
 			callbacks.setConfirmLoading,

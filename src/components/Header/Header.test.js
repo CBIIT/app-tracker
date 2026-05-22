@@ -5,7 +5,7 @@ import Logo from './Logo/Logo';
 import Login from './Login/Login';
 
 jest.mock('react-router-dom', () => ({
-    useNavigate: jest.fn(),
+    useHistory: jest.fn(),
     useLocation: jest.fn(),
 }));
 

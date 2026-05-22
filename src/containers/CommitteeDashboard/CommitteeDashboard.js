@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import {
@@ -51,7 +51,7 @@ const committeeDashboard = () => {
 		auth: { user, tenants },
 		currentTenant,
 	} = useAuth();
-	const navigate = useNavigate();
+	const history = useHistory();
 
 	const location = useLocation();
 	let customizeRenderEmpty = () => (
@@ -125,7 +125,7 @@ const committeeDashboard = () => {
 						'Sorry! You do not have committee member access in the selected tenant.',
 				});
 				setIsLoading(false);
-				navigate('/');
+				history.push('/');
 			}
 		} else {
 			message.destroy();
@@ -135,7 +135,7 @@ const committeeDashboard = () => {
 					'Sorry! Please reselect your tenant and try again.'
 			});
 			setIsLoading(false);
-			navigate('/');
+			history.push('/');
 		}
 	}, [currentTenant]);
 

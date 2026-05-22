@@ -6,7 +6,7 @@ import {
 	UnlockOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import SearchContext from './Util/SearchContext';
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
@@ -171,7 +171,7 @@ const manageDashboard = () => {
 		searchInput,
 	};
 
-	const navigate = useNavigate();
+	const history = useHistory();
 	const {
 		auth: { user, tenants },
 		setStep,
@@ -308,14 +308,14 @@ const manageDashboard = () => {
 									validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)
 								) {
 									if (isExecSec(currentTenant, tenants)) {
-										navigate(EXE_SEC_DASHBOARD);
+										history.push(EXE_SEC_DASHBOARD);
 									} else {
-										navigate(VACANCY_DASHBOARD);
+										history.push(VACANCY_DASHBOARD);
 									}
 								} else if (isChair(currentTenant, tenants)) {
-									navigate(CHAIR_DASHBOARD);
+									history.push(CHAIR_DASHBOARD);
 								} else {
-									navigate(COMMITTEE_DASHBOARD);
+									history.push(COMMITTEE_DASHBOARD);
 								}
 							}}
 						>
@@ -428,7 +428,7 @@ const manageDashboard = () => {
 											ghost
 											onClick={() => {
 												setStep(-2);
-												navigate(EDIT_VACANCY + sysId);
+												history.push(EDIT_VACANCY + sysId);
 											}}
 										>
 											Edit

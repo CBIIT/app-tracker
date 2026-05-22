@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import submitEditedApp from './SubmitAppWorkflow/SubmitEditedApp';
 import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
@@ -14,7 +14,7 @@ jest.mock('./SubmitAppWorkflow/SubmitEditedApp');
 jest.mock('./SubmitAppWorkflow/SubmitNewApp');
 jest.mock('react-router-dom', () => ({
 	Link: ({ children, to }) => <a href={to}>{children}</a>,
-	useNavigate: jest.fn(),
+	useHistory: jest.fn(),
 	useLocation: jest.fn(),
 }));
 
@@ -23,7 +23,7 @@ describe('SubmitModal component', () => {
 	let mockHandleCancel;
 	let mockDraftId;
 	let mockSubmittedAppSysId;
-	let mockNavigate;
+	let mockHistoryPush;
 	let mockReturnToDocuments;
 	let mockSetAuth;
 
@@ -45,11 +45,11 @@ describe('SubmitModal component', () => {
 		mockHandleCancel = jest.fn();
 		mockDraftId = 'draft-123';
 		mockSubmittedAppSysId = 'app-456';
-		mockNavigate = jest.fn();
+		mockHistoryPush = jest.fn();
 		mockReturnToDocuments = jest.fn();
 		mockSetAuth = jest.fn();
 		useAuth.mockReturnValue({ ...mockUseAuth, setAuth: mockSetAuth });
-		useNavigate.mockReturnValue(mockNavigate);
+		useHistory.mockReturnValue({ push: mockHistoryPush });
 		submitNewApp.mockReset();
 		submitEditedApp.mockReset();
 	});
@@ -145,7 +145,7 @@ describe('SubmitModal component', () => {
 				expect.any(Function),
 				expect.any(Function),
 				expect.any(Function),
-				mockNavigate,
+				expect.objectContaining({ push: mockHistoryPush }),
 				expect.any(Function),
 				mockSetAuth
 			);
@@ -185,7 +185,7 @@ describe('SubmitModal component', () => {
 		expect(link).toHaveAttribute('href', VIEW_APPLICATION + 'submitted-789');
 
 		fireEvent.click(screen.getByText(/Done/i));
-		expect(mockNavigate).toHaveBeenCalledWith('/');
+		expect(mockHistoryPush).toHaveBeenCalledWith('/');
 	});
 
 	test('calls onCancel when cancel button is clicked from the confirmation state', () => {
@@ -194,6 +194,6 @@ describe('SubmitModal component', () => {
 		fireEvent.click(screen.getByText(/Cancel/i));
 
 		expect(mockHandleCancel).toHaveBeenCalledTimes(1);
-		expect(mockNavigate).not.toHaveBeenCalled();
+		expect(mockHistoryPush).not.toHaveBeenCalled();
 	});
 });

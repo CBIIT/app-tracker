@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import AuthContext, { AuthProvider } from './AuthContext';
 
 describe('AuthContext', () => {
@@ -23,10 +23,8 @@ describe('AuthContext', () => {
 
         expect(screen.getByTestId('auth').textContent).toBe('{}');
 
-        fireEvent.click(screen.getByText('Set Auth'));
+        screen.getByText('Set Auth').click();
 
-        return waitFor(() => {
-            expect(screen.getByTestId('auth').textContent).toBe('{"user":"test"}');
-        });
+        expect(screen.getByTestId('auth').textContent).toBe('{"user":"test"}');
     });
 });

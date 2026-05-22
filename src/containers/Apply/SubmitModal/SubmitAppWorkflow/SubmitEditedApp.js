@@ -77,7 +77,7 @@ const submitEditedApp = async (
 	setSubmitted,
 	setPercent,
 	setAppSysId,
-	navigate,
+	history,
 	checkAuth,
 	setAuth
 ) => {
@@ -161,7 +161,7 @@ const submitEditedApp = async (
 
 		if (e?.message === MISSING_REQUIRED_ATTACHMENTS) {
 			showAttachmentSubmissionError();
-			navigate(-1);
+			history.goBack();
 		} else if (isVacancyClosedError(e)) {
 			message.error(
 				'Sorry! Your application cannot be submitted because this vacancy has been closed or is past the close date.'

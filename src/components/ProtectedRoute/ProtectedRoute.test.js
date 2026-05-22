@@ -16,9 +16,7 @@ describe('ProtectedRoute', () => {
 
         const { getByText } = render(
             <MemoryRouter initialEntries={['/protected']}>
-                <ProtectedRoute useOktaAuth={false}>
-                    <TestComponent />
-                </ProtectedRoute>
+                <ProtectedRoute component={TestComponent} useOktaAuth={false} />
             </MemoryRouter>
         );
 
@@ -35,9 +33,7 @@ describe('ProtectedRoute', () => {
 
         render(
             <MemoryRouter initialEntries={['/protected']}>
-                <ProtectedRoute useOktaAuth={false}>
-                    <TestComponent />
-                </ProtectedRoute>
+                <ProtectedRoute component={TestComponent} useOktaAuth={false} />
             </MemoryRouter>
         );
 
@@ -54,9 +50,7 @@ describe('ProtectedRoute', () => {
 
         render(
             <MemoryRouter initialEntries={['/protected']}>
-                <ProtectedRoute useOktaAuth={true}>
-                    <TestComponent />
-                </ProtectedRoute>
+                <ProtectedRoute component={TestComponent} useOktaAuth={true} />
             </MemoryRouter>
         );
 

@@ -12,7 +12,7 @@ module.exports = {
 	],
 	env: {
 		development: {
-			plugins: ['react-refresh/babel'],
+			plugins: ['react-hot-loader/babel'],
 			sourceMaps: 'inline',
 		},
 		production: {

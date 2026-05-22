@@ -13,16 +13,8 @@ const PATH_TO_DIST_HTML = 'dist/index.html';
 const renameExtensions = (dir) => {
 	const path = 'dist/' + dir;
 	const files = fs.readdirSync(path);
-	const filesToRename = files.filter((f) => !f.endsWith('.js'));
-	if (filesToRename.length === 0) {
-		renameJobs--;
-		if (renameJobs === 0) {
-			outputResults();
-		}
-		return;
-	}
-	let fileCount = filesToRename.length;
-	filesToRename.forEach((file) => {
+	let fileCount = files.length;
+	files.forEach((file) => {
 		const filename = file;
 		const regex = /.+-(.+)$/;
 		const ext = filename.match(regex)[1];
@@ -39,9 +31,10 @@ const renameExtensions = (dir) => {
 		});
 	});
 };
-let renameJobs = 1;
+let renameJobs = 2;
 decorateIndexHTML(PATH_TO_DIST_HTML);
 renameExtensions(serviceNowConfig.JS_API_PATH);
+renameExtensions(serviceNowConfig.IMG_API_PATH);
 
 function injectJellyWrappers(inputHTML) {
 	const JELLY_WRAPPER_START = `<?xml version="1.0" encoding="utf-8" ?>
@@ -128,27 +121,15 @@ function injectHTMLCloseTag(inputHTML) {
 }
 
 function removeHtmlTags(inputHTML) {
-	return inputHTML.replace(/(<html>)|(<html[^>]*>)/, '').replace('</html>', '');
+	return inputHTML.replace(/(<html>)|(<html.+>)/, '').replace('</html>', '');
 }
 
 function removeDocType(inputHTML) {
-	return inputHTML.replace(/<!doctype html>/i, '');
+	return inputHTML.replace('<!DOCTYPE html>', '');
 }
 
 function removeDoubleNewlines(inputHTML) {
 	return inputHTML.replace(/\s{2,}/gm, '\n');
-}
-
-/**
- * Strip .js extension from script src URLs and image extensions from img src
- * URLs so ServiceNow's REST router receives extension-free path segments.
- */
-function stripScriptJsExtension(inputHTML) {
-	// Strip .js from JS script tags
-	inputHTML = inputHTML.replace(/(src="\/api\/[^"]+container\/js\/[^"]+)\.js(")/g, '$1$2');
-	// Strip image extensions from img src URLs
-	inputHTML = inputHTML.replace(/(src="\/api\/[^"]+container\/img\/[^"]+)\.(jpg|jpeg|png|gif|webp)(")/gi, '$1$3');
-	return inputHTML;
 }
 
 function decorateIndexHTML(pathToHTML) {
@@ -161,8 +142,7 @@ function decorateIndexHTML(pathToHTML) {
 	decoratedHTML = injectJellyDoctype(decoratedHTML);
 	decoratedHTML = injectAuthLogic(decoratedHTML);
 	decoratedHTML = injectHTMLOpenTag(decoratedHTML);
-	decoratedHTML = injectHTMLCloseTag(decoratedHTML);
-	decoratedHTML = stripScriptJsExtension(decoratedHTML);
+	decoratedHTML = injectHTMLCloseTag(decoratedHTML)
 
 	fs.writeFileSync(pathToHTML, decoratedHTML);
 }
