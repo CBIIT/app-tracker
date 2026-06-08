@@ -35,99 +35,145 @@ const chairDashboard = () => {
 	const [hasError, setHasError] = useState(false);
 	const history = useHistory();
 
-	useEffect(() => {
-		if (currentTenant) {
-			const hasChairAccess =
-				isChair(currentTenant, tenants) ||
-				validateRoleForCurrentTenant(
-					COMMITTEE_MEMBER_ROLE,
-					currentTenant,
-					tenants
-				);
+	    useEffect(() => {
+        // Stop immediately if no tenant is selected, notify the user, and go home.
+        if (!currentTenant) {
+            message.destroy();
+            message.error({
+                duration: 3,
+                content: 'Sorry! Please reselect your tenant and try again.',
+            });
+            setIsLoading(false);
+            history.push('/');
+            return;
+        }
 
-			if (hasChairAccess) {
-				(async () => {
-					setHasError(false);
-					setIsLoading(true);
-					try {
-						const currentData = await axios.get(
-							GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
-						);
-						const jsonData = currentData.data.result;
+        // Wait until tenant data has finished loading before checking access.
+        if (!Array.isArray(tenants)) {
+            return;
+        }
 
-						const validateData = validateVacancyData(jsonData);
-						const vacancyList = validateData?.list || [];
-						const filteredVacancies = vacancyList.filter(
-							(vacancy) =>
-								vacancy.status != 'live' && vacancy.status != 'final'
-						);
+        // Allow this dashboard only for users who are chair in this tenant
+        // or who satisfy the fallback role check for this tenant.
+        const hasChairAccess =
+            isChair(currentTenant, tenants) ||
+            validateRoleForCurrentTenant(
+                COMMITTEE_MEMBER_ROLE,
+                currentTenant,
+                tenants
+            );
 
-						if (filteredVacancies.length === 0) {
-							const hasOnlyLiveOrFinalVacancies =
-								vacancyList.length > 0 &&
-								vacancyList.every(
-									(vacancy) =>
-										vacancy.status == 'live' || vacancy.status == 'final'
-								);
-							message.destroy();
-							message.error({
-								duration: 3,
-								content: hasOnlyLiveOrFinalVacancies
-									? liveOrFinalVacanciesMessage
-									: noAssignedVacanciesMessage,
-							});
-							setData([]);
-							history.push('/');
-							return;
-						}
+        // If the user does not have access in the selected tenant, notify and redirect.
+        if (!hasChairAccess) {
+            message.destroy();
+            message.error({
+                duration: 3,
+                content: noAssignedVacanciesMessage,
+            });
+            setIsLoading(false);
+            history.push('/');
+            return;
+        }
 
-						setData(filteredVacancies);
-					} catch (err) {
-						setHasError(true);
-						notification.error({
-							message: 'Sorry! There was an error retrieving vacancies.',
-							description: (
-								<>
-									<p>
-										Please refresh the page and try again or try logging out and
-										logging back in. If the issue persists, contact the Help
-										Desk by emailing{' '}
-										<a href='mailto:NCIAppSupport@mail.nih.gov'>
-											NCIAppSupport@mail.nih.gov
-										</a>
-									</p>
-								</>
-							),
-							duration: 30,
-							style: {
-								height: '225px',
-								display: 'flex',
-								alignItems: 'center',
-							},
-						});
-					} finally {
-						setIsLoading(false);
-					}
-				})();
-			} else {
-				message.destroy();
-				message.error({
-					duration: 3,
-					content: noAssignedVacanciesMessage,
-				});
-				setIsLoading(false);
-				history.push('/');
-			}
-		} else {
-			message.destroy();
-			message.error({
-				duration: 3,
-				content: 'Sorry! Please reselect your tenant and try again.',
-			});
-			setIsLoading(false);
-			history.push('/');
-		}
-	}, [currentTenant]);
+        // Track whether this effect is still current so async work does not update stale state.
+        let isMounted = true;
+
+        (async () => {
+            // Reset error state and show the loading spinner before fetching data.
+            setHasError(false);
+            setIsLoading(true);
+
+            try {
+                // Fetch the chair vacancies for the currently selected tenant.
+                const currentData = await axios.get(
+                    GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
+                );
+                const jsonData = currentData.data.result;
+
+                // Validate the API payload and normalize access to the vacancy list.
+                const validateData = validateVacancyData(jsonData);
+                const vacancyList = validateData?.list || [];
+
+                // Remove vacancies that are still in live/final states because this dashboard
+                // only shows vacancies that can be acted on here.
+                const filteredVacancies = vacancyList.filter(
+                    (vacancy) =>
+                        vacancy.status != 'live' && vacancy.status != 'final'
+                );
+
+                // Stop if the component unmounted or the effect was replaced while waiting.
+                if (!isMounted) {
+                    return;
+                }
+
+                // If nothing remains after filtering, decide which user message to show,
+                // clear data, and redirect away from the dashboard.
+                if (filteredVacancies.length === 0) {
+                    const hasOnlyLiveOrFinalVacancies =
+                        vacancyList.length > 0 &&
+                        vacancyList.every(
+                            (vacancy) =>
+                                vacancy.status == 'live' || vacancy.status == 'final'
+                        );
+
+                    message.destroy();
+                    message.error({
+                        duration: 3,
+                        content: hasOnlyLiveOrFinalVacancies
+                            ? liveOrFinalVacanciesMessage
+                            : noAssignedVacanciesMessage,
+                    });
+                    setData([]);
+                    history.push('/');
+                    return;
+                }
+
+                // Save the filtered vacancies so the table can render them.
+                setData(filteredVacancies);
+            } catch (err) {
+                // Stop if the effect is no longer current before updating UI state.
+                if (!isMounted) {
+                    return;
+                }
+
+                // Show the fallback error UI and a notification if the request fails
+                // or the response cannot be processed.
+                setHasError(true);
+                notification.error({
+                    message: 'Sorry! There was an error retrieving vacancies.',
+                    description: (
+                        <>
+                            <p>
+                                Please refresh the page and try again or try logging out and
+                                logging back in. If the issue persists, contact the Help Desk by
+                                emailing{' '}
+                                <a href='mailto:NCIAppSupport@mail.nih.gov'>
+                                    NCIAppSupport@mail.nih.gov
+                                </a>
+                            </p>
+                        </>
+                    ),
+                    duration: 30,
+                    style: {
+                        height: '225px',
+                        display: 'flex',
+                        alignItems: 'center',
+                    },
+                });
+            } finally {
+                // Turn off loading only if this effect instance is still active.
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        })();
+
+        // Cleanup marks this effect instance as stale so late async completions
+        // do not update state after unmount or dependency changes.
+        return () => {
+            isMounted = false;
+        };
+    }, [currentTenant, tenants, history]);
 
 	return hasError ? (
 		<div className='Content'>
