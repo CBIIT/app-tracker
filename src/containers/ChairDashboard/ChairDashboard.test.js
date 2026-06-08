@@ -303,6 +303,28 @@ describe('ChairDashboard component tests', () => {
 		expect(axios.get).not.toHaveBeenCalled();
 	});
 
+	test('<ChairDashboard /> should wait for tenants to load before checking access', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+			push: mockPush,
+		});
+
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: undefined,
+			},
+			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+		});
+
+		rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).not.toHaveBeenCalled();
+			expect(mockPush).not.toHaveBeenCalled();
+			expect(message.error).not.toHaveBeenCalled();
+		});
+	});
+
 	test('<ChairDashboard /> should display error message when API fails', async () => {
 		axios.get.mockRejectedValue(new Error('API Error'));
 		const notificationErrorSpy = jest.spyOn(notification, 'error');
