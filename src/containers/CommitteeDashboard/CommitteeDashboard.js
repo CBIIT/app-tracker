@@ -23,7 +23,7 @@ import {
 	validateRoleForCurrentTenant,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
-import { validateVacancyData } from '../ChairDashboard/Utils/validateVacancyData.js';
+// import { validateVacancyData } from '../ChairDashboard/Utils/validateVacancyData.js';
 import {
 	normalizeStatus,
 	compareStatus,
@@ -61,127 +61,131 @@ const committeeDashboard = () => {
 		</div>
 	);
 
-	    useEffect(() => {
-        // Stop immediately if no tenant is selected, notify the user, and go home.
-        if (!currentTenant) {
-            message.destroy();
-            message.error({
-                duration: 3,
-                content: 'Sorry! Please reselect your tenant and try again.',
-            });
-            setIsLoading(false);
-            history.push('/');
-            return;
-        }
+	useEffect(() => {
+		console.log('CommitteeDashboard mount/update', {
+			currentTenant,
+			pathname: location.pathname,
+			currentDataLength: Array.isArray(data) ? data.length : 'not-array',
+		});
 
-        // Wait until auth data has loaded before checking roles or reading user fields.
-        if (!user || !Array.isArray(tenants)) {
-            return;
-        }
+		if (currentTenant) {
+			if (!tenants) {
+				// Wait for tenants to load
+				console.log('CommitteeDashboard waiting for tenants to load');
+				return;
+			}
 
-        // Allow this dashboard only for committee members in the selected tenant
-        // or executive secretaries in the selected tenant.
-        const hasCommitteeAccess =
-            validateRoleForCurrentTenant(
-                COMMITTEE_MEMBER_ROLE,
-                currentTenant,
-                tenants
-            ) ||
-            isExecSec(currentTenant, tenants);
+			if (
+				validateRoleForCurrentTenant(
+					COMMITTEE_MEMBER_ROLE,
+					currentTenant,
+					tenants
+				) ||
+				isExecSec(currentTenant, tenants)
+			) {
+				(async () => {
+					setHasError(false);
+					setIsLoading(true);
+					try {
+						console.log('CommitteeDashboard fetching vacancies', {
+							currentTenant,
+							pathname: location.pathname,
+							userRoleCount: tenants?.length,
+						});
+						setreadOnly(!!user?.isReadOnlyUser);
+						const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
+						const currentData = await axios.get(url);
+						console.log('CommitteeDashboard API response', currentData?.data);
 
-        // If the user does not have access in the selected tenant, notify and redirect.
-        if (!hasCommitteeAccess) {
-            message.destroy();
-            message.error({
-                duration: 3,
-                content:
-                    'Sorry! You do not have committee member access in the selected tenant.',
-            });
-            setIsLoading(false);
-            history.push('/');
-            return;
-        }
+						const jsonData = currentData?.data?.result || {};
+						console.log('CommitteeDashboard result payload', jsonData);
+						// const validatedData = validateVacancyData(jsonData);
 
-        // Track whether this effect is still current so async work does not update stale state.
-        let isMounted = true;
+					// Validate that result has required list field
+					if (!Array.isArray(jsonData?.list)) {
+						throw new Error('API response missing required list field');
+					}
 
-        (async () => {
-            // Reset error state and show loading before fetching vacancy data.
-            setHasError(false);
-            setIsLoading(true);
+					const vacancyList = jsonData.list;
+						console.log('CommitteeDashboard vacancy list', {
+						isArray: Array.isArray(vacancyList),
+							length: vacancyList.length,
+						});
 
-            try {
-                // Read the current user's read-only flag once auth is available.
-                setreadOnly(!!user.isReadOnlyUser);
+						const validVacancies = vacancyList.filter(v =>
+							v && v.vacancy_id && v.vacancy_title && v.status !== undefined
+						);
+						console.log('CommitteeDashboard validated vacancies', {
+							originalLength: vacancyList.length,
+							validLength: validVacancies.length,
+						});
 
-                // Fetch the committee vacancy view for the selected tenant.
-                const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
-                const currentData = await axios.get(url);
-                const jsonData = currentData.data.result;
+						const committeeMemberData =
+							location.pathname === EXE_SEC_DASHBOARD
+								? validVacancies.filter(
+									(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
+								)
+								: validVacancies;
 
-                // Validate the API payload and normalize access to the vacancy list.
-                const validatedData = validateVacancyData(jsonData);
-
-                // On the executive secretary route, only keep executive secretary rows.
-                // On the normal committee dashboard route, use the full list.
-                const committeeMemberData =
-                    location.pathname === EXE_SEC_DASHBOARD
-                        ? validatedData?.list.filter(
-                                (vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
-                          )
-                        : validatedData?.list;
-
-                // Stop if the component unmounted or the effect was replaced while waiting.
-                if (!isMounted) {
-                    return;
-                }
-
-                // Save the rows so the table can render them.
-                setData(committeeMemberData);
-            } catch (err) {
-                // Stop if the effect is no longer current before updating UI state.
-                if (!isMounted) {
-                    return;
-                }
-
-                // Show the fallback error UI and notification if the request fails
-                // or the response cannot be processed.
-                setHasError(true);
-                notification.error({
-                    message: 'Sorry! There was an error retrieving vacancies.',
-                    description: (
-                        <>
-                            <p>
-                                Please refresh the page and try again or try logging out and
-                                logging back in. If the issue persists, contact the Help Desk by
-                                emailing{' '}
-                                <a href='mailto:NCIAppSupport@mail.nih.gov'>
-                                    NCIAppSupport@mail.nih.gov
-                                </a>
-                            </p>
-                        </>
-                    ),
-                    duration: 30,
-                    style: {
-                        height: '225px',
-                        display: 'flex',
-                        alignItems: 'center',
-                    },
-                });
-            } finally {
-                // Turn off loading only if this effect instance is still active.
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
-        })();
-
-        // Cleanup marks this effect instance as stale so late async completions
-        // do not update state after unmount or dependency changes.
-        return () => {
-            isMounted = false;
-        };
-    }, [currentTenant, user, tenants, location.pathname, history]);
+						console.log('CommitteeDashboard derived table rows', {
+							length: committeeMemberData.length,
+							firstRow: committeeMemberData[0],
+						});
+						setData(committeeMemberData);
+					} catch (err) {
+						console.error('CommitteeDashboard load failed', err);
+						console.error('CommitteeDashboard error details:', {
+							message: err?.message,
+							stack: err?.stack,
+							name: err?.name,
+						});
+						setHasError(true);
+						notification.error({
+							message: 'Sorry! There was an error retrieving vacancies.',
+							description: (
+								<>
+									<p>
+										Please refresh the page and try again or try logging out and
+										logging back in. If the issue persists, contact the Help
+										Desk by emailing{' '}
+										<a href='mailto:NCIAppSupport@mail.nih.gov'>
+											NCIAppSupport@mail.nih.gov
+										</a>
+									</p>
+								</>
+							),
+							duration: 30,
+							style: {
+								height: '225px',
+								display: 'flex',
+								alignItems: 'center',
+							},
+						});
+					} finally {
+						setIsLoading(false);
+					}
+				})();
+			} else {
+				message.destroy();
+				message.error({
+					duration: 3,
+					content:
+						'Sorry! You do not have committee member access in the selected tenant.',
+				});
+				setIsLoading(false);
+				history.push('/');
+			}
+		} else {
+			message.destroy();
+			message.error({
+				duration: 3,
+				content:
+					'Sorry! Please reselect your tenant and try again.'
+			});
+			setIsLoading(false);
+			history.push('/');
+		}
+	}, [currentTenant, tenants, user, location.pathname]);
 
 	return hasError ? (
 		<div className='Content'>

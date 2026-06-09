@@ -557,23 +557,34 @@ describe('ChairDashboard component tests', () => {
 		expect(await screen.findByText('0 applicants')).toBeInTheDocument();
 	});
 
-	test('<ChairDashboard /> should handle validateVacancyData returning object without list', async () => {
+	test('<ChairDashboard /> should handle API returning result without list', async () => {
 		const mockPush = jest.fn();
 		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
 			push: mockPush,
 		});
 
-		isChair.mockReturnValueOnce(true);
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [
+					{
+						value: 'f24965fc1b9c11106daea681f54bcb04',
+						label: 'tenant 1',
+						is_chair: true,
+					},
+				],
+			},
+			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+		});
+		isChair.mockReturnValue(true);
 		
-		// Mock validateVacancyData to return object without list property
-		const validateVacancyDataModule = require('./Utils/validateVacancyData');
-		jest.spyOn(validateVacancyDataModule, 'validateVacancyData').mockReturnValueOnce({});
+		const notificationErrorSpy = jest.spyOn(notification, 'error');
 		
+		// Mock API to return result object without list property
 		axios.get.mockResolvedValueOnce({
 			data: {
 				result: {
 					status: 200,
-					list: [{ vacancy_id: 1, vacancy_title: 'Test', status: 'open' }],
+					message: 'Some message but no list',
 				},
 			},
 		});
@@ -581,12 +592,9 @@ describe('ChairDashboard component tests', () => {
 		rtRender(<ChairDashboard />);
 
 		await waitFor(() => {
-			expect(
-				screen.getByText(
-					'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
-				)
-			).toBeInTheDocument();
+			expect(notificationErrorSpy).toHaveBeenCalledTimes(1);
 		});
-		expect(mockPush).toHaveBeenCalledWith('/');
+		
+		notificationErrorSpy.mockRestore();
 	});
 });
