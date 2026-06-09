@@ -1,0 +1,74 @@
+.HiringDashboard {
+	background-color: #f0f2f5;
+	padding: 24px;
+}
+
+.HiringDashboard h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.85);
+	margin-bottom: 16px;
+	margin-top: 0;
+}
+
+.KpiSection {
+	margin-bottom: 32px;
+}
+
+.KpiSection h2 {
+	border-left: 4px solid #256097;
+	padding-left: 10px;
+}
+
+.KpiRow {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.ActionNeededTable {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 16px 20px;
+}
+
+.StageBadge {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.StageTriaged {
+	background: #fff7e6;
+	color: #d46b08;
+	border: 1px solid #ffd591;
+}
+
+.StageScoring {
+	background: #e6f7ff;
+	color: #096dd9;
+	border: 1px solid #91d5ff;
+}
+
+.StageCommittee {
+	background: #f9f0ff;
+	color: #531dab;
+	border: 1px solid #d3adf7;
+}
+
+.StageVoting {
+	background: #f6ffed;
+	color: #389e0d;
+	border: 1px solid #b7eb8f;
+}
+
+.StageDefault {
+	background: #fafafa;
+	color: rgba(0, 0, 0, 0.65);
+	border: 1px solid #d9d9d9;
+}

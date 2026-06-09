@@ -12,6 +12,7 @@ import {
 	COMMITTEE_DASHBOARD,
 	CHAIR_DASHBOARD,
 	VACANCY_DASHBOARD,
+	HIRING_DASHBOARD,
 	APPLY,
 	REGISTER_OKTA,
 	APPLICANT_DASHBOARD,
@@ -27,6 +28,7 @@ import {
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
 import VacancyDashboard from './containers/VacancyDashboard/VacancyDashboard';
+import HiringDashboard from './containers/HiringDashboard/HiringDashboard';
 import ViewVacancyDetails from './containers/ViewVacancyDetails/ViewVacancyDetails';
 import ManageDashboard from './containers/ManageDashboard/ManageDashboard';
 import EditVacancy from './containers/CreateVacancy/EditVacancy';
@@ -81,6 +83,11 @@ const app = () => {
 					path={VACANCY_DASHBOARD + '/:tab?'}
 					exact
 					component={VacancyDashboard}
+				/>,
+				<ProtectedRoute
+					key='hiring-dashboard'
+					path={HIRING_DASHBOARD}
+					component={HiringDashboard}
 				/>,
 				<ProtectedRoute
 					key='exe-sec-dashboard'

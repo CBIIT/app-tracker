@@ -1,0 +1,27 @@
+.KpiCard {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	border-top: 4px solid #1890ff;
+	padding: 20px 24px 16px;
+	min-width: 180px;
+	flex: 1;
+	text-align: center;
+}
+
+.KpiCardValue {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 36px;
+	font-weight: 600;
+	line-height: 1.1;
+	color: rgba(0, 0, 0, 0.85);
+	margin-bottom: 8px;
+}
+
+.KpiCardLabel {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.65);
+	text-transform: capitalize;
+}
