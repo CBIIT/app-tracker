@@ -170,7 +170,7 @@ const hiringDashboard = () => {
 			.finally(() => {
 				setClosedLoading(false);
 			});
-	}, [currentTenant]);
+	}, [currentTenant, isManager, history]);
 
 	return (
 		<div className='HiringDashboard'>
