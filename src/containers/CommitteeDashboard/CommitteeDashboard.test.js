@@ -174,6 +174,30 @@ describe('CommitteeDashboard component tests', () => {
 		expect(axios.get).not.toHaveBeenCalled();
 	});
 
+	test('<CommitteeDashboard /> should wait for tenants to load before checking access', async () => {
+		const mockPush = jest.fn();
+		const antd = jest.requireMock('antd');
+		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+			push: mockPush,
+		});
+
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: undefined,
+				user: { isReadOnlyUser: false },
+			},
+			currentTenant: 'tenant1',
+		});
+
+		rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).not.toHaveBeenCalled();
+			expect(mockPush).not.toHaveBeenCalled();
+			expect(antd.message.error).not.toHaveBeenCalled();
+		});
+	});
+
 	test('<CommitteeDashboard /> should display error when invalid list shape is provided', async () => {
 		// Test that invalid list shape throws and triggers error UI
 		const invalidData = {
