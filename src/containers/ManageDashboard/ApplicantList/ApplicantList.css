@@ -65,24 +65,3 @@
     text-shadow: none;
     margin-left: 10px;
 }
-
-.ApplicantKpiSection {
-	margin: 16px 0 8px;
-	padding: 0 4px;
-}
-
-.ApplicantKpiSectionTitle {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 15px;
-	font-weight: 600;
-	color: rgba(0, 0, 0, 0.85);
-	border-left: 4px solid #256097;
-	padding-left: 10px;
-	margin-bottom: 12px;
-}
-
-.ApplicantKpiRow {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-}

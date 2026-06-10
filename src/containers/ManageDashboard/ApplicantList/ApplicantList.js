@@ -47,38 +47,7 @@ import { transformDateTimeToDisplay } from '../../../components/Util/Date/Date';
 import useAuth from '../../../hooks/useAuth';
 import './ApplicantList.css';
 import ExportToExcel from '../Util/ExportToExcel';
-import KpiCard from '../../HiringDashboard/KpiCard/KpiCard';
 import moment from 'moment';
-
-const parseReferenceString = (str) => {
-	if (!str) return { received: 0, total: 0 };
-	const match = str.match(/^(\d+) out of (\d+)$/);
-	if (!match) return { received: 0, total: 0 };
-	return { received: parseInt(match[1], 10), total: parseInt(match[2], 10) };
-};
-
-const computeKpis = (applicants, referenceCollection) => {
-	const statusCounts = { triage: 0, scoring: 0, in_review: 0, review_complete: 0, completed: 0 };
-	let refsSent = 0;
-	let totalRefsReceived = 0;
-	let totalRefsRequested = 0;
-	let allRefsIn = 0;
-
-	applicants.forEach((app) => {
-		if (Object.prototype.hasOwnProperty.call(statusCounts, app.state)) {
-			statusCounts[app.state]++;
-		}
-		if (referenceCollection) {
-			if (app.references_sent === '1') refsSent++;
-			const { received, total } = parseReferenceString(app.total_received_references);
-			totalRefsReceived += received;
-			totalRefsRequested += total;
-			if (total > 0 && received === total) allRefsIn++;
-		}
-	});
-
-	return { statusCounts, refsSent, totalRefsReceived, totalRefsRequested, allRefsIn };
-};
 
 const { Panel } = Collapse;
 const renderDecision = (text) =>
@@ -1211,57 +1180,6 @@ const applicantList = (props) => {
 					</Radio.Group>
 				</div>
 			)}
-			{props.userRoles.includes(OWM_TEAM) && (() => {
-				const kpis = computeKpis(allApplicantsForExcel, props.referenceCollection);
-				const loading = isLoadingExcelData;
-				const APPLICATION_STATUS_KPIS = [
-					{ key: 'triage', label: 'Triage', color: '#d46b08' },
-					{ key: 'scoring', label: 'Scoring', color: '#096dd9' },
-					{ key: 'in_review', label: 'In Review', color: '#531dab' },
-					{ key: 'review_complete', label: 'Review Complete', color: '#389e0d' },
-					{ key: 'completed', label: 'Completed', color: '#13c2c2' },
-				];
-				const REFERENCE_KPIS = [
-					{ key: 'refsSent', label: 'Requests Sent', value: kpis.refsSent, color: '#1890ff' },
-					{ key: 'totalRefsReceived', label: 'Refs Received', value: kpis.totalRefsReceived, color: '#389e0d' },
-					{ key: 'totalRefsPending', label: 'Refs Pending', value: kpis.totalRefsRequested - kpis.totalRefsReceived, color: '#d46b08' },
-					{ key: 'allRefsIn', label: 'All Refs In', value: kpis.allRefsIn, color: '#13c2c2' },
-				];
-				return (
-					<>
-						<div className='ApplicantKpiSection'>
-							<div className='ApplicantKpiSectionTitle'>📋 Application Status</div>
-							<div className='ApplicantKpiRow'>
-								{APPLICATION_STATUS_KPIS.map((s) => (
-									<KpiCard
-										key={s.key}
-										value={kpis.statusCounts[s.key]}
-										label={s.label}
-										loading={loading}
-										color={s.color}
-									/>
-								))}
-							</div>
-						</div>
-						{props.referenceCollection && (
-							<div className='ApplicantKpiSection'>
-								<div className='ApplicantKpiSectionTitle'>📬 Reference Collection</div>
-								<div className='ApplicantKpiRow'>
-									{REFERENCE_KPIS.map((r) => (
-										<KpiCard
-											key={r.key}
-											value={r.value}
-											label={r.label}
-											loading={loading}
-											color={r.color}
-										/>
-									))}
-								</div>
-							</div>
-						)}
-					</>
-				);
-			})()}
 			<div
 				className='export-to-excel-button-div'
 				style={{

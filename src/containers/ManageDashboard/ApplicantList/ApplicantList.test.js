@@ -144,7 +144,7 @@ describe('ApplicantList', () => {
 		});
 
 		expect(screen.getByText(/Filter Applications:/i)).toBeInTheDocument();
-		expect(screen.getAllByText('Triage').length).toBeGreaterThanOrEqual(1);
+		expect(screen.getByText('Triage')).toBeInTheDocument();
 		expect(screen.getByText('Individual Scoring')).toBeInTheDocument();
 		expect(screen.getByText('Committee Review')).toBeInTheDocument();
 		expect(screen.getByText('Selected')).toBeInTheDocument();
