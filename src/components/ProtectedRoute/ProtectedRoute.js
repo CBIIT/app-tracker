@@ -1,7 +1,7 @@
-import { Route, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
-const protectedRoute = ({ component: Component, useOktaAuth, ...rest }) => {
+const ProtectedRoute = ({ children, useOktaAuth }) => {
 	const routeLocation = useLocation();
 	const redirectAfterLoginUrl = encodeURIComponent(
 		'/nci-scss.do#' + routeLocation.pathname
@@ -18,13 +18,10 @@ const protectedRoute = ({ component: Component, useOktaAuth, ...rest }) => {
 			: (pushUrl = pushUrl.concat(iTrustGlideSsoId));
 
 		location.href = pushUrl;
+		return null;
 	}
 
-	return isUserLoggedIn ? (
-		<Route {...rest} render={(props) => <Component {...rest} {...props} />} />
-	) : (
-		<> </>
-	);
+	return isUserLoggedIn ? children : null;
 };
 
-export default protectedRoute;
+export default ProtectedRoute;

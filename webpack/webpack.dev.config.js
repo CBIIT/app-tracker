@@ -3,6 +3,7 @@ const baseCfg = require('./webpack.base');
 var path = require('path');
 const servicenowConfig = require('./servicenow.config');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';
@@ -14,10 +15,6 @@ const cfg = {
 
 	resolve: {
 		...baseCfg.resolve,
-		alias: {
-			...baseCfg.resolve.alias,
-			'react-dom': '@hot-loader/react-dom',
-		},
 	},
 
 	devtool: 'source-map',
@@ -25,11 +22,13 @@ const cfg = {
 	mode: 'development',
 
 	devServer: {
-		contentBase: path.join(__dirname, '/../dist'),
+		static: {
+			directory: path.join(__dirname, '/../dist'),
+		},
 		hot: true,
 		historyApiFallback: true,
 		compress: false,
-		disableHostCheck: true,
+		allowedHosts: 'all',
 		port: 9000,
 		proxy: {
 			[servicenowConfig.REST_API_PATH]: {
@@ -38,21 +37,23 @@ const cfg = {
 				changeOrigin: true,
 			},
 		},
-		stats: {
-			colors: true,
-			hash: false,
-			version: false,
-			timings: false,
-			assets: false,
-			chunks: false,
-			modules: false,
-			reasons: false,
-			children: false,
-			source: false,
-			errors: true,
-			errorDetails: false,
-			warnings: false,
-			publicPath: false,
+		devMiddleware: {
+			stats: {
+				colors: true,
+				hash: false,
+				version: false,
+				timings: false,
+				assets: false,
+				chunks: false,
+				modules: false,
+				reasons: false,
+				children: false,
+				source: false,
+				errors: true,
+				errorDetails: false,
+				warnings: false,
+				publicPath: false,
+			},
 		},
 	},
 
@@ -64,14 +65,13 @@ const cfg = {
 			baseCfg.rules.css,
 			baseCfg.rules.img,
 			baseCfg.rules.less,
-			baseCfg.rules.jsx({ withHot: true }),
+			baseCfg.rules.jsx(),
 		],
 	},
 
 	plugins: [
 		new CleanWebpackPlugin(),
-		new webpack.NamedModulesPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
+		new ReactRefreshWebpackPlugin(),
 		baseCfg.plugins.createIndexHtml(),
 		new webpack.DefinePlugin({
 			'process.env.REACT_APP_USER': JSON.stringify(

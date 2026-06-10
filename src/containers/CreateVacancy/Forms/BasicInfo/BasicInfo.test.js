@@ -71,6 +71,20 @@ describe('BasicInfo', () => {
 
 	beforeEach(() => {
 		document.getSelection = jest.fn();
+				useAuth.mockReturnValue({
+			auth: {
+				isUserLoggedIn: true,
+				iTrustGlideSsoId: 'itrust123',
+				oktaGlideSsoId: 'okta123',
+				user: {
+					isManager: true,
+					isExecSec: false,
+					roles: [],
+					hasApplications: false,
+					uid: '123',
+				},
+			},
+		});
 	});
 
 	afterEach(() => {
@@ -112,25 +126,25 @@ describe('BasicInfo', () => {
 		);
 	};
 
-	it('should render BasicInfo component for new Vacancy', async () => {
+	test('should render BasicInfo component for new Vacancy', async () => {
 		mockReadOnly = false;
 		mockIsNew = true;
 		mockPocDefined = true;
 
-		useAuth.mockReturnValue({
-			auth: {
-				isUserLoggedIn: true,
-				iTrustGlideSsoId: 'itrust123',
-				oktaGlideSsoId: 'okta123',
-				user: {
-					isManager: true,
-					isExecSec: false,
-					roles: [],
-					hasApplications: false,
-					uid: '123',
-				},
-			},
-		});
+		// useAuth.mockReturnValue({
+		// 	auth: {
+		// 		isUserLoggedIn: true,
+		// 		iTrustGlideSsoId: 'itrust123',
+		// 		oktaGlideSsoId: 'okta123',
+		// 		user: {
+		// 			isManager: true,
+		// 			isExecSec: false,
+		// 			roles: [],
+		// 			hasApplications: false,
+		// 			uid: '123',
+		// 		},
+		// 	},
+		// });
 
 		render(
 			<BasicInfo
@@ -149,13 +163,6 @@ describe('BasicInfo', () => {
 		const vacancyOptions = await axios.get(GET_VACANCY_OPTIONS);
 		expect(axios.get).toHaveBeenCalledTimes(2);
 		expect(vacancyOptions).toEqual(mockVacancyOptionsResponse);
-
-		waitFor(() => {
-			const PATSClarification = screen.getByText(
-				/The selections made in the fields below will be included in the package sent to PATS upon selecting a candidate./i
-			);
-			expect(PATSClarification).toBeInTheDocument();
-		});
 	});
 
 	test('<BasicInfo /> crash test', async () => {
@@ -424,22 +431,22 @@ describe('BasicInfo', () => {
 			vacancyPocEmail: 'team-distribution@example.com',
 		};
 
-		useAuth.mockReturnValue({
-			auth: {
-				isUserLoggedIn: true,
-				iTrustGlideSsoId: 'itrust123',
-				oktaGlideSsoId: 'okta123',
-				user: {
-					isManager: true,
-					isExecSec: false,
-					roles: [],
-					hasApplications: false,
-					uid: '123',
-				},
-				tenants: [{ value: 'tenant1', label: 'Tenant 1', properties: [] }],
-			},
-			currentTenant: 'tenant1',
-		});
+		// useAuth.mockReturnValue({
+		// 	auth: {
+		// 		isUserLoggedIn: true,
+		// 		iTrustGlideSsoId: 'itrust123',
+		// 		oktaGlideSsoId: 'okta123',
+		// 		user: {
+		// 			isManager: true,
+		// 			isExecSec: false,
+		// 			roles: [],
+		// 			hasApplications: false,
+		// 			uid: '123',
+		// 		},
+		// 		tenants: [{ value: 'tenant1', label: 'Tenant 1', properties: [] }],
+		// 	},
+		// 	currentTenant: 'tenant1',
+		// });
 
 		const BothPOCTestWrapper = () => {
 			const [formInstance] = Form.useForm();

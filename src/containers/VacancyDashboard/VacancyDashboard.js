@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
 	Table,
 	Button,
@@ -48,7 +48,7 @@ import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidato
 
 const vacancyDashboard = () => {
 	const [data, setData] = useState([]);
-	const history = useHistory();
+	const navigate = useNavigate();
 	const [currentVacancy, setCurrentVacancy] = useState([]);
 	const [extendModalVisible, setExtendModalVisible] = useState(false);
 	const [removeModalVisible, setRemoveModalVisible] = useState(false);
@@ -58,7 +58,7 @@ const vacancyDashboard = () => {
 	const [filter, setFilter] = useState('all');
 	const [disabledCreateVacancy, setDisabledCreateVacancy] = useState(true);
 
-	const { auth: { tenants}, currentTenant } = useAuth();
+	const { auth: { tenants }, currentTenant } = useAuth();
 
 	const tabs = {
 		PREFLIGHT: 'preflight',
@@ -79,7 +79,7 @@ const vacancyDashboard = () => {
 	);
 
 	const tabChangeHandler = async (selectedTab) => {
-		history.push(VACANCY_DASHBOARD + '/' + selectedTab);
+		navigate(VACANCY_DASHBOARD + '/' + selectedTab);
 	};
 
 	const cancelToken = axios.CancelToken.source();
@@ -91,7 +91,7 @@ const vacancyDashboard = () => {
 				setIsLoading(true);
 				let dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tabs.PREFLIGHT
 				if (tab) {
-					dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
+					dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + tab;
 					setActiveTab(tab);
 				}
 				setFilter('all');
@@ -108,7 +108,7 @@ const vacancyDashboard = () => {
 			})();
 		} else {
 			message.destroy();
-			message.error({ duration: 3, content: 'Sorry! You do not have vacancy manager access in the selected tenant.'});
+			message.error({ duration: 3, content: 'Sorry! You do not have vacancy manager access in the selected tenant.' });
 			setDisabledCreateVacancy(true);
 			setIsLoading(false);
 		}
@@ -191,7 +191,7 @@ const vacancyDashboard = () => {
 			} else if (currentVacancy.state == 'final') {
 				await axios.post(REMOVE_VACANCY + currentVacancy.sys_id);
 			}
-			const dataUrl =  DASHBOARD_VACANCIES + currentTenant + '?state=' + (tab || tabs.PREFLIGHT);
+			const dataUrl = DASHBOARD_VACANCIES + currentTenant + '?state=' + (tab || tabs.PREFLIGHT);
 			const updatedRemovedData = await axios.get(
 				dataUrl
 			);
@@ -219,8 +219,8 @@ const vacancyDashboard = () => {
 	};
 
 	const handleEditButtonClick = (record) => {
-		if (record.state === 'draft') history.push(EDIT_DRAFT + record.sys_id);
-		else history.push(EDIT_VACANCY + record.sys_id);
+		if (record.state === 'draft') navigate(EDIT_DRAFT + record.sys_id);
+		else navigate(EDIT_VACANCY + record.sys_id);
 	};
 
 	// Preflight Columns
@@ -280,7 +280,7 @@ const vacancyDashboard = () => {
 						onClick={async () => {
 							setRemoveModalVisible(true);
 							setCurrentVacancy(vacancy);
-							window.scrollTo(0,0);
+							window.scrollTo(0, 0);
 						}}
 					>
 						<DeleteOutlined /> Remove
@@ -475,7 +475,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
+							navigate(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
 						}}
 					>
 						<UserOutlined /> View Applicants
@@ -484,7 +484,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id);
+							navigate(MANAGE_VACANCY + vacancy.sys_id);
 						}}
 					>
 						<FileTextOutlined /> View Vacancy
@@ -539,7 +539,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
+							navigate(MANAGE_VACANCY + vacancy.sys_id + '/applicants');
 						}}
 					>
 						<UserOutlined /> View Applicants
@@ -548,7 +548,7 @@ const vacancyDashboard = () => {
 					<Button
 						type='text'
 						onClick={() => {
-							history.push(MANAGE_VACANCY + vacancy.sys_id);
+							navigate(MANAGE_VACANCY + vacancy.sys_id);
 						}}
 					>
 						<FileTextOutlined /> View Vacancy
@@ -566,7 +566,7 @@ const vacancyDashboard = () => {
 				<div className='app-container'>
 					<div className='CreateVacancyButtonDiv'>
 						<Tooltip title={currentTenant ? '' : 'Please select a tenant before creating a vacancy'}>
-							<div style={{ display: 'inline-block', height: '50px', marginLeft: '1000px'}}>
+							<div style={{ display: 'inline-block', height: '50px', marginLeft: '1000px' }}>
 								<Link style={currentTenant ? { cursor: 'pointer' } : { cursor: 'not-allowed' }} to={CREATE_VACANCY}>
 									<Button
 										className='CreateVacancyButton'

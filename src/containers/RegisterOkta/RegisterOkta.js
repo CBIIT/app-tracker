@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Row, Col, Result } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -19,7 +19,7 @@ const registerOkta = () => {
 
 	const [formInstance] = Form.useForm();
 
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const emailNotMatchError = 'Emails do not match.';
 
@@ -69,7 +69,7 @@ const registerOkta = () => {
 	};
 
 	const handleCancelButtonClick = () => {
-		history.goBack();
+		navigate(-1);
 	};
 
 	const validateEmails = async () => {
