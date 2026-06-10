@@ -3,7 +3,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table, message, notification, Tooltip } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-// import { validateVacancyData } from './Utils/validateVacancyData.js';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';

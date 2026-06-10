@@ -23,7 +23,6 @@ import {
 	validateRoleForCurrentTenant,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
-// import { validateVacancyData } from '../ChairDashboard/Utils/validateVacancyData.js';
 import {
 	normalizeStatus,
 	compareStatus,
@@ -65,7 +64,7 @@ const committeeDashboard = () => {
 		console.log('CommitteeDashboard mount/update', {
 			currentTenant,
 			pathname: location.pathname,
-			currentDataLength: Array.isArray(data) ? data.length : 'not-array',
+			currentDataLength: data?.length ?? 0,
 		});
 
 		if (currentTenant) {
@@ -108,7 +107,7 @@ const committeeDashboard = () => {
 
 					const vacancyList = jsonData.list;
 						console.log('CommitteeDashboard vacancy list', {
-						isArray: Array.isArray(vacancyList),
+							isArray: Array.isArray(vacancyList),
 							length: vacancyList.length,
 						});
 
