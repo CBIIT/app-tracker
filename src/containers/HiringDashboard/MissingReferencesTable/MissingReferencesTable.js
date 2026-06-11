@@ -148,7 +148,7 @@ const missingReferencesTable = ({ vacancies }) => {
 				columns={columns}
 				loading={loading}
 				pagination={{ hideOnSinglePage: true, pageSize: 10 }}
-				scroll={{ x: 'true' }}
+				scroll={{ x: true }}
 				locale={{ emptyText: '✅ All requested references have been received.' }}
 				expandable={{
 					expandedRowRender: (record) => (
