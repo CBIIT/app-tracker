@@ -59,19 +59,26 @@ const FUNNEL_STAGES = [
 // ---------------------------------------------------------------------------
 // Demo stub data for the New User Profiles widget
 // ---------------------------------------------------------------------------
+const STALE_LOGIN_DAYS = 90;
+
+const isProfileStale = (last_login) => {
+	const cutoff = Date.now() - STALE_LOGIN_DAYS * 24 * 60 * 60 * 1000;
+	return new Date(last_login).getTime() < cutoff;
+};
+
 const STUB_PROFILES = [
-	{ key: '1',  name: 'Alice Johnson',  email: 'alice.johnson@nih.gov',  last_login: '2026-06-10', applications: 3  },
-	{ key: '2',  name: 'Bob Martinez',   email: 'bob.martinez@nih.gov',   last_login: '2026-06-05', applications: 7  },
-	{ key: '3',  name: 'Carol White',    email: 'carol.white@nih.gov',    last_login: '2026-05-25', applications: 1  },
-	{ key: '4',  name: 'David Lee',      email: 'david.lee@nih.gov',      last_login: '2026-04-30', applications: 5  },
-	{ key: '5',  name: 'Eva Nguyen',     email: 'eva.nguyen@nih.gov',     last_login: '2026-04-15', applications: 2  },
-	{ key: '6',  name: 'Frank Brown',    email: 'frank.brown@nih.gov',    last_login: '2026-03-20', applications: 9  },
-	{ key: '7',  name: 'Grace Kim',      email: 'grace.kim@nih.gov',      last_login: '2026-03-05', applications: 4  },
-	{ key: '8',  name: 'Henry Davis',    email: 'henry.davis@nih.gov',    last_login: '2026-02-01', applications: 6  },
-	{ key: '9',  name: 'Isabel Clark',   email: 'isabel.clark@nih.gov',   last_login: '2026-01-10', applications: 0  },
-	{ key: '10', name: 'James Wilson',   email: 'james.wilson@nih.gov',   last_login: '2025-12-15', applications: 8  },
-	{ key: '11', name: 'Karen Adams',    email: 'karen.adams@nih.gov',    last_login: '2025-10-22', applications: 2  },
-	{ key: '12', name: 'Luis Rivera',    email: 'luis.rivera@nih.gov',    last_login: '2025-07-08', applications: 11 },
+	{ key: '1',  name: 'Alice Johnson',  email: 'alice.johnson@nih.gov',  last_login: '2026-06-10', applications: 3,  marked_for_deletion: false },
+	{ key: '2',  name: 'Bob Martinez',   email: 'bob.martinez@nih.gov',   last_login: '2026-06-05', applications: 7,  marked_for_deletion: false },
+	{ key: '3',  name: 'Carol White',    email: 'carol.white@nih.gov',    last_login: '2026-05-25', applications: 1,  marked_for_deletion: false },
+	{ key: '4',  name: 'David Lee',      email: 'david.lee@nih.gov',      last_login: '2026-04-30', applications: 5,  marked_for_deletion: false },
+	{ key: '5',  name: 'Eva Nguyen',     email: 'eva.nguyen@nih.gov',     last_login: '2026-04-15', applications: 2,  marked_for_deletion: false },
+	{ key: '6',  name: 'Frank Brown',    email: 'frank.brown@nih.gov',    last_login: '2026-03-20', applications: 9,  marked_for_deletion: false },
+	{ key: '7',  name: 'Grace Kim',      email: 'grace.kim@nih.gov',      last_login: '2026-03-05', applications: 4,  marked_for_deletion: true  },
+	{ key: '8',  name: 'Henry Davis',    email: 'henry.davis@nih.gov',    last_login: '2026-02-01', applications: 6,  marked_for_deletion: true  },
+	{ key: '9',  name: 'Isabel Clark',   email: 'isabel.clark@nih.gov',   last_login: '2026-01-10', applications: 0,  marked_for_deletion: true  },
+	{ key: '10', name: 'James Wilson',   email: 'james.wilson@nih.gov',   last_login: '2025-12-15', applications: 8,  marked_for_deletion: true  },
+	{ key: '11', name: 'Karen Adams',    email: 'karen.adams@nih.gov',    last_login: '2025-10-22', applications: 2,  marked_for_deletion: true  },
+	{ key: '12', name: 'Luis Rivera',    email: 'luis.rivera@nih.gov',    last_login: '2025-07-08', applications: 11, marked_for_deletion: true  },
 ];
 
 const profileColumns = [
@@ -97,6 +104,22 @@ const profileColumns = [
 		dataIndex: 'applications',
 		width: 210,
 		sorter: (a, b) => a.applications - b.applications,
+	},
+	{
+		title: 'Marked for Deletion',
+		dataIndex: 'marked_for_deletion',
+		width: 175,
+		render: (val) =>
+			val ? (
+				<span className='DeletionBadgeYes'>Yes</span>
+			) : (
+				<span className='DeletionBadgeNo'>No</span>
+			),
+		filters: [
+			{ text: 'Yes', value: true },
+			{ text: 'No', value: false },
+		],
+		onFilter: (value, record) => record.marked_for_deletion === value,
 	},
 ];
 
@@ -347,6 +370,7 @@ const hiringDashboard = () => {
 								return new Date(p.last_login).getTime() >= cutoff;
 							})}
 							columns={profileColumns}
+							rowClassName={(record) => isProfileStale(record.last_login) ? 'ProfileRowStale' : ''}
 							pagination={{ hideOnSinglePage: true, pageSize: 8 }}
 							scroll={{ x: true }}
 							locale={{ emptyText: 'No profiles found in the selected period.' }}
