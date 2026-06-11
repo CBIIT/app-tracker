@@ -1,20 +1,26 @@
+.ScoringWidgetContainer .InfoCardRow {
+	padding-bottom: 12px;
+}
+
 .ScoringWidgetContent {
-	padding-inline: 16px;
-	padding-bottom: 16px;
+	padding-inline: 12px;
+	padding-bottom: 12px;
 }
 
 .ScoringWidgetContent .ant-radio-button-wrapper {
-	margin-right: 8px;
+	margin-right: 6px;
+	padding-inline: 10px;
 }
 
 .ScoringWidgetContent h2 {
 	font-family: var(--ff-primary);
-	font-size: 14px;
+	font-size: 13px;
+	margin-bottom: 4px;
 }
 
 .ScoringWidgetMemberPicker {
-	padding-inline: 16px;
-	margin-bottom: 16px;
+	padding-inline: 12px;
+	margin-bottom: 12px;
 }
 
 .ScoringWidgetMemberPicker h2 {

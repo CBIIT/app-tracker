@@ -49,7 +49,7 @@ const triageWidget = (props) => {
 					/>
 				) : (
 					<TextArea
-						rows={4}
+						rows={3}
 						onChange={props.onTriageCommentsChange}
 						defaultValue={props.triageComments}
 						placeholder={props.triageCommentsPlaceholder}

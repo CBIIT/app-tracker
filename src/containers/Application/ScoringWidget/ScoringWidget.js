@@ -89,6 +89,7 @@ const scoringWidget = (props) => {
 			>
 				<InfoCard
 					title={props.title}
+					className='ScoringWidgetContainer'
 					allowToggle={true}
 					initiallyHideContent={props.initiallyHideContent}
 				>
@@ -141,7 +142,7 @@ const scoringWidget = (props) => {
 						<h2 style={{ marginBottom: '6px' }}>Overall Score Comments</h2>
 						<TextArea
 							rows={3}
-							style={{ marginBottom: '16px' }}
+							style={{ marginBottom: '12px' }}
 							onChange={props.onScoreCommentsChange}
 							value={props.triageComments}
 							disabled={props.disabled}
@@ -150,7 +151,7 @@ const scoringWidget = (props) => {
 							label='Interview Recommendation'
 							labelStyle={{ marginBottom: '0px' }}
 							value='Do you recommend this candidate for an interview?'
-							valueStyle={{ fontSize: '12px', marginBottom: '8px' }}
+							valueStyle={{ fontSize: '12px', marginBottom: '6px' }}
 						/>
 						<Form.Item
 							name='recommendation'
