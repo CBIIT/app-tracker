@@ -74,32 +74,119 @@ const STUB_VACANCY_LOCATIONS = [
 	{ name: 'Other',            value: 2  },
 ];
 
+// Role keys used when building per-role counts; must match values in Roles.js
+const COMMITTEE_ROLE_KEYS = [
+	{ key: 'chair',       label: 'Chair' },
+	{ key: 'execSec',     label: 'Executive Secretary' },
+	{ key: 'member',      label: 'Member' },
+	{ key: 'nonVoting',   label: 'Non-Voting' },
+	{ key: 'hrSpecialist',label: 'HR Specialist' },
+	{ key: 'ediRep',      label: 'EDI Rep' },
+	{ key: 'readOnly',    label: 'Read-Only' },
+];
+
+// Map a raw role string (from the API) to one of the keys above
+const normalizeCommitteeRole = (raw) => {
+	if (!raw) return null;
+	const r = raw.trim().toLowerCase();
+	if (r === 'chair') return 'chair';
+	if (r === 'executive secretary') return 'execSec';
+	if (r === 'member (non-voting)') return 'nonVoting';
+	if (r === 'edi representative (non-voting)') return 'ediRep';
+	if (r === 'hr specialist') return 'hrSpecialist';
+	if (r === 'member (read-only)') return 'readOnly';
+	if (r === 'member') return 'member';
+	return null;
+};
+
 // Demo stub data for the committee members widget
 const STUB_COMMITTEE_MEMBERS = [
-	{ key: '1',  name: 'Alice Johnson',   roles: 5 },
-	{ key: '2',  name: 'Bob Martinez',    roles: 4 },
-	{ key: '3',  name: 'Carol White',     roles: 3 },
-	{ key: '4',  name: 'David Lee',       roles: 7 },
-	{ key: '5',  name: 'Eva Nguyen',      roles: 2 },
-	{ key: '6',  name: 'Frank Brown',     roles: 6 },
-	{ key: '7',  name: 'Grace Kim',       roles: 1 },
-	{ key: '8',  name: 'Henry Davis',     roles: 4 },
-	{ key: '9',  name: 'Isabel Clark',    roles: 3 },
-	{ key: '10', name: 'James Wilson',    roles: 8 },
+	{ key: '1',  name: 'Alice Johnson',  chair: 2, execSec: 1, member: 1, nonVoting: 0, hrSpecialist: 0, ediRep: 1, readOnly: 0, total: 5 },
+	{ key: '2',  name: 'Bob Martinez',   chair: 0, execSec: 2, member: 2, nonVoting: 0, hrSpecialist: 0, ediRep: 0, readOnly: 0, total: 4 },
+	{ key: '3',  name: 'Carol White',    chair: 1, execSec: 0, member: 2, nonVoting: 0, hrSpecialist: 0, ediRep: 0, readOnly: 0, total: 3 },
+	{ key: '4',  name: 'David Lee',      chair: 3, execSec: 1, member: 2, nonVoting: 1, hrSpecialist: 0, ediRep: 0, readOnly: 0, total: 7 },
+	{ key: '5',  name: 'Eva Nguyen',     chair: 0, execSec: 0, member: 1, nonVoting: 1, hrSpecialist: 0, ediRep: 0, readOnly: 0, total: 2 },
+	{ key: '6',  name: 'Frank Brown',    chair: 1, execSec: 2, member: 1, nonVoting: 0, hrSpecialist: 1, ediRep: 1, readOnly: 0, total: 6 },
+	{ key: '7',  name: 'Grace Kim',      chair: 0, execSec: 0, member: 0, nonVoting: 0, hrSpecialist: 1, ediRep: 0, readOnly: 0, total: 1 },
+	{ key: '8',  name: 'Henry Davis',    chair: 1, execSec: 1, member: 2, nonVoting: 0, hrSpecialist: 0, ediRep: 0, readOnly: 0, total: 4 },
+	{ key: '9',  name: 'Isabel Clark',   chair: 0, execSec: 1, member: 1, nonVoting: 0, hrSpecialist: 0, ediRep: 1, readOnly: 0, total: 3 },
+	{ key: '10', name: 'James Wilson',   chair: 3, execSec: 2, member: 2, nonVoting: 0, hrSpecialist: 1, ediRep: 0, readOnly: 0, total: 8 },
 ];
+
+const roleCellRender = (val) =>
+	val > 0 ? <span className='RoleCountBadge'>{val}</span> : <span className='RoleCountZero'>—</span>;
 
 const committeeMemberColumns = [
 	{
 		title: 'Name',
 		dataIndex: 'name',
+		fixed: 'left',
 		sorter: (a, b) => a.name.localeCompare(b.name),
 	},
 	{
-		title: 'Roles Assigned',
-		dataIndex: 'roles',
-		width: 140,
-		sorter: (a, b) => a.roles - b.roles,
+		title: 'Chair',
+		dataIndex: 'chair',
+		width: 70,
+		align: 'center',
+		sorter: (a, b) => a.chair - b.chair,
+		render: roleCellRender,
+	},
+	{
+		title: 'Exec. Secretary',
+		dataIndex: 'execSec',
+		width: 120,
+		align: 'center',
+		sorter: (a, b) => a.execSec - b.execSec,
+		render: roleCellRender,
+	},
+	{
+		title: 'Member',
+		dataIndex: 'member',
+		width: 80,
+		align: 'center',
+		sorter: (a, b) => a.member - b.member,
+		render: roleCellRender,
+	},
+	{
+		title: 'Non-Voting',
+		dataIndex: 'nonVoting',
+		width: 100,
+		align: 'center',
+		sorter: (a, b) => a.nonVoting - b.nonVoting,
+		render: roleCellRender,
+	},
+	{
+		title: 'HR Specialist',
+		dataIndex: 'hrSpecialist',
+		width: 110,
+		align: 'center',
+		sorter: (a, b) => a.hrSpecialist - b.hrSpecialist,
+		render: roleCellRender,
+	},
+	{
+		title: 'EDI Rep',
+		dataIndex: 'ediRep',
+		width: 80,
+		align: 'center',
+		sorter: (a, b) => a.ediRep - b.ediRep,
+		render: roleCellRender,
+	},
+	{
+		title: 'Read-Only',
+		dataIndex: 'readOnly',
+		width: 95,
+		align: 'center',
+		sorter: (a, b) => a.readOnly - b.readOnly,
+		render: roleCellRender,
+	},
+	{
+		title: 'Total',
+		dataIndex: 'total',
+		width: 70,
+		align: 'center',
+		sorter: (a, b) => a.total - b.total,
 		defaultSortOrder: 'descend',
+		render: (val) => <strong>{val}</strong>,
 	},
 ];
 
@@ -358,14 +445,22 @@ const hiringDashboard = () => {
 					if (Array.isArray(v.committee)) {
 						v.committee.forEach((member) => {
 							const memberName = member.user_name || member.user || 'Unknown';
-							memberMap[memberName] = (memberMap[memberName] || 0) + 1;
+							if (!memberMap[memberName]) {
+								const entry = { name: memberName, total: 0 };
+								COMMITTEE_ROLE_KEYS.forEach(({ key }) => { entry[key] = 0; });
+								memberMap[memberName] = entry;
+							}
+							const roleKey = normalizeCommitteeRole(member.role);
+							if (roleKey) {
+								memberMap[memberName][roleKey]++;
+							}
+							memberMap[memberName].total++;
 						});
 					}
 				});
-				const memberRows = Object.entries(memberMap).map(([name, roles], i) => ({
+				const memberRows = Object.values(memberMap).map((entry, i) => ({
 					key: String(i),
-					name,
-					roles,
+					...entry,
 				}));
 				setCommitteeMembersData(memberRows.length > 0 ? memberRows : STUB_COMMITTEE_MEMBERS);
 			})

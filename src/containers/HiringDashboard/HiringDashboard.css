@@ -270,3 +270,21 @@
 		grid-column: auto;
 	}
 }
+
+.RoleCountBadge {
+	display: inline-block;
+	min-width: 24px;
+	padding: 1px 7px;
+	border-radius: 10px;
+	font-size: 12px;
+	font-weight: 600;
+	background: #eaf1f7;
+	color: #3d6b9a;
+	border: 1px solid #b8cbe0;
+	text-align: center;
+}
+
+.RoleCountZero {
+	color: rgba(0, 0, 0, 0.25);
+	font-size: 12px;
+}
