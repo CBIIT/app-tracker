@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Table, message } from 'antd';
+import { Table, Select, message } from 'antd';
 import { WarningOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { OWM_TEAM } from '../../constants/Roles';
-import { VACANCY_COUNTS, DASHBOARD_VACANCIES } from '../../constants/ApiEndpoints';
+import { VACANCY_COUNTS, DASHBOARD_VACANCIES, USER_PROFILE_COUNTS } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import KpiCard from './KpiCard/KpiCard';
@@ -113,6 +113,11 @@ const hiringDashboard = () => {
 	// Widget 4 — full closed-vacancy list (needed by MissingReferencesTable)
 	const [closedVacancies, setClosedVacancies] = useState([]);
 
+	// Widget 5 — new user profiles count
+	const [profileDays, setProfileDays] = useState(90);
+	const [profileCount, setProfileCount] = useState(null);
+	const [profileLoading, setProfileLoading] = useState(true);
+
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 
 	useEffect(() => {
@@ -179,6 +184,24 @@ const hiringDashboard = () => {
 			});
 	}, [currentTenant, isManager, history]);
 
+	// Widget 5: fetch user profile count whenever the day-range filter changes
+	useEffect(() => {
+		if (!isManager) return;
+		setProfileLoading(true);
+		axios
+			.get(USER_PROFILE_COUNTS + '?days=' + profileDays)
+			.then((res) => {
+				setProfileCount(res.data.result.count);
+			})
+			.catch(() => {
+				message.error('Sorry! An error occurred while loading the profile count.');
+				setProfileCount('—');
+			})
+			.finally(() => {
+				setProfileLoading(false);
+			});
+	}, [profileDays, isManager]);
+
 	return (
 		<div className='HiringDashboard'>
 			{/* Widget 1: Vacancy Pipeline Overview */}
@@ -236,6 +259,31 @@ const hiringDashboard = () => {
 			<div className='KpiSection'>
 				<h2>📬 Missing References — Closed Vacancies</h2>
 				<MissingReferencesTable vacancies={closedVacancies} />
+			</div>
+
+			{/* Widget 5: New User Profiles */}
+			<div className='KpiSection'>
+				<div className='KpiSectionHeader'>
+					<h2>👤 New User Profiles Created</h2>
+					<Select
+						value={profileDays}
+						onChange={setProfileDays}
+						style={{ width: 160 }}
+						options={[
+							{ value: 30, label: 'Last 30 days' },
+							{ value: 60, label: 'Last 60 days' },
+							{ value: 90, label: 'Last 90 days' },
+						]}
+					/>
+				</div>
+				<div className='KpiRow'>
+					<KpiCard
+						value={profileCount}
+						label={`Profiles created in the last ${profileDays} days`}
+						loading={profileLoading}
+						color='#52c41a'
+					/>
+				</div>
 			</div>
 
 			<div style={{ marginTop: '8px' }}>

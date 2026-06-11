@@ -16,6 +16,17 @@
 	margin-bottom: 32px;
 }
 
+.KpiSectionHeader {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.KpiSectionHeader h2 {
+	margin-bottom: 0;
+}
+
 .KpiSection h2 {
 	border-left: 4px solid #256097;
 	padding-left: 10px;

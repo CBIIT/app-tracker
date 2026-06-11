@@ -89,6 +89,9 @@ export const RECUSE = '/api/x_g_nci_app_tracke/scoring/recuse';
 // User Scripted REST API Endpoints
 export const GET_PROFILE = '/api/x_g_nci_app_tracke/user/user_profile/';
 
+export const USER_PROFILE_COUNTS =
+	'/api/x_g_nci_app_tracke/user/profile_counts';
+
 export const SAVE_PROFILE = '/api/x_g_nci_app_tracke/user/save_user_profile';
 
 export const CHECK_HAS_PROFILE = '/api/x_g_nci_app_tracke/user/check_profile';
