@@ -74,6 +74,35 @@ const STUB_VACANCY_LOCATIONS = [
 	{ name: 'Other',            value: 2  },
 ];
 
+// Demo stub data for the committee members widget
+const STUB_COMMITTEE_MEMBERS = [
+	{ key: '1',  name: 'Alice Johnson',   roles: 5 },
+	{ key: '2',  name: 'Bob Martinez',    roles: 4 },
+	{ key: '3',  name: 'Carol White',     roles: 3 },
+	{ key: '4',  name: 'David Lee',       roles: 7 },
+	{ key: '5',  name: 'Eva Nguyen',      roles: 2 },
+	{ key: '6',  name: 'Frank Brown',     roles: 6 },
+	{ key: '7',  name: 'Grace Kim',       roles: 1 },
+	{ key: '8',  name: 'Henry Davis',     roles: 4 },
+	{ key: '9',  name: 'Isabel Clark',    roles: 3 },
+	{ key: '10', name: 'James Wilson',    roles: 8 },
+];
+
+const committeeMemberColumns = [
+	{
+		title: 'Name',
+		dataIndex: 'name',
+		sorter: (a, b) => a.name.localeCompare(b.name),
+	},
+	{
+		title: 'Roles Assigned',
+		dataIndex: 'roles',
+		width: 140,
+		sorter: (a, b) => a.roles - b.roles,
+		defaultSortOrder: 'descend',
+	},
+];
+
 // ---------------------------------------------------------------------------
 // Demo stub data for the New User Profiles widget
 // ---------------------------------------------------------------------------
@@ -208,6 +237,10 @@ const hiringDashboard = () => {
 	const [locationData, setLocationData] = useState([]);
 	const [locationLoading, setLocationLoading] = useState(true);
 
+	// Widget 8 — committee members and role counts
+	const [committeeMembersData, setCommitteeMembersData] = useState([]);
+	const [committeeMembersLoading, setCommitteeMembersLoading] = useState(true);
+
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 	const pipelineCountsData = PIPELINE_STATES.map((state) => {
 		const numericValue = Number(pipelineCounts[state.key]) || 0;
@@ -300,12 +333,15 @@ const hiringDashboard = () => {
 				setHiredLoading(false);
 			});
 
-		// Widget 7: fetch all vacancies and group by location
+		// Widget 7 & 8: fetch all vacancies and group by location; derive committee member role counts
 		setLocationLoading(true);
+		setCommitteeMembersLoading(true);
 		axios
 			.get(DASHBOARD_VACANCIES + currentTenant)
 			.then((res) => {
 				const vacancies = res.data.result || [];
+
+				// Widget 7: group by location
 				const countMap = {};
 				vacancies.forEach((v) => {
 					const loc = (v.location && v.location.trim()) ? v.location.trim() : 'Unknown';
@@ -315,12 +351,31 @@ const hiringDashboard = () => {
 					.map(([name, value]) => ({ name, value }))
 					.sort((a, b) => b.value - a.value);
 				setLocationData(data.length > 0 ? data : STUB_VACANCY_LOCATIONS);
+
+				// Widget 8: tally committee member role assignments across all vacancies
+				const memberMap = {};
+				vacancies.forEach((v) => {
+					if (Array.isArray(v.committee)) {
+						v.committee.forEach((member) => {
+							const memberName = member.user_name || member.user || 'Unknown';
+							memberMap[memberName] = (memberMap[memberName] || 0) + 1;
+						});
+					}
+				});
+				const memberRows = Object.entries(memberMap).map(([name, roles], i) => ({
+					key: String(i),
+					name,
+					roles,
+				}));
+				setCommitteeMembersData(memberRows.length > 0 ? memberRows : STUB_COMMITTEE_MEMBERS);
 			})
 			.catch(() => {
 				setLocationData(STUB_VACANCY_LOCATIONS);
+				setCommitteeMembersData(STUB_COMMITTEE_MEMBERS);
 			})
 			.finally(() => {
 				setLocationLoading(false);
+				setCommitteeMembersLoading(false);
 			});
 	}, [currentTenant, isManager, history]);
 
@@ -390,41 +445,61 @@ const hiringDashboard = () => {
 				</div>
 			</div>
 
-			{/* Widget 7: Vacancies by Location */}
-			<div className='KpiSection VacancyLocationSection'>
-				<h2>📍 Vacancies by Location</h2>
-				<div className='VacancyLocationChart'>
-					{locationLoading ? (
-						<div className='VacancyLocationLoading'>
-							<LoadingOutlined style={{ fontSize: '32px' }} spin />
-						</div>
-					) : (
-						<ResponsiveContainer width='100%' height={300}>
-							<PieChart>
-								<Pie
-									data={locationData}
-									dataKey='value'
-									nameKey='name'
-									cx='50%'
-									cy='50%'
-									outerRadius={110}
-									label={({ name, percent }) =>
-										`${name} (${(percent * 100).toFixed(0)}%)`
-									}
-									labelLine={true}
-								>
-									{locationData.map((entry, index) => (
-										<Cell
-											key={entry.name}
-											fill={LOCATION_COLORS[index % LOCATION_COLORS.length]}
-										/>
-									))}
-								</Pie>
-								<Tooltip formatter={(value, name) => [value, name]} />
-								<Legend />
-							</PieChart>
-						</ResponsiveContainer>
-					)}
+			{/* Widget 7 & 8: Vacancies by Location + Committee Members */}
+			<div className='LocationAndCommitteeGrid'>
+				{/* Widget 7: Vacancies by Location */}
+				<div className='KpiSection VacancyLocationSection'>
+					<h2>📍 Vacancies by Location</h2>
+					<div className='VacancyLocationChart'>
+						{locationLoading ? (
+							<div className='VacancyLocationLoading'>
+								<LoadingOutlined style={{ fontSize: '32px' }} spin />
+							</div>
+						) : (
+							<ResponsiveContainer width='100%' height={300}>
+								<PieChart>
+									<Pie
+										data={locationData}
+										dataKey='value'
+										nameKey='name'
+										cx='50%'
+										cy='50%'
+										outerRadius={110}
+										label={({ name, percent }) =>
+											`${name} (${(percent * 100).toFixed(0)}%)`
+										}
+										labelLine={true}
+									>
+										{locationData.map((entry, index) => (
+											<Cell
+												key={entry.name}
+												fill={LOCATION_COLORS[index % LOCATION_COLORS.length]}
+											/>
+										))}
+									</Pie>
+									<Tooltip formatter={(value, name) => [value, name]} />
+									<Legend />
+								</PieChart>
+							</ResponsiveContainer>
+						)}
+					</div>
+				</div>
+
+				{/* Widget 8: Committee Members — Role Assignments */}
+				<div className='KpiSection CommitteeMembersSection'>
+					<h2>🧑‍💼 Committee Members — Role Assignments</h2>
+					<div className='ActionNeededTable'>
+						<Table
+							rowKey='key'
+							size='small'
+							dataSource={committeeMembersData}
+							columns={committeeMemberColumns}
+							loading={committeeMembersLoading}
+							pagination={{ hideOnSinglePage: true, pageSize: 10 }}
+							scroll={{ x: true }}
+							locale={{ emptyText: 'No committee member data available.' }}
+						/>
+					</div>
 				</div>
 			</div>
 
