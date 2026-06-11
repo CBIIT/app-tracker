@@ -38,6 +38,62 @@
 	gap: 16px;
 }
 
+.PipelineBarChart {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 16px 20px;
+}
+
+.PipelineBarRow {
+	display: grid;
+	grid-template-columns: 180px 1fr 64px;
+	align-items: center;
+	column-gap: 12px;
+	margin-bottom: 12px;
+}
+
+.PipelineBarRow:last-child {
+	margin-bottom: 0;
+}
+
+.PipelineBarLabel {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.8);
+}
+
+.PipelineBarTrack {
+	height: 16px;
+	background: #f0f2f5;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.PipelineBarFill {
+	height: 100%;
+	min-width: 2px;
+	border-radius: 8px;
+	transition: width 0.25s ease;
+}
+
+.PipelineBarLoading {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: rgba(0, 0, 0, 0.45);
+}
+
+.PipelineBarValue {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.8);
+	text-align: right;
+}
+
 .ActionNeededTable {
 	background: #fff;
 	border-radius: 4px;

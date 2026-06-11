@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Table, Select, message } from 'antd';
-import { WarningOutlined } from '@ant-design/icons';
+import { LoadingOutlined, WarningOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import useAuth from '../../hooks/useAuth';
@@ -161,6 +161,14 @@ const hiringDashboard = () => {
 	const [profileDays, setProfileDays] = useState(365);
 
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
+	const pipelineCountsData = PIPELINE_STATES.map((state) => {
+		const numericValue = Number(pipelineCounts[state.key]) || 0;
+		return {
+			...state,
+			value: numericValue,
+		};
+	});
+	const pipelineMaxCount = Math.max(...pipelineCountsData.map((item) => item.value), 0);
 
 	useEffect(() => {
 		if (!isManager) {
@@ -231,16 +239,28 @@ const hiringDashboard = () => {
 			{/* Widget 1: Vacancy Pipeline Overview */}
 			<div className='KpiSection'>
 				<h2>📊 Vacancy Pipeline Overview</h2>
-				<div className='KpiRow'>
-					{PIPELINE_STATES.map((s) => (
-						<KpiCard
-							key={s.key}
-							value={pipelineCounts[s.key]}
-							label={s.label}
-							loading={pipelineLoading}
-							color={s.color}
-						/>
-					))}
+				<div className='PipelineBarChart'>
+					{PIPELINE_STATES.map((state) => {
+						const rawValue = pipelineCounts[state.key];
+						const value = Number(rawValue) || 0;
+						const barWidth = pipelineMaxCount > 0 ? `${(value / pipelineMaxCount) * 100}%` : '0%';
+
+						return (
+							<div className='PipelineBarRow' key={state.key}>
+								<div className='PipelineBarLabel'>{state.label}</div>
+								<div className='PipelineBarTrack'>
+									{pipelineLoading ? (
+										<div className='PipelineBarLoading'>
+											<LoadingOutlined spin />
+										</div>
+									) : (
+										<div className='PipelineBarFill' style={{ width: barWidth, backgroundColor: state.color }} />
+									)}
+								</div>
+								<div className='PipelineBarValue'>{pipelineLoading ? '—' : value}</div>
+							</div>
+						);
+					})}
 				</div>
 			</div>
 
