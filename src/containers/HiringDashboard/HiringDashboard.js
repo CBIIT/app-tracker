@@ -294,58 +294,64 @@ const hiringDashboard = () => {
 				</div>
 			</div>
 
-			{/* Widget 3: Action Needed — stalled vacancies */}
-			<div className='KpiSection'>
-				<h2>
-					<WarningOutlined style={{ color: '#d46b08', marginRight: '8px' }} />
-					Action Needed — Closed Vacancies Not Yet Voting Complete
-				</h2>
-				<div className='ActionNeededTable'>
-					<Table
-						rowKey='sys_id'
-						dataSource={actionNeeded}
-						columns={actionNeededColumns}
-						loading={closedLoading}
-						pagination={{ hideOnSinglePage: true, pageSize: 10 }}
-						scroll={{ x: 'true' }}
-						locale={{ emptyText: '✅ No vacancies require attention.' }}
-					/>
+			<div className='DataSectionGrid'>
+				{/* Widget 3: Action Needed — stalled vacancies */}
+				<div className='KpiSection CompactDataSection'>
+					<h2>
+						<WarningOutlined style={{ color: '#d46b08', marginRight: '8px' }} />
+						Action Needed — Closed Vacancies Not Yet Voting Complete
+					</h2>
+					<div className='ActionNeededTable'>
+						<Table
+							rowKey='sys_id'
+							size='small'
+							dataSource={actionNeeded}
+							columns={actionNeededColumns}
+							loading={closedLoading}
+							pagination={{ hideOnSinglePage: true, pageSize: 8 }}
+							scroll={{ x: true }}
+							locale={{ emptyText: '✅ No vacancies require attention.' }}
+						/>
+					</div>
 				</div>
-			</div>
 
-			{/* Widget 4: Missing References */}
-			<div className='KpiSection'>
-				<h2>📬 Missing References — Closed Vacancies</h2>
-				<MissingReferencesTable vacancies={closedVacancies} />
-			</div>
-
-			{/* Widget 5: New User Profiles */}
-			<div className='KpiSection'>
-				<div className='KpiSectionHeader'>
-					<h2>👤 New User Profiles Created</h2>
-					<Select
-						value={profileDays}
-						onChange={setProfileDays}
-						style={{ width: 160 }}
-						options={[
-							{ value: 30, label: 'Last 30 days' },
-							{ value: 60, label: 'Last 60 days' },
-							{ value: 90, label: 'Last 90 days' },
-							{ value: 365, label: 'Last 1 year' },
-						]}
-					/>
+				{/* Widget 4: Missing References */}
+				<div className='KpiSection CompactDataSection'>
+					<h2>📬 Missing References — Closed Vacancies</h2>
+					<MissingReferencesTable vacancies={closedVacancies} compact />
 				</div>
-				<div className='ActionNeededTable'>
-					<Table
-						rowKey='key'
-						dataSource={STUB_PROFILES.filter((p) => {
-							const cutoff = Date.now() - profileDays * 24 * 60 * 60 * 1000;
-							return new Date(p.last_login).getTime() >= cutoff;
-						})}
-						columns={profileColumns}
-						pagination={{ hideOnSinglePage: true, pageSize: 10 }}
-						locale={{ emptyText: 'No profiles found in the selected period.' }}
-					/>
+
+				{/* Widget 5: New User Profiles */}
+				<div className='KpiSection CompactDataSection DataSectionWide'>
+					<div className='KpiSectionHeader'>
+						<h2>👤 New User Profiles Created</h2>
+						<Select
+							value={profileDays}
+							onChange={setProfileDays}
+							size='small'
+							style={{ width: 150 }}
+							options={[
+								{ value: 30, label: 'Last 30 days' },
+								{ value: 60, label: 'Last 60 days' },
+								{ value: 90, label: 'Last 90 days' },
+								{ value: 365, label: 'Last 1 year' },
+							]}
+						/>
+					</div>
+					<div className='ActionNeededTable'>
+						<Table
+							rowKey='key'
+							size='small'
+							dataSource={STUB_PROFILES.filter((p) => {
+								const cutoff = Date.now() - profileDays * 24 * 60 * 60 * 1000;
+								return new Date(p.last_login).getTime() >= cutoff;
+							})}
+							columns={profileColumns}
+							pagination={{ hideOnSinglePage: true, pageSize: 8 }}
+							scroll={{ x: true }}
+							locale={{ emptyText: 'No profiles found in the selected period.' }}
+						/>
+					</div>
 				</div>
 			</div>
 

@@ -5,6 +5,19 @@
 	padding: 16px 20px;
 }
 
+.MissingReferencesTableCompact {
+	padding: 10px 12px;
+}
+
+.MissingReferencesTableCompact .ant-table {
+	font-size: 12px;
+}
+
+.MissingReferencesTableCompact .ant-table-thead > tr > th,
+.MissingReferencesTableCompact .ant-table-tbody > tr > td {
+	padding: 8px 10px;
+}
+
 .MissingCount {
 	color: #cf1322;
 	font-weight: 600;

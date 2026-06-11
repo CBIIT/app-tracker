@@ -90,7 +90,7 @@ const ExpandedRow = ({ appSysId }) => {
 	);
 };
 
-const missingReferencesTable = ({ vacancies }) => {
+const missingReferencesTable = ({ vacancies, compact = false }) => {
 	const [rows, setRows] = useState([]);
 	const [loading, setLoading] = useState(true);
 
@@ -141,13 +141,14 @@ const missingReferencesTable = ({ vacancies }) => {
 	}, [vacancies]);
 
 	return (
-		<div className='MissingReferencesTable'>
+		<div className={`MissingReferencesTable${compact ? ' MissingReferencesTableCompact' : ''}`}>
 			<Table
 				rowKey='key'
+				size={compact ? 'small' : 'middle'}
 				dataSource={rows}
 				columns={columns}
 				loading={loading}
-				pagination={{ hideOnSinglePage: true, pageSize: 10 }}
+				pagination={{ hideOnSinglePage: true, pageSize: compact ? 8 : 10 }}
 				scroll={{ x: true }}
 				locale={{ emptyText: '✅ All requested references have been received.' }}
 				expandable={{

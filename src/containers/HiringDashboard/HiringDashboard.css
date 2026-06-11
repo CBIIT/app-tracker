@@ -16,6 +16,17 @@
 	margin-bottom: 32px;
 }
 
+.DataSectionGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.DataSectionWide {
+	grid-column: 1 / -1;
+}
+
 .ChartColumns {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -28,6 +39,14 @@
 }
 
 .CompactChartCard h2 {
+	margin-bottom: 10px;
+}
+
+.CompactDataSection {
+	margin-bottom: 0;
+}
+
+.CompactDataSection h2 {
 	margin-bottom: 10px;
 }
 
@@ -119,7 +138,16 @@
 	background: #fff;
 	border-radius: 4px;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-	padding: 16px 20px;
+	padding: 10px 12px;
+}
+
+.CompactDataSection .ant-table {
+	font-size: 12px;
+}
+
+.CompactDataSection .ant-table-thead > tr > th,
+.CompactDataSection .ant-table-tbody > tr > td {
+	padding: 8px 10px;
 }
 
 .StageBadge {
@@ -159,4 +187,14 @@
 	background: #fafafa;
 	color: rgba(0, 0, 0, 0.65);
 	border: 1px solid #d9d9d9;
+}
+
+@media (max-width: 1200px) {
+	.DataSectionGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.DataSectionWide {
+		grid-column: auto;
+	}
 }
