@@ -114,7 +114,7 @@ const hiringDashboard = () => {
 	const [closedVacancies, setClosedVacancies] = useState([]);
 
 	// Widget 5 — new user profiles count
-	const [profileDays, setProfileDays] = useState(90);
+	const [profileDays, setProfileDays] = useState(365);
 	const [profileCount, setProfileCount] = useState(null);
 	const [profileLoading, setProfileLoading] = useState(true);
 
@@ -273,6 +273,7 @@ const hiringDashboard = () => {
 							{ value: 30, label: 'Last 30 days' },
 							{ value: 60, label: 'Last 60 days' },
 							{ value: 90, label: 'Last 90 days' },
+							{ value: 365, label: 'Last 1 year' },
 						]}
 					/>
 				</div>
