@@ -124,6 +124,9 @@ export const GET_APPLICANT_LIST =
 export const DASHBOARD_VACANCIES =
 	'/api/x_g_nci_app_tracke/vacancy/get_dashboard_vacancy_list/';
 
+export const HIRED_APPLICANTS_COUNT =
+	'/api/x_g_nci_app_tracke/application/hired_count/';
+
 export const GET_DRAFT = '/api/x_g_nci_app_tracke/vacancy/get_draft/';
 
 export const VACANCY_DETAILS_FOR_APPLICANTS =

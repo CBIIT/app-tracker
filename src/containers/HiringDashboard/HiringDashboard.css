@@ -72,6 +72,10 @@
 	gap: 16px;
 }
 
+.KpiRowTop {
+	margin-bottom: 24px;
+}
+
 .PipelineBarChart {
 	background: #fff;
 	border-radius: 4px;

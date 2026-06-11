@@ -7,9 +7,10 @@ import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { OWM_TEAM } from '../../constants/Roles';
-import { VACANCY_COUNTS, DASHBOARD_VACANCIES } from '../../constants/ApiEndpoints';
+import { VACANCY_COUNTS, DASHBOARD_VACANCIES, HIRED_APPLICANTS_COUNT } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
+import KpiCard from './KpiCard/KpiCard';
 import MissingReferencesTable from './MissingReferencesTable/MissingReferencesTable';
 import './HiringDashboard.css';
 
@@ -182,6 +183,10 @@ const hiringDashboard = () => {
 	// Widget 5 — new user profiles (demo stub data; no API call needed)
 	const [profileDays, setProfileDays] = useState(365);
 
+	// Widget 6 — hired applicants in last 90 days
+	const [hiredCount, setHiredCount] = useState(null);
+	const [hiredLoading, setHiredLoading] = useState(true);
+
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 	const pipelineCountsData = PIPELINE_STATES.map((state) => {
 		const numericValue = Number(pipelineCounts[state.key]) || 0;
@@ -259,10 +264,34 @@ const hiringDashboard = () => {
 			.finally(() => {
 				setClosedLoading(false);
 			});
+
+			// Widget 6: fetch hired applicants count for the last 90 days
+		setHiredLoading(true);
+		axios
+			.get(HIRED_APPLICANTS_COUNT + currentTenant + '?days=90')
+			.then((res) => {
+				setHiredCount(Number(res.data.result.count) || 0);
+			})
+			.catch(() => {
+				setHiredCount('—');
+			})
+			.finally(() => {
+				setHiredLoading(false);
+			});
 	}, [currentTenant, isManager, history]);
 
 	return (
 		<div className='HiringDashboard'>
+			{/* Widget 6: Hired Applicants KPI */}
+			<div className='KpiRow KpiRowTop'>
+				<KpiCard
+					value={hiredCount}
+					label='Hired Applicants — Last 90 Days'
+					loading={hiredLoading}
+					color='#389e0d'
+				/>
+			</div>
+
 			<div className='ChartColumns'>
 				{/* Widget 1: Vacancy Pipeline Overview */}
 				<div className='KpiSection CompactChartCard'>
