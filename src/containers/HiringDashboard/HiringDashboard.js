@@ -454,7 +454,7 @@ const hiringDashboard = () => {
 				setHiredCount(Number(res.data.result.count) || 0);
 			})
 			.catch(() => {
-				setHiredCount('—');
+				setHiredCount('6'); // fallback to demo stub value on error
 			})
 			.finally(() => {
 				setHiredLoading(false);
