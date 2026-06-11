@@ -86,7 +86,7 @@ const COMMITTEE_ROLE_KEYS = [
 ];
 
 // Map a raw role string (from the API) to one of the keys above
-const normalizeCommitteeRole = (raw) => {
+export const normalizeCommitteeRole = (raw) => {
 	if (!raw) return null;
 	const r = raw.trim().toLowerCase();
 	if (r === 'chair') return 'chair';
@@ -98,6 +98,46 @@ const normalizeCommitteeRole = (raw) => {
 	if (r === 'member') return 'member';
 	return null;
 };
+
+export const getNonEmptyString = (...values) => {
+	for (const value of values) {
+		if (typeof value === 'string') {
+			const trimmedValue = value.trim();
+			if (trimmedValue) return trimmedValue;
+		}
+	}
+	return '';
+};
+
+export const getVacancyLocation = (vacancy) =>
+	getNonEmptyString(
+		vacancy?.location,
+		vacancy?.basic_info?.location?.value,
+		vacancy?.basic_info?.location?.label
+	) || 'Unknown';
+
+export const getCommitteeMembers = (vacancy) =>
+	(Array.isArray(vacancy?.committee) && vacancy.committee) ||
+	(Array.isArray(vacancy?.vacancy_committee) && vacancy.vacancy_committee) ||
+	(Array.isArray(vacancy?.vacancyCommittee) && vacancy.vacancyCommittee) ||
+	[];
+
+export const getCommitteeMemberName = (member) =>
+	getNonEmptyString(
+		member?.user_name,
+		member?.user?.name?.value,
+		member?.user?.label,
+		typeof member?.user === 'string' ? member.user : '',
+		member?.name,
+		member?.member_name
+	) || 'Unknown';
+
+export const getCommitteeMemberRole = (member) =>
+	getNonEmptyString(
+		member?.role,
+		member?.role?.value,
+		member?.role?.label
+	);
 
 // Demo stub data for the committee members widget
 const STUB_COMMITTEE_MEMBERS = [
@@ -431,7 +471,7 @@ const hiringDashboard = () => {
 				// Widget 7: group by location
 				const countMap = {};
 				vacancies.forEach((v) => {
-					const loc = (v.location && v.location.trim()) ? v.location.trim() : 'Unknown';
+					const loc = getVacancyLocation(v);
 					countMap[loc] = (countMap[loc] || 0) + 1;
 				});
 				const data = Object.entries(countMap)
@@ -442,21 +482,19 @@ const hiringDashboard = () => {
 				// Widget 8: tally committee member role assignments across all vacancies
 				const memberMap = {};
 				vacancies.forEach((v) => {
-					if (Array.isArray(v.committee)) {
-						v.committee.forEach((member) => {
-							const memberName = member.user_name || member.user || 'Unknown';
-							if (!memberMap[memberName]) {
-								const entry = { name: memberName, total: 0 };
-								COMMITTEE_ROLE_KEYS.forEach(({ key }) => { entry[key] = 0; });
-								memberMap[memberName] = entry;
-							}
-							const roleKey = normalizeCommitteeRole(member.role);
-							if (roleKey) {
-								memberMap[memberName][roleKey]++;
-							}
-							memberMap[memberName].total++;
-						});
-					}
+					getCommitteeMembers(v).forEach((member) => {
+						const memberName = getCommitteeMemberName(member);
+						if (!memberMap[memberName]) {
+							const entry = { name: memberName, total: 0 };
+							COMMITTEE_ROLE_KEYS.forEach(({ key }) => { entry[key] = 0; });
+							memberMap[memberName] = entry;
+						}
+						const roleKey = normalizeCommitteeRole(getCommitteeMemberRole(member));
+						if (roleKey) {
+							memberMap[memberName][roleKey]++;
+						}
+						memberMap[memberName].total++;
+					});
 				});
 				const memberRows = Object.values(memberMap).map((entry, i) => ({
 					key: String(i),
