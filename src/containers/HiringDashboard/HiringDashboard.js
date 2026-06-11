@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Table, Select, message } from 'antd';
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
 import useAuth from '../../hooks/useAuth';
@@ -55,6 +56,22 @@ const FUNNEL_STAGES = [
 	{ label: 'Individual Scoring', color: '#096dd9' },
 	{ label: 'Committee Review', color: '#531dab' },
 	{ label: 'Voting Complete', color: '#389e0d' },
+];
+
+// Colors for the vacancy-by-location pie chart
+const LOCATION_COLORS = [
+	'#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1',
+	'#13c2c2', '#eb2f96', '#fa8c16', '#a0d911', '#2f54eb',
+];
+
+// Demo stub data for the vacancy-by-location widget
+const STUB_VACANCY_LOCATIONS = [
+	{ name: 'Bethesda, MD',     value: 18 },
+	{ name: 'Rockville, MD',    value: 9  },
+	{ name: 'Frederick, MD',    value: 5  },
+	{ name: 'Remote',           value: 7  },
+	{ name: 'Research Triangle Park, NC', value: 3 },
+	{ name: 'Other',            value: 2  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -187,6 +204,10 @@ const hiringDashboard = () => {
 	const [hiredCount, setHiredCount] = useState(null);
 	const [hiredLoading, setHiredLoading] = useState(true);
 
+	// Widget 7 — vacancies by location
+	const [locationData, setLocationData] = useState([]);
+	const [locationLoading, setLocationLoading] = useState(true);
+
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 	const pipelineCountsData = PIPELINE_STATES.map((state) => {
 		const numericValue = Number(pipelineCounts[state.key]) || 0;
@@ -278,6 +299,29 @@ const hiringDashboard = () => {
 			.finally(() => {
 				setHiredLoading(false);
 			});
+
+		// Widget 7: fetch all vacancies and group by location
+		setLocationLoading(true);
+		axios
+			.get(DASHBOARD_VACANCIES + currentTenant)
+			.then((res) => {
+				const vacancies = res.data.result || [];
+				const countMap = {};
+				vacancies.forEach((v) => {
+					const loc = (v.location && v.location.trim()) ? v.location.trim() : 'Unknown';
+					countMap[loc] = (countMap[loc] || 0) + 1;
+				});
+				const data = Object.entries(countMap)
+					.map(([name, value]) => ({ name, value }))
+					.sort((a, b) => b.value - a.value);
+				setLocationData(data.length > 0 ? data : STUB_VACANCY_LOCATIONS);
+			})
+			.catch(() => {
+				setLocationData(STUB_VACANCY_LOCATIONS);
+			})
+			.finally(() => {
+				setLocationLoading(false);
+			});
 	}, [currentTenant, isManager, history]);
 
 	return (
@@ -343,6 +387,44 @@ const hiringDashboard = () => {
 							);
 						})}
 					</div>
+				</div>
+			</div>
+
+			{/* Widget 7: Vacancies by Location */}
+			<div className='KpiSection VacancyLocationSection'>
+				<h2>📍 Vacancies by Location</h2>
+				<div className='VacancyLocationChart'>
+					{locationLoading ? (
+						<div className='VacancyLocationLoading'>
+							<LoadingOutlined style={{ fontSize: '32px' }} spin />
+						</div>
+					) : (
+						<ResponsiveContainer width='100%' height={300}>
+							<PieChart>
+								<Pie
+									data={locationData}
+									dataKey='value'
+									nameKey='name'
+									cx='50%'
+									cy='50%'
+									outerRadius={110}
+									label={({ name, percent }) =>
+										`${name} (${(percent * 100).toFixed(0)}%)`
+									}
+									labelLine={true}
+								>
+									{locationData.map((entry, index) => (
+										<Cell
+											key={entry.name}
+											fill={LOCATION_COLORS[index % LOCATION_COLORS.length]}
+										/>
+									))}
+								</Pie>
+								<Tooltip formatter={(value, name) => [value, name]} />
+								<Legend />
+							</PieChart>
+						</ResponsiveContainer>
+					)}
 				</div>
 			</div>
 

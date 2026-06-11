@@ -138,6 +138,25 @@
 	}
 }
 
+.VacancyLocationSection {
+	margin-bottom: 24px;
+}
+
+.VacancyLocationChart {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 16px;
+}
+
+.VacancyLocationLoading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 300px;
+	color: rgba(0, 0, 0, 0.45);
+}
+
 .ActionNeededTable {
 	background: #fff;
 	border-radius: 4px;
