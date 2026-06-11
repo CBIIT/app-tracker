@@ -49,21 +49,6 @@ const PIPELINE_STATES = [
 	{ key: 'closed', label: 'Closed / In Review', color: '#d4380d' },
 ];
 
-const APPLICATION_STATUS_STATES = [
-	{ key: 'triage', label: 'Triage', color: '#d46b08' },
-	{ key: 'scoring', label: 'Scoring', color: '#096dd9' },
-	{ key: 'in_review', label: 'In Review', color: '#531dab' },
-	{ key: 'review_complete', label: 'Review Complete', color: '#389e0d' },
-	{ key: 'completed', label: 'Completed', color: '#13c2c2' },
-];
-
-const REFERENCE_STATES = [
-	{ key: 'references_sent', label: 'Requests Sent', color: '#1890ff' },
-	{ key: 'references_received', label: 'Refs Received', color: '#389e0d' },
-	{ key: 'references_pending', label: 'Refs Pending', color: '#d46b08' },
-	{ key: 'references_complete', label: 'All Refs In', color: '#13c2c2' },
-];
-
 const FUNNEL_STAGES = [
 	{ label: 'Triaged', color: '#d46b08' },
 	{ label: 'Individual Scoring', color: '#096dd9' },
@@ -123,14 +108,6 @@ const hiringDashboard = () => {
 	// Widget 3 — action-needed table (closed vacancies not yet at voting complete)
 	const [actionNeeded, setActionNeeded] = useState([]);
 	const [closedLoading, setClosedLoading] = useState(true);
-
-	// Widget 4 — application status counts
-	const [appStatusCounts, setAppStatusCounts] = useState({});
-	const [appStatusLoading, setAppStatusLoading] = useState(true);
-
-	// Widget 5 — reference collection counts
-	const [refCounts, setRefCounts] = useState({});
-	const [refLoading, setRefLoading] = useState(true);
 
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 
@@ -193,42 +170,6 @@ const hiringDashboard = () => {
 			.finally(() => {
 				setClosedLoading(false);
 			});
-
-		// Widget 4: fetch application status counts
-		setAppStatusLoading(true);
-		const appStatusPromises = APPLICATION_STATUS_STATES.map((s) =>
-			axios
-				.get(VACANCY_COUNTS + currentTenant + '?state=' + s.key)
-				.then((res) => ({ key: s.key, count: res.data.result.count }))
-				.catch(() => ({ key: s.key, count: '—' }))
-		);
-
-		Promise.all(appStatusPromises).then((results) => {
-			const counts = {};
-			results.forEach(({ key, count }) => {
-				counts[key] = count;
-			});
-			setAppStatusCounts(counts);
-			setAppStatusLoading(false);
-		});
-
-		// Widget 5: fetch reference collection counts
-		setRefLoading(true);
-		const refPromises = REFERENCE_STATES.map((s) =>
-			axios
-				.get(VACANCY_COUNTS + currentTenant + '?state=' + s.key)
-				.then((res) => ({ key: s.key, count: res.data.result.count }))
-				.catch(() => ({ key: s.key, count: '—' }))
-		);
-
-		Promise.all(refPromises).then((results) => {
-			const counts = {};
-			results.forEach(({ key, count }) => {
-				counts[key] = count;
-			});
-			setRefCounts(counts);
-			setRefLoading(false);
-		});
 	}, [currentTenant, isManager, history]);
 
 	return (
@@ -281,38 +222,6 @@ const hiringDashboard = () => {
 						scroll={{ x: 'true' }}
 						locale={{ emptyText: '✅ No vacancies require attention.' }}
 					/>
-				</div>
-			</div>
-
-			{/* Widget 4: Application Status */}
-			<div className='KpiSection'>
-				<h2>📋 Application Status</h2>
-				<div className='KpiRow'>
-					{APPLICATION_STATUS_STATES.map((s) => (
-						<KpiCard
-							key={s.key}
-							value={appStatusCounts[s.key]}
-							label={s.label}
-							loading={appStatusLoading}
-							color={s.color}
-						/>
-					))}
-				</div>
-			</div>
-
-			{/* Widget 5: Reference Collection */}
-			<div className='KpiSection'>
-				<h2>📬 Reference Collection</h2>
-				<div className='KpiRow'>
-					{REFERENCE_STATES.map((s) => (
-						<KpiCard
-							key={s.key}
-							value={refCounts[s.key]}
-							label={s.label}
-							loading={refLoading}
-							color={s.color}
-						/>
-					))}
 				</div>
 			</div>
 
