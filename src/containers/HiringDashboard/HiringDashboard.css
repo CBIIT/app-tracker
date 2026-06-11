@@ -62,7 +62,7 @@
 }
 
 .KpiSection h2 {
-	border-left: 4px solid #256097;
+	border-left: 4px solid #6c8dad;
 	padding-left: 10px;
 }
 
@@ -183,27 +183,27 @@
 }
 
 .StageTriaged {
-	background: #fff7e6;
-	color: #d46b08;
-	border: 1px solid #ffd591;
+	background: #f6efe4;
+	color: #9b7343;
+	border: 1px solid #d8bf99;
 }
 
 .StageScoring {
-	background: #e6f7ff;
-	color: #096dd9;
-	border: 1px solid #91d5ff;
+	background: #eaf1f7;
+	color: #567ea7;
+	border: 1px solid #b8cbe0;
 }
 
 .StageCommittee {
-	background: #f9f0ff;
-	color: #531dab;
-	border: 1px solid #d3adf7;
+	background: #f1ecf7;
+	color: #725c99;
+	border: 1px solid #c6b9de;
 }
 
 .StageVoting {
-	background: #f6ffed;
-	color: #389e0d;
-	border: 1px solid #b7eb8f;
+	background: #eef5ea;
+	color: #62855f;
+	border: 1px solid #bfd3b6;
 }
 
 .StageDefault {
@@ -213,12 +213,12 @@
 }
 
 .ProfileRowStale td {
-	background-color: #fff1f0 !important;
-	color: #cf1322;
+	background-color: #f7ecec !important;
+	color: #b85c63;
 }
 
 .ProfileRowStale:hover td {
-	background-color: #ffccc7 !important;
+	background-color: #ecd2d4 !important;
 }
 
 .DeletionBadgeYes {
@@ -227,9 +227,9 @@
 	border-radius: 12px;
 	font-size: 12px;
 	font-weight: 500;
-	background: #fff1f0;
-	color: #cf1322;
-	border: 1px solid #ffa39e;
+	background: #f7ecec;
+	color: #b85c63;
+	border: 1px solid #dfb7bb;
 }
 
 .DeletionBadgeNo {
@@ -238,9 +238,9 @@
 	border-radius: 12px;
 	font-size: 12px;
 	font-weight: 500;
-	background: #f6ffed;
-	color: #389e0d;
-	border: 1px solid #b7eb8f;
+	background: #eef5ea;
+	color: #62855f;
+	border: 1px solid #bfd3b6;
 }
 
 @media (max-width: 1200px) {

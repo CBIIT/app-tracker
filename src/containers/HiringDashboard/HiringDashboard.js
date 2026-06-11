@@ -45,23 +45,23 @@ const stageCssClass = (stage) => {
 };
 
 const PIPELINE_STATES = [
-	{ key: 'preflight', label: 'Pre-flight', color: '#722ed1' },
-	{ key: 'live', label: 'Live', color: '#1890ff' },
-	{ key: 'rolling', label: 'Rolling Close', color: '#13c2c2' },
-	{ key: 'closed', label: 'Closed / In Review', color: '#d4380d' },
+	{ key: 'preflight', label: 'Pre-flight', color: '#8b6fb3' },
+	{ key: 'live', label: 'Live', color: '#5f8fc2' },
+	{ key: 'rolling', label: 'Rolling Close', color: '#5da9a9' },
+	{ key: 'closed', label: 'Closed / In Review', color: '#b56a57' },
 ];
 
 const FUNNEL_STAGES = [
-	{ label: 'Triaged', color: '#d46b08' },
-	{ label: 'Individual Scoring', color: '#096dd9' },
-	{ label: 'Committee Review', color: '#531dab' },
-	{ label: 'Voting Complete', color: '#389e0d' },
+	{ label: 'Triaged', color: '#b8874d' },
+	{ label: 'Individual Scoring', color: '#5f8fc2' },
+	{ label: 'Committee Review', color: '#8a72b5' },
+	{ label: 'Voting Complete', color: '#6f9d6b' },
 ];
 
 // Colors for the vacancy-by-location pie chart
 const LOCATION_COLORS = [
-	'#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1',
-	'#13c2c2', '#eb2f96', '#fa8c16', '#a0d911', '#2f54eb',
+	'#5f8fc2', '#7fab6b', '#d1a95c', '#c57b72', '#8b6fb3',
+	'#5da9a9', '#c27aa0', '#d39a62', '#9ab85d', '#6f86c8',
 ];
 
 // Demo stub data for the vacancy-by-location widget
@@ -332,7 +332,7 @@ const hiringDashboard = () => {
 					value={hiredCount}
 					label='Hired Applicants — Last 90 Days'
 					loading={hiredLoading}
-					color='#389e0d'
+					color='#6f9d6b'
 				/>
 			</div>
 
@@ -432,7 +432,7 @@ const hiringDashboard = () => {
 				{/* Widget 3: Action Needed — stalled vacancies */}
 				<div className='KpiSection CompactDataSection'>
 					<h2>
-						<WarningOutlined style={{ color: '#d46b08', marginRight: '8px' }} />
+						<WarningOutlined style={{ color: '#b8874d', marginRight: '8px' }} />
 						Action Needed — Closed Vacancies Not Yet Voting Complete
 					</h2>
 					<div className='ActionNeededTable'>
