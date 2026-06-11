@@ -10,7 +10,6 @@ import { OWM_TEAM } from '../../constants/Roles';
 import { VACANCY_COUNTS, DASHBOARD_VACANCIES } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
-import KpiCard from './KpiCard/KpiCard';
 import MissingReferencesTable from './MissingReferencesTable/MissingReferencesTable';
 import './HiringDashboard.css';
 
@@ -169,6 +168,11 @@ const hiringDashboard = () => {
 		};
 	});
 	const pipelineMaxCount = Math.max(...pipelineCountsData.map((item) => item.value), 0);
+	const funnelCountsData = FUNNEL_STAGES.map((stage) => ({
+		...stage,
+		value: Number(funnelCounts[stage.label]) || 0,
+	}));
+	const funnelMaxCount = Math.max(...funnelCountsData.map((item) => item.value), 0);
 
 	useEffect(() => {
 		if (!isManager) {
@@ -236,47 +240,57 @@ const hiringDashboard = () => {
 
 	return (
 		<div className='HiringDashboard'>
-			{/* Widget 1: Vacancy Pipeline Overview */}
-			<div className='KpiSection'>
-				<h2>📊 Vacancy Pipeline Overview</h2>
-				<div className='PipelineBarChart'>
-					{PIPELINE_STATES.map((state) => {
-						const rawValue = pipelineCounts[state.key];
-						const value = Number(rawValue) || 0;
-						const barWidth = pipelineMaxCount > 0 ? `${(value / pipelineMaxCount) * 100}%` : '0%';
+			<div className='ChartColumns'>
+				{/* Widget 1: Vacancy Pipeline Overview */}
+				<div className='KpiSection CompactChartCard'>
+					<h2>📊 Vacancy Pipeline Overview</h2>
+					<div className='PipelineBarChart'>
+						{pipelineCountsData.map((state) => {
+							const barWidth = pipelineMaxCount > 0 ? `${(state.value / pipelineMaxCount) * 100}%` : '0%';
 
-						return (
-							<div className='PipelineBarRow' key={state.key}>
-								<div className='PipelineBarLabel'>{state.label}</div>
-								<div className='PipelineBarTrack'>
-									{pipelineLoading ? (
-										<div className='PipelineBarLoading'>
-											<LoadingOutlined spin />
-										</div>
-									) : (
-										<div className='PipelineBarFill' style={{ width: barWidth, backgroundColor: state.color }} />
-									)}
+							return (
+								<div className='PipelineBarRow' key={state.key}>
+									<div className='PipelineBarLabel'>{state.label}</div>
+									<div className='PipelineBarTrack'>
+										{pipelineLoading ? (
+											<div className='PipelineBarLoading'>
+												<LoadingOutlined spin />
+											</div>
+										) : (
+											<div className='PipelineBarFill' style={{ width: barWidth, backgroundColor: state.color }} />
+										)}
+									</div>
+									<div className='PipelineBarValue'>{pipelineLoading ? '—' : state.value}</div>
 								</div>
-								<div className='PipelineBarValue'>{pipelineLoading ? '—' : value}</div>
-							</div>
-						);
-					})}
+							);
+						})}
+					</div>
 				</div>
-			</div>
 
-			{/* Widget 2: Post-Close Review Funnel */}
-			<div className='KpiSection'>
-				<h2>🔄 Post-Close Review Funnel</h2>
-				<div className='KpiRow'>
-					{FUNNEL_STAGES.map((s) => (
-						<KpiCard
-							key={s.label}
-							value={funnelCounts[s.label]}
-							label={s.label}
-							loading={closedLoading}
-							color={s.color}
-						/>
-					))}
+				{/* Widget 2: Post-Close Review Funnel */}
+				<div className='KpiSection CompactChartCard'>
+					<h2>🔄 Post-Close Review Funnel</h2>
+					<div className='PipelineBarChart'>
+						{funnelCountsData.map((stage) => {
+							const barWidth = funnelMaxCount > 0 ? `${(stage.value / funnelMaxCount) * 100}%` : '0%';
+
+							return (
+								<div className='PipelineBarRow' key={stage.label}>
+									<div className='PipelineBarLabel'>{stage.label}</div>
+									<div className='PipelineBarTrack'>
+										{closedLoading ? (
+											<div className='PipelineBarLoading'>
+												<LoadingOutlined spin />
+											</div>
+										) : (
+											<div className='PipelineBarFill' style={{ width: barWidth, backgroundColor: stage.color }} />
+										)}
+									</div>
+									<div className='PipelineBarValue'>{closedLoading ? '—' : stage.value}</div>
+								</div>
+							);
+						})}
+					</div>
 				</div>
 			</div>
 
