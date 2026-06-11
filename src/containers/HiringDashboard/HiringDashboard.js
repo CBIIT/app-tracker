@@ -578,61 +578,58 @@ const hiringDashboard = () => {
 				</div>
 			</div>
 
-			{/* Widget 7 & 8: Vacancies by Location + Committee Members */}
-			<div className='LocationAndCommitteeGrid'>
-				{/* Widget 7: Vacancies by Location */}
-				<div className='KpiSection VacancyLocationSection'>
-					<h2>📍 Vacancies by Location</h2>
-					<div className='VacancyLocationChart'>
-						{locationLoading ? (
-							<div className='VacancyLocationLoading'>
-								<LoadingOutlined style={{ fontSize: '32px' }} spin />
-							</div>
-						) : (
-							<ResponsiveContainer width='100%' height={300}>
-								<PieChart>
-									<Pie
-										data={locationData}
-										dataKey='value'
-										nameKey='name'
-										cx='50%'
-										cy='50%'
-										outerRadius={110}
-										label={({ name, percent }) =>
-											`${name} (${(percent * 100).toFixed(0)}%)`
-										}
-										labelLine={true}
-									>
-										{locationData.map((entry, index) => (
-											<Cell
-												key={entry.name}
-												fill={LOCATION_COLORS[index % LOCATION_COLORS.length]}
-											/>
-										))}
-									</Pie>
-									<Tooltip formatter={(value, name) => [value, name]} />
-									<Legend />
-								</PieChart>
-							</ResponsiveContainer>
-						)}
-					</div>
+			{/* Widget 8: Committee Members — Role Assignments */}
+			<div className='KpiSection CommitteeMembersSection'>
+				<h2>🧑‍💼 Committee Members — Role Assignments</h2>
+				<div className='ActionNeededTable'>
+					<Table
+						rowKey='key'
+						size='small'
+						dataSource={committeeMembersData}
+						columns={committeeMemberColumns}
+						loading={committeeMembersLoading}
+						pagination={{ hideOnSinglePage: true, pageSize: 10 }}
+						scroll={{ x: true }}
+						locale={{ emptyText: 'No committee member data available.' }}
+					/>
 				</div>
+			</div>
 
-				{/* Widget 8: Committee Members — Role Assignments */}
-				<div className='KpiSection CommitteeMembersSection'>
-					<h2>🧑‍💼 Committee Members — Role Assignments</h2>
-					<div className='ActionNeededTable'>
-						<Table
-							rowKey='key'
-							size='small'
-							dataSource={committeeMembersData}
-							columns={committeeMemberColumns}
-							loading={committeeMembersLoading}
-							pagination={{ hideOnSinglePage: true, pageSize: 10 }}
-							scroll={{ x: true }}
-							locale={{ emptyText: 'No committee member data available.' }}
-						/>
-					</div>
+			{/* Widget 7: Vacancies by Location */}
+			<div className='KpiSection VacancyLocationSection'>
+				<h2>📍 Vacancies by Location</h2>
+				<div className='VacancyLocationChart'>
+					{locationLoading ? (
+						<div className='VacancyLocationLoading'>
+							<LoadingOutlined style={{ fontSize: '32px' }} spin />
+						</div>
+					) : (
+						<ResponsiveContainer width='100%' height={300}>
+							<PieChart>
+								<Pie
+									data={locationData}
+									dataKey='value'
+									nameKey='name'
+									cx='50%'
+									cy='50%'
+									outerRadius={110}
+									label={({ name, percent }) =>
+										`${name} (${(percent * 100).toFixed(0)}%)`
+									}
+									labelLine={true}
+								>
+									{locationData.map((entry, index) => (
+										<Cell
+											key={entry.name}
+											fill={LOCATION_COLORS[index % LOCATION_COLORS.length]}
+										/>
+									))}
+								</Pie>
+								<Tooltip formatter={(value, name) => [value, name]} />
+								<Legend />
+							</PieChart>
+						</ResponsiveContainer>
+					)}
 				</div>
 			</div>
 

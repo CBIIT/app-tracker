@@ -139,7 +139,7 @@
 }
 
 .VacancyLocationSection {
-	margin-bottom: 0;
+	margin-bottom: 24px;
 }
 
 .VacancyLocationChart {
@@ -157,22 +157,8 @@
 	color: rgba(0, 0, 0, 0.45);
 }
 
-.LocationAndCommitteeGrid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 16px;
-	margin-bottom: 24px;
-	align-items: start;
-}
-
 .CommitteeMembersSection {
-	margin-bottom: 0;
-}
-
-@media (max-width: 1200px) {
-	.LocationAndCommitteeGrid {
-		grid-template-columns: 1fr;
-	}
+	margin-bottom: 24px;
 }
 
 .ActionNeededTable {
