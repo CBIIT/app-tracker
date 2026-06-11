@@ -7,7 +7,7 @@ import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { OWM_TEAM } from '../../constants/Roles';
-import { VACANCY_COUNTS, DASHBOARD_VACANCIES, USER_PROFILE_COUNTS } from '../../constants/ApiEndpoints';
+import { VACANCY_COUNTS, DASHBOARD_VACANCIES } from '../../constants/ApiEndpoints';
 import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import KpiCard from './KpiCard/KpiCard';
@@ -55,6 +55,50 @@ const FUNNEL_STAGES = [
 	{ label: 'Individual Scoring', color: '#096dd9' },
 	{ label: 'Committee Review', color: '#531dab' },
 	{ label: 'Voting Complete', color: '#389e0d' },
+];
+
+// ---------------------------------------------------------------------------
+// Demo stub data for the New User Profiles widget
+// ---------------------------------------------------------------------------
+const STUB_PROFILES = [
+	{ key: '1',  name: 'Alice Johnson',  email: 'alice.johnson@nih.gov',  last_login: '2026-06-10', applications: 3  },
+	{ key: '2',  name: 'Bob Martinez',   email: 'bob.martinez@nih.gov',   last_login: '2026-06-05', applications: 7  },
+	{ key: '3',  name: 'Carol White',    email: 'carol.white@nih.gov',    last_login: '2026-05-25', applications: 1  },
+	{ key: '4',  name: 'David Lee',      email: 'david.lee@nih.gov',      last_login: '2026-04-30', applications: 5  },
+	{ key: '5',  name: 'Eva Nguyen',     email: 'eva.nguyen@nih.gov',     last_login: '2026-04-15', applications: 2  },
+	{ key: '6',  name: 'Frank Brown',    email: 'frank.brown@nih.gov',    last_login: '2026-03-20', applications: 9  },
+	{ key: '7',  name: 'Grace Kim',      email: 'grace.kim@nih.gov',      last_login: '2026-03-05', applications: 4  },
+	{ key: '8',  name: 'Henry Davis',    email: 'henry.davis@nih.gov',    last_login: '2026-02-01', applications: 6  },
+	{ key: '9',  name: 'Isabel Clark',   email: 'isabel.clark@nih.gov',   last_login: '2026-01-10', applications: 0  },
+	{ key: '10', name: 'James Wilson',   email: 'james.wilson@nih.gov',   last_login: '2025-12-15', applications: 8  },
+	{ key: '11', name: 'Karen Adams',    email: 'karen.adams@nih.gov',    last_login: '2025-10-22', applications: 2  },
+	{ key: '12', name: 'Luis Rivera',    email: 'luis.rivera@nih.gov',    last_login: '2025-07-08', applications: 11 },
+];
+
+const profileColumns = [
+	{
+		title: 'Name',
+		dataIndex: 'name',
+		sorter: (a, b) => a.name.localeCompare(b.name),
+	},
+	{
+		title: 'Email',
+		dataIndex: 'email',
+	},
+	{
+		title: 'Last Logged In',
+		dataIndex: 'last_login',
+		width: 160,
+		render: (date) => transformDateToDisplay(date),
+		sorter: (a, b) => new Date(a.last_login) - new Date(b.last_login),
+		defaultSortOrder: 'descend',
+	},
+	{
+		title: 'Number of Applications',
+		dataIndex: 'applications',
+		width: 210,
+		sorter: (a, b) => a.applications - b.applications,
+	},
 ];
 
 const actionNeededColumns = [
@@ -113,10 +157,8 @@ const hiringDashboard = () => {
 	// Widget 4 — full closed-vacancy list (needed by MissingReferencesTable)
 	const [closedVacancies, setClosedVacancies] = useState([]);
 
-	// Widget 5 — new user profiles count
+	// Widget 5 — new user profiles (demo stub data; no API call needed)
 	const [profileDays, setProfileDays] = useState(365);
-	const [profileCount, setProfileCount] = useState(null);
-	const [profileLoading, setProfileLoading] = useState(true);
 
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 
@@ -183,24 +225,6 @@ const hiringDashboard = () => {
 				setClosedLoading(false);
 			});
 	}, [currentTenant, isManager, history]);
-
-	// Widget 5: fetch user profile count whenever the day-range filter changes
-	useEffect(() => {
-		if (!isManager) return;
-		setProfileLoading(true);
-		axios
-			.get(USER_PROFILE_COUNTS + '?days=' + profileDays)
-			.then((res) => {
-				setProfileCount(res.data.result.count);
-			})
-			.catch(() => {
-				message.error('Sorry! An error occurred while loading the profile count.');
-				setProfileCount('—');
-			})
-			.finally(() => {
-				setProfileLoading(false);
-			});
-	}, [profileDays, isManager]);
 
 	return (
 		<div className='HiringDashboard'>
@@ -277,12 +301,16 @@ const hiringDashboard = () => {
 						]}
 					/>
 				</div>
-				<div className='KpiRow'>
-					<KpiCard
-						value={profileCount}
-						label={`Profiles created in the last ${profileDays} days`}
-						loading={profileLoading}
-						color='#52c41a'
+				<div className='ActionNeededTable'>
+					<Table
+						rowKey='key'
+						dataSource={STUB_PROFILES.filter((p) => {
+							const cutoff = Date.now() - profileDays * 24 * 60 * 60 * 1000;
+							return new Date(p.last_login).getTime() >= cutoff;
+						})}
+						columns={profileColumns}
+						pagination={{ hideOnSinglePage: true, pageSize: 10 }}
+						locale={{ emptyText: 'No profiles found in the selected period.' }}
 					/>
 				</div>
 			</div>
