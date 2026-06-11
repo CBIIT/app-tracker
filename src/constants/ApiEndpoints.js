@@ -89,6 +89,7 @@ export const RECUSE = '/api/x_g_nci_app_tracke/scoring/recuse';
 // User Scripted REST API Endpoints
 export const GET_PROFILE = '/api/x_g_nci_app_tracke/user/user_profile/';
 
+// Reserved for future use: replaces STUB_PROFILES in HiringDashboard when real data is available
 export const USER_PROFILE_COUNTS =
 	'/api/x_g_nci_app_tracke/user/profile_counts';
 
