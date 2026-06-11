@@ -11,6 +11,7 @@ import { VACANCY_COUNTS, DASHBOARD_VACANCIES } from '../../constants/ApiEndpoint
 import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import KpiCard from './KpiCard/KpiCard';
+import MissingReferencesTable from './MissingReferencesTable/MissingReferencesTable';
 import './HiringDashboard.css';
 
 // Map raw vacancy states to human-readable review stage labels
@@ -109,6 +110,9 @@ const hiringDashboard = () => {
 	const [actionNeeded, setActionNeeded] = useState([]);
 	const [closedLoading, setClosedLoading] = useState(true);
 
+	// Widget 4 — full closed-vacancy list (needed by MissingReferencesTable)
+	const [closedVacancies, setClosedVacancies] = useState([]);
+
 	const isManager = validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants);
 
 	useEffect(() => {
@@ -163,6 +167,9 @@ const hiringDashboard = () => {
 					.filter((v) => v.state !== 'voting_complete')
 					.map((v) => ({ ...v, reviewStage: getReviewStage(v.state) }));
 				setActionNeeded(stalled);
+
+				// Widget 4: all closed vacancies for missing-references lookup
+				setClosedVacancies(vacancies);
 			})
 			.catch(() => {
 				message.error('Sorry! An error occurred while loading dashboard data.');
@@ -223,6 +230,12 @@ const hiringDashboard = () => {
 						locale={{ emptyText: '✅ No vacancies require attention.' }}
 					/>
 				</div>
+			</div>
+
+			{/* Widget 4: Missing References */}
+			<div className='KpiSection'>
+				<h2>📬 Missing References — Closed Vacancies</h2>
+				<MissingReferencesTable vacancies={closedVacancies} />
 			</div>
 
 			<div style={{ marginTop: '8px' }}>
