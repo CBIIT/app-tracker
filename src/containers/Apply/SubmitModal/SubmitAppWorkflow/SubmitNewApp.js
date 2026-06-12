@@ -245,7 +245,7 @@ const submitNewApp = async (
 
 			if (submitApp.data.result.status == 200) {
 				setPercent(100);
-				setAppSysId(submitApp.data.result.application_sys_id);
+				setAppSysId(submitApp.data.result.response.application_sys_id.application_sys_id);
 			}
 		} catch (e) {
 			if (e == 'Error: Request failed with status code 400') {

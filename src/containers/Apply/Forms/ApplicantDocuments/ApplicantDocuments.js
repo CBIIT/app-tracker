@@ -9,7 +9,6 @@ import { GET_VACANCY_MANAGER_VIEW } from '../../../../constants/ApiEndpoints';
 
 const ApplicantDocuments = (props) => {
 	const [formInstance] = Form.useForm();
-	const [focusAreaForm] = Form.useForm();
 	const contextValue = useContext(FormContext);
 	const { formData, setCurrentFormInstance } = contextValue;
 	const [applicantDocuments, setApplicantDocuments] = useState([]);
@@ -28,7 +27,7 @@ const ApplicantDocuments = (props) => {
 		try {
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);
 			const reqFocusAreaValue = vacancy.data.result.basic_info?.require_focus_area?.value
-			if (reqFocusAreaValue !== "" || reqFocusAreaValue !== undefined) {
+			if (reqFocusAreaValue !== '' && reqFocusAreaValue !== undefined) {
 				setRequireFocusArea(reqFocusAreaValue);
 			}
 
@@ -65,10 +64,6 @@ const ApplicantDocuments = (props) => {
 
 		setApplicantDocuments(newApplicantDocuments);
 	}; */
-
-	const onFocusAreaChange = () => {
-		console.log(focusAreaForm.getFieldValue('focusArea'))
-	}
 
 	const onChange = () => {
 		const newValue = formInstance.getFieldValue('applicantDocuments');
@@ -221,21 +216,16 @@ const ApplicantDocuments = (props) => {
 						}}
 					</Form.List>
 				</div>
-			</Form>
-			<Form
-				form={focusAreaForm}
-				initialValues={formData.focusArea} onChange={onFocusAreaChange}
-			>
 				<div>
-					{requireFocusArea !== '0' && requireFocusArea !== undefined  ? (
+					{requireFocusArea !== '0' && requireFocusArea !== undefined ? (
 						<>
 							<div style={{ margin: '10px' }}>
 								{'Select at least one area, no more than 2'}
 							</div>
-								<EditableFocusArea 
-									mode='multiple' 
-									focusAreaChoices={props.focusAreaChoices}
-								/>
+							<EditableFocusArea
+								mode='multiple'
+								focusAreaChoices={props.focusAreaChoices}
+							/>
 						</>
 					) : null}
 				</div>
