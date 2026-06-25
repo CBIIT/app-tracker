@@ -50,24 +50,9 @@ const ApplicantDocuments = (props) => {
 		multiple: false,
 	};
 
-/* 	const onRemove = (file, index) => {
-		const fileIndex = applicantDocuments[index].file.fileList.indexOf(file);
-
-		const newFileList = applicantDocuments[index].file.fileList.slice();
-		newFileList.splice(fileIndex, 1);
-		let newApplicantDocuments = applicantDocuments.slice();
-
-		newApplicantDocuments[index] = {
-			...newApplicantDocuments[index],
-			file: { ...newApplicantDocuments[index].file, fileList: newFileList },
-		};
-
-		setApplicantDocuments(newApplicantDocuments);
-	}; */
-
 	const onChange = () => {
 		const newValue = formInstance.getFieldValue('applicantDocuments');
-		if (newValue && newValue.length > 0) {
+		if (newValue?.length) {
 			setApplicantDocuments(newValue);
 		}
 	};
@@ -196,13 +181,7 @@ const ApplicantDocuments = (props) => {
 																storeFile(info, index, applicantDocuments)
 															}
 														>
-															<Button
-																
-																/* disabled={
-																	applicantDocuments[index].file.fileList
-																		.length >= 1
-																} */
-															>
+															<Button>
 																<UploadOutlined /> Upload
 															</Button>
 														</Upload>
