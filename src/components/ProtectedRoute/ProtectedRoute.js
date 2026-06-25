@@ -1,4 +1,4 @@
-import { Route, useLocation } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 const protectedRoute = ({ component: Component, useOktaAuth, ...rest }) => {
@@ -20,11 +20,7 @@ const protectedRoute = ({ component: Component, useOktaAuth, ...rest }) => {
 		location.href = pushUrl;
 	}
 
-	return isUserLoggedIn ? (
-		<Route {...rest} render={(props) => <Component {...rest} {...props} />} />
-	) : (
-		<> </>
-	);
+	return isUserLoggedIn ? <Component {...rest} /> : <Navigate to="/" />;
 };
 
 export default protectedRoute;

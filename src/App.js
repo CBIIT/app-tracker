@@ -1,4 +1,4 @@
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 import { useEffect, useState } from 'react';
 
@@ -218,34 +218,13 @@ const app = () => {
 	}
 
 	routes.push(
-		<ProtectedRoute
-				key='applicant-dashboard'
-				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-				useOktaAuth={true}
-			/>,
-		<ProtectedRoute
-			key='apply'
-			path={APPLY + ':vacancySysId'}
-			component={Apply}
-			useOktaAuth={true}
-		/>,
-		<Route
-			key='view-vacancy'
-			path={VIEW_VACANCY + ':sysId'}
-			component={ViewVacancyDetails}
-		/>,
-		<Route key='register-okta' path={REGISTER_OKTA} component={RegisterOkta} />,
-		<Route key='home' path='/' exact component={Home} />,
-		<Route key='404'>
-			<Redirect to='/' />
-		</Route>
+		<Route key='404' path="*" element={<Navigate to='/' />} />
 	);
 
 	return !isLoading ? (
 		<Layout>
 			{isUserLoggedIn && <TimeoutModal />}
-			<Switch>{routes}</Switch>
+			<Routes>{routes}</Routes>
 		</Layout>
 	) : null;
 };

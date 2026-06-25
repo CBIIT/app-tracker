@@ -33,7 +33,7 @@ const createVacancy = (props) => {
 		currentTenant: currentTenant,
 	};
 	const { Step } = Steps;
-	const history = useHistory();
+	const navigate = useNavigate();
 	const location = useLocation();
 	const [errorSections, setErrorSections] = useState([]);
 	const [allForms, setAllForms] = useState(

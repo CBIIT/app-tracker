@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ProfileModal from './ProfileModal';
 import useAuth from '../../hooks/useAuth';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 jest.mock('../../hooks/useAuth');
 jest.mock('react-router-dom', () => ({

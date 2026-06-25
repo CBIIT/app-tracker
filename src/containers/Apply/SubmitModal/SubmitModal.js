@@ -23,7 +23,7 @@ const submitModal = ({
 	const [submitted, setSubmitted] = useState(false);
 	const [percent, setPercent] = useState(false);
 
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const { setAuth } = useAuth();
 
@@ -59,7 +59,7 @@ const submitModal = ({
 	};
 
 	const handleClose = () => {
-		history.push('/');
+		navigate('/');
 	};
 
 	return !submitted ? (

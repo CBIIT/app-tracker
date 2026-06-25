@@ -76,7 +76,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	const [hasError, setHasError] = useState(false);
 	const [focusArea, setFocusArea] = useState([]);
 
-	const history = useHistory();
+	const navigate = useNavigate();
 	const { vacancySysId, appSysId } = useParams();
 	const vacancyId = initialValues?.sysId || vacancySysId;
 
@@ -444,7 +444,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 			key='saveLink'
 			type='link'
 			style={{ paddingLeft: '150px', paddingRight: '10px' }}
-			onClick={() => history.push(APPLICANT_DASHBOARD)}
+			onClick={() => navigate(APPLICANT_DASHBOARD)}
 		>
 			Back to Applications Home?
 		</Button>

@@ -171,7 +171,7 @@ const manageDashboard = () => {
 		searchInput,
 	};
 
-	const history = useHistory();
+	const navigate = useNavigate();
 	const {
 		auth: { user, tenants },
 		setStep,
@@ -308,14 +308,14 @@ const manageDashboard = () => {
 									validateRoleForCurrentTenant(OWM_TEAM, currentTenant, tenants)
 								) {
 									if (isExecSec(currentTenant, tenants)) {
-										history.push(EXE_SEC_DASHBOARD);
+										navigate(EXE_SEC_DASHBOARD);
 									} else {
-										history.push(VACANCY_DASHBOARD);
+										navigate(VACANCY_DASHBOARD);
 									}
 								} else if (isChair(currentTenant, tenants)) {
-									history.push(CHAIR_DASHBOARD);
+									navigate(CHAIR_DASHBOARD);
 								} else {
-									history.push(COMMITTEE_DASHBOARD);
+									navigate(COMMITTEE_DASHBOARD);
 								}
 							}}
 						>
@@ -428,7 +428,7 @@ const manageDashboard = () => {
 											ghost
 											onClick={() => {
 												setStep(-2);
-												history.push(EDIT_VACANCY + sysId);
+												navigate(EDIT_VACANCY + sysId);
 											}}
 										>
 											Edit

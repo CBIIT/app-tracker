@@ -6,7 +6,7 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { isChair } from '../../components/Util/RoleValidator/RoleValidator';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { waitFor, screen, fireEvent } from '@testing-library/react';
 
 const { message } = jest.requireMock('antd');

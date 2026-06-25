@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SubmitModal from './SubmitModal';
 import useAuth from '../../../hooks/useAuth';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { VIEW_APPLICATION } from '../../../constants/Routes';
 import submitEditedApp from './SubmitAppWorkflow/SubmitEditedApp';
 import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
