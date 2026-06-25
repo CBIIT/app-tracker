@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Progress } from 'antd';
-import { useHistory, Link } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 import { ExclamationCircleFilled, CheckCircleFilled } from '@ant-design/icons';
 import './SubmitModal.css';
 import { VIEW_APPLICATION } from '../../../constants/Routes';

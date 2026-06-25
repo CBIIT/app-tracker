@@ -6,7 +6,7 @@ import {
 	UnlockOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 import SearchContext from './Util/SearchContext';
 import ApplicantList from './ApplicantList/ApplicantList';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';

@@ -66,32 +66,15 @@ const app = () => {
 	if (isUserLoggedIn) {
 		if (atleastOneChair(tenants)) {
 			routes.push(
-				<ProtectedRoute
-					key='chair-dashboard'
-					path={CHAIR_DASHBOARD}
-					component={ChairDashboard}
-				/>
+				<ProtectedRoute key="chair-dashboard" path={CHAIR_DASHBOARD} component={ChairDashboard} />
 			);
 		}
 
 		if (user.isManager) {
 			routes.push(
-				<ProtectedRoute
-					key='vacancy-dashboard'
-					path={VACANCY_DASHBOARD + '/:tab?'}
-					exact
-					component={VacancyDashboard}
-				/>,
-				<ProtectedRoute
-					key='exe-sec-dashboard'
-					path={EXE_SEC_DASHBOARD}
-					component={CommitteeDashboard}
-				/>,
-				<ProtectedRoute
-					key='create-vacancy'
-					path={CREATE_VACANCY}
-					component={CreateVacancy}
-				/>,
+				<ProtectedRoute key="vacancy-dashboard" path={VACANCY_DASHBOARD + '/:tab?'} component={VacancyDashboard} />,
+				<ProtectedRoute key="exe-sec-dashboard" path={EXE_SEC_DASHBOARD} component={CommitteeDashboard} />,
+				<ProtectedRoute key="create-vacancy" path={CREATE_VACANCY} component={CreateVacancy} />,
 				<ProtectedRoute
 					key='edit-vacancy'
 					path={EDIT_VACANCY + ':sysId'}
@@ -99,21 +82,13 @@ const app = () => {
 					exact
 				/>,
 
-				<ProtectedRoute
-					key='edit-draft'
-					path={EDIT_DRAFT + ':sysId'}
-					component={EditDraft}
-				/>
+				<ProtectedRoute key="edit-draft" path={EDIT_DRAFT + ':sysId'} component={EditDraft} />
 			);
 		}
 
 		if (user.roles.includes(COMMITTEE_MEMBER_ROLE))
 			routes.push(
-				<ProtectedRoute
-					key='committee-dashboard'
-					path={COMMITTEE_DASHBOARD}
-					component={CommitteeDashboard}
-				/>
+				<ProtectedRoute key="committee-dashboard" path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
 			);
 
 		if (
@@ -122,11 +97,7 @@ const app = () => {
 			user.roles.includes(COMMITTEE_MEMBER_ROLE)
 		) {
 			routes.push(
-				<ProtectedRoute
-					key='manage-application'
-					path={MANAGE_APPLICATION + ':sysId'}
-					component={Application}
-				/>,
+				<ProtectedRoute key="manage-application" path={MANAGE_APPLICATION + ':sysId'} component={Application} />,
 				<ProtectedRoute
 					key='manage-vacancy'
 					path={MANAGE_VACANCY + ':sysId/:tab?'}
@@ -137,55 +108,18 @@ const app = () => {
 		}
 
 		routes.push(
-			<ProtectedRoute
-				key='applicant-dashboard'
-				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-			/>,
-			<ProtectedRoute
-				key='edit-application'
-				path={EDIT_APPLICATION + ':draft?/:appSysId'}
-				component={EditApplication}
-			/>,
-			<ProtectedRoute
-				key='view-application'
-				path={VIEW_APPLICATION + ':appSysId'}
-				component={ApplicantApplicationView}
-			/>,
-			<ProtectedRoute
-				key='applicant-profile'
-				path={PROFILE + ':sysId'}
-				component={ApplicantProfile}
-			/>
+			<ProtectedRoute key="applicant-dashboard" path={APPLICANT_DASHBOARD} component={ApplicantDashboard} />,
+			<ProtectedRoute key="edit-application" path={EDIT_APPLICATION + ':draft?/:appSysId'} component={EditApplication} />,
+			<ProtectedRoute key="view-application" path={VIEW_APPLICATION + ':appSysId'} component={ApplicantApplicationView} />,
+			<ProtectedRoute key="applicant-profile" path={PROFILE + ':sysId'} component={ApplicantProfile} />
 		);
 	} else {
 		routes.push(
-			<ProtectedRoute
-				key='manage-application'
-				path={MANAGE_APPLICATION + ':sysId'}
-				component={Application}
-			/>,
-			<ProtectedRoute
-				key='vacancy-dashboard'
-				path={VACANCY_DASHBOARD + '/:tab?'}
-				exact
-				component={VacancyDashboard}
-			/>,
-			<ProtectedRoute
-				key='edit-application'
-				path={EDIT_APPLICATION + ':draft?/:appSysId'}
-				component={EditApplication}
-			/>,
-			<ProtectedRoute
-				key='chair-dashboard'
-				path={CHAIR_DASHBOARD}
-				component={ChairDashboard}
-			/>,
-			<ProtectedRoute
-				key='create-vacancy'
-				path={CREATE_VACANCY}
-				component={CreateVacancy}
-			/>,
+			<ProtectedRoute key="manage-application" path={MANAGE_APPLICATION + ':sysId'} component={Application} />,
+			<ProtectedRoute key="vacancy-dashboard" path={VACANCY_DASHBOARD + '/:tab?'} component={VacancyDashboard} />,
+			<ProtectedRoute key="edit-application" path={EDIT_APPLICATION + ':draft?/:appSysId'} component={EditApplication} />,
+			<ProtectedRoute key="chair-dashboard" path={CHAIR_DASHBOARD} component={ChairDashboard} />,
+			<ProtectedRoute key="create-vacancy" path={CREATE_VACANCY} component={CreateVacancy} />,
 			<ProtectedRoute
 				key='edit-vacancy'
 				path={EDIT_VACANCY + ':sysId'}
@@ -198,16 +132,8 @@ const app = () => {
 				component={ManageDashboard}
 				exact
 			/>,
-			<ProtectedRoute
-				key='edit-draft'
-				path={EDIT_DRAFT + ':sysId'}
-				component={EditDraft}
-			/>,
-			<ProtectedRoute
-				key='committee-dashboard'
-				path={COMMITTEE_DASHBOARD}
-				component={CommitteeDashboard}
-			/>,
+			<ProtectedRoute key="edit-draft" path={EDIT_DRAFT + ':sysId'} component={EditDraft} />,
+			<ProtectedRoute key="committee-dashboard" path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />,
 			<ProtectedRoute
 				key='applicant-dashboard'
 				path={APPLICANT_DASHBOARD}

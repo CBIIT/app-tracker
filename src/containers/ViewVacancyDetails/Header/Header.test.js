@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import { message } from 'antd';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 import Header from './Header';
 import useAuth from '../../../hooks/useAuth';
 import { APPLICANT_DASHBOARD, APPLY, REGISTER_OKTA } from '../../../constants/Routes';
@@ -11,7 +11,7 @@ jest.mock('axios');
 jest.mock('react-router-dom', () => ({
 
     useParams: jest.fn(),
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
 
 }));
 jest.mock('../../../hooks/useAuth', () => ({
@@ -57,7 +57,7 @@ describe('Header', () => {
 
             useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        useNavigate.mockReturnValue({ push: mockHistoryPush });
         axios.get.mockResolvedValue({ data: { result: { exists: false } } });
         delete window.location;
         window.location = {

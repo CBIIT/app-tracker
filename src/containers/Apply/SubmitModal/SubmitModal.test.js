@@ -14,7 +14,7 @@ jest.mock('./SubmitAppWorkflow/SubmitEditedApp');
 jest.mock('./SubmitAppWorkflow/SubmitNewApp');
 jest.mock('react-router-dom', () => ({
 	Link: ({ children, to }) => <a href={to}>{children}</a>,
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 	useLocation: jest.fn(),
 }));
 
@@ -49,7 +49,7 @@ describe('SubmitModal component', () => {
 		mockReturnToDocuments = jest.fn();
 		mockSetAuth = jest.fn();
 		useAuth.mockReturnValue({ ...mockUseAuth, setAuth: mockSetAuth });
-		useHistory.mockReturnValue({ push: mockHistoryPush });
+		useNavigate.mockReturnValue({ push: mockHistoryPush });
 		submitNewApp.mockReset();
 		submitEditedApp.mockReset();
 	});

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import {
 	GET_USER_APPLICATIONS,
 	REMOVE_USER_APPLICATION_DRAFT,

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 jest.mock('../../hooks/useAuth');
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
 }));
 
 describe('ProfileModal', () => {
@@ -18,7 +18,7 @@ describe('ProfileModal', () => {
     beforeEach(() => {
         mockHandleClose = jest.fn();
         mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        useNavigate.mockReturnValue({ push: mockHistoryPush });
             delete window.location;
             window.location = {
             href: '',

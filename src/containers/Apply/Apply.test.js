@@ -55,7 +55,7 @@ jest.mock('../Profile/Util/ConvertDataFromBackend', () => ({
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
-	useHistory: () => ({
+	useNavigate: () => ({
 		push: mockPush,
 		goBack: mockGoBack,
 	}),

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import {
 	Steps,
 	Button,
@@ -432,7 +432,7 @@ const Apply = ({ initialValues, editSubmitted }) => {
 		try {
 			const fieldsValues = currentFormInstance.getFieldsValue();
 			await saveCurrentForm(fieldsValues);
-			currentStep === 0 ? history.goBack() : setCurrentStep(currentStep - 1);
+			currentStep === 0 ? navigate(-1) : setCurrentStep(currentStep - 1);
 			window.scrollTo(0, 0);
 		} catch (error) {
 			message.error('Oops, there was an error while saving the form.');

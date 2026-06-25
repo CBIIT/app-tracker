@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import { PROFILE } from '../../../constants/Routes';
 import Login from './Login';
 import useAuth from '../../../hooks/useAuth';
@@ -58,7 +58,7 @@ jest.mock('antd/es/select', () => ({
 }));
 
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn(),
+    useNavigate: jest.fn(),
     useLocation: jest.fn(),
 }));
 
@@ -93,7 +93,7 @@ describe('Login Component', () => {
         };
         useAuth.mockReturnValue(mockUseAuth);
         mockHistoryPush = jest.fn();
-        useHistory.mockReturnValue({ push: mockHistoryPush });
+        useNavigate.mockReturnValue({ push: mockHistoryPush });
         useLocation.mockReturnValue({ pathname: '/profile' });
         delete window.location;
         window.location = {

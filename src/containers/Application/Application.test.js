@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import Application from './Application';
 import axios from 'axios';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 import useAuth from '../../hooks/useAuth.js';
 import { message } from 'antd';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
@@ -11,7 +11,7 @@ jest.mock('axios');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
-  useHistory: jest.fn(),
+  useNavigate: jest.fn(),
 }));
 jest.mock('../../hooks/useAuth');
 jest.mock('./Util/Permissions', () => ({
@@ -134,7 +134,7 @@ describe('Application component', () => {
     axios.post.mockResolvedValue({});
 
     useParams.mockReturnValue({ sysId: 'app1' });
-    useHistory.mockReturnValue({ push: jest.fn() });
+    useNavigate.mockReturnValue({ push: jest.fn() });
 
     useAuth.mockReturnValue({
       auth: {
@@ -545,7 +545,7 @@ describe('Application component', () => {
 
   test('navigates to applicants list when view applicants list is clicked', async () => {
     const push = jest.fn();
-    useHistory.mockReturnValue({ push });
+    useNavigate.mockReturnValue({ push });
 
     mockApplicationAndVacancyGet({
       application: {

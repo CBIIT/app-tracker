@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table, message, notification, Tooltip } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';

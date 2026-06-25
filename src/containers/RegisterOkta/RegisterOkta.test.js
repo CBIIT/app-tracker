@@ -3,7 +3,7 @@ import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
 import { REGISTER_OKTA } from '../../constants/Routes';
 import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from "react-router-dom";
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 jest.mock('axios');
@@ -15,7 +15,7 @@ jest.mock('react-router-dom', () => {
 	const actual = jest.requireActual('react-router-dom');
 	return {
 		...actual,
-		useHistory: jest.fn(),
+		useNavigate: jest.fn(),
 	};
 });
 
@@ -61,7 +61,7 @@ describe('RegisterOkta Component', () => {
 			},
 		});
 
-		useHistory.mockReturnValue({
+		useNavigate.mockReturnValue({
 			goBack: mockGoBack,
 		});
 	});

@@ -69,7 +69,7 @@ const registerOkta = () => {
 	};
 
 	const handleCancelButtonClick = () => {
-		history.goBack();
+		navigate(-1);
 	};
 
 	const validateEmails = async () => {

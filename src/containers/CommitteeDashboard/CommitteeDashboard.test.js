@@ -30,7 +30,7 @@ jest.mock('../../hooks/useAuth');
 jest.mock('../../components/Util/RoleValidator/RoleValidator');
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 }));
 jest.mock('react-router', () => ({
 	...jest.requireActual('react-router'),
@@ -79,7 +79,7 @@ describe('CommitteeDashboard component tests', () => {
 
 	beforeEach(() => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue({
 			push: mockPush,
 		});
 
@@ -128,7 +128,7 @@ describe('CommitteeDashboard component tests', () => {
 
 	test('<CommitteeDashboard /> should show error when user lacks access', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue({
 			push: mockPush,
 		});
 
@@ -150,7 +150,7 @@ describe('CommitteeDashboard component tests', () => {
 
 	test('<CommitteeDashboard /> should redirect when current tenant is missing', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue({
 			push: mockPush,
 		});
 
@@ -177,7 +177,7 @@ describe('CommitteeDashboard component tests', () => {
 	test('<CommitteeDashboard /> should wait for tenants to load before checking access', async () => {
 		const mockPush = jest.fn();
 		const antd = jest.requireMock('antd');
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue({
 			push: mockPush,
 		});
 
