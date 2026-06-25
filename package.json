@@ -7,7 +7,7 @@
 		"test": "jest",
 		"coverage": "jest --coverage",
 		"start": "webpack-dev-server --config=./webpack/webpack.dev.config.js",
-		"build": "node node_modules/webpack/bin/webpack.js --progress --config webpack/webpack.prod.config.js --bail",
+		"build": "NODE_OPTIONS=--openssl-legacy-provider node node_modules/webpack/bin/webpack.js --progress --config webpack/webpack.prod.config.js --bail",
 		"postbuild": "node webpack/servicenow.postbuild.js"
 	},
 	"author": "",
