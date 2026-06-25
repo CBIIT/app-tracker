@@ -77,7 +77,7 @@ const submitEditedApp = async (
 	setSubmitted,
 	setPercent,
 	setAppSysId,
-	history,
+	navigate,
 	checkAuth,
 	setAuth
 ) => {

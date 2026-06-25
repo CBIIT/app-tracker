@@ -38,7 +38,7 @@ const submitModal = ({
 				setSubmitted,
 				setPercent,
 				setAppSysId,
-				history,
+				navigate,
 				checkAuth,
 				setAuth
 			)
