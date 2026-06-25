@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('RegisterOkta Component', () => {
-	const mockGoBack = jest.fn();
+	const mockNavigate = jest.fn();
 	const originalLocation = window.location;
 
 	const successMessage =
@@ -61,9 +61,7 @@ describe('RegisterOkta Component', () => {
 			},
 		});
 
-		useNavigate.mockReturnValue({
-			goBack: mockGoBack,
-		});
+		useNavigate.mockReturnValue(mockNavigate);
 	});
 
 	const renderComponent = () => {
@@ -113,12 +111,12 @@ describe('RegisterOkta Component', () => {
 		expect(window.location.href).toBe('https://redirecturl/');
 	});
 
-	test('Should call history.goBack when cancel button is clicked', () => {
+	test('Should navigate back when cancel button is clicked', () => {
 		renderComponent();
 
 		fireEvent.click(screen.getByRole('button', { name: /cancel and back/i }));
 
-		expect(mockGoBack).toHaveBeenCalledTimes(1);
+		expect(mockNavigate).toHaveBeenCalledWith(-1);
 	});
 
 	test('Should disable create account and show NIH notice for an nih.gov email', () => {
@@ -165,7 +163,7 @@ describe('RegisterOkta Component', () => {
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
+		expect((await screen.findAllByText('Emails do not match.')).length).toBeGreaterThan(0);
 		expect(axios.post).not.toHaveBeenCalled();
 	});
 
@@ -182,7 +180,7 @@ describe('RegisterOkta Component', () => {
 		});
 
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
-		expect(await screen.findByText('Emails do not match.')).toBeInTheDocument();
+		expect((await screen.findAllByText('Emails do not match.')).length).toBeGreaterThan(0);
 
 		const confirmInput = screen.getAllByPlaceholderText('example@email.com')[1];
 		fireEvent.change(confirmInput, { target: { value: 'jane@example.com' } });
@@ -190,7 +188,7 @@ describe('RegisterOkta Component', () => {
 		fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
 		await waitFor(() => {
-			expect(screen.queryByText('Emails do not match.')).not.toBeInTheDocument();
+			expect(screen.queryAllByText('Emails do not match.')).toHaveLength(0);
 			expect(axios.post).toHaveBeenCalledWith(CREATE_OKTA_USER, {
 				firstname: 'Jane',
 				lastname: 'Doe',

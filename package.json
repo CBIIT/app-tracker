@@ -37,7 +37,7 @@
 		"@babel/preset-env": "^7.3.4",
 		"@babel/preset-react": "^7.0.0",
 		"@babel/runtime": "^7.12.18",
-		"@hot-loader/react-dom": "^18.3.1",
+		"@hot-loader/react-dom": "^17.0.2",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^14.0.0",
 		"autoprefixer": "^9.8.8",

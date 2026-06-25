@@ -1,7 +1,7 @@
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate, Route } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
-const protectedRoute = ({ component: Component, useOktaAuth, ...rest }) => {
+const ProtectedRouteElement = ({ Component, useOktaAuth, ...rest }) => {
 	const routeLocation = useLocation();
 	const redirectAfterLoginUrl = encodeURIComponent(
 		'/nci-scss.do#' + routeLocation.pathname
@@ -20,7 +20,16 @@ const protectedRoute = ({ component: Component, useOktaAuth, ...rest }) => {
 		location.href = pushUrl;
 	}
 
-	return isUserLoggedIn ? <Component {...rest} /> : <Navigate to="/" />;
+	return isUserLoggedIn ? <Component {...rest} /> : <Navigate to='/' />;
 };
 
-export default protectedRoute;
+const ProtectedRoute = ({ component: Component, path, useOktaAuth, exact, ...rest }) => {
+	return (
+		<Route
+			path={path}
+			element={<ProtectedRouteElement Component={Component} useOktaAuth={useOktaAuth} {...rest} />}
+		/>
+	);
+};
+
+export default ProtectedRoute;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLocation } from "react-router-dom"';
+import { useLocation } from 'react-router-dom';
 import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import {

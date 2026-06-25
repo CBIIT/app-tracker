@@ -45,114 +45,165 @@ import { COMMITTEE_MEMBER_ROLE } from './constants/Roles';
 import { checkAuth } from './constants/checkAuth';
 import useAuth from './hooks/useAuth';
 import { transformDateTimeToDisplay } from './components/Util/Date/Date';
-import { atleastOneChair } from './components/Util/RoleValidator/RoleValidator'
+import { atleastOneChair } from './components/Util/RoleValidator/RoleValidator';
 
-const app = () => {
+const renderProtectedElement = (Component, routeProps = {}) => (
+	<ProtectedRoute component={Component} {...routeProps} />
+);
+
+const App = () => {
 	const [isLoading, setIsLoading] = useState(true);
-	const { auth, setAuth } = useAuth();	// this populates auth
-	
+	const { auth, setAuth } = useAuth();
+	const { isUserLoggedIn, user, tenants } = auth;
+	const isChairUser = isUserLoggedIn && atleastOneChair(tenants);
+	const isManager = isUserLoggedIn && user?.isManager;
+	const isCommitteeMember =
+		isUserLoggedIn && user?.roles?.includes(COMMITTEE_MEMBER_ROLE);
+	const canManageApplications =
+		isChairUser || isManager || isCommitteeMember;
+
 	useEffect(() => {
 		checkAuth(setIsLoading, setAuth);
 		if (!auth.isUserLoggedIn) checkAuth(setIsLoading, setAuth);
 	}, []);
 
-	let routes = [];
-	const { isUserLoggedIn, user, tenants } = auth;
-
 	if (user && isUserLoggedIn) {
-		console.log(`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`);
-	}
-
-	if (isUserLoggedIn) {
-		if (atleastOneChair(tenants)) {
-			routes.push(
-				<ProtectedRoute key="chair-dashboard" path={CHAIR_DASHBOARD} component={ChairDashboard} />
-			);
-		}
-
-		if (user.isManager) {
-			routes.push(
-				<ProtectedRoute key="vacancy-dashboard" path={VACANCY_DASHBOARD + '/:tab?'} component={VacancyDashboard} />,
-				<ProtectedRoute key="exe-sec-dashboard" path={EXE_SEC_DASHBOARD} component={CommitteeDashboard} />,
-				<ProtectedRoute key="create-vacancy" path={CREATE_VACANCY} component={CreateVacancy} />,
-				<ProtectedRoute
-					key='edit-vacancy'
-					path={EDIT_VACANCY + ':sysId'}
-					component={EditVacancy}
-					exact
-				/>,
-
-				<ProtectedRoute key="edit-draft" path={EDIT_DRAFT + ':sysId'} component={EditDraft} />
-			);
-		}
-
-		if (user.roles.includes(COMMITTEE_MEMBER_ROLE))
-			routes.push(
-				<ProtectedRoute key="committee-dashboard" path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />
-			);
-
-		if (
-			atleastOneChair(tenants) ||
-			user.isManager ||
-			user.roles.includes(COMMITTEE_MEMBER_ROLE)
-		) {
-			routes.push(
-				<ProtectedRoute key="manage-application" path={MANAGE_APPLICATION + ':sysId'} component={Application} />,
-				<ProtectedRoute
-					key='manage-vacancy'
-					path={MANAGE_VACANCY + ':sysId/:tab?'}
-					component={ManageDashboard}
-					exact
-				/>
-			);
-		}
-
-		routes.push(
-			<ProtectedRoute key="applicant-dashboard" path={APPLICANT_DASHBOARD} component={ApplicantDashboard} />,
-			<ProtectedRoute key="edit-application" path={EDIT_APPLICATION + ':draft?/:appSysId'} component={EditApplication} />,
-			<ProtectedRoute key="view-application" path={VIEW_APPLICATION + ':appSysId'} component={ApplicantApplicationView} />,
-			<ProtectedRoute key="applicant-profile" path={PROFILE + ':sysId'} component={ApplicantProfile} />
-		);
-	} else {
-		routes.push(
-			<ProtectedRoute key="manage-application" path={MANAGE_APPLICATION + ':sysId'} component={Application} />,
-			<ProtectedRoute key="vacancy-dashboard" path={VACANCY_DASHBOARD + '/:tab?'} component={VacancyDashboard} />,
-			<ProtectedRoute key="edit-application" path={EDIT_APPLICATION + ':draft?/:appSysId'} component={EditApplication} />,
-			<ProtectedRoute key="chair-dashboard" path={CHAIR_DASHBOARD} component={ChairDashboard} />,
-			<ProtectedRoute key="create-vacancy" path={CREATE_VACANCY} component={CreateVacancy} />,
-			<ProtectedRoute
-				key='edit-vacancy'
-				path={EDIT_VACANCY + ':sysId'}
-				component={EditVacancy}
-				exact
-			/>,
-			<ProtectedRoute
-				key='manage-vacancy'
-				path={MANAGE_VACANCY + ':sysId/:tab?'}
-				component={ManageDashboard}
-				exact
-			/>,
-			<ProtectedRoute key="edit-draft" path={EDIT_DRAFT + ':sysId'} component={EditDraft} />,
-			<ProtectedRoute key="committee-dashboard" path={COMMITTEE_DASHBOARD} component={CommitteeDashboard} />,
-			<ProtectedRoute
-				key='applicant-dashboard'
-				path={APPLICANT_DASHBOARD}
-				component={ApplicantDashboard}
-				useOktaAuth={true}
-			/>
+		console.log(
+			`User: ${user.uid} Time: ${transformDateTimeToDisplay(new Date())}  Action: 'Session start'`
 		);
 	}
-
-	routes.push(
-		<Route key='404' path="*" element={<Navigate to='/' />} />
-	);
 
 	return !isLoading ? (
 		<Layout>
 			{isUserLoggedIn && <TimeoutModal />}
-			<Routes>{routes}</Routes>
+			<Routes>
+				<Route path='/' element={<Home />} />
+				<Route path={REGISTER_OKTA} element={<RegisterOkta />} />
+				<Route path={VIEW_VACANCY + ':sysId'} element={<ViewVacancyDetails />} />
+				<Route path={APPLY + ':vacancySysId'} element={<Apply />} />
+
+				{isUserLoggedIn ? (
+					<>
+						{isChairUser && (
+							<Route
+								path={CHAIR_DASHBOARD}
+								element={renderProtectedElement(ChairDashboard)}
+							/>
+						)}
+
+						{isManager && (
+							<>
+								<Route
+									path={VACANCY_DASHBOARD + '/:tab?'}
+									element={renderProtectedElement(VacancyDashboard)}
+								/>
+								<Route
+									path={EXE_SEC_DASHBOARD}
+									element={renderProtectedElement(CommitteeDashboard)}
+								/>
+								<Route
+									path={CREATE_VACANCY}
+									element={renderProtectedElement(CreateVacancy)}
+								/>
+								<Route
+									path={EDIT_VACANCY + ':sysId'}
+									element={renderProtectedElement(EditVacancy)}
+								/>
+								<Route
+									path={EDIT_DRAFT + ':sysId'}
+									element={renderProtectedElement(EditDraft)}
+								/>
+							</>
+						)}
+
+						{isCommitteeMember && (
+							<Route
+								path={COMMITTEE_DASHBOARD}
+								element={renderProtectedElement(CommitteeDashboard)}
+							/>
+						)}
+
+						{canManageApplications && (
+							<>
+								<Route
+									path={MANAGE_APPLICATION + ':sysId'}
+									element={renderProtectedElement(Application)}
+								/>
+								<Route
+									path={MANAGE_VACANCY + ':sysId/:tab?'}
+									element={renderProtectedElement(ManageDashboard)}
+								/>
+							</>
+						)}
+
+						<Route
+							path={APPLICANT_DASHBOARD}
+							element={renderProtectedElement(ApplicantDashboard)}
+						/>
+						<Route
+							path={EDIT_APPLICATION + ':draft?/:appSysId'}
+							element={renderProtectedElement(EditApplication)}
+						/>
+						<Route
+							path={VIEW_APPLICATION + ':appSysId'}
+							element={renderProtectedElement(ApplicantApplicationView)}
+						/>
+						<Route
+							path={PROFILE + ':sysId'}
+							element={renderProtectedElement(ApplicantProfile)}
+						/>
+					</>
+				) : (
+					<>
+						<Route
+							path={MANAGE_APPLICATION + ':sysId'}
+							element={renderProtectedElement(Application)}
+						/>
+						<Route
+							path={VACANCY_DASHBOARD + '/:tab?'}
+							element={renderProtectedElement(VacancyDashboard)}
+						/>
+						<Route
+							path={EDIT_APPLICATION + ':draft?/:appSysId'}
+							element={renderProtectedElement(EditApplication)}
+						/>
+						<Route
+							path={CHAIR_DASHBOARD}
+							element={renderProtectedElement(ChairDashboard)}
+						/>
+						<Route
+							path={CREATE_VACANCY}
+							element={renderProtectedElement(CreateVacancy)}
+						/>
+						<Route
+							path={EDIT_VACANCY + ':sysId'}
+							element={renderProtectedElement(EditVacancy)}
+						/>
+						<Route
+							path={MANAGE_VACANCY + ':sysId/:tab?'}
+							element={renderProtectedElement(ManageDashboard)}
+						/>
+						<Route
+							path={EDIT_DRAFT + ':sysId'}
+							element={renderProtectedElement(EditDraft)}
+						/>
+						<Route
+							path={COMMITTEE_DASHBOARD}
+							element={renderProtectedElement(CommitteeDashboard)}
+						/>
+						<Route
+							path={APPLICANT_DASHBOARD}
+							element={renderProtectedElement(ApplicantDashboard, {
+								useOktaAuth: true,
+							})}
+						/>
+					</>
+				)}
+
+				<Route path='*' element={<Navigate to='/' replace />} />
+			</Routes>
 		</Layout>
 	) : null;
 };
 
-export default hot(module)(app);
+export default hot(module)(App);
