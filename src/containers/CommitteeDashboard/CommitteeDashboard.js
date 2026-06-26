@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { MANAGE_VACANCY, EXE_SEC_DASHBOARD } from '../../constants/Routes.js';
 import { GET_COMMITTEE_MEMBER_VIEW } from '../../constants/ApiEndpoints';
 import {
@@ -23,7 +22,6 @@ import {
 	validateRoleForCurrentTenant,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
-import { validateVacancyData } from '../ChairDashboard/Utils/validateVacancyData.js';
 import {
 	normalizeStatus,
 	compareStatus,
@@ -62,7 +60,19 @@ const committeeDashboard = () => {
 	);
 
 	useEffect(() => {
+		console.log('CommitteeDashboard mount/update', {
+			currentTenant,
+			pathname: location.pathname,
+			currentDataLength: data?.length ?? 0,
+		});
+
 		if (currentTenant) {
+			if (!tenants) {
+				// Wait for tenants to load
+				console.log('CommitteeDashboard waiting for tenants to load');
+				return;
+			}
+
 			if (
 				validateRoleForCurrentTenant(
 					COMMITTEE_MEMBER_ROLE,
@@ -75,22 +85,58 @@ const committeeDashboard = () => {
 					setHasError(false);
 					setIsLoading(true);
 					try {
-						setreadOnly(user.isReadOnlyUser);
+						console.log('CommitteeDashboard fetching vacancies', {
+							currentTenant,
+							pathname: location.pathname,
+							userRoleCount: tenants?.length,
+						});
+						setreadOnly(!!user?.isReadOnlyUser);
 						const url = GET_COMMITTEE_MEMBER_VIEW + currentTenant;
 						const currentData = await axios.get(url);
+						console.log('CommitteeDashboard API response', currentData?.data);
 
-						const jsonData = currentData.data.result;
+						const jsonData = currentData?.data?.result || {};
+						console.log('CommitteeDashboard result payload', jsonData);
+						// const validatedData = validateVacancyData(jsonData);
 
-						const validatedData = validateVacancyData(jsonData);
+					// Validate that result has required list field
+					if (!Array.isArray(jsonData?.list)) {
+						throw new Error('API response missing required list field');
+					}
+
+					const vacancyList = jsonData.list;
+						console.log('CommitteeDashboard vacancy list', {
+							isArray: Array.isArray(vacancyList),
+							length: vacancyList.length,
+						});
+
+						const validVacancies = vacancyList.filter(v =>
+							v && v.vacancy_id && v.vacancy_title && v.status !== undefined
+						);
+						console.log('CommitteeDashboard validated vacancies', {
+							originalLength: vacancyList.length,
+							validLength: validVacancies.length,
+						});
 
 						const committeeMemberData =
 							location.pathname === EXE_SEC_DASHBOARD
-								? validatedData?.list.filter(
-										(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
-									)
-								: validatedData?.list;
+								? validVacancies.filter(
+									(vacancy) => vacancy.user_role === COMMITTEE_EXEC_SEC
+								)
+								: validVacancies;
+
+						console.log('CommitteeDashboard derived table rows', {
+							length: committeeMemberData.length,
+							firstRow: committeeMemberData[0],
+						});
 						setData(committeeMemberData);
 					} catch (err) {
+						console.error('CommitteeDashboard load failed', err);
+						console.error('CommitteeDashboard error details:', {
+							message: err?.message,
+							stack: err?.stack,
+							name: err?.name,
+						});
 						setHasError(true);
 						notification.error({
 							message: 'Sorry! There was an error retrieving vacancies.',
@@ -137,7 +183,7 @@ const committeeDashboard = () => {
 			setIsLoading(false);
 			navigate('/');
 		}
-	}, [currentTenant]);
+	}, [currentTenant, tenants, user, location.pathname]);
 
 	return hasError ? (
 		<div className='Content'>

@@ -26,16 +26,7 @@ jest.mock('antd', () => {
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth');
-jest.mock('../../components/Util/RoleValidator/RoleValidator', () => ({
-	__esModule: true,
-	validateRoleForCurrentTenant: jest.fn(),
-	isVacancyManager: jest.fn(),
-	isExecSec: jest.fn(),
-	isChair: jest.fn(),
-	isCommitteMember: jest.fn(),
-	isHrSpecialist: jest.fn(),
-	atleastOneChair: jest.fn(),
-}));
+jest.mock('../../components/Util/RoleValidator/RoleValidator');
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useNavigate: jest.fn(),
@@ -71,10 +62,8 @@ describe('ChairDashboard component tests', () => {
 	};
 
 	beforeEach(() => {
-		const mockNavigate = jest.fn();
-		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
-			mockNavigate
-		);
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 		const antd = jest.requireMock('antd');
 		antd.message.error = jest.fn();
 		antd.message.destroy = jest.fn();
@@ -152,11 +141,9 @@ describe('ChairDashboard component tests', () => {
 		expect(screen.queryByText('Final Job')).not.toBeInTheDocument();
 	});
 
-	test('<ChairDashboard /> should show error when user is not a committee member', async () => {
-		const mockNavigate = jest.fn();
-		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
-			mockNavigate
-		);
+	test('<ChairDashboard /> should redirect when selected tenant is not a chair tenant', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		isChair.mockReturnValueOnce(false);
 		validateRoleForCurrentTenant.mockReturnValueOnce(false);
@@ -173,7 +160,155 @@ describe('ChairDashboard component tests', () => {
 			},
 			{ timeout: 2000 }
 		);
-		expect(mockNavigate).toHaveBeenCalledWith('/');
+		expect(mockPush).toHaveBeenCalledWith('/');
+		expect(axios.get).not.toHaveBeenCalled();
+	});
+
+	test('<ChairDashboard /> should redirect when selected chair tenant has no assigned vacancies', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
+
+		isChair.mockReturnValueOnce(true);
+		axios.get.mockResolvedValueOnce({ data: { result: { status: 200, list: [] } } });
+
+		rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
+				)
+			).toBeInTheDocument();
+		});
+		expect(mockPush).toHaveBeenCalledWith('/');
+	});
+
+	test('<ChairDashboard /> should redirect with live/final message when assigned vacancies are only live/final', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
+
+		isChair.mockReturnValueOnce(true);
+		axios.get.mockResolvedValueOnce({
+			data: {
+				result: {
+					status: 200,
+					list: [
+						{ vacancy_id: 10, vacancy_title: 'Live Vacancy', status: 'live' },
+						{ vacancy_id: 11, vacancy_title: 'Final Vacancy', status: 'final' },
+					],
+				},
+			},
+		});
+
+		rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					"Sorry! Your assigned vacancy is still in 'Live' or 'Final' status and cannot be accessed from this dashboard yet."
+				)
+			).toBeInTheDocument();
+		});
+		expect(mockPush).toHaveBeenCalledWith('/');
+	});
+
+	test('<ChairDashboard /> should redirect after tenant switch to a tenant without chair access', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
+
+		let mockedCurrentTenant = 'tenant-chair';
+		const mockedTenants = [
+			{
+				value: 'tenant-chair',
+				label: 'Chair Tenant',
+				roles: ['x_g_nci_app_tracke.committee_member'],
+				is_chair: true,
+			},
+			{
+				value: 'tenant-no-chair',
+				label: 'No Chair Tenant',
+				roles: ['x_g_nci_app_tracke.committee_member'],
+				is_chair: false,
+			},
+		];
+
+		useAuth.mockImplementation(() => ({
+			auth: { tenants: mockedTenants },
+			currentTenant: mockedCurrentTenant,
+		}));
+
+		isChair.mockImplementation((tenant) => tenant === 'tenant-chair');
+		validateRoleForCurrentTenant.mockImplementation(
+			(role, tenant) => tenant === 'tenant-chair'
+		);
+		axios.get.mockResolvedValueOnce({ data: { result: mockVacancies } });
+
+		const { rerender } = rtRender(<ChairDashboard />);
+		await screen.findByText('Senior Dev');
+
+		mockedCurrentTenant = 'tenant-no-chair';
+		rerender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
+				)
+			).toBeInTheDocument();
+		});
+		expect(mockPush).toHaveBeenCalledWith('/');
+	});
+
+	test('<ChairDashboard /> should redirect home when current tenant is missing', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
+
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [
+					{
+						value: 'f24965fc1b9c11106daea681f54bcb04',
+						label: 'tenant 1',
+						roles: [
+							'x_g_nci_app_tracke.vacancy_manager',
+							'x_g_nci_app_tracke.committee_member',
+						],
+						is_chair: true,
+					},
+				],
+			},
+			currentTenant: undefined,
+		});
+
+		rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText('Sorry! Please reselect your tenant and try again.')
+			).toBeInTheDocument();
+		});
+		expect(mockPush).toHaveBeenCalledWith('/');
+		expect(axios.get).not.toHaveBeenCalled();
+	});
+
+	test('<ChairDashboard /> should wait for tenants to load before checking access', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
+
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: undefined,
+			},
+			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+		});
+
+		rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).not.toHaveBeenCalled();
+			expect(mockPush).not.toHaveBeenCalled();
+			expect(message.error).not.toHaveBeenCalled();
+		});
 	});
 
 	test('<ChairDashboard /> should display error message when API fails', async () => {
@@ -268,10 +403,8 @@ describe('ChairDashboard component tests', () => {
 			list: [],
 		};
 		axios.get.mockResolvedValue({ data: { result: emptyVacancies } });
-		const mockNavigate = jest.fn();
-		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
-			mockNavigate
-		);
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 		rtRender(<ChairDashboard />);
 		await waitFor(() => {
 			expect(
@@ -280,7 +413,7 @@ describe('ChairDashboard component tests', () => {
 				)
 			).toBeInTheDocument();
 		});
-	expect(mockNavigate).toHaveBeenCalledWith('/');
+		expect(mockPush).toHaveBeenCalledWith('/');
 	});
 
 	test('<ChairDashboard /> should display all vacancies when no filter matches', async () => {
@@ -408,23 +541,32 @@ describe('ChairDashboard component tests', () => {
 		expect(await screen.findByText('0 applicants')).toBeInTheDocument();
 	});
 
-	test('<ChairDashboard /> should handle validateVacancyData returning object without list', async () => {
-		const mockNavigate = jest.fn();
-		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(
-			mockNavigate
-		);
+	test('<ChairDashboard /> should handle API returning result without list', async () => {
+		const mockPush = jest.fn();
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
-		isChair.mockReturnValueOnce(true);
-
-		// Mock validateVacancyData to return object without list property
-		const validateVacancyDataModule = require('./Utils/validateVacancyData');
-		jest.spyOn(validateVacancyDataModule, 'validateVacancyData').mockReturnValueOnce({});
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [
+					{
+						value: 'f24965fc1b9c11106daea681f54bcb04',
+						label: 'tenant 1',
+						is_chair: true,
+					},
+				],
+			},
+			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+		});
+		isChair.mockReturnValue(true);
 		
+		const notificationErrorSpy = jest.spyOn(notification, 'error');
+		
+		// Mock API to return result object without list property
 		axios.get.mockResolvedValueOnce({
 			data: {
 				result: {
 					status: 200,
-					list: [{ vacancy_id: 1, vacancy_title: 'Test', status: 'open' }],
+					message: 'Some message but no list',
 				},
 			},
 		});
@@ -432,12 +574,9 @@ describe('ChairDashboard component tests', () => {
 		rtRender(<ChairDashboard />);
 
 		await waitFor(() => {
-			expect(
-				screen.getByText(
-					'Sorry! You do not have any vacancies assigned to you in the selected tenant.'
-				)
-			).toBeInTheDocument();
+			expect(notificationErrorSpy).toHaveBeenCalledTimes(1);
 		});
-		expect(mockNavigate).toHaveBeenCalledWith('/');
+		
+		notificationErrorSpy.mockRestore();
 	});
 });

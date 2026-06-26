@@ -57,10 +57,6 @@ jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: jest.fn(),
 	useNavigate: () => mockNavigate,
-	useHistory: () => ({
-		push: mockPush,
-		goBack: mockGoBack,
-	}),
 }));
 
 jest.mock('../../components/UI/HeaderWithLink/HeaderWithLink', () => {

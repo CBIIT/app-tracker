@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table, message, notification, Tooltip } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { validateVacancyData } from './Utils/validateVacancyData.js';
 import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import './ChairDashboard.css';
 import axios from 'axios';
@@ -36,7 +35,18 @@ const chairDashboard = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		console.log('ChairDashboard mount/update', {
+			currentTenant,
+			tenantsLoaded: !!tenants,
+		});
+
 		if (currentTenant) {
+			if (!tenants) {
+				// Wait for tenants to load
+				console.log('ChairDashboard waiting for tenants to load');
+				return;
+			}
+
 			const hasChairAccess =
 				isChair(currentTenant, tenants) ||
 				validateRoleForCurrentTenant(
@@ -50,13 +60,23 @@ const chairDashboard = () => {
 					setHasError(false);
 					setIsLoading(true);
 					try {
+						console.log('ChairDashboard fetching vacancies', {
+							currentTenant,
+						});
 						const currentData = await axios.get(
 							GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
 						);
-						const jsonData = currentData.data.result;
+						console.log('ChairDashboard API response', currentData?.data);
 
-						const validateData = validateVacancyData(jsonData);
-						const vacancyList = validateData?.list || [];
+						const jsonData = currentData?.data?.result || {};
+						console.log('ChairDashboard result payload', jsonData);
+
+						// Validate that result has required list field
+						if (!Array.isArray(jsonData?.list)) {
+							throw new Error('API response missing required list field');
+						}
+
+						const vacancyList = jsonData.list;
 						const filteredVacancies = vacancyList.filter(
 							(vacancy) =>
 								vacancy.status != 'live' && vacancy.status != 'final'
@@ -83,6 +103,12 @@ const chairDashboard = () => {
 
 						setData(filteredVacancies);
 					} catch (err) {
+						console.error('ChairDashboard load failed', err);
+						console.error('ChairDashboard error details:', {
+							message: err?.message,
+							stack: err?.stack,
+							name: err?.name,
+						});
 						setHasError(true);
 						notification.error({
 							message: 'Sorry! There was an error retrieving vacancies.',
@@ -127,7 +153,7 @@ const chairDashboard = () => {
 			setIsLoading(false);
 			navigate('/');
 		}
-	}, [currentTenant]);
+	}, [currentTenant, tenants]);
 
 	return hasError ? (
 		<div className='Content'>
