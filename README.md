@@ -2,7 +2,6 @@
 
 This is a React boilerplate that is specifically designed to build ServiceNow-ready web applications.
 
-
 The boilerplate includes a minimalistic example of a ServiceNow scoped app, which serves as a container for a web application. Update set `react-container-servicenow.xml` can be found in a root folder.
 
 This boilerplate supports all of the modern web development features and capabilities:
