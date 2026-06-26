@@ -15,7 +15,7 @@ This boilerplate supports all of the modern web development features and capabil
 
 The key feature is the ability to build the web application ServiceNow-ready, so it can be deployed simply by uploading bundle files to ServiceNow.
 
-It's assumed that you already have an app container (Scripted REST API) ready on a ServiceNow side, that is the place where files need to be uploaded. If you don't have it yet then you can use the `react-container-servicenow.xml` app as an example and build your own containers. 
+It's assumed that you already have an app container (Scripted REST API) ready on a ServiceNow side, that is the place where files need to be uploaded. If you don't have it yet then you can use the `react-container-servicenow.xml` app as an example and build your own containers.
 
 ## 1. Configuration
 
