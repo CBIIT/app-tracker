@@ -27,16 +27,6 @@ const emailTemplates = (props) => {
 		},
 	];
 
-	// useEffect(() => {
-	// 	if (basicInfo.referenceCollection === true && initialValues.emailTemplates.length === 5) {
-	// 		initialValues = initialValues.emailTemplates.concat(referenceEmailTemplates);
-	// 		formInstance.setFieldValue('emailTemplates', initialValues);
-	// 	} else if (basicInfo.referenceCollection === false && initialValues.emailTemplates.length > 5) {
-	// 		initialValues = initialValues.emailTemplates.filter(template => !referenceEmailTemplates.find(email => email.type === template.type))
-	// 		formInstance.setFieldValue('emailTemplates', initialValues);
-	// 	}
-	// }, [basicInfo.referenceCollection])
-
 	useEffect(() => {
 		const templates = formInstance.getFieldValue('emailTemplates') || props.initialValues;
 

@@ -131,21 +131,6 @@ describe('BasicInfo', () => {
 		mockIsNew = true;
 		mockPocDefined = true;
 
-		// useAuth.mockReturnValue({
-		// 	auth: {
-		// 		isUserLoggedIn: true,
-		// 		iTrustGlideSsoId: 'itrust123',
-		// 		oktaGlideSsoId: 'okta123',
-		// 		user: {
-		// 			isManager: true,
-		// 			isExecSec: false,
-		// 			roles: [],
-		// 			hasApplications: false,
-		// 			uid: '123',
-		// 		},
-		// 	},
-		// });
-
 		render(
 			<BasicInfo
 				initialValues={mockIntialValues}
@@ -430,23 +415,6 @@ describe('BasicInfo', () => {
 			},
 			vacancyPocEmail: 'team-distribution@example.com',
 		};
-
-		// useAuth.mockReturnValue({
-		// 	auth: {
-		// 		isUserLoggedIn: true,
-		// 		iTrustGlideSsoId: 'itrust123',
-		// 		oktaGlideSsoId: 'okta123',
-		// 		user: {
-		// 			isManager: true,
-		// 			isExecSec: false,
-		// 			roles: [],
-		// 			hasApplications: false,
-		// 			uid: '123',
-		// 		},
-		// 		tenants: [{ value: 'tenant1', label: 'Tenant 1', properties: [] }],
-		// 	},
-		// 	currentTenant: 'tenant1',
-		// });
 
 		const BothPOCTestWrapper = () => {
 			const [formInstance] = Form.useForm();
