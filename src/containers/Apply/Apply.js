@@ -102,19 +102,16 @@ const Apply = ({ initialValues, editSubmitted }) => {
 	}, []);
 
 	useEffect(() => {
-		const timeoutId = setTimeout(async () => {
-			// checking to see if user is about to get logged out
-			// NB: this drops right to zero
+		const timeoutId = setTimeout(() => {
 			if (
 				lastModalTimeout > 0.01 &&
 				Math.abs(lastModalTimeout - modalTimeout) > 0.1
 			) {
-				// it changed, since it only changes when time runs out, save now
 				setLastModalTimeout(modalTimeout);
 				save();
 			}
 			setLastModalTimeout(modalTimeout);
-		}, checkTimeDuration);
+		}, checkTimeDuration);  // ← Keep 1000ms polling
 
 		return () => clearTimeout(timeoutId);
 	}, [modalTimeout, lastModalTimeout]);
