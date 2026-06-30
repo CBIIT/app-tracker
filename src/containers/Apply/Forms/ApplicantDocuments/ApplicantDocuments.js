@@ -27,7 +27,7 @@ const ApplicantDocuments = (props) => {
 		try {
 			const vacancy = await axios.get(GET_VACANCY_MANAGER_VIEW + props.vacancyId);
 			const reqFocusAreaValue = vacancy.data.result.basic_info?.require_focus_area?.value
-			if (reqFocusAreaValue !== "" || reqFocusAreaValue !== undefined) {
+			if (reqFocusAreaValue !== '' && reqFocusAreaValue !== undefined) {
 				setRequireFocusArea(reqFocusAreaValue);
 			}
 
@@ -65,12 +65,11 @@ const ApplicantDocuments = (props) => {
 		setApplicantDocuments(newApplicantDocuments);
 	}; */
 
-	const onFocusAreaChange = () => {
-		console.log(formInstance.getFieldValue('focusArea'))
-	}
-
 	const onChange = () => {
-		setApplicantDocuments(formInstance.getFieldValue('applicantDocuments'));
+		const newValue = formInstance.getFieldValue('applicantDocuments');
+		if (newValue && newValue.length > 0) {
+			setApplicantDocuments(newValue);
+		}
 	};
 
 	const validateFile = async (fileList, isOptional, uploadedDocument) => {
@@ -217,21 +216,16 @@ const ApplicantDocuments = (props) => {
 						}}
 					</Form.List>
 				</div>
-			</Form>
-			<Form
-				form={formInstance}
-				initialValues={formData.focusArea} onChange={onFocusAreaChange}
-			>
 				<div>
-					{requireFocusArea !== '0' && requireFocusArea !== undefined  ? (
+					{requireFocusArea !== '0' && requireFocusArea !== undefined ? (
 						<>
 							<div style={{ margin: '10px' }}>
 								{'Select at least one area, no more than 2'}
 							</div>
-								<EditableFocusArea 
-									mode='multiple' 
-									focusAreaChoices={props.focusAreaChoices}
-								/>
+							<EditableFocusArea
+								mode='multiple'
+								focusAreaChoices={props.focusAreaChoices}
+							/>
 						</>
 					) : null}
 				</div>

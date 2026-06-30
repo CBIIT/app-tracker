@@ -85,32 +85,31 @@ describe('Home', () => {
         });
     });
 
-    test('should sort titles by length when clicking Vacancy Title', async () => {
-        axios.get.mockImplementationOnce(() => 
-            Promise.resolve(mockVacancyListForSorting)
-        );
+test('should sort titles by length when clicking Vacancy Title', async () => {
+    axios.get.mockImplementationOnce(() =>
+        Promise.resolve(mockVacancyListForSorting)
+    );
 
-        render(
-            <MemoryRouter initialEntry={['/']}>
-                <Home />
-            </MemoryRouter>
-        );
+    render(
+        <MemoryRouter initialEntries={['/']}>
+            <Home />
+        </MemoryRouter>
+    );
 
-        await waitFor(() => {
-            expect(screen.getByText('Short Title')).toBeInTheDocument();
-        });
+    await screen.findByText('Short Title');
 
-        const vacancyTitleHeader = screen.getByText('Vacancy Title');
+    fireEvent.click(screen.getByText('Vacancy Title'));
 
-        waitFor(() => {
-            fireEvent.click(vacancyTitleHeader);
+    await waitFor(() => {
+        const dataRows = screen
+            .getAllByRole('row')
+            .filter((r) => r.querySelectorAll('td').length > 0);
 
-            const rows = screen.getAllByRole('row');
-            expect(rows[1]).toHaveTextContent('Short Title');
-            expect(rows[2]).toHaveTextContext('Medium Length Title');
-            expect(rows[3]).toHaveTextContext('Very Long Vacancy Title Here');
-        });
+        expect(dataRows[0]).toHaveTextContent('Very Long Vacancy Title Here');
+        expect(dataRows[1]).toHaveTextContent('Medium Length Title');
+        expect(dataRows[2]).toHaveTextContent('Short Title');
     });
+});
 
     test('should sort Vacancies by Institue length when clicking Institute column', async () => {
         axios.get.mockImplementationOnce(() => 

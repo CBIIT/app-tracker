@@ -244,8 +244,13 @@ const submitNewApp = async (
 			const submitApp = await axios.post(SUBMIT_APPLICATION, infoToSend);
 
 			if (submitApp.data.result.status == 200) {
+				// In some cases, the backend returns application_sys_id and in some cases it returns app_sys_id. 
+				// This is to ensure that we can get the sys_id regardless of which key it is under.
+				const appSysId =
+					submitApp.data?.result?.response?.application_sys_id?.application_sys_id ??
+					submitApp.data?.result?.response?.app_sys_id;
 				setPercent(100);
-				setAppSysId(submitApp.data.result.application_sys_id);
+				setAppSysId(appSysId);
 			}
 		} catch (e) {
 			if (e == 'Error: Request failed with status code 400') {

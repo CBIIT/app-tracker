@@ -28,14 +28,23 @@ const emailTemplates = (props) => {
 	];
 
 	useEffect(() => {
-		if (basicInfo.referenceCollection === true && initialValues.emailTemplates.length === 5) {
-			initialValues = initialValues.emailTemplates.concat(referenceEmailTemplates);
-			formInstance.setFieldValue('emailTemplates', initialValues);
-		} else if (basicInfo.referenceCollection === false && initialValues.emailTemplates.length > 5) {
-			initialValues = initialValues.emailTemplates.filter(template => !referenceEmailTemplates.find(email => email.type === template.type))
-			formInstance.setFieldValue('emailTemplates', initialValues);
+		const templates = formInstance.getFieldValue('emailTemplates') || props.initialValues;
+
+		if (basicInfo.referenceCollection === true && templates.length === 5) {
+			formInstance.setFieldValue(
+				'emailTemplates',
+				templates.concat(referenceEmailTemplates)
+			);
+		} else if (basicInfo.referenceCollection === false && templates.length > 5) {
+			formInstance.setFieldValue(
+				'emailTemplates',
+				templates.filter(
+					(template) =>
+						!referenceEmailTemplates.some((email) => email.type === template.type)
+				)
+			);
 		}
-	}, [basicInfo.referenceCollection])
+	}, [basicInfo.referenceCollection, formInstance, props.initialValues]);
 
 	const validateEmailTemplates = async () => {
 		const validEmailTemplates = formInstance
@@ -74,7 +83,7 @@ const emailTemplates = (props) => {
 									showEditor={
 										Object.keys(formInstance.getFieldsValue()).length !== 0
 											? formInstance.getFieldsValue().emailTemplates[index]
-													.active
+												.active
 											: false
 									}
 									name={[index, 'active']}

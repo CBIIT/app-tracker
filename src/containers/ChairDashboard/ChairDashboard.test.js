@@ -6,7 +6,7 @@ import { GET_COMMITTEE_CHAIR_VACANCIES } from '../../constants/ApiEndpoints';
 import useAuth from '../../hooks/useAuth';
 import { isChair } from '../../components/Util/RoleValidator/RoleValidator';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { waitFor, screen, fireEvent } from '@testing-library/react';
 
 const { message } = jest.requireMock('antd');
@@ -29,7 +29,7 @@ jest.mock('../../hooks/useAuth');
 jest.mock('../../components/Util/RoleValidator/RoleValidator');
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 }));
 
 window.matchMedia =
@@ -63,9 +63,7 @@ describe('ChairDashboard component tests', () => {
 
 	beforeEach(() => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 		const antd = jest.requireMock('antd');
 		antd.message.error = jest.fn();
 		antd.message.destroy = jest.fn();
@@ -145,9 +143,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should redirect when selected tenant is not a chair tenant', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		isChair.mockReturnValueOnce(false);
 		validateRoleForCurrentTenant.mockReturnValueOnce(false);
@@ -170,9 +166,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should redirect when selected chair tenant has no assigned vacancies', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		isChair.mockReturnValueOnce(true);
 		axios.get.mockResolvedValueOnce({ data: { result: { status: 200, list: [] } } });
@@ -191,9 +185,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should redirect with live/final message when assigned vacancies are only live/final', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		isChair.mockReturnValueOnce(true);
 		axios.get.mockResolvedValueOnce({
@@ -222,9 +214,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should redirect after tenant switch to a tenant without chair access', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		let mockedCurrentTenant = 'tenant-chair';
 		const mockedTenants = [
@@ -271,9 +261,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should redirect home when current tenant is missing', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -305,9 +293,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should wait for tenants to load before checking access', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		useAuth.mockReturnValue({
 			auth: {
@@ -418,9 +404,7 @@ describe('ChairDashboard component tests', () => {
 		};
 		axios.get.mockResolvedValue({ data: { result: emptyVacancies } });
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 		rtRender(<ChairDashboard />);
 		await waitFor(() => {
 			expect(
@@ -559,9 +543,7 @@ describe('ChairDashboard component tests', () => {
 
 	test('<ChairDashboard /> should handle API returning result without list', async () => {
 		const mockPush = jest.fn();
-		jest.requireMock('react-router-dom').useHistory.mockReturnValue({
-			push: mockPush,
-		});
+		jest.requireMock('react-router-dom').useNavigate.mockReturnValue(mockPush);
 
 		useAuth.mockReturnValue({
 			auth: {

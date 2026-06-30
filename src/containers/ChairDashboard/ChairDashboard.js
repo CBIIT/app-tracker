@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MANAGE_VACANCY } from '../../constants/Routes.js';
 import { Table, message, notification, Tooltip } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -32,7 +32,7 @@ const chairDashboard = () => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasError, setHasError] = useState(false);
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		console.log('ChairDashboard mount/update', {
@@ -97,7 +97,7 @@ const chairDashboard = () => {
 									: noAssignedVacanciesMessage,
 							});
 							setData([]);
-							history.push('/');
+							navigate('/');
 							return;
 						}
 
@@ -142,7 +142,7 @@ const chairDashboard = () => {
 					content: noAssignedVacanciesMessage,
 				});
 				setIsLoading(false);
-				history.push('/');
+				navigate('/');
 			}
 		} else {
 			message.destroy();
@@ -151,7 +151,7 @@ const chairDashboard = () => {
 				content: 'Sorry! Please reselect your tenant and try again.',
 			});
 			setIsLoading(false);
-			history.push('/');
+			navigate('/');
 		}
 	}, [currentTenant, tenants]);
 
