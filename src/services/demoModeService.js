@@ -132,31 +132,62 @@ export const setupDemoModeInterceptorForce = () => {
 	});
 
 	// Return mock data in response interceptor
-	axios.interceptors.response.use((response) => {
-		if (!isDemoMode() || !response.config.isDemoMode) {
-			return response;
-		}
-
-		const mockDataMap = {
-			[GET_ADMIN_VACANCY_STATS]: mockVacancyStats,
-			[GET_ADMIN_APPLICATION_STATS]: mockApplicationStats,
-			[GET_ADMIN_USER_ACTIVITY]: mockUserActivity,
-			[GET_ADMIN_COMMITTEE_PERFORMANCE]: mockCommitteePerformance,
-			[GET_ADMIN_COMPLIANCE_REPORT]: mockComplianceReport,
-			[GET_ADMIN_SYSTEM_AUDIT]: mockSystemAudit,
-		};
-
-		// Get matching mock data
-		for (const [endpoint, mockData] of Object.entries(mockDataMap)) {
-			if (response.config.url.includes(endpoint)) {
-				response.data = { result: mockData };
-				response.statusText = 'OK (DEMO MODE)';
-				break;
+	axios.interceptors.response.use(
+		(response) => {
+			if (!isDemoMode() || !response.config.isDemoMode) {
+				return response;
 			}
-		}
 
-		return response;
-	});
+			const mockDataMap = {
+				[GET_ADMIN_VACANCY_STATS]: mockVacancyStats,
+				[GET_ADMIN_APPLICATION_STATS]: mockApplicationStats,
+				[GET_ADMIN_USER_ACTIVITY]: mockUserActivity,
+				[GET_ADMIN_COMMITTEE_PERFORMANCE]: mockCommitteePerformance,
+				[GET_ADMIN_COMPLIANCE_REPORT]: mockComplianceReport,
+				[GET_ADMIN_SYSTEM_AUDIT]: mockSystemAudit,
+			};
+
+			// Get matching mock data
+			for (const [endpoint, mockData] of Object.entries(mockDataMap)) {
+				if (response.config.url.includes(endpoint)) {
+					response.data = { result: mockData };
+					response.statusText = 'OK (DEMO MODE)';
+					break;
+				}
+			}
+
+			return response;
+		},
+		(error) => {
+			// Error handler: return mock data for failed admin API calls in demo mode
+			if (!isDemoMode() || !error.config?.isDemoMode) {
+				return Promise.reject(error);
+			}
+
+			const mockDataMap = {
+				[GET_ADMIN_VACANCY_STATS]: mockVacancyStats,
+				[GET_ADMIN_APPLICATION_STATS]: mockApplicationStats,
+				[GET_ADMIN_USER_ACTIVITY]: mockUserActivity,
+				[GET_ADMIN_COMMITTEE_PERFORMANCE]: mockCommitteePerformance,
+				[GET_ADMIN_COMPLIANCE_REPORT]: mockComplianceReport,
+				[GET_ADMIN_SYSTEM_AUDIT]: mockSystemAudit,
+			};
+
+			// Find matching endpoint and return mock data instead of error
+			for (const [endpoint, mockData] of Object.entries(mockDataMap)) {
+				if (error.config.url.includes(endpoint)) {
+					return Promise.resolve({
+						data: { result: mockData },
+						status: 200,
+						statusText: 'OK (DEMO MODE)',
+						config: error.config,
+					});
+				}
+			}
+
+			return Promise.reject(error);
+		}
+	);
 };
 
 export default {
