@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Tabs, Card, Row, Col, Statistic, Spin, message, Tooltip, Button, Space } from 'antd';
 import {
 	DownloadOutlined,

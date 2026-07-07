@@ -196,7 +196,9 @@ export const prepareTimeSeriesData = (
 export const calculateKPIs = (data = {}) => {
 	return {
 		// Vacancy KPIs
-		vacancyFillRate: data.vacanciesFilled ? (data.vacanciesFilled / data.totalVacancies) * 100 : 0,
+		vacancyFillRate: data.vacanciesFilled && data.totalVacancies
+			? (data.vacanciesFilled / data.totalVacancies) * 100
+			: 0,
 		averageTimeToHire: data.totalTimeToHire && data.vacanciesFilled
 			? data.totalTimeToHire / data.vacanciesFilled
 			: 0,
@@ -312,15 +314,15 @@ export const preparePDFExport = (config = {}) => {
 /**
  * Calculate summary statistics for a dataset
  * @param {Array} data - Array of data objects
- * @param {Object} fields - Object with field names to summarize
+ * @param {Object} fields - Object mapping field names to field paths for aggregation
  * @returns {Object} Summary statistics
  */
 export const calculateSummaryStatistics = (data = [], fields = {}) => {
 	const summary = {};
 
 	Object.keys(fields).forEach((fieldName) => {
-		const fieldConfig = fields[fieldName];
-		const aggregation = calculateAggregations(data, fieldConfig);
+		const fieldPath = fields[fieldName];
+		const aggregation = calculateAggregations(data, fieldPath);
 		summary[fieldName] = aggregation;
 	});
 

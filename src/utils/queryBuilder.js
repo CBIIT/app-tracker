@@ -53,8 +53,17 @@ export const getDateRangeFromPreset = (preset, customStart = null, customEnd = n
 			startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
 			break;
 		case DATE_RANGE_PRESETS.LAST_QUARTER:
-			endDate = new Date(currentYear, currentMonth, 1);
-			startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 3, 1);
+			// Calculate the previous quarter
+			const currentQuarter = Math.floor(currentMonth / 3);
+			const lastQuarterMonth = (currentQuarter - 1) * 3;
+			if (currentQuarter === 0) {
+				// If in Q1, last quarter is Q4 of previous year
+				startDate = new Date(currentYear - 1, 9, 1); // October of last year
+				endDate = new Date(currentYear - 1, 11, 31); // December of last year
+			} else {
+				startDate = new Date(currentYear, lastQuarterMonth, 1);
+				endDate = new Date(currentYear, lastQuarterMonth + 2, 31);
+			}
 			break;
 		case DATE_RANGE_PRESETS.THIS_QUARTER:
 			const quarterStart = Math.floor(currentMonth / 3) * 3;
@@ -62,13 +71,16 @@ export const getDateRangeFromPreset = (preset, customStart = null, customEnd = n
 			endDate = new Date();
 			break;
 		case DATE_RANGE_PRESETS.LAST_FISCAL_YEAR:
-			const fiscalYearStart = 10; // October
-			if (currentMonth >= fiscalYearStart) {
-				endDate = new Date(currentYear + 1, fiscalYearStart - 1, 1);
-				startDate = new Date(currentYear, fiscalYearStart, 1);
+			// Fiscal year runs Oct-Sep
+			const lastFiscalStart = 10; // October
+			if (currentMonth >= lastFiscalStart) {
+				// We're in current fiscal year, so last fiscal year was last Oct-Sep
+				startDate = new Date(currentYear - 1, lastFiscalStart, 1);
+				endDate = new Date(currentYear, lastFiscalStart - 1, 30);
 			} else {
-				endDate = new Date(currentYear, fiscalYearStart - 1, 1);
-				startDate = new Date(currentYear - 1, fiscalYearStart, 1);
+				// We're in Jan-Sep, so last fiscal year was 2 years ago Oct-last year Sep
+				startDate = new Date(currentYear - 2, lastFiscalStart, 1);
+				endDate = new Date(currentYear - 1, lastFiscalStart - 1, 30);
 			}
 			break;
 		case DATE_RANGE_PRESETS.THIS_FISCAL_YEAR:
