@@ -189,11 +189,6 @@ const app = () => {
 				component={ChairDashboard}
 			/>,
 			<ProtectedRoute
-				key='admin-dashboard'
-				path={ADMIN_DASHBOARD}
-				component={AdminDashboard}
-			/>,
-			<ProtectedRoute
 				key='create-vacancy'
 				path={CREATE_VACANCY}
 				component={CreateVacancy}
