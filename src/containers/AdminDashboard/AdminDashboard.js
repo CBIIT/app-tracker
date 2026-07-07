@@ -53,12 +53,19 @@ const AdminDashboard = () => {
 	};
 
 	const handleDownloadCSV = (data, filename = 'report.csv') => {
-		if (!data || data.length === 0) {
+		// Handle case where data is an object and needs to be converted to array
+		let dataArray = data;
+		if (data && typeof data === 'object' && !Array.isArray(data)) {
+			// If data is an object, try to convert it to array format
+			dataArray = Object.keys(data).length > 0 ? [data] : [];
+		}
+
+		if (!dataArray || (Array.isArray(dataArray) && dataArray.length === 0)) {
 			message.warning('No data to download');
 			return;
 		}
 
-		const csv = convertToCSV(data);
+		const csv = convertToCSV(dataArray);
 		const blob = new Blob([csv], { type: 'text/csv' });
 		const url = window.URL.createObjectURL(blob);
 		const a = document.createElement('a');

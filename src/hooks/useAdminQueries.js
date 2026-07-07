@@ -17,6 +17,7 @@ export const useVacancyAnalytics = (filters = {}) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const filterString = JSON.stringify(filters);
 
 	useEffect(() => {
 		(async () => {
@@ -32,7 +33,7 @@ export const useVacancyAnalytics = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [JSON.stringify(filters)]);
+	}, [filterString]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -60,6 +61,7 @@ export const useApplicationAnalytics = (filters = {}) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const filterString = JSON.stringify(filters);
 
 	useEffect(() => {
 		(async () => {
@@ -75,7 +77,7 @@ export const useApplicationAnalytics = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [JSON.stringify(filters)]);
+	}, [filterString]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -103,6 +105,7 @@ export const useUserActivityReport = (filters = {}) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const filterString = JSON.stringify(filters);
 
 	useEffect(() => {
 		(async () => {
@@ -118,7 +121,7 @@ export const useUserActivityReport = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [JSON.stringify(filters)]);
+	}, [filterString]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -146,6 +149,7 @@ export const useCommitteePerformance = (filters = {}) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const filterString = JSON.stringify(filters);
 
 	useEffect(() => {
 		(async () => {
@@ -161,7 +165,7 @@ export const useCommitteePerformance = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [JSON.stringify(filters)]);
+	}, [filterString]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -189,6 +193,7 @@ export const useComplianceReport = (filters = {}) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const filterString = JSON.stringify(filters);
 
 	useEffect(() => {
 		(async () => {
@@ -204,7 +209,7 @@ export const useComplianceReport = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [JSON.stringify(filters)]);
+	}, [filterString]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -232,6 +237,7 @@ export const useSystemAuditLog = (filters = {}) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const filterString = JSON.stringify(filters);
 
 	useEffect(() => {
 		(async () => {
@@ -247,7 +253,7 @@ export const useSystemAuditLog = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [JSON.stringify(filters)]);
+	}, [filterString]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
