@@ -23,6 +23,7 @@ import {
 	VIEW_APPLICATION,
 	PROFILE,
 	EXE_SEC_DASHBOARD,
+	ADMIN_DASHBOARD,
 } from './constants/Routes';
 import ApplicantApplicationView from './containers/ApplicantApplicationView/ApplicantApplicationView';
 import CreateVacancy from './containers/CreateVacancy/CreateVacancy';
@@ -32,6 +33,7 @@ import ManageDashboard from './containers/ManageDashboard/ManageDashboard';
 import EditVacancy from './containers/CreateVacancy/EditVacancy';
 import CommitteeDashboard from './containers/CommitteeDashboard/CommitteeDashboard';
 import ChairDashboard from './containers/ChairDashboard/ChairDashboard';
+import AdminDashboard from './containers/AdminDashboard/AdminDashboard';
 import ApplicantDashboard from './containers/ApplicantDashboard/ApplicantDashboard';
 import RegisterOkta from './containers/RegisterOkta/RegisterOkta';
 import Apply from './containers/Apply/Apply';
@@ -86,6 +88,11 @@ const app = () => {
 					key='exe-sec-dashboard'
 					path={EXE_SEC_DASHBOARD}
 					component={CommitteeDashboard}
+				/>,
+				<ProtectedRoute
+					key='admin-dashboard'
+					path={ADMIN_DASHBOARD}
+					component={AdminDashboard}
 				/>,
 				<ProtectedRoute
 					key='create-vacancy'
@@ -180,6 +187,11 @@ const app = () => {
 				key='chair-dashboard'
 				path={CHAIR_DASHBOARD}
 				component={ChairDashboard}
+			/>,
+			<ProtectedRoute
+				key='admin-dashboard'
+				path={ADMIN_DASHBOARD}
+				component={AdminDashboard}
 			/>,
 			<ProtectedRoute
 				key='create-vacancy'
