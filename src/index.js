@@ -6,6 +6,7 @@ import axios from 'axios';
 import { AuthProvider } from './context/AuthContext';
 import { TimeoutProvider } from './context/TimeoutContext';
 import App from './App';
+import { setupDemoModeInterceptorForce } from './services/demoModeService';
 
 // define ServiceNow authentication schema for REST calls
 // set up axios defaults
@@ -23,6 +24,9 @@ if (process.env.NODE_ENV === 'development') {
 	axios.defaults.headers['X-userToken'] = window.servicenowUserToken;
 }
 axios.defaults.headers.put['Content-Type'] = 'application/json';
+
+// Setup demo mode interceptor if enabled
+setupDemoModeInterceptorForce();
 
 const app = (
 	<HashRouter>
