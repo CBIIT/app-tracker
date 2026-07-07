@@ -158,3 +158,16 @@ export const SERVICE_NOW_FILE_ATTACHMENT = '/api/now/attachment/file';
 export const SERVICE_NOW_ATTACHMENT = '/api/now/attachment/';
 
 export const USER_LIST = '/api/x_g_nci_app_tracke/user/get_user_list?sysparm_query=';
+
+// Admin Scripted REST API Endpoints
+export const GET_ADMIN_VACANCY_STATS = '/api/x_g_nci_app_tracke/admin/vacancy_stats';
+
+export const GET_ADMIN_APPLICATION_STATS = '/api/x_g_nci_app_tracke/admin/application_stats';
+
+export const GET_ADMIN_USER_ACTIVITY = '/api/x_g_nci_app_tracke/admin/user_activity';
+
+export const GET_ADMIN_COMMITTEE_PERFORMANCE = '/api/x_g_nci_app_tracke/admin/committee_performance';
+
+export const GET_ADMIN_COMPLIANCE_REPORT = '/api/x_g_nci_app_tracke/admin/compliance_report';
+
+export const GET_ADMIN_SYSTEM_AUDIT = '/api/x_g_nci_app_tracke/admin/system_audit';
