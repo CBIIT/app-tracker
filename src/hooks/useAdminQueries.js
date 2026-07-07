@@ -32,7 +32,7 @@ export const useVacancyAnalytics = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [filters]);
+	}, [JSON.stringify(filters)]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -76,7 +76,7 @@ export const useApplicationAnalytics = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [filters]);
+	}, [JSON.stringify(filters)]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -120,7 +120,7 @@ export const useUserActivityReport = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [filters]);
+	}, [JSON.stringify(filters)]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -164,7 +164,7 @@ export const useCommitteePerformance = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [filters]);
+	}, [JSON.stringify(filters)]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -208,7 +208,7 @@ export const useComplianceReport = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [filters]);
+	}, [JSON.stringify(filters)]);
 
 	const refetch = async (newFilters = {}) => {
 		try {
@@ -252,7 +252,7 @@ export const useSystemAuditLog = (filters = {}) => {
 				setLoading(false);
 			}
 		})();
-	}, [filters]);
+	}, [JSON.stringify(filters)]);
 
 	const refetch = async (newFilters = {}) => {
 		try {

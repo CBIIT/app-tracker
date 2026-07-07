@@ -59,7 +59,7 @@ export const getDateRangeFromPreset = (preset, customStart = null, customEnd = n
 			if (currentQuarter === 0) {
 				// If in Q1, last quarter is Q4 of previous year
 				startDate = new Date(currentYear - 1, 9, 1); // October of last year
-				endDate = new Date(currentYear, 0, 0); // End of September (month 8)
+				endDate = new Date(currentYear, 9, 0); // End of September (month 9, day 0)
 			} else {
 				startDate = new Date(currentYear, lastQuarterMonth, 1);
 				endDate = new Date(currentYear, lastQuarterMonth + 3, 0); // Last day of quarter
