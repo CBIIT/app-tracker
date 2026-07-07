@@ -59,10 +59,10 @@ export const getDateRangeFromPreset = (preset, customStart = null, customEnd = n
 			if (currentQuarter === 0) {
 				// If in Q1, last quarter is Q4 of previous year
 				startDate = new Date(currentYear - 1, 9, 1); // October of last year
-				endDate = new Date(currentYear - 1, 11, 31); // December of last year
+				endDate = new Date(currentYear, 0, 0); // End of September (month 8)
 			} else {
 				startDate = new Date(currentYear, lastQuarterMonth, 1);
-				endDate = new Date(currentYear, lastQuarterMonth + 2, 31);
+				endDate = new Date(currentYear, lastQuarterMonth + 3, 0); // Last day of quarter
 			}
 			break;
 		case DATE_RANGE_PRESETS.THIS_QUARTER:
@@ -71,20 +71,20 @@ export const getDateRangeFromPreset = (preset, customStart = null, customEnd = n
 			endDate = new Date();
 			break;
 		case DATE_RANGE_PRESETS.LAST_FISCAL_YEAR:
-			// Fiscal year runs Oct-Sep
-			const lastFiscalStart = 10; // October
+			// Fiscal year runs Oct-Sep (months 9-8 in 0-indexed)
+			const lastFiscalStart = 9; // October (0-indexed)
 			if (currentMonth >= lastFiscalStart) {
 				// We're in current fiscal year, so last fiscal year was last Oct-Sep
 				startDate = new Date(currentYear - 1, lastFiscalStart, 1);
-				endDate = new Date(currentYear, lastFiscalStart - 1, 30);
+				endDate = new Date(currentYear, lastFiscalStart, 0); // End of September
 			} else {
 				// We're in Jan-Sep, so last fiscal year was 2 years ago Oct-last year Sep
 				startDate = new Date(currentYear - 2, lastFiscalStart, 1);
-				endDate = new Date(currentYear - 1, lastFiscalStart - 1, 30);
+				endDate = new Date(currentYear - 1, lastFiscalStart, 0); // End of September
 			}
 			break;
 		case DATE_RANGE_PRESETS.THIS_FISCAL_YEAR:
-			const thisFiscalStart = 10; // October
+			const thisFiscalStart = 9; // October (0-indexed)
 			if (currentMonth >= thisFiscalStart) {
 				startDate = new Date(currentYear, thisFiscalStart, 1);
 				endDate = new Date();

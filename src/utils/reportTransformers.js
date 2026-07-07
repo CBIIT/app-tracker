@@ -152,25 +152,20 @@ export const prepareTimeSeriesData = (
 		const date = new Date(item[timeField]);
 		let key;
 
-		switch (groupBy) {
-			case 'week':
-				const weekStart = new Date(date);
-				weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-				key = weekStart.toISOString().split('T')[0];
-				break;
-			case 'month':
-				key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-				break;
-			case 'quarter':
-				const quarter = Math.floor(date.getMonth() / 3) + 1;
-				key = `${date.getFullYear()}-Q${quarter}`;
-				break;
-			case 'year':
-				key = `${date.getFullYear()}`;
-				break;
-			case 'day':
-			default:
-				key = date.toISOString().split('T')[0];
+		if (groupBy === 'week') {
+			const weekStartDate = new Date(date);
+			weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay());
+			key = weekStartDate.toISOString().split('T')[0];
+		} else if (groupBy === 'month') {
+			key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+		} else if (groupBy === 'quarter') {
+			const quarterNum = Math.floor(date.getMonth() / 3) + 1;
+			key = `${date.getFullYear()}-Q${quarterNum}`;
+		} else if (groupBy === 'year') {
+			key = `${date.getFullYear()}`;
+		} else {
+			// Default to day
+			key = date.toISOString().split('T')[0];
 		}
 
 		if (!grouped[key]) {
