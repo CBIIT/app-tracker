@@ -102,7 +102,9 @@ export const fetchComplianceReport = async (filters = {}) => {
 export const fetchSystemAudit = async (filters = {}) => {
 	try {
 		const response = await axios.get(GET_ADMIN_SYSTEM_AUDIT, { params: filters });
-		return response.data.result;
+		// Return just the recentEvents array from the result
+		const result = response.data.result;
+		return Array.isArray(result) ? result : (result.recentEvents || []);
 	} catch (error) {
 		console.error('Error fetching system audit logs:', error);
 		throw error;
