@@ -41,6 +41,13 @@ export const mockApplicationStats = {
 	},
 	approvalRate: 32,
 	averageReviewTime: 8,
+	pipelineStages: {
+		submitted: 145,
+		reviewed: 98,
+		approved: 156,
+		rejected: 65,
+		withdrawn: 23,
+	},
 	applicationTimeline: [
 		{ month: 'Jan', submitted: 45, approved: 12, rejected: 8 },
 		{ month: 'Feb', submitted: 52, approved: 18, rejected: 9 },

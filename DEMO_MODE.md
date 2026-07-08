@@ -63,7 +63,7 @@ The following 6 admin API endpoints are stubbed with demo data:
 
 ### 2. Application Statistics
 - **Endpoint**: `/api/x_g_nci_app_tracke/admin/application_stats`
-- **Returns**: Application counts by status, approval rates, application timeline, top vacancies
+- **Returns**: Application counts by status, approval rates, application timeline, pipeline stages, top vacancies
 
 ### 3. User Activity Report
 - **Endpoint**: `/api/x_g_nci_app_tracke/admin/user_activity`
@@ -85,7 +85,7 @@ The following 6 admin API endpoints are stubbed with demo data:
 
 The mock data provided represents realistic scenarios:
 - **24 total vacancies** with varying statuses
-- **487 applications** with realistic approval and rejection rates
+- **487 applications** tracked through pipeline stages (submitted, reviewed, approved, rejected, withdrawn)
 - **234 active users** with role distribution
 - **12 committees** with participation metrics
 - **94% compliance rate** with detailed category breakdown
