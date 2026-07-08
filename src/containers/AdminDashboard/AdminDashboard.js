@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Tabs, Card, Row, Col, Statistic, Spin, message, Tooltip, Button, Space, Table } from 'antd';
 import {
 	ReloadOutlined,
@@ -176,6 +176,17 @@ const AdminDashboard = () => {
 			applicationsWithdrawn: data?.applicationsWithdrawn || 0,
 		});
 
+		// Memoize timeline data transformation
+		const timelineDataSource = useMemo(() => {
+			if (data?.applicationTimeline && data.applicationTimeline.length > 0) {
+				return data.applicationTimeline.map((item, index) => ({
+					...item,
+					key: item.month || index,
+				}));
+			}
+			return [];
+		}, [data?.applicationTimeline]);
+
 		return (
 			<div>
 				<Space style={{ marginBottom: '20px' }}>
@@ -238,12 +249,9 @@ const AdminDashboard = () => {
 				</Card>
 
 				<Card title="Application Timeline" style={{ marginTop: '20px' }}>
-					{data?.applicationTimeline && data.applicationTimeline.length > 0 ? (
+					{timelineDataSource.length > 0 ? (
 						<Table
-							dataSource={data.applicationTimeline.map((item, index) => ({
-								...item,
-								key: item.month || index,
-							}))}
+							dataSource={timelineDataSource}
 							columns={[
 								{
 									title: 'Month',
