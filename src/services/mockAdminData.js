@@ -272,11 +272,11 @@ export const mockSystemAudit = {
 		},
 	],
 	eventsByUser: [
-		{ user: 'jsmith@example.com', totalEvents: 156, lastActive: '2026-07-07T20:30:45Z' },
-		{ user: 'mdavis@example.com', totalEvents: 143, lastActive: '2026-07-07T20:25:12Z' },
-		{ user: 'jwilson@example.com', totalEvents: 134, lastActive: '2026-07-07T20:20:33Z' },
-		{ user: 'ktaylor@example.com', totalEvents: 125, lastActive: '2026-07-07T20:15:22Z' },
-		{ user: 'rjones@example.com', totalEvents: 112, lastActive: '2026-07-07T20:10:45Z' },
+		{ user_id: 'jsmith@example.com', totalEvents: 156, lastActive: '2026-07-07T20:30:45Z' },
+		{ user_id: 'mdavis@example.com', totalEvents: 143, lastActive: '2026-07-07T20:25:12Z' },
+		{ user_id: 'jwilson@example.com', totalEvents: 134, lastActive: '2026-07-07T20:20:33Z' },
+		{ user_id: 'ktaylor@example.com', totalEvents: 125, lastActive: '2026-07-07T20:15:22Z' },
+		{ user_id: 'rjones@example.com', totalEvents: 112, lastActive: '2026-07-07T20:10:45Z' },
 	],
 	eventTimeline: [
 		{ hour: '08:00', events: 45 },
