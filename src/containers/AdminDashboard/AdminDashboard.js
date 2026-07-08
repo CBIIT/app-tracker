@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Tabs, Card, Row, Col, Statistic, Spin, message, Tooltip, Button, Space } from 'antd';
+import { Tabs, Card, Row, Col, Statistic, Spin, message, Tooltip, Button, Space, Table } from 'antd';
 import {
 	ReloadOutlined,
 	FileExcelOutlined,
@@ -234,6 +234,46 @@ const AdminDashboard = () => {
 								</div>
 							))}
 						</div>
+					)}
+				</Card>
+
+				<Card title="Application Timeline" style={{ marginTop: '20px' }}>
+					{data?.applicationTimeline && data.applicationTimeline.length > 0 ? (
+						<Table
+							dataSource={data.applicationTimeline.map((item, index) => ({
+								...item,
+								key: index,
+							}))}
+							columns={[
+								{
+									title: 'Month',
+									dataIndex: 'month',
+									key: 'month',
+								},
+								{
+									title: 'Submitted',
+									dataIndex: 'submitted',
+									key: 'submitted',
+									align: 'center',
+								},
+								{
+									title: 'Approved',
+									dataIndex: 'approved',
+									key: 'approved',
+									align: 'center',
+								},
+								{
+									title: 'Rejected',
+									dataIndex: 'rejected',
+									key: 'rejected',
+									align: 'center',
+								},
+							]}
+							pagination={false}
+							size="small"
+						/>
+					) : (
+						<p>No timeline data available</p>
 					)}
 				</Card>
 			</div>
