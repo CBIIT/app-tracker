@@ -113,6 +113,18 @@ export const mockCommitteePerformance = {
 		{ committeeId: 'COMM004', name: 'Strategic Committee', reviews: 19, avgTime: 8.5, participationRate: 79 },
 		{ committeeId: 'COMM005', name: 'HR Committee', reviews: 23, avgTime: 6.9, participationRate: 87 },
 	],
+	memberScores: [
+		{ id: 'MEM001', name: 'Dr. Sarah Johnson', avgScore: 92.5 },
+		{ id: 'MEM002', name: 'Prof. Michael Chen', avgScore: 88.3 },
+		{ id: 'MEM003', name: 'Dr. Emily Rodriguez', avgScore: 91.2 },
+		{ id: 'MEM004', name: 'Prof. James Wilson', avgScore: 85.7 },
+		{ id: 'MEM005', name: 'Dr. Lisa Anderson', avgScore: 89.4 },
+		{ id: 'MEM006', name: 'Prof. Robert Taylor', avgScore: 87.8 },
+		{ id: 'MEM007', name: 'Dr. Amanda Miller', avgScore: 90.1 },
+		{ id: 'MEM008', name: 'Prof. David Lee', avgScore: 86.5 },
+		{ id: 'MEM009', name: 'Dr. Jessica Martinez', avgScore: 93.2 },
+		{ id: 'MEM010', name: 'Prof. Kevin Brown', avgScore: 84.9 },
+	],
 	scoringPatterns: [
 		{ score: '90-100', count: 156, percentage: 32 },
 		{ score: '80-89', count: 198, percentage: 41 },
