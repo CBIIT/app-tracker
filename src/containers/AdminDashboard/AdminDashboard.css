@@ -1,0 +1,51 @@
+.admin-dashboard {
+	padding: 20px;
+	background-color: #f5f5f5;
+	min-height: 100vh;
+}
+
+.admin-dashboard h1 {
+	color: #1890ff;
+	margin-bottom: 20px;
+	font-size: 28px;
+	font-weight: 600;
+}
+
+.admin-dashboard .ant-tabs {
+	background-color: white;
+	padding: 20px;
+	border-radius: 4px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px rgba(0, 0, 0, 0.03),
+		0 1px 12px rgba(0, 0, 0, 0.12);
+}
+
+.admin-dashboard .ant-card {
+	margin-top: 20px;
+	border-radius: 4px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px rgba(0, 0, 0, 0.03),
+		0 1px 12px rgba(0, 0, 0, 0.12);
+}
+
+.admin-dashboard .ant-statistic {
+	text-align: center;
+}
+
+.admin-dashboard .ant-statistic-title {
+	font-size: 12px;
+	margin-bottom: 8px;
+	color: #8c8c8c;
+}
+
+.admin-dashboard .ant-statistic-content {
+	font-size: 28px;
+	color: #1890ff;
+}
+
+.admin-dashboard .ant-row {
+	margin-bottom: 16px;
+}
+
+.admin-dashboard .ant-button {
+	margin-right: 8px;
+	margin-bottom: 8px;
+}
