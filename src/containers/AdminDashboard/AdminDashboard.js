@@ -185,7 +185,7 @@ const AdminDashboard = () => {
 				}));
 			}
 			return [];
-		}, [data?.applicationTimeline]);
+		}, [data]);
 
 		return (
 			<div>
