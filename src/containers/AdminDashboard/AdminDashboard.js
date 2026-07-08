@@ -242,7 +242,7 @@ const AdminDashboard = () => {
 						<Table
 							dataSource={data.applicationTimeline.map((item, index) => ({
 								...item,
-								key: index,
+								key: item.month || index,
 							}))}
 							columns={[
 								{
