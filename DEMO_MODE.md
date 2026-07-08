@@ -59,7 +59,7 @@ The following 6 admin API endpoints are stubbed with demo data:
 
 ### 1. Vacancy Statistics
 - **Endpoint**: `/api/x_g_nci_app_tracke/admin/vacancy_stats`
-- **Returns**: Total vacancies, fill rates, vacancy timeline, top positions
+- **Returns**: Total vacancies, fill rates, vacancy timeline, status breakdown, top positions
 
 ### 2. Application Statistics
 - **Endpoint**: `/api/x_g_nci_app_tracke/admin/application_stats`

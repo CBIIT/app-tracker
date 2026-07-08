@@ -12,6 +12,11 @@ export const mockVacancyStats = {
 		in_progress: 5,
 		closed: 3,
 	},
+	statusBreakdown: {
+		open: 16,
+		in_progress: 5,
+		closed: 3,
+	},
 	averageTimeToHire: 47,
 	vacancyTimeline: [
 		{ month: 'Jan', created: 3, filled: 1 },
