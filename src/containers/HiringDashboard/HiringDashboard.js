@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Table, Select, message } from 'antd';
+import { Table, Select, message, Radio } from 'antd';
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
@@ -13,6 +13,7 @@ import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import KpiCard from './KpiCard/KpiCard';
 import MissingReferencesTable from './MissingReferencesTable/MissingReferencesTable';
+import MarylandVacancyMap from './MarylandVacancyMap/MarylandVacancyMap';
 import './HiringDashboard.css';
 
 // Map raw vacancy states to human-readable review stage labels
@@ -363,6 +364,7 @@ const hiringDashboard = () => {
 	// Widget 7 — vacancies by location
 	const [locationData, setLocationData] = useState([]);
 	const [locationLoading, setLocationLoading] = useState(true);
+	const [visualizationType, setVisualizationType] = useState('map'); // 'map' or 'chart'
 
 	// Widget 8 — committee members and role counts
 	const [committeeMembersData, setCommitteeMembersData] = useState([]);
@@ -597,12 +599,25 @@ const hiringDashboard = () => {
 
 			{/* Widget 7: Vacancies by Location */}
 			<div className='KpiSection VacancyLocationSection'>
-				<h2>📍 Vacancies by Location</h2>
+				<div className='VacancyLocationHeader'>
+					<h2>📍 Vacancies by Location</h2>
+					<Radio.Group
+						value={visualizationType}
+						onChange={(e) => setVisualizationType(e.target.value)}
+						buttonStyle='solid'
+						size='small'
+					>
+						<Radio.Button value='map'>Maryland Map</Radio.Button>
+						<Radio.Button value='chart'>Chart View</Radio.Button>
+					</Radio.Group>
+				</div>
 				<div className='VacancyLocationChart'>
 					{locationLoading ? (
 						<div className='VacancyLocationLoading'>
 							<LoadingOutlined style={{ fontSize: '32px' }} spin />
 						</div>
+					) : visualizationType === 'map' ? (
+						<MarylandVacancyMap locationData={locationData} isLoading={locationLoading} />
 					) : (
 						<ResponsiveContainer width='100%' height={300}>
 							<PieChart>
