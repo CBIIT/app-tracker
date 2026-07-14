@@ -54,7 +54,6 @@ describe('ApplicantList Excel export', () => {
     ];
 
     axios.get.mockImplementation((url) => {
-      console.log('Axios call to:', url);
 
       if (url.includes(GET_APPLICANT_FOCUS_AREA)) {
         return Promise.resolve({

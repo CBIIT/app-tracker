@@ -161,18 +161,6 @@ const navBar = () => {
 				</Menu.Item>
 			);
 		}
-		if (
-			includedReports ||
-			user.roles.includes('x_g_nci_app_tracke.demographics_user')
-		) {
-			menuItems.push(
-				<Menu.Item key='reports'>
-					<a href='/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D326711461bf2a910e541631ee54bcbec'>
-						Reports
-					</a>
-				</Menu.Item>
-			);
-		}
 	} else {
 		menuItems.push(
 			<Menu.Item
