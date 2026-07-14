@@ -35,15 +35,10 @@ const chairDashboard = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		console.log('ChairDashboard mount/update', {
-			currentTenant,
-			tenantsLoaded: !!tenants,
-		});
 
 		if (currentTenant) {
 			if (!tenants) {
 				// Wait for tenants to load
-				console.log('ChairDashboard waiting for tenants to load');
 				return;
 			}
 
@@ -60,16 +55,11 @@ const chairDashboard = () => {
 					setHasError(false);
 					setIsLoading(true);
 					try {
-						console.log('ChairDashboard fetching vacancies', {
-							currentTenant,
-						});
 						const currentData = await axios.get(
 							GET_COMMITTEE_CHAIR_VACANCIES + currentTenant
 						);
-						console.log('ChairDashboard API response', currentData?.data);
 
 						const jsonData = currentData?.data?.result || {};
-						console.log('ChairDashboard result payload', jsonData);
 
 						// Validate that result has required list field
 						if (!Array.isArray(jsonData?.list)) {
@@ -103,12 +93,6 @@ const chairDashboard = () => {
 
 						setData(filteredVacancies);
 					} catch (err) {
-						console.error('ChairDashboard load failed', err);
-						console.error('ChairDashboard error details:', {
-							message: err?.message,
-							stack: err?.stack,
-							name: err?.name,
-						});
 						setHasError(true);
 						notification.error({
 							message: 'Sorry! There was an error retrieving vacancies.',

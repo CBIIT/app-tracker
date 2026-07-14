@@ -42,8 +42,6 @@ const confirmSubmitModal = (props) => {
 			setSubmitted(true);
 		} catch (error) {
 			setConfirmLoading(false);
-			// eslint-disable-next-line no-console
-			console.log('[ConfirmSubmitModal] error:' + error);
 		}
 	};
 

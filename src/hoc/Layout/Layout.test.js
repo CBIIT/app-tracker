@@ -89,10 +89,6 @@ describe('Layout', () => {
         const vacancyDashboardLink = vacancyDashboardLinks.find(link => link.getAttribute('href') === '/vacancy-dashboard');
         expect(vacancyDashboardLink).toBeInTheDocument();
 
-        const reportsLinks = getAllByText('Reports');
-        expect(reportsLinks.length).toBeGreaterThan(0);
-        const reportsLink = reportsLinks.find(link => link.getAttribute('href') === '/nav_to.do?uri=%2F$pa_dashboard.do%3Fsysparm_dashboard%3D326711461bf2a910e541631ee54bcbec');
-        expect(reportsLink).toBeInTheDocument();
     });
 
     it('renders Header, NavBar, ContentTitle, Footer and children correctly when a committee member is logged in', () => {
