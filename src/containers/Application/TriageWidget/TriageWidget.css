@@ -1,3 +1,7 @@
+.TriageWidgetContainer .InfoCardRow {
+	padding-bottom: 10px;
+}
+
 .TriageWidgetSteps {
 	display: flex;
 	justify-content: space-between;
@@ -15,7 +19,8 @@
 }
 
 .TriageWidgetContainer .ant-radio-button-wrapper {
-	margin-right: 8px;
+	margin-right: 6px;
+	padding-inline: 10px;
 }
 
 .TriageWidgetSteps .ant-steps-dot .ant-steps-item-content,

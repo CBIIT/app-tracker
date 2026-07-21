@@ -1,0 +1,38 @@
+.MissingReferencesTable {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 16px 20px;
+}
+
+.MissingReferencesTableCompact {
+	padding: 10px 12px;
+}
+
+.MissingReferencesTableCompact .ant-table {
+	font-size: 12px;
+}
+
+.MissingReferencesTableCompact .ant-table-thead > tr > th,
+.MissingReferencesTableCompact .ant-table-tbody > tr > td {
+	padding: 8px 10px;
+}
+
+.MissingCount {
+	color: #b85c63;
+	font-weight: 600;
+}
+
+.MissingRefsList {
+	margin: 0;
+	padding: 0 0 0 16px;
+}
+
+.MissingRefsList li {
+	margin-bottom: 4px;
+}
+
+.MissingRefsLoading {
+	padding: 12px 0;
+	color: rgba(0, 0, 0, 0.45);
+}

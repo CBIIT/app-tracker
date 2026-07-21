@@ -1,11 +1,11 @@
 .ScoringWidgetSliderContent {
-	padding-bottom: 16px;
+	padding-bottom: 10px;
 }
 .ScoringWidgetSliderContent h2 {
 	font-family: var(--ff-primary);
-	font-size: 14px;
+	font-size: 13px;
 }
 
 .ScoringWidgetSlider {
-	max-width: 375px;
+	max-width: 340px;
 }

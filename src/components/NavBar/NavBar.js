@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
 	COMMITTEE_DASHBOARD,
 	VACANCY_DASHBOARD,
+	HIRING_DASHBOARD,
 	CHAIR_DASHBOARD,
 	APPLICANT_DASHBOARD,
 	EXE_SEC_DASHBOARD,
@@ -65,6 +66,13 @@ const navBar = () => {
 				>
 						{currentTenant && <Link to={VACANCY_DASHBOARD}>Vacancy Dashboard</Link>}
 						{!currentTenant && <Link to={null}>Vacancy Dashboard</Link>}
+				</Menu.Item>,
+				<Menu.Item
+					key='hiring-dashboard'
+					onClick={emptyClickVacancyDashboard}
+				>
+						{currentTenant && <Link to={HIRING_DASHBOARD}>Hiring Dashboard</Link>}
+						{!currentTenant && <Link to={null}>Hiring Dashboard</Link>}
 				</Menu.Item>
 			);
 

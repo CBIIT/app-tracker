@@ -1,0 +1,293 @@
+.HiringDashboard {
+	background-color: #f0f2f5;
+	padding: 24px;
+}
+
+.HiringDashboard h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.85);
+	margin-bottom: 16px;
+	margin-top: 0;
+}
+
+.KpiSection {
+	margin-bottom: 32px;
+}
+
+.DataSectionGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.DataSectionWide {
+	grid-column: 1 / -1;
+}
+
+.ChartColumns {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.CompactChartCard {
+	margin-bottom: 0;
+}
+
+.CompactChartCard h2 {
+	margin-bottom: 10px;
+}
+
+.CompactDataSection {
+	margin-bottom: 0;
+}
+
+.CompactDataSection h2 {
+	margin-bottom: 10px;
+}
+
+.KpiSectionHeader {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.KpiSectionHeader h2 {
+	margin-bottom: 0;
+}
+
+.KpiSection h2 {
+	border-left: 4px solid #6c8dad;
+	padding-left: 10px;
+}
+
+.KpiRow {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.KpiRowTop {
+	margin-bottom: 24px;
+}
+
+.PipelineBarChart {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 12px 14px;
+}
+
+.PipelineBarRow {
+	display: grid;
+	grid-template-columns: 150px 1fr 52px;
+	align-items: center;
+	column-gap: 10px;
+	margin-bottom: 8px;
+}
+
+.PipelineBarRow:last-child {
+	margin-bottom: 0;
+}
+
+.PipelineBarLabel {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.8);
+}
+
+.PipelineBarTrack {
+	height: 12px;
+	background: #f0f2f5;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.PipelineBarFill {
+	height: 100%;
+	min-width: 2px;
+	border-radius: 6px;
+	transition: width 0.25s ease;
+}
+
+.PipelineBarLoading {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: rgba(0, 0, 0, 0.45);
+}
+
+.PipelineBarValue {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 13px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.8);
+	text-align: right;
+}
+
+@media (max-width: 1200px) {
+	.ChartColumns {
+		grid-template-columns: 1fr;
+	}
+}
+
+.VacancyLocationSection {
+	margin-bottom: 24px;
+}
+
+.VacancyLocationHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16px;
+	gap: 16px;
+}
+
+.VacancyLocationHeader h2 {
+	margin-bottom: 0;
+	flex: 1;
+}
+
+.VacancyLocationHeader .ant-radio-group {
+	flex-shrink: 0;
+}
+
+.VacancyLocationChart {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 16px;
+}
+
+.VacancyLocationLoading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 300px;
+	color: rgba(0, 0, 0, 0.45);
+}
+
+.CommitteeMembersSection {
+	margin-bottom: 24px;
+}
+
+.ActionNeededTable {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	padding: 10px 12px;
+}
+
+.CompactDataSection .ant-table {
+	font-size: 12px;
+}
+
+.CompactDataSection .ant-table-thead > tr > th,
+.CompactDataSection .ant-table-tbody > tr > td {
+	padding: 8px 10px;
+}
+
+.StageBadge {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.StageTriaged {
+	background: #f6efe4;
+	color: #9b7343;
+	border: 1px solid #d8bf99;
+}
+
+.StageScoring {
+	background: #eaf1f7;
+	color: #567ea7;
+	border: 1px solid #b8cbe0;
+}
+
+.StageCommittee {
+	background: #f1ecf7;
+	color: #725c99;
+	border: 1px solid #c6b9de;
+}
+
+.StageVoting {
+	background: #eef5ea;
+	color: #62855f;
+	border: 1px solid #bfd3b6;
+}
+
+.StageDefault {
+	background: #fafafa;
+	color: rgba(0, 0, 0, 0.65);
+	border: 1px solid #d9d9d9;
+}
+
+.ProfileRowStale td {
+	background-color: #f7ecec !important;
+	color: #b85c63;
+}
+
+.ProfileRowStale:hover td {
+	background-color: #ecd2d4 !important;
+}
+
+.DeletionBadgeYes {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	background: #f7ecec;
+	color: #b85c63;
+	border: 1px solid #dfb7bb;
+}
+
+.DeletionBadgeNo {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	background: #eef5ea;
+	color: #62855f;
+	border: 1px solid #bfd3b6;
+}
+
+@media (max-width: 1200px) {
+	.DataSectionGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.DataSectionWide {
+		grid-column: auto;
+	}
+}
+
+.RoleCountBadge {
+	display: inline-block;
+	min-width: 24px;
+	padding: 1px 7px;
+	border-radius: 10px;
+	font-size: 12px;
+	font-weight: 600;
+	background: #eaf1f7;
+	color: #3d6b9a;
+	border: 1px solid #b8cbe0;
+	text-align: center;
+}
+
+.RoleCountZero {
+	color: rgba(0, 0, 0, 0.25);
+	font-size: 12px;
+}
