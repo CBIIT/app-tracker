@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Table, Select, message, Radio } from 'antd';
+import { Table, Select, message } from 'antd'; // Removed: Radio
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+// Removed: PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer (used only for commented Widget 7)
 import axios from 'axios';
 
 import useAuth from '../../hooks/useAuth';
@@ -13,8 +13,8 @@ import { MANAGE_VACANCY, VACANCY_DASHBOARD } from '../../constants/Routes';
 import { transformDateToDisplay } from '../../components/Util/Date/Date';
 import KpiCard from './KpiCard/KpiCard';
 import MissingReferencesTable from './MissingReferencesTable/MissingReferencesTable';
-import MarylandVacancyMap from './MarylandVacancyMap/MarylandVacancyMap';
 import './HiringDashboard.css';
+// import MarylandVacancyMap from './MarylandVacancyMap/MarylandVacancyMap'; // Commented: only used in Widget 7
 
 // Map raw vacancy states to human-readable review stage labels
 const getReviewStage = (state) => {
@@ -59,21 +59,21 @@ const FUNNEL_STAGES = [
 	{ label: 'Voting Complete', color: '#6f9d6b' },
 ];
 
-// Colors for the vacancy-by-location pie chart
-const LOCATION_COLORS = [
-	'#5f8fc2', '#7fab6b', '#d1a95c', '#c57b72', '#8b6fb3',
-	'#5da9a9', '#c27aa0', '#d39a62', '#9ab85d', '#6f86c8',
-];
+// Colors for the vacancy-by-location pie chart (commented: Widget 7 is disabled)
+// const LOCATION_COLORS = [
+// 	'#5f8fc2', '#7fab6b', '#d1a95c', '#c57b72', '#8b6fb3',
+// 	'#5da9a9', '#c27aa0', '#d39a62', '#9ab85d', '#6f86c8',
+// ];
 
-// Demo stub data for the vacancy-by-location widget
-const STUB_VACANCY_LOCATIONS = [
-	{ name: 'Bethesda, MD',     value: 18 },
-	{ name: 'Rockville, MD',    value: 9  },
-	{ name: 'Frederick, MD',    value: 5  },
-	{ name: 'Remote',           value: 7  },
-	{ name: 'Research Triangle Park, NC', value: 3 },
-	{ name: 'Other',            value: 2  },
-];
+// Demo stub data for the vacancy-by-location widget (commented: Widget 7 is disabled)
+// const STUB_VACANCY_LOCATIONS = [
+// 	{ name: 'Bethesda, MD',     value: 18 },
+// 	{ name: 'Rockville, MD',    value: 9  },
+// 	{ name: 'Frederick, MD',    value: 5  },
+// 	{ name: 'Remote',           value: 7  },
+// 	{ name: 'Research Triangle Park, NC', value: 3 },
+// 	{ name: 'Other',            value: 2  },
+// ];
 
 // Role keys used when building per-role counts; must match values in Roles.js
 const COMMITTEE_ROLE_KEYS = [
@@ -362,9 +362,9 @@ const hiringDashboard = () => {
 	const [hiredLoading, setHiredLoading] = useState(true);
 
 	// Widget 7 — vacancies by location
-	const [locationData, setLocationData] = useState([]);
-	const [locationLoading, setLocationLoading] = useState(true);
-	const [visualizationType, setVisualizationType] = useState('map'); // 'map' or 'chart'
+	// const [locationData, setLocationData] = useState([]);
+	// const [locationLoading, setLocationLoading] = useState(true);
+	// const [visualizationType, setVisualizationType] = useState('map'); // 'map' or 'chart'
 
 	// Widget 8 — committee members and role counts
 	const [committeeMembersData, setCommitteeMembersData] = useState([]);
@@ -463,7 +463,7 @@ const hiringDashboard = () => {
 			});
 
 		// Widget 7 & 8: fetch all vacancies and group by location; derive committee member role counts
-		setLocationLoading(true);
+		// setLocationLoading(true);
 		setCommitteeMembersLoading(true);
 		axios
 			.get(DASHBOARD_VACANCIES + currentTenant)
@@ -471,15 +471,15 @@ const hiringDashboard = () => {
 				const vacancies = res.data.result || [];
 
 				// Widget 7: group by location
-				const countMap = {};
-				vacancies.forEach((v) => {
-					const loc = getVacancyLocation(v);
-					countMap[loc] = (countMap[loc] || 0) + 1;
-				});
-				const data = Object.entries(countMap)
-					.map(([name, value]) => ({ name, value }))
-					.sort((a, b) => b.value - a.value);
-				setLocationData(data.length > 0 ? data : STUB_VACANCY_LOCATIONS);
+				// const countMap = {};
+				// vacancies.forEach((v) => {
+				// 	const loc = getVacancyLocation(v);
+				// 	countMap[loc] = (countMap[loc] || 0) + 1;
+				// });
+				// const data = Object.entries(countMap)
+				// 	.map(([name, value]) => ({ name, value }))
+				// 	.sort((a, b) => b.value - a.value);
+				// setLocationData(data.length > 0 ? data : STUB_VACANCY_LOCATIONS);
 
 				// Widget 8: tally committee member role assignments across all vacancies
 				const memberMap = {};
@@ -505,11 +505,11 @@ const hiringDashboard = () => {
 				setCommitteeMembersData(memberRows.length > 0 ? memberRows : STUB_COMMITTEE_MEMBERS);
 			})
 			.catch(() => {
-				setLocationData(STUB_VACANCY_LOCATIONS);
+				// setLocationData(STUB_VACANCY_LOCATIONS);
 				setCommitteeMembersData(STUB_COMMITTEE_MEMBERS);
 			})
 			.finally(() => {
-				setLocationLoading(false);
+				// setLocationLoading(false);
 				setCommitteeMembersLoading(false);
 			});
 	}, [currentTenant, isManager, history]);
@@ -598,7 +598,7 @@ const hiringDashboard = () => {
 			</div>
 
 			{/* Widget 7: Vacancies by Location */}
-			<div className='KpiSection VacancyLocationSection'>
+			{/* <div className='KpiSection VacancyLocationSection'>
 				<div className='VacancyLocationHeader'>
 					<h2>📍 Vacancies by Location</h2>
 					<Radio.Group
@@ -646,7 +646,7 @@ const hiringDashboard = () => {
 						</ResponsiveContainer>
 					)}
 				</div>
-			</div>
+			</div> */}
 
 			<div className='DataSectionGrid'>
 				{/* Widget 3: Action Needed — stalled vacancies */}
