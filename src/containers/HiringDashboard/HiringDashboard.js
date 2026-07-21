@@ -188,38 +188,38 @@ const committeeMemberColumns = [
 		sorter: (a, b) => a.member - b.member,
 		render: roleCellRender,
 	},
-	{
-		title: 'Non-Voting',
-		dataIndex: 'nonVoting',
-		width: 100,
-		align: 'center',
-		sorter: (a, b) => a.nonVoting - b.nonVoting,
-		render: roleCellRender,
-	},
-	{
-		title: 'HR Specialist',
-		dataIndex: 'hrSpecialist',
-		width: 110,
-		align: 'center',
-		sorter: (a, b) => a.hrSpecialist - b.hrSpecialist,
-		render: roleCellRender,
-	},
-	{
-		title: 'EDI Rep',
-		dataIndex: 'ediRep',
-		width: 80,
-		align: 'center',
-		sorter: (a, b) => a.ediRep - b.ediRep,
-		render: roleCellRender,
-	},
-	{
-		title: 'Read-Only',
-		dataIndex: 'readOnly',
-		width: 95,
-		align: 'center',
-		sorter: (a, b) => a.readOnly - b.readOnly,
-		render: roleCellRender,
-	},
+	// {
+	// 	title: 'Non-Voting',
+	// 	dataIndex: 'nonVoting',
+	// 	width: 100,
+	// 	align: 'center',
+	// 	sorter: (a, b) => a.nonVoting - b.nonVoting,
+	// 	render: roleCellRender,
+	// },
+	// {
+	// 	title: 'HR Specialist',
+	// 	dataIndex: 'hrSpecialist',
+	// 	width: 110,
+	// 	align: 'center',
+	// 	sorter: (a, b) => a.hrSpecialist - b.hrSpecialist,
+	// 	render: roleCellRender,
+	// },
+	// {
+	// 	title: 'EDI Rep',
+	// 	dataIndex: 'ediRep',
+	// 	width: 80,
+	// 	align: 'center',
+	// 	sorter: (a, b) => a.ediRep - b.ediRep,
+	// 	render: roleCellRender,
+	// },
+	// {
+	// 	title: 'Read-Only',
+	// 	dataIndex: 'readOnly',
+	// 	width: 95,
+	// 	align: 'center',
+	// 	sorter: (a, b) => a.readOnly - b.readOnly,
+	// 	render: roleCellRender,
+	// },
 	{
 		title: 'Total',
 		dataIndex: 'total',
@@ -514,13 +514,32 @@ const hiringDashboard = () => {
 			});
 	}, [currentTenant, isManager, history]);
 
+	const findVacancyState = (label) => {
+		let currentStatus = '';
+		switch (label) {
+			case 'pre-flight':
+				currentStatus = 'preflight';
+				break;
+			case 'Live':
+				currentStatus = 'live';
+				break;
+			case 'Rolling Close':
+				currentStatus = 'rolling';
+				break;
+			case 'Closed / In Review':
+				currentStatus = 'closed';
+				break;
+		}
+		return currentStatus;
+	}
+
 	return (
 		<div className='HiringDashboard'>
 			{/* Widget 6: Hired Applicants KPI */}
 			<div className='KpiRow KpiRowTop'>
 				<KpiCard
 					value={hiredCount}
-					label='Hired Applicants — Last 90 Days'
+					label='Selected Applicants — Last 90 Days'
 					loading={hiredLoading}
 					color='#6f9d6b'
 				/>
@@ -546,7 +565,9 @@ const hiringDashboard = () => {
 											<div className='PipelineBarFill' style={{ width: barWidth, backgroundColor: state.color }} />
 										)}
 									</div>
-									<div className='PipelineBarValue'>{pipelineLoading ? '—' : state.value}</div>
+									<div className='PipelineBarValue'>{pipelineLoading ? '—' : 
+									 <Link to={VACANCY_DASHBOARD+'/'+findVacancyState(state.label)}>{state.value}</Link>}
+									</div>
 								</div>
 							);
 						})}
