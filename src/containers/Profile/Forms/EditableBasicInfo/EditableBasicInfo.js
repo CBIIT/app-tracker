@@ -178,7 +178,7 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 							label='Phone'
 							name='phone'
 							rules={[
-								{ required: true, message: 'Please provide an answer.' },
+								{ required: false },
 								{
 									type: 'string',
 									pattern: new RegExp(/^[0-9]+$/),
@@ -197,7 +197,6 @@ const editableBasicInfo = ({ setBasicOpen }) => {
 								addonBefore={phonePrefixSelector}
 								placeholder='123 456 7890'
 								name='phone'
-								required={true}
 							/>
 						</Form.Item>
 					</Tooltip>

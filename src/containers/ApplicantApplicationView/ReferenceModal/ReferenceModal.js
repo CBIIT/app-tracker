@@ -57,7 +57,7 @@ const referenceModal = (props) => {
 				Are you sure you want to send the Reference Letter Collection email to
 				this reference? The notifications will be sent immediately upon your confirmation.
 				<br></br>
-				<br></br>Please note that you can only request a maximum of {maxTries} reference letters per reference.
+				<br></br>Please note that the application system allows each applicant to send a reference letter request to each referee a maximum of {maxTries} times in total, including the initial request.
 			</Paragraph>
 		</Modal>
 	) : (
@@ -93,7 +93,7 @@ const referenceModal = (props) => {
 				Notifications to this reference have already been sent {referencesRequested} 
 				{referencesRequested === '1' ? ' time' : ' times'}. Would you like to send another email?
 				<br></br>
-				<br></br>Please note that you can only request a maximum of {maxTries} letters per reference.
+				<br></br>Please note that the application system allows each applicant to send a reference letter request to each referee a maximum of {maxTries} times in total, including the initial request.
 			</Paragraph>}
 		</Modal>
 	);
