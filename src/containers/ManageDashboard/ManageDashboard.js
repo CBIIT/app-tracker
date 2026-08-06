@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import SearchContext from './Util/SearchContext';
 import ApplicantList from './ApplicantList/ApplicantList';
+import ApplicantListv2 from './ApplicantListv2/ApplicantListv2.js';
 import ViewVacancyDetails from './ViewVacancyDetails/ViewVacancyDetails';
 import VacancyStatus from '../../components/UI/VacancyStatus/VacancyStatus.js';
 import NextStepModal from './NextStepModal/NextStepModal';
@@ -52,8 +53,9 @@ import {
 	isChair,
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
-
 import './ManageDashboard.css';
+
+// TODO: Clean up un-needed functions and code
 
 const getNextStepButtonLabel = (currentStep) => {
 	switch (currentStep) {
@@ -474,7 +476,7 @@ const manageDashboard = () => {
 							</>
 						</Tabs.TabPane>
 						<Tabs.TabPane tab='Applicants' key='applicants'>
-							<ApplicantList
+							<ApplicantListv2
 								vacancyTitle={vacancy.basicInfo.title}
 								vacancyState={vacancy.state}
 								vacancyTenant={vacancy.basicInfo.tenant}
