@@ -59,8 +59,6 @@ import useAuth from '../../hooks/useAuth.js';
 
 const { confirm } = Modal;
 
-const individualScoreCategories = [];
-
 const chairTriageOptions = [
 	{
 		label: (
@@ -173,6 +171,7 @@ const application = () => {
 	const [recused, setRecused] = useState(false);
 	const [focusArea, setFocusArea] = useState([]);
 	const [requireFocusArea, setRequireFocusArea] = useState('0');
+	const [categories, setCategories] = useState([]);
 
 	const navigate = useNavigate();
 	const { sysId } = useParams();
@@ -184,10 +183,10 @@ const application = () => {
 	}, []);
 
 	useEffect(() => {
-		if (individualScoreCategories.length === 0) {
-			addCategories();
+		if (numOfCategories > 0) {
+			addCategories(numOfCategories);
 		}
-	});
+	}, [numOfCategories]);
 
 	const openRecuseModal = (e) => {
 		e.preventDefault();
@@ -345,14 +344,18 @@ const application = () => {
 		}
 	};
 
-	const addCategories = () => {
-		for (let i = 1; i <= numOfCategories; i++) {
-			individualScoreCategories.push({
+	const addCategories = (numCategories) => {
+		const newCategories = [];
+		for (let i = 1; i <= numCategories; i++) {
+			newCategories.push({
 				key: `category${i}`,
 				title: `Category ${i}`,
 			});
 		}
+		setCategories(newCategories);
 	};
+
+
 
 	const onTriageSelect = (event) => {
 		setTriageChoice(event.target.value);
@@ -499,7 +502,7 @@ const application = () => {
 		navigate(MANAGE_VACANCY + application.vacancyId + '/applicants');
 	};
 
-	
+
 
 
 	if (isLoading) {
@@ -557,18 +560,18 @@ const application = () => {
 								>
 									{requireFocusArea !== '0'
 										? focusArea?.map((area, index) => {
-												return (
-													<InfoCardRow
-														key={index}
-														style={{ paddingBottom: '5px' }}
-													>
-														<LabelValuePair
-															value={area}
-															style={{ marginBottom: '5px' }}
-														/>
-													</InfoCardRow>
-												);
-										  })
+											return (
+												<InfoCardRow
+													key={index}
+													style={{ paddingBottom: '5px' }}
+												>
+													<LabelValuePair
+														value={area}
+														style={{ marginBottom: '5px' }}
+													/>
+												</InfoCardRow>
+											);
+										})
 										: ''}
 								</InfoCard>
 							) : (
@@ -669,7 +672,7 @@ const application = () => {
 
 							{(isUserAllowedToScore(userVacancyCommitteeRole) &&
 								!isChair(userVacancyCommitteeRole)) ||
-							(isChair(userVacancyCommitteeRole) && isChairAllowedScore()) ? (
+								(isChair(userVacancyCommitteeRole) && isChairAllowedScore()) ? (
 								<ScoringWidget
 									title={
 										isChair(userVacancyCommitteeRole)
@@ -730,7 +733,7 @@ const application = () => {
 									triageChoice={individualTriageChoice}
 									triageComments={individualScoresComments}
 									onTriageSelect={onIndividualTriageSelect}
-									categories={individualScoreCategories}
+									categories={categories}
 									onCancelClick={onTriageWidgetCancelClick}
 									onSaveClick={onIndividualScoreSaveClick}
 									scores={individualScores}
@@ -744,7 +747,7 @@ const application = () => {
 									ratingPlanDownloadLink={ratingPlanDownloadLink}
 									style={{ backgroundColor: 'white' }}
 									triageOptions={committeeMemberTriageOptions}
-									categories={individualScoreCategories}
+									categories={categories}
 									numOfCategories={numOfCategories}
 									onCancelClick={onTriageWidgetCancelClick}
 									initiallyHideContent={

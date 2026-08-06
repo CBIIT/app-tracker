@@ -395,6 +395,90 @@ describe('Application component', () => {
         expect(screen.getByTestId('slider-Category 1')).toHaveTextContent('Category 1: 8');
       });
     });
+
+    test('displays scoring slider for committee member role', async () => {
+      mockApplicationAndVacancyGet({
+        application: {
+          basic_info: {
+            vacancy: { value: 'vac1', label: 'Vacancy 1' },
+            state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+            tenant: { label: 'Tenant' },
+            number_of_categories: { value: '2' },
+            triage: { value: '' },
+            triage_comments: { value: '' },
+            chair_triage: { value: '' },
+            chair_triage_comment: { value: '' },
+            require_focus_area: { value: '0' },
+            display_references: { value: '0' },
+            sys_id: 'sysid1',
+            first_name: 'John',
+            middle_name: 'A',
+            last_name: 'Doe',
+            email: 'john.doe@example.com',
+            phone: { value: '123-456-7890' },
+            business_phone: { value: '098-765-4321' },
+            highest_level_of_education: 'PhD',
+            us_citizen: true,
+            address: '123 Main St',
+            address_2: 'Apt 4',
+            city: 'Anytown',
+            state_province: 'CA',
+            zip_code: '12345',
+            country: 'USA',
+          },
+          individual_scoring: {
+            recused: { value: '0' },
+            category_1: { value: '3' },
+            category_2: { value: '4' },
+            comments: { value: 'Good candidate' },
+            recommend: { value: 'yes' },
+          },
+        },
+        vacancy: {
+          basic_info: {
+            state: { value: 'INDIVIDUAL_SCORING_IN_PROGRESS' },
+            number_of_categories: { value: '2' },
+            require_focus_area: { value: '0' },
+            tenant: { label: 'Tenant' },
+            allow_hr_specialist_triage: { value: '0' },
+          },
+          user: {
+            committee_role_of_current_vacancy: 'Member',
+          },
+          rating_plan: null,
+          additional_documents: [],
+        },
+      });
+
+      render(<Application />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+      });
+
+      // Verify the Committee Member Rating and Feedback widget is displayed
+      expect(screen.getByText(/Committee Member Rating and Feedback/i)).toBeInTheDocument();
+
+      // Verify the description text for scoring is displayed
+      expect(
+        screen.getByText(/Please score the applicant on a scale of 0 - 5/i)
+      ).toBeInTheDocument();
+
+      // Verify scoring sliders are displayed for each category
+      await waitFor(() => {
+        expect(screen.getByTestId('slider-Category 1')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('slider-Category 2')).toBeInTheDocument();
+      });
+
+      const slider1 = screen.getByTestId('slider-Category 1');
+      const slider2 = screen.getByTestId('slider-Category 2');
+
+      expect(slider1).toHaveTextContent('Category 1: 3');
+      expect(slider2).toHaveTextContent('Category 2: 4');
+    });
   });
 
   describe('unRecuse function', () => {
