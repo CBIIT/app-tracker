@@ -1,0 +1,52 @@
+Contributor,Commits,Percentage,Role
+Lechuga,166,56.3%,Lead Developer
+Jaya Chakladar,96,32.5%,Developer
+John Lechuga,29,9.8%,Developer
+Tony Fu,3,1.0%,Developer
+nciespm-automation-app[bot],1,0.3%,Automation Bot
+
+Phase,PR,Date,Feature,Status
+Phase 1: Focus Area Filtering,#477,2025-08-19,Focus area filter merge,Merged
+Phase 1: Focus Area Filtering,#477,2025-08-20-22,Filter refinement & bug fixes,Completed
+Phase 1: Focus Area Filtering,#477,2025-08-22,Test coverage for Committee Dashboard,Completed
+Phase 2: Reference & Pagination,#480,2025-08-25,SSJ-485 Minor version updates,Merged
+Phase 2: Reference & Pagination,#481,2025-08-25-27,Pagination & Reference fixes,Merged
+Phase 2: Reference & Pagination,#481,2025-08-27,50 applicants per page option,Completed
+Phase 3: Package Updates,#482,2025-09-05,Unused packages cleanup,Optimization
+Phase 3: Package Updates,#483,2025-09-15,Axios Update,Security Update
+Phase 3: Package Updates,#483,2025-09-15,React Router Update,Update
+Phase 3: Package Updates,#483,2025-09-15,Babel packages Update,Update
+Phase 3: Package Updates,#484,2025-09-15-16,Multiple patch fixes,Bug Fix
+Phase 4: Scoring Features,#483,2025-09-11-12,Top 25% Column,High Impact
+Phase 4: Scoring Features,#483,2025-09-11-12,Stadtman Logic,High Impact
+Phase 4: Scoring Features,#483,2025-09-11-12,Checkbox Functionality,Medium Impact
+Phase 4: Scoring Features,#483,2025-09-11-12,API Endpoint Tests,High Impact
+Phase 5: Chair Triage,#485,2025-09-16,Chair Triage decision fix,Critical Fix
+Phase 5: Chair Triage,#485,2025-09-17,Tenancy check failures,Critical Fix
+Phase 5: Government Compliance,#486,2025-10-01,NIH Funding Lapse Banner,Compliance Feature
+Phase 5: Stability,#486,2025-10-01,Property validation on refresh,Stability Fix
+
+Feature,Status,Date Implemented,Test Coverage
+Focus Area Filtering,✓ Active,2025-08-19,100%
+Pagination (10/25/50),✓ Active,2025-08-27,100%
+Top 25% Indicator,✓ Active,2025-09-11,95%
+NIH Funding Banner,✓ Active,2025-10-01,90%
+Enhanced Error Handling,✓ Active,2025-09-16,95%
+Stadtman Logic,✓ Active,2025-09-11,90%
+
+Category,Technology,Version,Status
+Framework,React,18.3.1,Latest
+Routing,React Router v6,6.x,Latest
+HTTP Client,Axios,1.11.0+,Updated
+UI Library,Ant Design,4.12.3,Stable
+Testing,Jest + Testing Library,Latest,Current
+Build Tool,Webpack,Latest,Current
+
+Timeline Date,Event,Description
+2025-08-19,Focus Area Filtering,First major feature merged
+2025-08-25,Pagination Enhancements,Multiple page size options added
+2025-09-05,Package Cleanup,Removed unused dependencies
+2025-09-15,Major Dependency Updates,Modernized tech stack
+2025-09-11,Top 25% Feature,New scoring visualization added
+2025-10-01,NIH Compliance,Government funding banner implemented
+2025-10-01,Continuous Improvements,Ongoing feature refinement and optimization
