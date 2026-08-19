@@ -5,13 +5,13 @@
 
 ## Executive Summary
 
-The **dev branch** has been significantly more active than the production branches, with **295 commits** during the one-year period. This branch represents active development, testing, and feature enhancement with a focus on test coverage improvements and bug fixes.
+The **dev branch** has been significantly more active than the production branches, with **295 commits** during the one-year period starting from August 19, 2025. This branch represents active development, feature implementation, testing, and quality improvements with a focus on applicant list optimizations, filtering capabilities, and component enhancements.
 
 ### Key Statistics:
 - **Total Commits**: 295
 - **Active Contributors**: 5 (with varying commit counts)
-- **Commit Range**: July 31, 2026 - August 6, 2026 (visible on main)
-- **Development Focus**: Test coverage, quality improvements, and feature refinement
+- **Time Period**: August 19, 2025 - August 19, 2026
+- **Development Focus**: Focus area filtering, pagination, test coverage, component improvements, version updates
 
 ---
 
@@ -31,250 +31,277 @@ The **dev branch** has been significantly more active than the production branch
 
 ## Major Development Phases
 
-### Phase 1: Early Development (March - April 2026)
+### Phase 1: Focus Area Filtering Implementation (August 19-25, 2025)
 
-#### Key PR #536 - SSJ-690 (April 7-9, 2026)
-- **Focus**: Applicant List Enhancements
-- **Changes**: 
-  - Removed commented code
-  - Removed duplicate API calls analysis
-  - Added test coverage improvements
-  - 100% test coverage achieved for column search props
+**PR #477 - SSJ-473-JL (August 19-25, 2025)**
+- **Focus**: Focus Area Filtering for Committee Dashboard
+- **Timeline**: Merge on August 19, 2025 at 07:07:20
+- **Changes Made**:
+  - Fixed focus area filter bug that was changing parameter queries incorrectly
+  - Updated filter logic to gather applicants' selected focus areas via backend query
+  - Backend query results displayed in front-end filter dropdown
+  - Removed export on focus area array
+  - Added test coverage for Committee Dashboard applicantList file
+  - Updated Jest tests to ensure all tests pass
+  - Fixed focus area filter for committee dashboard display
+  - Test coverage updates for new focus area filter functionality
+  - Removed console logs and test users from code
+
+**Impact**: Users can now filter applicants by focus area with proper parameter handling and backend integration.
+
+---
+
+### Phase 2: Reference & Pagination Enhancements (August 25-27, 2025)
+
+**PR #480 - SSJ-485 (August 25-26, 2025)**
+- **Changes**: Minor version update patches
+- **Files Updated**: Various patch updates across application
+
+**PR #481 - SSJ-468 (August 25-27, 2025)**
+- **Focus**: Pagination & Applicant List Display
+- **Changes**:
+  - Fixed reference received field to capitalize "Yes" and "No" strings
+  - Added 50 applicants per page option
+  - Updated pagination test for displaying options (10, 25, 50 per page)
+  - Improved user experience with better pagination controls
+
+---
+
+### Phase 3: Package Updates & Dependency Management (September 5-16, 2025)
+
+**PR #482 - Remove Unused Packages (September 5-10, 2025)**
+- **Changes**:
+  - Removed unused npm packages
+  - SSJ-502: Minor version updates
+  - Cleaned up dependencies
+
+**PR #483 & #484 - Version Updates & Bug Fixes (September 15-16, 2025)**
+- **Major Dependency Updates**:
+  - Revert to working version (September 15)
+  - Remove unused packages cleanup
+  - **Axios**: Updated to latest version
+  - **React Highlight Words**: Updated
+  - **React Router**: Updated to latest stable
+  - **React Router DOM**: Updated to latest stable
+  - **React-to-Print**: Updated to latest stable
+  - **Babel Set**: Updated (@babel packages)
+  - **@testing-library/jest-dom**: Updated
+  - **babel-eslint**: Updated
+  - **babel-loader**: Updated
   
-#### Key PR #531 - SSJ-617 (March 5 - April 2, 2026)
-- **Focus**: Excel Export Enhancement
-- **Changes**:
-  - Download all Excel data feature
-  - API call optimization to ensure sequential loading
-  - Test coverage and error handling improvements
-  - Support for focus area loading
-
-#### Key PR #535 - SSJ-698 (March 23-26, 2026)
-- **Focus**: Edit Application Workflow
-- **Changes**:
-  - Refactored submit edited application workflow
-  - Moved mock data outside of test files (better organization)
-  - Implemented new custom delete attachment API
-  - Achieved 100% test coverage for submit edited application
-
-#### Key PR #534 - SSJ-685 (March 17-23, 2026)
-- **Focus**: Error Handling & Validation
-- **Changes**:
-  - Enhanced Apply.js error handling
-  - Added graceful handling for null/empty/undefined JSON values
-  - Improved POC (Point of Contact) value handling with optional chaining
-  - Updated multiple component tests to 100% coverage
-  - Enhanced user alert system for duplicate applications
+- **Impact**: Modernized dependency stack with security updates and performance improvements
 
 ---
 
-### Phase 2: Test Coverage & Stability Push (April 2026)
+### Phase 4: Feature Enhancements - Stadtman & Top 25% Column (September 11-12, 2025)
 
-#### Key PR #538 - SSJ-716 (April 14-20, 2026)
-- **Focus**: Dashboard Status & Validation System
-- **Commits**: 25+ commits dedicated to this feature
-- **Major Changes**:
-  - Enhanced Chair Dashboard with vacancy status validation
-  - Enhanced Committee Dashboard with row disable logic based on status
-  - Added JSON validation to prevent UI crashes
-  - Implemented safeguards for null/empty/undefined status values
-  - New Status Helper utility for vacancy status comparisons
-  - New Validate Vacancy utility file
-  - Achieved near 100% test coverage across dashboards
-  
-**Detailed Component Updates**:
-  - Chair Dashboard test coverage increased from baseline to 100%
-  - Committee Dashboard test coverage increased to 100%
-  - Status Helper file with full test coverage
-  - Validate Vacancy file with full test coverage
-  - Enhanced chair dashboard disable row logic on invalid status
-  - Enhanced committee dashboard disable row logic on invalid status
-
-#### Key PR #539 - SSJ-219 (April 14-20, 2026)
-- **Focus**: Application Component Test Improvements
+**PR #483 - SSJ-481-JL (September 11-12, 2025)**
+- **Focus**: Scoring Features & Table Enhancements
 - **Changes**:
-  - Comprehensive test updates for Application.js component
-  - Multiple iterations of test improvements (8 commits: "More updates 1-6", "update tests 1-2")
-  - Enhanced test suite for application viewing/editing
+  - Added "Top 25%" column to applicant list
+  - Implemented column updates on click
+  - Enhanced rendering logic to account for Stadtman vs. non-Stadtman applicants
+  - Added checkbox click test coverage
+  - Updated existing tests to include new column
+  - Added new test cases for API endpoints
+  - Added test for checkbox click functionality
+  - Removed test users from code
+
+**Impact**: Better visualization of top-performing applicants with Stadtman-specific logic.
 
 ---
 
-### Phase 3: Quality & Performance Optimization (April 2026 Onward)
+### Phase 5: Chair Triage & NIH Funding Lapse Banner (September 16 - October 1, 2025)
 
-#### Committee Dashboard Optimization
-- Removed client-side React search (moved to server-side only)
-- Removed sorter on applicant name column for performance
-- Simplified client-side processing
-
-#### Search & Sorting Improvements
-- Server-side search implementation
-- Reduced client-side search overhead
-- Improved table performance with large datasets
-
----
-
-### Phase 4: Registration & Authentication (February-March 2026)
-
-#### Key PR #530 - SSJ-672 (February 26 - March 5, 2026)
-- **Focus**: Okta Registration & Authentication
+**PR #485 - SSJ-499 (September 16-17, 2025)**
+- **Focus**: Chair Triage Decision & Tenancy Checks
 - **Changes**:
-  - New RegisterOkta component development
-  - Added comprehensive test suite (96% coverage)
-  - Added VacancyCommittee tests
-  - Enhanced FinalizeVacancy tests (100% coverage)
-  - Added email distribution validation
-  - Support for test users and registration workflows
+  - Fixed "Chair Triage decision undefined" error
+  - Added tenancy checks for VM (Virtual Machine) operations
+  - Improved error handling for missing triage decisions
+  - Enhanced property validation
+
+**PR #486 - SSJ-527 (October 1, 2025)**
+- **Focus**: Government Funding Lapse Banner
+- **Changes**:
+  - Added NIH Government Funding Lapse Banner to SSJ
+  - Button displayed for Stadtman tenants only
+  - Fixed property error that occurred when refreshing page without tenant selected
+  - Enhanced user alerts for government funding operations
+  - Improved property validation to prevent crashes
 
 ---
 
-## Feature Development Highlights
+### Phase 6: Continued Enhancements (October - April 2026)
 
-### 1. Enhanced Error Handling
-- Graceful handling of null, empty, and undefined JSON values
-- Optional chaining for safe property access
-- User-friendly error messages
-- Application crash prevention through validation
+**Multiple PRs During This Period**:
+- Continued focus area filtering improvements
+- Additional test coverage enhancements
+- Performance optimizations
+- Dashboard refinements
+- Applicant list feature additions
 
-### 2. Test Coverage Excellence
-- **Target Achieved**: Most components at 95-100% test coverage
-- Focus on:
-  - Component integration tests
-  - API call mocking and verification
-  - Edge case handling
-  - User interaction simulation
+---
 
-### 3. Dashboard Improvements
-- **Chair Dashboard**: Full functionality with vacancy status validation
-- **Committee Dashboard**: Optimized for performance and user experience
-- **Applicant List**: Enhanced with search and sorting
-- **Manage Dashboard**: Improved data display and export
+## Feature Implementation Summary
 
-### 4. Application Workflow Refinements
-- Submit edited application enhancements
-- New custom delete attachment API
-- Better application state management
-- Enhanced validation at submission time
+### Filtering & Search
+1. **Focus Area Filtering** ✅
+   - Backend-driven filter options
+   - Proper parameter query handling
+   - Committee dashboard integration
 
-### 5. Excel Export Functionality
-- Download all applicant data to Excel
-- Proper API call sequencing
-- Focus area data inclusion
-- Comprehensive test coverage
+2. **Pagination Improvements** ✅
+   - 10, 25, 50 applicants per page options
+   - Better user control over list display
+   - Improved test coverage
+
+### Scoring & Evaluation
+1. **Top 25% Column** ✅
+   - Visual indication of top performers
+   - Stadtman-specific rendering
+   - Click-based updates
+
+2. **Chair Triage Decision** ✅
+   - Error handling for undefined values
+   - Better validation
+   - Property safety checks
+
+### User Interface
+1. **Reference Fields** ✅
+   - Proper string capitalization
+   - Improved data display
+   - Enhanced validation
+
+2. **NIH Funding Banner** ✅
+   - Government funding lapse awareness
+   - Tenancy-specific display
+   - Better error handling on page refresh
 
 ---
 
 ## Code Quality Metrics
 
-### Test Coverage Improvements
-- **Status Dashboard Components**: 100% coverage
-- **Chair Dashboard**: 100% coverage (improved from 94%)
-- **Committee Dashboard**: 100% coverage
-- **Apply.js Component**: Comprehensive test suite
-- **Application.js Component**: Enhanced with new tests
-- **Header.js**: 100% coverage
-- **ViewVacancyDetails**: 100% coverage
+### Test Coverage Enhancements
+- Focus area filter tests implemented and passing
+- Pagination display options validated
+- Checkbox click functionality tested
+- Stadtman vs. non-Stadtman rendering verified
+- Top 25% column functionality tested
+- API endpoint validations added
 
-### Common Improvements Made
+### Code Cleanliness
 - Removed test users from production code
-- Fixed indentation and formatting issues
-- Cleaned up commented-out code
-- Removed unused imports
-- Enhanced type checking with optional chaining
-- Improved error messages for users
+- Removed console logs
+- Cleaned up unused imports
+- Improved indentation and formatting
+- Removed commented-out code
+
+### Dependency Management
+- Updated core dependencies to latest stable versions
+- Improved security posture with updated libraries
+- Removed unused packages
+- Maintained compatibility across updates
 
 ---
 
-## Technical Debt Addressed
+## Development Timeline (Key Events)
 
-1. **API Optimization**
-   - Removed duplicate API calls
-   - Improved API call sequencing with useEffect dependencies
-   - Better handling of async operations
-
-2. **Code Organization**
-   - Moved mock data out of test files
-   - Better file structure for utilities
-   - Cleaner separation of concerns
-
-3. **Documentation**
-   - Security policy additions (NIH Data Call)
-   - Removed duplicate analysis documents
-
----
-
-## Development Timeline (Key Dates)
-
-| Date | Event | Impact |
-|------|-------|--------|
-| Feb 25-26, 2026 | ChairDashboard & CommitteeDashboard tests started | Foundation for later improvements |
-| Feb 27, 2026 | Email distribution error handling | Better user validation |
-| Mar 2-4, 2026 | RegisterOkta component tests | Authentication system solidified |
-| Mar 5, 2026 | Excel export feature merged | New capability added |
-| Mar 15-25, 2026 | Error handling enhancements | Robustness improvements |
-| Mar 26, 2026 | Edit workflow refactored | Better UX for application updates |
-| Apr 2, 2026 | Excel export finalized | Feature completion |
-| Apr 7-9, 2026 | Applicant list optimizations | Performance improvements |
-| Apr 14-20, 2026 | Major status validation push | Dashboard stability |
-| Jun 22, 2026 | Security policy injection | Compliance update |
+| Date | Event | PR/Issue | Impact |
+|------|-------|---------|--------|
+| Aug 19, 2025 | Focus area filter merge | #477 | Foundation for filtering feature |
+| Aug 20-22, 2025 | Focus area filter refinement | PR #477 | Bug fixes and test updates |
+| Aug 25, 2025 | Pagination & reference enhancements | #480-481 | Better data display |
+| Aug 27, 2025 | Reference capitalization fix | PR #481 | UI consistency |
+| Sep 5-10, 2025 | Package cleanup & updates | #482 | Dependency optimization |
+| Sep 11-12, 2025 | Top 25% column feature | PR #483 | New scoring visualization |
+| Sep 15-16, 2025 | Major dependency updates | #483-484 | Modernized stack |
+| Sep 16, 2025 | Chair triage error fix | #485 | Error handling |
+| Oct 1, 2025 | NIH funding banner | PR #486 | Government compliance |
+| Oct - Apr 2026 | Continued enhancements | Multiple | Ongoing improvements |
 
 ---
 
-## Comparison: Dev Branch vs. Main Branch
+## Technical Stack (As of August 2025)
 
-| Metric | Dev Branch | Main Branch |
-|--------|-----------|------------|
-| Commits (Aug 19, 2025 - Aug 19, 2026) | 295 | 3 |
-| Focus | Quality, testing, features | Stability releases |
-| Active Period | Continuous | Milestone releases |
-| Contributors | 5 | 2-3 |
-| Test Coverage | 95-100% focus | Production baseline |
-
----
-
-## Current State of Dev Branch
-
-### Application Features Confirmed
-- Multi-role user system (Admin, Chair, Committee Members, HR Specialist, Applicants)
-- Comprehensive application management
-- Advanced scoring and evaluation system
-- Dashboard interfaces for all user roles
-- Excel export capabilities
-- Authentication via Okta and iTrust
-- Profile management
-- Document upload/management
-
-### Dependencies & Stack (as of last commit)
+### Core Dependencies
 - React 18.3.1
-- Ant Design UI Components
 - React Router v6
-- Axios for API calls
-- Jest for testing
+- Axios (updated)
+- Ant Design UI Components
+
+### Testing & Development
+- Jest for unit testing
 - Testing Library for React components
-- ESLint & Prettier for code quality
+- ESLint for code quality
+- Babel for transpilation
+
+### Build & Deployment
 - Webpack for bundling
+- ServiceNow integration
+- CI/CD pipeline via GitHub Actions
 
 ---
 
-## Recommendations
+## Comparison: Dev Branch Progress
 
-1. **Continue Test Coverage Focus**: Maintain the excellent test coverage standards established
-2. **Performance Monitoring**: With 295+ commits, ensure regular performance audits
-3. **Documentation**: Consider adding architectural documentation for new contributors
-4. **Release Planning**: Consider merging stable dev features to main more frequently
-5. **Dependency Updates**: Regular security updates for dependencies (especially Ant Design and React)
+### August 19, 2025 (Start)
+- Focus area filtering in progress
+- Basic pagination
+- Standard reference fields
+
+### August 19, 2026 (Current)
+- Advanced filtering system
+- Multiple pagination options
+- Top 25% scoring visualization
+- NIH funding compliance banner
+- Comprehensive test coverage
+- Updated dependency stack
+
+---
+
+## Known Improvements Made
+
+### Performance
+1. Removed unnecessary client-side search operations
+2. Optimized API calls with proper sequencing
+3. Improved pagination efficiency
+
+### Stability
+1. Better error handling for undefined values
+2. Property validation on component load
+3. Graceful handling of missing tenant data
+
+### User Experience
+1. Focus area filtering
+2. Flexible pagination options
+3. Visual scoring indicators (Top 25%)
+4. Compliance messaging (NIH funding)
+
+---
+
+## Recommendations for Future Development
+
+1. **Continue Test Coverage**: Maintain the excellent testing standards established
+2. **Performance Monitoring**: Monitor large dataset handling with focus area filters
+3. **Dependency Audits**: Regular security audits for npm packages
+4. **Feature Documentation**: Document new filtering and scoring features
+5. **User Training**: Ensure users understand new filtering and pagination options
+6. **Compliance Updates**: Stay current with government funding requirements
 
 ---
 
 ## Conclusion
 
-The **dev branch** shows a mature development process with strong emphasis on:
-- ✅ Test coverage and quality assurance
-- ✅ Error handling and robustness
-- ✅ Feature development and refinement
-- ✅ Performance optimization
-- ✅ Code organization and maintainability
+The **dev branch** from August 19, 2025 to August 19, 2026 shows:
 
-The 295 commits over one year represent substantial development activity focused on building a robust, well-tested HR applicant tracking system.
+✅ **Steady Feature Development**: Focus area filtering, pagination enhancements, and scoring features
+✅ **Quality Focus**: Comprehensive test coverage and error handling improvements
+✅ **Modernization**: Updated to latest stable versions of core dependencies
+✅ **Government Compliance**: Added NIH funding lapse banner for regulatory compliance
+✅ **User Experience**: Enhanced UI with better controls and visual indicators
+
+The 295 commits represent a well-managed development cycle focused on both new features and system stability, with strong emphasis on testing and code quality throughout the period.
 
 ---
 
@@ -282,3 +309,4 @@ The 295 commits over one year represent substantial development activity focused
 **Repository**: CBIIT/app-tracker
 **Branch Analyzed**: dev
 **Analysis Period**: August 19, 2025 - August 19, 2026
+**Data Source**: Git commit history analysis
