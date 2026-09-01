@@ -9,7 +9,7 @@ const documents = (props) => (
 					<li key={index}>
 						<div className='LineItemItem'>{document?.title}</div>
 						<div className='LineItemItem'>
-							<a href={document.downloadLink}>{document?.filename}</a>
+							<a href={document?.downloadLink}>{document?.filename}</a>
 						</div>
 					</li>
 				))}
