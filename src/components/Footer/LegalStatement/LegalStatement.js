@@ -15,21 +15,14 @@ const legalStatement = () => {
 				{expirationDate}
 			</p>
 			<p>
-				Collection of this information is authorized by The Public Health
-				Service Act, Section 411 (42 USC 285a). Rights of participants are
-				protected by The Privacy Act of 1974 under OPM GOVT-5
-				{/* <a href={null} className='LinkLS'>
-					OPM GOVT-5
-				</a> */}
-				. Participation is voluntary, and there are no penalties for not
-				participating or withdrawing at any time. Refusal to participate will
-				not affect your benefits in any way. The information collected will be
-				kept private to the extent provided by law. Names and other identifiers
-				will not appear in any report. Information provided will be combined for
-				all participants and reported as summaries. You are being contacted
-				on-line to complete this instrument so that NIH can evaluate its
-				advertisement strategies and make necessary improvements to the
-				application website.
+				Collection of this information is authorized by The Public Health Service Act, 
+				Section 411 (42 USC 285a). Rights of participants are protected by The Privacy Act of 1974 
+				under OPM GOVT-5. Participation is voluntary, and there are no penalties for not participating 
+				or withdrawing at any time. Refusal to participate will not affect your benefits in any way. 
+				The information collected will be kept private to the extent provided by law. Names and other 
+				identifiers will not appear in any report. Information provided will be combined for all participants 
+				and reported as summaries. You are being contacted online to complete a profile that allows you to 
+				submit applications for specialized scientific jobs.
 			</p>
 			<p>
 				Public reporting burden for this collection of information is estimated
