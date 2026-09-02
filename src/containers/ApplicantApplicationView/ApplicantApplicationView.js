@@ -103,6 +103,10 @@ const applicantApplicationView = () => {
 		}
 	}
 
+	const hasOnlyPrefix = (phone) => {
+		return phone === '+1';
+	}
+
 	return isLoading ? (
 		<Loading />
 	) : (
@@ -143,7 +147,9 @@ const applicantApplicationView = () => {
 									labelStyle={labelStyle}
 									containerStyle={{ marginRight: '0px' }}
 									label='Phone'
-									value={application.basicInfo.phone}
+									value={
+										hasOnlyPrefix(application.basicInfo.phone) ? '' : application.basicInfo.phone
+									}
 								/>
 								<LabelValuePair
 									labelStyle={labelStyle}
