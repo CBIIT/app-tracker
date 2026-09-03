@@ -36,7 +36,7 @@ const applicantInfo = (props) => {
 				/>
 			</InfoCardRow>
 			<InfoCardRow>
-				{typeof basicInfo.highestLevelEducation !== 'undefined' ? (
+				{typeof basicInfo.highestLevelEducation !== 'undefined' && basicInfo.highestLevelEducation !== null ? (
 					<LabelValuePair
 						containerStyle={{ width: '100%', maxWidth: '320px' }}
 						label='Highest Level of Education'
@@ -44,7 +44,7 @@ const applicantInfo = (props) => {
 					/>
 				) : null}
 
-				{typeof basicInfo.isUsCitizen !== 'undefined' ? (
+				{typeof basicInfo.isUsCitizen !== 'undefined' && basicInfo.isUsCitizen !== null ? (
 					<LabelValuePair
 						label='US Citizen'
 						value={getIsUsCitizenDisplayValue(basicInfo.isUsCitizen)}

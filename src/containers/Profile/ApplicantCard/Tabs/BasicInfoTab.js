@@ -74,12 +74,17 @@ const BasicInfoTab = () => {
 								</Paragraph>
 							</div>
 							<div style={{ marginBottom: 20 }}>
-								<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
-									Phone
-								</Title>
-								<Paragraph style={{ color: '#363636' }}>
-									{getFullNumber(basicInfo.phonePrefix, basicInfo.phone)}
-								</Paragraph>
+								{basicInfo.phone ? (
+									<div>
+										<Title level={5} style={{ fontSize: '16px', color: '#6a6a6a' }}>
+											Phone
+										</Title>
+										<Paragraph style={{ color: '#363636' }}>
+											{getFullNumber(basicInfo.phonePrefix, basicInfo.phone)}
+										</Paragraph>
+									</div> ) : (
+									''
+								)}
 							</div>
 						</Col>
 						<Col span={9} style={{ marginTop: 50 }}>
