@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.js';
 import { message } from 'antd';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 // Mock dependencies
 jest.mock('axios');
@@ -674,4 +675,13 @@ describe('Application component', () => {
     expect(navigate).toHaveBeenCalledWith('/manage/vacancy/vac1/applicants');
   });
 
+  test('should be accessible - no violations', async () => {
+    const { container } = render(<Application />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+    });
+
+    await checkAccessibility(container);
+  });
 });

@@ -9,6 +9,7 @@ import {
 	WITHDRAW_USER_APPLICATION,
 	REMOVE_USER_APPLICATION_DRAFT,
 } from '../../constants/ApiEndpoints';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
@@ -617,5 +618,25 @@ describe('ApplicantDashboard', () => {
 		// Warning icon SHOULD be present (boundary case: daysRemaining <= 5)
 		const warningIcon = document.querySelector('.anticon-exclamation-circle');
 		expect(warningIcon).toBeInTheDocument();
+	});
+
+	test('should be accessible - no violations', async () => {
+		useFetch.mockReturnValue({
+			data: mockUserApps,
+			isLoading: false,
+			error: null,
+		});
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/applicant-dashboard']}>
+				<ApplicantDashboard />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		await checkAccessibility(container);
 	});
 });

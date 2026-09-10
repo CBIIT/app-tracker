@@ -2,6 +2,7 @@ import { rtRender } from '../test-utils';
 import axios from 'axios';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { VACANCY_DASHBOARD, EDIT_DRAFT, EDIT_VACANCY } from '../../constants/Routes';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 const mockCountTile = jest.fn();
 jest.mock('./CountTile/CountTile', () => (props) => {
@@ -32,15 +33,15 @@ jest.mock('antd', () => {
 
 jest.mock('axios', () => {
     return {
-      CancelToken: {
-        source: jest.fn(() => ({
-          token: 'mockCancelToken',
-          cancel: jest.fn(),
-        })),
-      },
-      get: jest.fn(),
-      post: jest.fn(),
-      isCancel: jest.fn(() => false),
+        CancelToken: {
+            source: jest.fn(() => ({
+                token: 'mockCancelToken',
+                cancel: jest.fn(),
+            })),
+        },
+        get: jest.fn(),
+        post: jest.fn(),
+        isCancel: jest.fn(() => false),
     };
 });
 
@@ -103,7 +104,7 @@ describe('VacancyDashboard component tests', () => {
     // ===== Basic Rendering Test =====
     test('renders without crashing', async () => {
         rtRender(<VacancyDashboard />);
-        
+
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalled();
         });
@@ -140,7 +141,7 @@ describe('VacancyDashboard component tests', () => {
         });
 
         const { unmount } = rtRender(<VacancyDashboard />);
-        
+
         unmount();
 
         await waitFor(() => {
@@ -214,7 +215,7 @@ describe('VacancyDashboard component tests', () => {
         const tabButtons = screen.queryAllByRole('tab');
         if (tabButtons.length > 1) {
             fireEvent.click(tabButtons[1]); // Click on second tab
-            
+
             await waitFor(() => {
                 // Should navigate to the clicked tab
                 expect(mockNavigate).toHaveBeenCalled();
@@ -233,7 +234,7 @@ describe('VacancyDashboard component tests', () => {
         const tabButtons = screen.queryAllByRole('tab');
         if (tabButtons.length > 1) {
             fireEvent.click(tabButtons[1]);
-            
+
             await waitFor(() => {
                 expect(mockNavigate).toHaveBeenCalledWith(
                     expect.stringContaining(VACANCY_DASHBOARD)
@@ -837,7 +838,7 @@ describe('VacancyDashboard component tests', () => {
         // Mock document.execCommand and getElementById
         const execCommandMock = jest.fn().mockReturnValue(true);
         document.execCommand = execCommandMock;
-        
+
         const originalGetElementById = document.getElementById;
         document.getElementById = jest.fn((id) => {
             if (!id) return null;
@@ -887,7 +888,7 @@ describe('VacancyDashboard component tests', () => {
         // Mock document.execCommand and getElementById
         const execCommandMock = jest.fn().mockReturnValue(true);
         document.execCommand = execCommandMock;
-        
+
         const originalGetElementById = document.getElementById;
         document.getElementById = jest.fn((id) => {
             if (!id) return null;
@@ -959,7 +960,7 @@ describe('VacancyDashboard component tests', () => {
         // Mock document.execCommand and getElementById
         const execCommandMock = jest.fn().mockReturnValue(true);
         document.execCommand = execCommandMock;
-        
+
         // Mock getElementById to return a link element with href
         const originalGetElementById = document.getElementById;
         document.getElementById = jest.fn((id) => {
@@ -1078,7 +1079,7 @@ describe('VacancyDashboard component tests', () => {
         // Verify Extend button is rendered in live tab
         const extendButton = screen.queryByRole('button', { name: /extend/i });
         expect(extendButton).toBeInTheDocument();
-        
+
         // Click it to trigger the handler
         fireEvent.click(extendButton);
 
@@ -1138,6 +1139,26 @@ describe('VacancyDashboard component tests', () => {
         // Verify all Extend buttons are present (one for each vacancy)
         const extendButtons = screen.queryAllByRole('button', { name: /extend/i });
         expect(extendButtons.length).toBe(3);
+    });
+
+    test('should be accessible - no violations', async () => {
+        const mockData = {
+            result: [
+                { sys_id: '1', title: 'Live Position', state: 'live', open_date: '2024-01-01', close_date: '2024-02-01', applicants: 5, extended: '0' },
+                { sys_id: '2', title: 'Draft Position', state: 'draft', open_date: '2024-01-02', close_date: '2024-02-02', applicants: 3, extended: '0' }
+            ]
+        };
+        axios.get.mockResolvedValue({ data: mockData });
+
+        useParams.mockReturnValue({ tab: 'live' });
+
+        const { container } = rtRender(<VacancyDashboard />);
+
+        await waitFor(() => {
+            expect(axios.get).toHaveBeenCalled();
+        });
+
+        await checkAccessibility(container);
     });
 
 });

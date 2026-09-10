@@ -4,6 +4,7 @@ import * as transformJsonFromBackend from './Util/TransformJsonFromBackend';
 import { render, waitFor, screen } from '@testing-library/react';
 import { useParams, MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
+import { checkAccessibility } from '../../test-utils-accessibility';
 import { 
     mockStadtmanAuth,
     mockStadtmanVacancy, 
@@ -66,6 +67,26 @@ describe('ManageDashboard component', () => {
         await waitFor(() => {
             expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
         });
+    });
+
+    test('should be accessible - no violations', async () => {
+        useParams.mockReturnValue({ sysId: '123', tab: 'details' });
+        useAuth.mockReturnValue(mockStadtmanAuth);
+
+        axios.get.mockResolvedValueOnce(mockStadtmanVacancy);
+        transformJsonFromBackend.transformJsonFromBackend.mockReturnValue(mockStadtmanVacancyTransformed);
+
+        const { container } = render(
+            <MemoryRouter initialEntries={['/manage/application']}>
+                <ManageDashboard />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+        });
+
+        await checkAccessibility(container);
     });
 
 });

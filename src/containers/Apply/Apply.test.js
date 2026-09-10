@@ -19,6 +19,7 @@ import {
 	GET_PROFILE,
 } from '../../constants/ApiEndpoints';
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 const mockPush = jest.fn();
 const mockGoBack = jest.fn();
@@ -1030,5 +1031,26 @@ describe('Apply component', () => {
 			);
 			expect(screen.getByText('Unable to load application')).toBeInTheDocument();
 		});
+	});
+
+	test('should be accessible - no violations', async () => {
+		jest.useRealTimers();
+
+		axios.get.mockResolvedValueOnce(mockVacancyResponse);
+		axios.get.mockResolvedValueOnce(mockProfileResponse);
+		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: '444' } } });
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+			expect(screen.getByTestId('applicant-documents-form')).toBeInTheDocument();
+		}, { timeout: 5000 });
+
+		await checkAccessibility(container);
 	});
 });

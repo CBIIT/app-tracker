@@ -3,34 +3,35 @@ import axios from 'axios';
 import * as useAuth from '../../hooks/useAuth';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { 
-    mockAuth, 
-    mockVacancyList, 
-    noVacancyList, 
+import {
+    mockAuth,
+    mockVacancyList,
+    noVacancyList,
     mockVacancyListForSorting
 } from './MockData';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
     __esModule: true,
-	default: jest.fn(),
+    default: jest.fn(),
 }));
 
 describe('Home', () => {
     beforeEach(() => {
         Object.defineProperty(window, 'matchMedia', {
-			writable: true,
-			value: jest.fn().mockImplementation((query) => ({
-				matches: false,
-				media: query,
-				onchange: null,
-				addListener: jest.fn(), // deprecated
-				removeListener: jest.fn(), // deprecated
-				addEventListener: jest.fn(),
-				removeEventListener: jest.fn(),
-				dispatchEvent: jest.fn(),
-			})),
-		});
+            writable: true,
+            value: jest.fn().mockImplementation((query) => ({
+                matches: false,
+                media: query,
+                onchange: null,
+                addListener: jest.fn(), // deprecated
+                removeListener: jest.fn(), // deprecated
+                addEventListener: jest.fn(),
+                removeEventListener: jest.fn(),
+                dispatchEvent: jest.fn(),
+            })),
+        });
 
         useAuth.default.mockReturnValue(mockAuth);
     });
@@ -62,7 +63,7 @@ describe('Home', () => {
         waitFor(() => {
             expect(screen.getByTestId('vacancy-list'));
         });
-        
+
     });
 
     test('should render Home page with no Vacancies', () => {
@@ -85,34 +86,34 @@ describe('Home', () => {
         });
     });
 
-test('should sort titles by length when clicking Vacancy Title', async () => {
-    axios.get.mockImplementationOnce(() =>
-        Promise.resolve(mockVacancyListForSorting)
-    );
+    test('should sort titles by length when clicking Vacancy Title', async () => {
+        axios.get.mockImplementationOnce(() =>
+            Promise.resolve(mockVacancyListForSorting)
+        );
 
-    render(
-        <MemoryRouter initialEntries={['/']}>
-            <Home />
-        </MemoryRouter>
-    );
+        render(
+            <MemoryRouter initialEntries={['/']}>
+                <Home />
+            </MemoryRouter>
+        );
 
-    await screen.findByText('Short Title');
+        await screen.findByText('Short Title');
 
-    fireEvent.click(screen.getByText('Vacancy Title'));
+        fireEvent.click(screen.getByText('Vacancy Title'));
 
-    await waitFor(() => {
-        const dataRows = screen
-            .getAllByRole('row')
-            .filter((r) => r.querySelectorAll('td').length > 0);
+        await waitFor(() => {
+            const dataRows = screen
+                .getAllByRole('row')
+                .filter((r) => r.querySelectorAll('td').length > 0);
 
-        expect(dataRows[0]).toHaveTextContent('Very Long Vacancy Title Here');
-        expect(dataRows[1]).toHaveTextContent('Medium Length Title');
-        expect(dataRows[2]).toHaveTextContent('Short Title');
+            expect(dataRows[0]).toHaveTextContent('Very Long Vacancy Title Here');
+            expect(dataRows[1]).toHaveTextContent('Medium Length Title');
+            expect(dataRows[2]).toHaveTextContent('Short Title');
+        });
     });
-});
 
     test('should sort Vacancies by Institue length when clicking Institute column', async () => {
-        axios.get.mockImplementationOnce(() => 
+        axios.get.mockImplementationOnce(() =>
             Promise.resolve(mockVacancyListForSorting)
         );
 
@@ -142,5 +143,19 @@ test('should sort titles by length when clicking Vacancy Title', async () => {
             expect(instituteCells[1]).toHaveTextContent('NIAID');
             expect(instituteCells[2]).toHaveTextContent('Stadtman');
         });
+    });
+
+    test('should be accessible - no violations', async () => {
+        axios.get.mockImplementationOnce(() =>
+            Promise.resolve(mockVacancyList)
+        );
+
+        const { container } = render(
+            <MemoryRouter initialEntries={['/']}>
+                <Home />
+            </MemoryRouter>
+        );
+
+        await checkAccessibility(container);
     });
 });
