@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.js';
 import { message } from 'antd';
 import { isAllowedToVacancyManagerTriage } from './Util/Permissions';
-import { checkAccessibility } from '../../test-utils-accessibility';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 
 // Mock dependencies
 jest.mock('axios');
@@ -683,5 +683,21 @@ describe('Application component', () => {
     });
 
     await checkAccessibility(container);
+  });
+
+  test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+    const { container } = render(<Application />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Applicant:/i)).toBeInTheDocument();
+    });
+
+    const results = await scanAccessibility(container);
+    logViolations(results, 'Application');
+    const report = generateViolationReport(results, 'Application');
+    console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+    writeViolationsToCSV(results, 'Application', './accessibility-violations-report.csv');
+    global.accessibilityReports = global.accessibilityReports || [];
+    global.accessibilityReports.push(report);
   });
 });

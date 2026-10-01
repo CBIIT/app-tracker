@@ -5,6 +5,13 @@ import { useParams } from 'react-router-dom';
 import { message } from 'antd';
 import ApplicantProfile from './ApplicantProfile';
 import useAuth from '../../hooks/useAuth';
+import {
+	checkAccessibility,
+	scanAccessibility,
+	logViolations,
+	generateViolationReport,
+	writeViolationsToCSV,
+} from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -108,6 +115,88 @@ describe('ApplicantProfile', () => {
         await waitFor(() => {
           expect(getByText('Sorry! There was an error loading your profile. Try refreshing the browser.')).toBeInTheDocument();
         });
+    });
+
+    it('should be accessible - no violations', async () => {
+        axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });
+        axios.get.mockResolvedValueOnce({
+            data: {
+                result: {
+                    response: {
+                        basic_info: {
+                            address: '123 Main St',
+                            address_2: null,
+                            business_phone: '+1',
+                            city: 'tes',
+                            country: 'United States',
+                            email: 'luke.skywalker@TheForce.com',
+                            first_name: 'Luke',
+                            highest_level_of_education: 'Doctorate',
+                            last_name: 'Skywalker',
+                            middle_name: null,
+                            number: 'USR0000001',
+                            phone: '+11234567890',
+                            state_province: 'MD',
+                            sys_id: '123',
+                            us_citizen: 'Yes',
+                            zip_code: '20855'
+                        }
+                    },
+                },
+            },
+        });
+
+        const { container } = render(<ApplicantProfile />);
+
+        await waitFor(() => {
+            expect(screen.getByText(/Applicant Information/i)).toBeInTheDocument();
+        });
+
+        await checkAccessibility(container);
+    });
+
+    it('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        axios.get.mockResolvedValueOnce({ data: { result: { exists: true } } });
+        axios.get.mockResolvedValueOnce({
+            data: {
+                result: {
+                    response: {
+                        basic_info: {
+                            address: '123 Main St',
+                            address_2: null,
+                            business_phone: '+1',
+                            city: 'tes',
+                            country: 'United States',
+                            email: 'luke.skywalker@TheForce.com',
+                            first_name: 'Luke',
+                            highest_level_of_education: 'Doctorate',
+                            last_name: 'Skywalker',
+                            middle_name: null,
+                            number: 'USR0000001',
+                            phone: '+11234567890',
+                            state_province: 'MD',
+                            sys_id: '123',
+                            us_citizen: 'Yes',
+                            zip_code: '20855'
+                        }
+                    },
+                },
+            },
+        });
+
+        const { container } = render(<ApplicantProfile />);
+
+        await waitFor(() => {
+            expect(screen.getByText(/Applicant Information/i)).toBeInTheDocument();
+        });
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'ApplicantProfile');
+        const report = generateViolationReport(results, 'ApplicantProfile');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'ApplicantProfile', './accessibility-violations-report.csv');
+        global.accessibilityReports = global.accessibilityReports || [];
+        global.accessibilityReports.push(report);
     });
 
 });

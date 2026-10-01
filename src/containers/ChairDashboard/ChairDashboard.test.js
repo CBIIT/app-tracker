@@ -8,6 +8,7 @@ import { isChair } from '../../components/Util/RoleValidator/RoleValidator';
 import { validateRoleForCurrentTenant } from '../../components/Util/RoleValidator/RoleValidator';
 import { useNavigate } from 'react-router-dom';
 import { waitFor, screen, fireEvent } from '@testing-library/react';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 
 const { message } = jest.requireMock('antd');
 jest.mock('antd', () => {
@@ -578,5 +579,93 @@ describe('ChairDashboard component tests', () => {
 		});
 		
 		notificationErrorSpy.mockRestore();
+	});
+
+	test('should be accessible - no violations', async () => {
+		isChair.mockReturnValue(true);
+		validateRoleForCurrentTenant.mockReturnValue(true);
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [
+					{
+						value: 'f24965fc1b9c11106daea681f54bcb04',
+						label: 'tenant 1',
+						roles: [
+							'x_g_nci_app_tracke.vacancy_manager',
+							'x_g_nci_app_tracke.committee_member',
+						],
+						is_chair: true,
+					},
+				],
+			},
+			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+		});
+		axios.get.mockResolvedValue({
+			data: {
+				status: 200,
+				list: [
+					{
+						vacancy_id: 1,
+						title: 'Test Vacancy',
+						state: 'live',
+					},
+				],
+			},
+		});
+
+		const { container } = rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		});
+
+		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		isChair.mockReturnValue(true);
+		validateRoleForCurrentTenant.mockReturnValue(true);
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [
+					{
+						value: 'f24965fc1b9c11106daea681f54bcb04',
+						label: 'tenant 1',
+						roles: [
+							'x_g_nci_app_tracke.vacancy_manager',
+							'x_g_nci_app_tracke.committee_member',
+						],
+						is_chair: true,
+					},
+				],
+			},
+			currentTenant: 'f24965fc1b9c11106daea681f54bcb04',
+		});
+		axios.get.mockResolvedValue({
+			data: {
+				status: 200,
+				list: [
+					{
+						vacancy_id: 1,
+						title: 'Test Vacancy',
+						state: 'live',
+					},
+				],
+			},
+		});
+
+		const { container } = rtRender(<ChairDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		});
+
+		const results = await scanAccessibility(container);
+		logViolations(results, 'ChairDashboard');
+		const report = generateViolationReport(results, 'ChairDashboard');
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		writeViolationsToCSV(results, 'ChairDashboard', './accessibility-violations-report.csv');
+		global.accessibilityReports = global.accessibilityReports || [];
+		global.accessibilityReports.push(report);
 	});
 });

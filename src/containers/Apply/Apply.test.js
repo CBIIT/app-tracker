@@ -19,7 +19,7 @@ import {
 	GET_PROFILE,
 } from '../../constants/ApiEndpoints';
 import { APPLICANT_DASHBOARD } from '../../constants/Routes';
-import { checkAccessibility } from '../../test-utils-accessibility';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 
 const mockPush = jest.fn();
 const mockGoBack = jest.fn();
@@ -1052,5 +1052,32 @@ describe('Apply component', () => {
 		}, { timeout: 5000 });
 
 		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		jest.useRealTimers();
+
+		axios.get.mockResolvedValueOnce(mockVacancyResponse);
+		axios.get.mockResolvedValueOnce(mockProfileResponse);
+		axios.post.mockResolvedValueOnce({ data: { result: { draft_id: '444' } } });
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/apply']}>
+				<Apply />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+			expect(screen.getByTestId('applicant-documents-form')).toBeInTheDocument();
+		}, { timeout: 5000 });
+
+		const results = await scanAccessibility(container);
+		logViolations(results, 'Apply');
+		const report = generateViolationReport(results, 'Apply');
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		writeViolationsToCSV(results, 'Apply', './accessibility-violations-report.csv');
+		global.accessibilityReports = global.accessibilityReports || [];
+		global.accessibilityReports.push(report);
 	});
 });

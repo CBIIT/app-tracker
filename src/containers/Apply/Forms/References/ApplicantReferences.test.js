@@ -1,8 +1,9 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FormContext from '../../Context';
 import ApplicantReferences from './ApplicantReferences';
 import { beforeEach, expect } from '@jest/globals';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../../../test-utils-accessibility';
 // Mock window.matchMedia
 
 const mockContextValue = {
@@ -272,6 +273,30 @@ describe('ApplicantReferences', () => {
         splitReferencesMock(mockContextValue.formData.references);
         expect(splitReferencesMock).toHaveBeenCalledWith(mockContextValue.formData.references);
         expect(splitReferencesMock).toHaveReturnedWith(mockContextValue.formData.references.slice(10, 15));
+    });
+
+    test('should be accessible - no violations', async () => {
+        const { container } = render(
+            <FormContext.Provider value={mockContextValue}>
+                <ApplicantReferences />
+            </FormContext.Provider>
+        );
+
+        await checkAccessibility(container);
+    });
+
+    test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        const { container } = render(
+            <FormContext.Provider value={mockContextValue}>
+                <ApplicantReferences />
+            </FormContext.Provider>
+        );
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'Apply-ApplicantReferences');
+        const report = generateViolationReport(results, 'Apply-ApplicantReferences');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'Apply-ApplicantReferences', './accessibility-violations-report.csv');
     });
 
 });

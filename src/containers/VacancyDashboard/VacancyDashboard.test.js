@@ -2,7 +2,7 @@ import { rtRender } from '../test-utils';
 import axios from 'axios';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { VACANCY_DASHBOARD, EDIT_DRAFT, EDIT_VACANCY } from '../../constants/Routes';
-import { checkAccessibility } from '../../test-utils-accessibility';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 
 const mockCountTile = jest.fn();
 jest.mock('./CountTile/CountTile', () => (props) => {
@@ -1159,6 +1159,32 @@ describe('VacancyDashboard component tests', () => {
         });
 
         await checkAccessibility(container);
+    });
+
+    test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        const mockData = {
+            result: [
+                { sys_id: '1', title: 'Live Position', state: 'live', open_date: '2024-01-01', close_date: '2024-02-01', applicants: 5, extended: '0' },
+                { sys_id: '2', title: 'Draft Position', state: 'draft', open_date: '2024-01-02', close_date: '2024-02-02', applicants: 3, extended: '0' }
+            ]
+        };
+        axios.get.mockResolvedValue({ data: mockData });
+
+        useParams.mockReturnValue({ tab: 'live' });
+
+        const { container } = rtRender(<VacancyDashboard />);
+
+        await waitFor(() => {
+            expect(axios.get).toHaveBeenCalled();
+        });
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'VacancyDashboard');
+        const report = generateViolationReport(results, 'VacancyDashboard');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'VacancyDashboard', './accessibility-violations-report.csv');
+        global.accessibilityReports = global.accessibilityReports || [];
+        global.accessibilityReports.push(report);
     });
 
 });

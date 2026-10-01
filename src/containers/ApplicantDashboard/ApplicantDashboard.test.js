@@ -9,7 +9,7 @@ import {
 	WITHDRAW_USER_APPLICATION,
 	REMOVE_USER_APPLICATION_DRAFT,
 } from '../../constants/ApiEndpoints';
-import { checkAccessibility } from '../../test-utils-accessibility';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
@@ -638,5 +638,89 @@ describe('ApplicantDashboard', () => {
 		});
 
 		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		useFetch.mockReturnValue({ data: mockUserApps, isLoading: false, error: null });
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/applicant-dashboard']}>
+				<ApplicantDashboard />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('applicant-table')).toBeInTheDocument();
+		});
+
+		// Scan without enforcing (report mode)
+		const results = await scanAccessibility(container);
+		const requiredAttributeViolations = results.violations.filter(
+			({ id }) => id === 'aria-required-attr'
+		);
+		const validAttributeViolations = results.violations.filter(
+			({ id }) => id === 'aria-valid-attr'
+		);
+		const antdSorterViolations = results.violations.flatMap(
+			({ id, impact, help, nodes }) =>
+				nodes
+					.filter(
+						({ html, target }) =>
+							html.includes('ant-table-column-sorter') ||
+							target.some((selector) => selector.includes('ant-table-column-sorter'))
+					)
+					.map(({ html, target }) => ({ id, impact, help, html, target }))
+		);
+
+		console.log(
+			'\nARIA REQUIRED ATTRIBUTE VIOLATIONS:\n',
+			JSON.stringify(
+				requiredAttributeViolations.map(({ impact, description, help, helpUrl, nodes }) => ({
+					impact,
+					description,
+					help,
+					helpUrl,
+					nodes: nodes.map(({ html, target }) => ({ html, target })),
+				})),
+				null,
+				2
+			)
+		);
+
+		console.log(
+			'\nARIA VALID ATTRIBUTE VIOLATIONS:\n',
+			JSON.stringify(
+				validAttributeViolations.map(({ impact, description, help, helpUrl, nodes }) => ({
+					impact,
+					description,
+					help,
+					helpUrl,
+					nodes: nodes.map(({ html, target }) => ({ html, target })),
+				})),
+				null,
+				2
+			)
+		);
+
+		console.log(
+			'\nANTD SORTER VIOLATIONS:\n',
+			JSON.stringify(antdSorterViolations, null, 2)
+		);
+		
+		// Log violations to console
+		logViolations(results, 'ApplicantDashboard');
+		
+		// Generate structured report
+		const report = generateViolationReport(results, 'ApplicantDashboard');
+		
+		// Log report as JSON for documentation
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		
+		// Write to CSV file
+		writeViolationsToCSV(results, 'ApplicantDashboard', './accessibility-violations-report.csv');
+		
+		// Store report data for external tools
+		global.accessibilityReports = global.accessibilityReports || [];
+		global.accessibilityReports.push(report);
 	});
 });

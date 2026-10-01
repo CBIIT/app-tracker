@@ -4,7 +4,7 @@ import * as transformJsonFromBackend from './Util/TransformJsonFromBackend';
 import { render, waitFor, screen } from '@testing-library/react';
 import { useParams, MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
-import { checkAccessibility } from '../../test-utils-accessibility';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 import { 
     mockStadtmanAuth,
     mockStadtmanVacancy, 
@@ -87,6 +87,32 @@ describe('ManageDashboard component', () => {
         });
 
         await checkAccessibility(container);
+    });
+
+    test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        useParams.mockReturnValue({ sysId: '123', tab: 'details' });
+        useAuth.mockReturnValue(mockStadtmanAuth);
+
+        axios.get.mockResolvedValueOnce(mockStadtmanVacancy);
+        transformJsonFromBackend.transformJsonFromBackend.mockReturnValue(mockStadtmanVacancyTransformed);
+
+        const { container } = render(
+            <MemoryRouter initialEntries={['/manage/application']}>
+                <ManageDashboard />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+        });
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'ManageDashboard');
+        const report = generateViolationReport(results, 'ManageDashboard');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'ManageDashboard', './accessibility-violations-report.csv');
+        global.accessibilityReports = global.accessibilityReports || [];
+        global.accessibilityReports.push(report);
     });
 
 });

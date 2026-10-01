@@ -218,7 +218,7 @@ const applicantApplicationView = () => {
 								<div style={{ display: 'flex', alignItems: 'center' }}>
 									<div>
 										<InfoCardRow style={infoCardStyle}>
-											<h4>Reference {index + 1}</h4>
+											<div className='ReferenceTitle'>Reference {index + 1}</div>
 										</InfoCardRow>
 									</div>
 									{(maxApplicantReferenceRequests && application.referenceEmail === true) &&
@@ -280,7 +280,7 @@ const applicantApplicationView = () => {
 									<LabelValuePair
 										labelStyle={labelStyle}
 										label='Reference Received'
-										valueStyle={{ fontWeight: 'bold', color: reference.referenceReceived === 'Yes' ? 'green' : 'red' }}
+										valueStyle={{ fontWeight: 'bold', color: reference.referenceReceived === 'Yes' ? 'green' : '#ffb3b3' }}
 										value={reference.referenceReceived}
 									/>
 								</InfoCardRow>

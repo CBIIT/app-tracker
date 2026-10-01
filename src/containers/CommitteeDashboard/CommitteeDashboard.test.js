@@ -9,6 +9,13 @@ import {
 	isExecSec,
 } from '../../components/Util/RoleValidator/RoleValidator';
 import { useNavigate, useLocation } from 'react-router-dom';
+import {
+	checkAccessibility,
+	scanAccessibility,
+	logViolations,
+	generateViolationReport,
+	writeViolationsToCSV,
+} from '../../test-utils-accessibility';
 
 jest.mock('antd', () => {
 	const actual = jest.requireActual('antd');
@@ -455,5 +462,31 @@ describe('CommitteeDashboard component tests', () => {
 		});
 
 		expect(screen.queryByText('Committee Vacancy')).not.toBeInTheDocument();
+	});
+
+	test('should be accessible - no violations', async () => {
+		const { container } = rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		});
+
+		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		const { container } = rtRender(<CommitteeDashboard />);
+
+		await waitFor(() => {
+			expect(axios.get).toHaveBeenCalled();
+		});
+
+		const results = await scanAccessibility(container);
+		logViolations(results, 'CommitteeDashboard');
+		const report = generateViolationReport(results, 'CommitteeDashboard');
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		writeViolationsToCSV(results, 'CommitteeDashboard', './accessibility-violations-report.csv');
+		global.accessibilityReports = global.accessibilityReports || [];
+		global.accessibilityReports.push(report);
 	});
 });

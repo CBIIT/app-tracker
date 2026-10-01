@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Review from './Review';
 import FormContext from '../../Context';
 import { expect } from '@jest/globals';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../../../test-utils-accessibility';
 
 
 // Mock window.matchMedia
@@ -201,5 +202,29 @@ describe('Review Component', () => {
 
         fireEvent.click(screen.getByText('Application Documents').closest('.SectionHeader').querySelector('button'));
         expect(mockProps.onEditButtonClick).toHaveBeenCalledWith('applicantDocuments');
+    });
+
+    test('should be accessible - no violations', async () => {
+        const { container } = render(
+            <FormContext.Provider value={{ formData: mockFormData }}>
+                <Review {...mockProps} />
+            </FormContext.Provider>
+        );
+
+        await checkAccessibility(container);
+    });
+
+    test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        const { container } = render(
+            <FormContext.Provider value={{ formData: mockFormData }}>
+                <Review {...mockProps} />
+            </FormContext.Provider>
+        );
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'Apply-Review');
+        const report = generateViolationReport(results, 'Apply-Review');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'Apply-Review', './accessibility-violations-report.csv');
     });
 });

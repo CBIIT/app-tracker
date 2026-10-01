@@ -7,6 +7,7 @@ import axios from 'axios';
 import FormContext from '../../Context';
 import { afterEach, expect } from '@jest/globals';
 import { act } from 'react-dom/test-utils';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../../../test-utils-accessibility';
 
 jest.mock('axios');
 const mockError = jest.fn();
@@ -307,4 +308,56 @@ describe('ApplicantDocuments', () => {
     //     expect(mockBeforeUpload).toHaveBeenCalled();
     //     expect(mockError).toHaveBeenCalledWith('Document should be less than 1 GB.');
     // });
+
+    test('should be accessible - no violations', async () => {
+        axios.get.mockResolvedValue({
+            data: {
+                result: {
+                    basic_info: {
+                        require_focus_area: { value: '1' }
+                    }
+                }
+            }
+        });
+
+        const { container } = render(
+            <FormContext.Provider value={mockContextValue}>
+                <ApplicantDocuments vacancyId="123" />
+            </FormContext.Provider>
+        );
+
+        await waitFor(() => {
+            expect(mockContextValue.setCurrentFormInstance).toHaveBeenCalled();
+        });
+
+        await checkAccessibility(container);
+    });
+
+    test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        axios.get.mockResolvedValue({
+            data: {
+                result: {
+                    basic_info: {
+                        require_focus_area: { value: '1' }
+                    }
+                }
+            }
+        });
+
+        const { container } = render(
+            <FormContext.Provider value={mockContextValue}>
+                <ApplicantDocuments vacancyId="123" />
+            </FormContext.Provider>
+        );
+
+        await waitFor(() => {
+            expect(mockContextValue.setCurrentFormInstance).toHaveBeenCalled();
+        });
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'Apply-ApplicantDocuments');
+        const report = generateViolationReport(results, 'Apply-ApplicantDocuments');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'Apply-ApplicantDocuments', './accessibility-violations-report.csv');
+    });
 });

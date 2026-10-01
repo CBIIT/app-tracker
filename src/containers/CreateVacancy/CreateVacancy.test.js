@@ -5,15 +5,13 @@ import { screen } from '@testing-library/react';
 import { initialValues } from './Forms/FormsInitialValues';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
-
-// jest.mock('react', () => {
-//     const originReact = jest.requireActual('react');
-//     const mUseRef = jest.fn();
-//     return {
-//       ...originReact,
-//       useRef: mUseRef,
-//     };
-// });
+import {
+	checkAccessibility,
+	scanAccessibility,
+	logViolations,
+	generateViolationReport,
+	writeViolationsToCSV,
+} from '../../test-utils-accessibility';
 
 
 jest.mock('../../hooks/useAuth', () => jest.fn().mockImplementation(() => {
@@ -193,5 +191,64 @@ describe('CreateVacancy component tests' , () => {
 
     // });
 
+	test('should be accessible - no violations', async () => {
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [{
+					value: 'tenant1',
+					properties: [{ name: 'enableFocusArea', value: 'true' }]
+				}],
+				user: { uid: 'test-user-123', name: 'Mock User' }
+			},
+			currentTenant: 'tenant1',
+			previousTenant: { current: 'tenant1' },
+			setCurrentTenant: jest.fn(),
+			step: 0,
+			setStep: jest.fn(),
+		});
+
+		const data = {
+			...initialValues,
+			description: 'Test vacancy'
+		}
+		const sysId = '123'
+		const { container } = await rtRender(<CreateVacancy initialValues={data} draftSysId={sysId} />);
+
+		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		useAuth.mockReturnValue({
+			auth: {
+				tenants: [{
+					value: 'tenant1',
+					properties: [{ name: 'enableFocusArea', value: 'true' }]
+				}],
+				user: { uid: 'test-user-123', name: 'Mock User' }
+			},
+			currentTenant: 'tenant1',
+			previousTenant: { current: 'tenant1' },
+			setCurrentTenant: jest.fn(),
+			step: 0,
+			setStep: jest.fn(),
+		});
+
+		const data = {
+			...initialValues,
+			description: 'Test vacancy'
+		}
+		const sysId = '123'
+		const { container } = await rtRender(<CreateVacancy initialValues={data} draftSysId={sysId} />);
+
+		const results = await scanAccessibility(container);
+		logViolations(results, 'CreateVacancy');
+		const report = generateViolationReport(results, 'CreateVacancy');
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		writeViolationsToCSV(results, 'CreateVacancy', './accessibility-violations-report.csv');
+		global.accessibilityReports = global.accessibilityReports || [];
+		global.accessibilityReports.push(report);
+	});
+
+    // });
 
 });

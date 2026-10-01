@@ -9,7 +9,7 @@ import {
     noVacancyList,
     mockVacancyListForSorting
 } from './MockData';
-import { checkAccessibility } from '../../test-utils-accessibility';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
@@ -157,5 +157,24 @@ describe('Home', () => {
         );
 
         await checkAccessibility(container);
+    });
+    test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+        axios.get.mockImplementationOnce(() =>
+            Promise.resolve(mockVacancyList)
+        );
+
+        const { container } = render(
+            <MemoryRouter initialEntries={['/']}>
+                <Home />
+            </MemoryRouter>
+        );
+
+        const results = await scanAccessibility(container);
+        logViolations(results, 'Home');
+        const report = generateViolationReport(results, 'Home');
+        console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+        writeViolationsToCSV(results, 'Home', './accessibility-violations-report.csv');
+        global.accessibilityReports = global.accessibilityReports || [];
+        global.accessibilityReports.push(report);
     });
 });
