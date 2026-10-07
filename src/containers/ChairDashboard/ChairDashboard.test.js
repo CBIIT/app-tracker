@@ -664,7 +664,7 @@ describe('ChairDashboard component tests', () => {
 		logViolations(results, 'ChairDashboard');
 		const report = generateViolationReport(results, 'ChairDashboard');
 		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-		writeViolationsToCSV(results, 'ChairDashboard', './accessibility-violations-report.csv');
+		writeViolationsToCSV(results, 'ChairDashboard', './accessibility-reports');
 		global.accessibilityReports = global.accessibilityReports || [];
 		global.accessibilityReports.push(report);
 	});

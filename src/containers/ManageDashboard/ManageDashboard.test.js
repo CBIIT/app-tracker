@@ -110,7 +110,7 @@ describe('ManageDashboard component', () => {
         logViolations(results, 'ManageDashboard');
         const report = generateViolationReport(results, 'ManageDashboard');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'ManageDashboard', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'ManageDashboard', './accessibility-reports');
         global.accessibilityReports = global.accessibilityReports || [];
         global.accessibilityReports.push(report);
     });

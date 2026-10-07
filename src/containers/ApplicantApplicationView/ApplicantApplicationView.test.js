@@ -203,7 +203,7 @@ describe('ApplicantApplicationView component', () => {
 		logViolations(results, 'ApplicantApplicationView');
 		const report = generateViolationReport(results, 'ApplicantApplicationView');
 		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-		writeViolationsToCSV(results, 'ApplicantApplicationView', './accessibility-violations-report.csv');
+		writeViolationsToCSV(results, 'ApplicantApplicationView', './accessibility-reports');
 		global.accessibilityReports = global.accessibilityReports || [];
 		global.accessibilityReports.push(report);
 	});

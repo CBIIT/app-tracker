@@ -194,7 +194,7 @@ describe('ApplicantProfile', () => {
         logViolations(results, 'ApplicantProfile');
         const report = generateViolationReport(results, 'ApplicantProfile');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'ApplicantProfile', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'ApplicantProfile', './accessibility-reports');
         global.accessibilityReports = global.accessibilityReports || [];
         global.accessibilityReports.push(report);
     });

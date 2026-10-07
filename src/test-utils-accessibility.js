@@ -199,14 +199,15 @@ export const exportViolationsToCSV = (results, componentName = 'Component') => {
 };
 
 /**
- * Write accessibility violations to a CSV file (Node.js only)
- * Appends to existing file instead of overwriting
+ * Write accessibility violations to a CSV file in timestamped directory structure
+ * Stores one file per day: accessibility-reports/YYYY-MM-DD_accessibility-violations-report.csv
+ * Appends results from each component test throughout the day
  * @param {Object} results - Results from jest-axe scan
  * @param {string} componentName - Name of component being scanned
- * @param {string} filePath - Path to write CSV file
+ * @param {string} dirPath - Directory to store reports (default: ./accessibility-reports)
  * @returns {string} - CSV content written
  */
-export const writeViolationsToCSV = (results, componentName = 'Component', filePath = './accessibility-violations.csv') => {
+export const writeViolationsToCSV = (results, componentName = 'Component', dirPath = './accessibility-reports') => {
   const csv = exportViolationsToCSV(results, componentName);
   
   // Only run in Node.js environment (tests, CI/CD)
@@ -214,11 +215,21 @@ export const writeViolationsToCSV = (results, componentName = 'Component', fileP
     try {
       const fs = require('fs');
       
+      // Create directory if it doesn't exist
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+      }
+      
+      // Generate daily filename (same for all tests on same day)
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+      const filePath = `${dirPath}/${dateStr}_accessibility-violations-report.csv`;
+      
       // Check if file exists
       const fileExists = fs.existsSync(filePath);
       
       if (fileExists) {
-        // File exists - append without header
+        // File exists - append without header (skip first line which is header)
         const lines = csv.split('\n');
         const dataLines = lines.slice(1); // Skip header
         const content = dataLines.join('\n');
@@ -238,19 +249,27 @@ export const writeViolationsToCSV = (results, componentName = 'Component', fileP
 };
 
 /**
- * Clear/reset the CSV report file (start fresh)
- * @param {string} filePath - Path to CSV file to clear
+ * Clear/reset the CSV report files from a directory
+ * @param {string} dirPath - Directory containing CSV files
  */
-export const clearViolationsReport = (filePath = './accessibility-violations.csv') => {
+export const clearViolationsReport = (dirPath = './accessibility-reports') => {
   if (typeof require !== 'undefined') {
     try {
       const fs = require('fs');
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-        console.log(`✅ CSV report cleared: ${filePath}`);
+      const path = require('path');
+      
+      if (fs.existsSync(dirPath)) {
+        const files = fs.readdirSync(dirPath);
+        files.forEach(file => {
+          if (file.endsWith('_accessibility-violations-report.csv')) {
+            const filePath = path.join(dirPath, file);
+            fs.unlinkSync(filePath);
+          }
+        });
+        console.log(`✅ Accessibility reports cleared from: ${dirPath}`);
       }
     } catch (error) {
-      console.error(`❌ Failed to clear CSV file: ${error.message}`);
+      console.error(`❌ Failed to clear reports: ${error.message}`);
     }
   }
 };

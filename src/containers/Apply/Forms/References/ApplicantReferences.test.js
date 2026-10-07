@@ -296,7 +296,7 @@ describe('ApplicantReferences', () => {
         logViolations(results, 'Apply-ApplicantReferences');
         const report = generateViolationReport(results, 'Apply-ApplicantReferences');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'Apply-ApplicantReferences', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'Apply-ApplicantReferences', './accessibility-reports');
     });
 
 });

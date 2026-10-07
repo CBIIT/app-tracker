@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "jest",
 		"test:a11y": "jest --testNamePattern='should be accessible'",
-		"test:a11y:scan": "rm -f ./accessibility-violations-report.csv && jest --testNamePattern='scan report'",
+		"test:a11y:scan": "mkdir -p ./accessibility-reports && jest --testNamePattern='scan report'",
 		"coverage": "jest --coverage",
 		"start": "webpack-dev-server --config=./webpack/webpack.dev.config.js",
 		"build": "node node_modules/webpack/bin/webpack.js --progress --config webpack/webpack.prod.config.js --bail",

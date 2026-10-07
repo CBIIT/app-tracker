@@ -173,7 +173,7 @@ describe('Home', () => {
         logViolations(results, 'Home');
         const report = generateViolationReport(results, 'Home');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'Home', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'Home', './accessibility-reports');
         global.accessibilityReports = global.accessibilityReports || [];
         global.accessibilityReports.push(report);
     });

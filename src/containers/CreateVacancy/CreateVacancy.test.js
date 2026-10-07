@@ -244,7 +244,7 @@ describe('CreateVacancy component tests' , () => {
 		logViolations(results, 'CreateVacancy');
 		const report = generateViolationReport(results, 'CreateVacancy');
 		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-		writeViolationsToCSV(results, 'CreateVacancy', './accessibility-violations-report.csv');
+		writeViolationsToCSV(results, 'CreateVacancy', './accessibility-reports');
 		global.accessibilityReports = global.accessibilityReports || [];
 		global.accessibilityReports.push(report);
 	});

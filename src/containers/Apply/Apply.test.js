@@ -1076,7 +1076,7 @@ describe('Apply component', () => {
 		logViolations(results, 'Apply');
 		const report = generateViolationReport(results, 'Apply');
 		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-		writeViolationsToCSV(results, 'Apply', './accessibility-violations-report.csv');
+		writeViolationsToCSV(results, 'Apply', './accessibility-reports');
 		global.accessibilityReports = global.accessibilityReports || [];
 		global.accessibilityReports.push(report);
 	});

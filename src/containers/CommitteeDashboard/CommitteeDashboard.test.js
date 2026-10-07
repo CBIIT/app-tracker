@@ -485,7 +485,7 @@ describe('CommitteeDashboard component tests', () => {
 		logViolations(results, 'CommitteeDashboard');
 		const report = generateViolationReport(results, 'CommitteeDashboard');
 		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-		writeViolationsToCSV(results, 'CommitteeDashboard', './accessibility-violations-report.csv');
+		writeViolationsToCSV(results, 'CommitteeDashboard', './accessibility-reports');
 		global.accessibilityReports = global.accessibilityReports || [];
 		global.accessibilityReports.push(report);
 	});

@@ -1182,7 +1182,7 @@ describe('VacancyDashboard component tests', () => {
         logViolations(results, 'VacancyDashboard');
         const report = generateViolationReport(results, 'VacancyDashboard');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'VacancyDashboard', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'VacancyDashboard', './accessibility-reports');
         global.accessibilityReports = global.accessibilityReports || [];
         global.accessibilityReports.push(report);
     });

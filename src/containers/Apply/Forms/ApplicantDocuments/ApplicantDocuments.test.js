@@ -358,6 +358,6 @@ describe('ApplicantDocuments', () => {
         logViolations(results, 'Apply-ApplicantDocuments');
         const report = generateViolationReport(results, 'Apply-ApplicantDocuments');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'Apply-ApplicantDocuments', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'Apply-ApplicantDocuments', './accessibility-reports');
     });
 });

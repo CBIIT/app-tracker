@@ -717,7 +717,7 @@ describe('ApplicantDashboard', () => {
 		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
 		
 		// Write to CSV file
-		writeViolationsToCSV(results, 'ApplicantDashboard', './accessibility-violations-report.csv');
+		writeViolationsToCSV(results, 'ApplicantDashboard', './accessibility-reports');
 		
 		// Store report data for external tools
 		global.accessibilityReports = global.accessibilityReports || [];

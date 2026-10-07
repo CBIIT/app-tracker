@@ -225,6 +225,6 @@ describe('Review Component', () => {
         logViolations(results, 'Apply-Review');
         const report = generateViolationReport(results, 'Apply-Review');
         console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
-        writeViolationsToCSV(results, 'Apply-Review', './accessibility-violations-report.csv');
+        writeViolationsToCSV(results, 'Apply-Review', './accessibility-reports');
     });
 });
