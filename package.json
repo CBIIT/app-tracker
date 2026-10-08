@@ -11,8 +11,7 @@
 		"start": "webpack-dev-server --config=./webpack/webpack.dev.config.js",
 		"build": "node node_modules/webpack/bin/webpack.js --progress --config webpack/webpack.prod.config.js --bail",
 		"postbuild": "node webpack/servicenow.postbuild.js",
-		"lint": "eslint src --ext .js",
-		"report:a11y": "node scripts/generate-accessibility-report.js"
+		"lint": "eslint src --ext .js"
 	},
 	"author": "",
 	"license": "ISC",
@@ -58,8 +57,6 @@
 		"clear": "^0.1.0",
 		"core-js": "3.1.4",
 		"css-loader": "^5.0.2",
-		"cypress": "^15.21.1",
-		"cypress-axe": "^1.7.0",
 		"directory-tree": "^2.2.9",
 		"dotenv-webpack": "^9.0.0",
 		"eslint": "^8.57.0",
