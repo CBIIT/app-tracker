@@ -10,6 +10,13 @@ import {
 	mockApplication,
 } from './MockData';
 import axios from 'axios';
+import {
+	checkAccessibility,
+	scanAccessibility,
+	logViolations,
+	generateViolationReport,
+	writeViolationsToCSV,
+} from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -31,17 +38,6 @@ jest.mock(
 				<div data-testid='InfoCard'>
 					<div>{title}</div>
 					{children}
-				</div>
-			)
-);
-jest.mock(
-	'../../components/UI/LabelValuePair/LabelValuePair',
-	() =>
-		({ label, value }) =>
-			(
-				<div>
-					{label && <span>{label}</span>}
-					{value && <span>{value}</span>}
 				</div>
 			)
 );
@@ -108,7 +104,7 @@ describe('ApplicantApplicationView component', () => {
  		});
 
  		// Request Reference button should be rendered for each reference when tenant allows requests
- 		expect(screen.getByText(/Request Reference/i)).toBeInTheDocument();
+		 expect(screen.getAllByRole('button', { name: /Request Reference/i })).toHaveLength(2);
 
  	});
 
@@ -140,10 +136,10 @@ describe('ApplicantApplicationView component', () => {
 		expect(screen.getByText(/Focus Area/i)).toBeInTheDocument();
 		expect(screen.getByText(/AddressComponent/i)).toBeInTheDocument();
 		expect(screen.getByText(/References/i)).toBeInTheDocument();
-		expect(screen.getByText(/Phone Number/i)).toBeInTheDocument();
-		expect(screen.getByText(/Position Title/i)).toBeInTheDocument();
-		expect(screen.getByText(/Reference Received/i)).toBeInTheDocument();
-		expect(screen.getByText(/Relationship/i)).toBeInTheDocument();
+		expect(screen.getAllByText(/Phone Number/i)).toHaveLength(2);
+		expect(screen.getAllByText(/Position Title/i)).toHaveLength(2);
+		expect(screen.getAllByText(/Reference Received/i)).toHaveLength(2);
+		expect(screen.getAllByText(/Relationship/i)).toHaveLength(2);
 		expect(screen.getByText(/Is it okay for the Hiring Team to contact the reference directly?/i)).toBeInTheDocument();
 		expect(screen.getByText(/Documents/i)).toBeInTheDocument();
 	});
@@ -164,5 +160,51 @@ describe('ApplicantApplicationView component', () => {
 		});
 
 		expect(screen.queryByText(/Focus Area/i)).not.toBeInTheDocument();
+	});
+
+	test('should be accessible - no violations', async () => {
+		axios.get.mockResolvedValueOnce(mockResponse);
+		useParams.mockReturnValue({ appSysId: '12345' });
+		transformJsonFromBackend.transformJsonFromBackend.mockReturnValue(
+			mockApplication
+		);
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/apply/view/']}>
+				<ApplicationApplicationView {...mockProps} />
+			</MemoryRouter>
+		);
+
+		await act(async () => {
+			await new Promise(resolve => setTimeout(resolve, 100));
+		});
+
+		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		axios.get.mockResolvedValueOnce(mockResponse);
+		useParams.mockReturnValue({ appSysId: '12345' });
+		transformJsonFromBackend.transformJsonFromBackend.mockReturnValue(
+			mockApplication
+		);
+
+		const { container } = render(
+			<MemoryRouter initialEntries={['/apply/view/']}>
+				<ApplicationApplicationView {...mockProps} />
+			</MemoryRouter>
+		);
+
+		await act(async () => {
+			await new Promise(resolve => setTimeout(resolve, 100));
+		});
+
+		const results = await scanAccessibility(container);
+		logViolations(results, 'ApplicantApplicationView');
+		const report = generateViolationReport(results, 'ApplicantApplicationView');
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		writeViolationsToCSV(results, 'ApplicantApplicationView', './accessibility-reports');
+		global.accessibilityReports = global.accessibilityReports || [];
+		global.accessibilityReports.push(report);
 	});
 });

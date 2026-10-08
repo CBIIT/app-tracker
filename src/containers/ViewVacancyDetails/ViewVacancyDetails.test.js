@@ -1,9 +1,10 @@
 import ViewVacancyDetails from './ViewVacancyDetails';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { useParams, MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import { mockVacancy, mockVacancy2, mockVacancy3 } from './MockData';
 import useAuth from '../../hooks/useAuth';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -232,5 +233,22 @@ describe('ViewVacancyDetails', () => {
 		);
 
 		expect(await screen.findByText('HHS and NIH are Equal Opportunity Employers')).toBeInTheDocument();
+	});
+
+	test('should be accessible - no violations', async () => {
+		useParams.mockReturnValue({ sysId: '123' });
+		axios.get.mockImplementationOnce(() => Promise.resolve(mockVacancy));
+
+		const { container } = render(
+			<MemoryRouter>
+				<ViewVacancyDetails />
+			</MemoryRouter>
+		);
+
+		await waitFor(() => {
+			expect(screen.getByText('APPLICATION DOCUMENTS')).toBeInTheDocument();
+		});
+
+		await checkAccessibility(container);
 	});
 });

@@ -6,6 +6,7 @@ import { VIEW_APPLICATION } from '../../../constants/Routes';
 import submitEditedApp from './SubmitAppWorkflow/SubmitEditedApp';
 import submitNewApp from './SubmitAppWorkflow/SubmitNewApp';
 import { mockUseAuth, mockFormData } from './SubmitModalMockData';
+import { checkAccessibility, scanAccessibility, logViolations, generateViolationReport, writeViolationsToCSV } from '../../../test-utils-accessibility';
 
 jest.mock('../../../hooks/useAuth');
 jest.mock('../../../constants/checkAuth');
@@ -195,5 +196,21 @@ describe('SubmitModal component', () => {
 
 		expect(mockHandleCancel).toHaveBeenCalledTimes(1);
 		expect(mockNavigate).not.toHaveBeenCalled();
+	});
+
+	test('should be accessible - no violations', async () => {
+		const { container } = renderSubmitModal();
+
+		await checkAccessibility(container);
+	});
+
+	test('should generate detailed accessibility scan report (Section 508 compliance)', async () => {
+		const { container } = renderSubmitModal();
+
+		const results = await scanAccessibility(container);
+		logViolations(results, 'Apply-SubmitModal');
+		const report = generateViolationReport(results, 'Apply-SubmitModal');
+		console.log('\n📊 ACCESSIBILITY SCAN REPORT:\n', JSON.stringify(report, null, 2));
+		writeViolationsToCSV(results, 'Apply-SubmitModal', './accessibility-reports');
 	});
 });

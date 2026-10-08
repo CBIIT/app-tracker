@@ -1,3 +1,7 @@
+.ReferenceTitle {
+	font-weight: bold;
+}
+
 .ApplicantApplicationViewPrintButton {
 	float: right;
 	padding-top: 10px;

@@ -5,6 +5,7 @@ import { REGISTER_OKTA } from '../../constants/Routes';
 import { CREATE_OKTA_USER } from '../../constants/ApiEndpoints';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { checkAccessibility } from '../../test-utils-accessibility';
 
 jest.mock('axios');
 jest.mock('../../hooks/useAuth', () => ({
@@ -287,5 +288,19 @@ describe('RegisterOkta Component', () => {
 			expect(screen.getByText(errorMessage)).toBeInTheDocument();
 			expect(container.querySelector('.ant-result-warning')).toBeInTheDocument();
 		});
+	});
+
+	test('should be accessible - no violations', async () => {
+		const { container } = renderComponent();
+
+		// Wait for form to fully render
+		await waitFor(() => {
+			expect(
+				screen.getByRole('heading', { name: /create your nih account to access ssj/i })
+			).toBeInTheDocument();
+		});
+
+		// Run accessibility scan
+		await checkAccessibility(container);
 	});
 });

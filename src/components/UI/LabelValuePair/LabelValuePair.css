@@ -3,6 +3,8 @@
 	flex-direction: column;
 	min-width: 160px;
 	margin-right: 16px;
+	background-color: #ffffff;
+	padding: 4px 0;
 }
 
 .LabelValuePairContainer h2 {
@@ -13,5 +15,6 @@
 
 .LabelValuePairContainer > span {
 	margin-bottom: 16px;
-	color: var(--text-light);
+	background-color: #ffffff;
+	/* Allow inline valueStyle to override default color */
 }

@@ -34,20 +34,22 @@ describe('TimeoutModal', () => {
         }
     });
     afterEach(() => {
+        jest.clearAllTimers();
+        jest.restoreAllMocks();
         jest.useRealTimers();
         jest.clearAllMocks();
     });
 
-    test('shows modal after 90% of session time has elapsed', () => {
+    test('shows modal after 90% of session time has elapsed', async () => {
         render(<TimeoutModal />);
         // Simulate the passage of time to open the modal
         act(() => {
             jest.advanceTimersByTime(9000);
         });
-        waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
+        await waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
     });
 
-    test('extends session when Extend button is clicked', () => {
+    test('extends session when Extend button is clicked', async () => {
         axios.get.mockResolvedValue({
             data: {
                 result: {
@@ -80,17 +82,17 @@ describe('TimeoutModal', () => {
         });
         expect(screen.getByTestId('timeout-modal')).toBeVisible()
         fireEvent.click(screen.getByText('Extend'));
-        waitFor(() => expect(setAuthMock).toHaveBeenCalled());
+        await waitFor(() => expect(setAuthMock).toHaveBeenCalled());
     });
 
-    test('logs out user when Logout button is clicked', () => {
+    test('logs out user when Logout button is clicked', async () => {
         const mockedFunction = jest.fn(() => location.href = '/logout.do');
         render(<TimeoutModal onClick={mockedFunction()} />);
         // Simulate the passage of time to open the modal
         act(() => {
             jest.advanceTimersByTime(9000);
         });
-        waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
+        await waitFor(() => expect(screen.getByTestId('timeout-modal')).toBeVisible());
         fireEvent.click(screen.getByText('Logout'));
         expect(mockedFunction).toHaveBeenCalledTimes(1);
         expect(window.location.href).toBe('/logout.do');
@@ -113,7 +115,7 @@ describe('TimeoutModal', () => {
         });
 
         // Wait for the URL to change to /logout.do
-        waitFor(() => expect(window.location.href).toBe('/logout.do'));
+        await waitFor(() => expect(window.location.href).toBe('/logout.do'));
         expect(window.location.href).toBe('/logout.do');
     });
 });
